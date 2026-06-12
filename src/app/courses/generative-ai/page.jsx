@@ -200,7 +200,7 @@ export default function GenAICoursePage() {
     return parts.flatMap((part, index) => {
       if (index % 2 === 1) {
         return (
-          <code key={`code-${index}`} className="bg-rose-50 border border-rose-100 text-rose-600 rounded px-1.5 py-0.5 font-mono text-[11px] mx-0.5 whitespace-nowrap">
+          <code key={`code-${index}`} className="rounded px-1.5 py-0.5 font-mono text-[11px] mx-0.5 whitespace-nowrap" style={{ backgroundColor: "var(--bg-code)", border: "1px solid var(--border-primary)", color: "var(--text-accent)" }}>
             {part}
           </code>
         );
@@ -211,7 +211,7 @@ export default function GenAICoursePage() {
       return boldParts.map((subPart, subIndex) => {
         if (subIndex % 2 === 1) {
           return (
-            <strong key={`bold-${index}-${subIndex}`} className="font-bold text-slate-900">
+            <strong key={`bold-${index}-${subIndex}`} className="font-semibold" style={{ color: "var(--text-primary)" }}>
               {subPart}
             </strong>
           );
@@ -242,13 +242,13 @@ export default function GenAICoursePage() {
 
       if (currentBlockType === "paragraph") {
         elements.push(
-          <p key={nextKey} className="text-slate-700 text-sm leading-relaxed mb-5">
+          <p key={nextKey} className="text-sm leading-relaxed mb-5" style={{ color: "var(--text-secondary)" }}>
             {parseInlineStyles(blockText)}
           </p>
         );
       } else if (currentBlockType === "note") {
         elements.push(
-          <div key={nextKey} className="my-6 rounded-r-xl border-l-4 border-l-amber-500 bg-amber-50/40 p-5 shadow-sm text-slate-700 text-sm leading-relaxed">
+          <div key={nextKey} className="my-6 rounded-r-xl border-l-4 border-l-amber-500 p-5 shadow-sm text-sm leading-relaxed" style={{ backgroundColor: "var(--note-bg)", color: "var(--note-text)" }}>
             {parseInlineStyles(blockText)}
           </div>
         );
@@ -267,11 +267,10 @@ export default function GenAICoursePage() {
                 return (
                   <div 
                     key={lIdx} 
-                    className={`flex items-start text-slate-700 text-sm leading-relaxed ${
-                      isSubItem ? "pl-6 text-[13px] text-slate-500 mt-1" : "pl-1"
-                    }`}
+                    className="flex items-start text-sm leading-relaxed"
+                    style={{ color: isSubItem ? "var(--text-muted)" : "var(--text-secondary)", paddingLeft: isSubItem ? "1.5rem" : "0.25rem", marginTop: isSubItem ? "0.25rem" : 0, fontSize: isSubItem ? "13px" : undefined }}
                   >
-                    <span className="mr-2 text-indigo-500 font-bold select-none">•</span>
+                    <span className="mr-2 font-bold select-none" style={{ color: "var(--accent-primary)" }}>•</span>
                     <span className="flex-1">{parseInlineStyles(cleanLine)}</span>
                   </div>
                 );
@@ -283,11 +282,10 @@ export default function GenAICoursePage() {
                 return (
                   <div 
                     key={lIdx} 
-                    className={`flex items-start text-slate-700 text-sm leading-relaxed ${
-                      isSubItem ? "pl-6 text-[13px] text-slate-500 mt-1" : "pl-1"
-                    }`}
+                    className="flex items-start text-sm leading-relaxed"
+                    style={{ color: isSubItem ? "var(--text-muted)" : "var(--text-secondary)", paddingLeft: isSubItem ? "1.5rem" : "0.25rem", marginTop: isSubItem ? "0.25rem" : 0, fontSize: isSubItem ? "13px" : undefined }}
                   >
-                    <span className="mr-2.5 text-indigo-600 font-bold select-none">{numberMatch[1]}.</span>
+                    <span className="mr-2.5 font-bold select-none" style={{ color: "var(--text-accent)" }}>{numberMatch[1]}.</span>
                     <span className="flex-1">{parseInlineStyles(cleanLine)}</span>
                   </div>
                 );
@@ -296,9 +294,8 @@ export default function GenAICoursePage() {
               return (
                 <div 
                   key={lIdx} 
-                  className={`text-slate-700 text-sm leading-relaxed ${
-                    isSubItem ? "pl-6 text-[13px] text-slate-500 mt-1" : "pl-5 mt-1"
-                  }`}
+                  className="text-sm leading-relaxed"
+                  style={{ color: isSubItem ? "var(--text-muted)" : "var(--text-secondary)", paddingLeft: isSubItem ? "1.5rem" : "1.25rem", marginTop: "0.25rem", fontSize: isSubItem ? "13px" : undefined }}
                 >
                   {parseInlineStyles(trimmedLine)}
                 </div>
@@ -309,18 +306,19 @@ export default function GenAICoursePage() {
       } else if (currentBlockType === "code") {
         const codeText = currentBlockLines.join("\n");
         elements.push(
-          <div key={nextKey} className="my-6 rounded-xl border border-slate-200 bg-slate-50 p-4 shadow-sm border-l-4 border-l-emerald-500">
-            <div className="flex items-center justify-between border-b border-slate-200/50 pb-2 mb-3">
-              <span className="text-xs font-semibold tracking-wider text-slate-500 font-sans capitalize">Example Code</span>
+          <div key={nextKey} className="my-6 rounded-xl p-4 shadow-sm border-l-4 border-l-emerald-500" style={{ backgroundColor: "var(--bg-code)", border: "1px solid var(--border-primary)" }}>
+            <div className="flex items-center justify-between pb-2 mb-3" style={{ borderBottom: "1px solid var(--border-primary)" }}>
+              <span className="text-xs font-semibold tracking-wider font-sans capitalize" style={{ color: "var(--text-muted)" }}>Example Code</span>
               <button 
                 onClick={() => navigator.clipboard.writeText(codeText)}
-                className="rounded bg-indigo-50 border border-indigo-100 hover:bg-indigo-100/50 text-indigo-600 px-2.5 py-1 text-[10px] font-semibold transition-colors"
+                className="rounded px-2.5 py-1 text-[10px] font-semibold transition-colors"
+                style={{ backgroundColor: "var(--bg-badge)", border: "1px solid var(--border-accent)", color: "var(--text-accent)" }}
               >
                 Copy Code
               </button>
             </div>
-            <div className="rounded-lg bg-white border border-slate-200 p-4 overflow-x-auto shadow-inner">
-              <pre className="font-mono text-xs text-slate-800 leading-relaxed">
+            <div className="rounded-lg p-4 overflow-x-auto" style={{ backgroundColor: "var(--bg-primary)", border: "1px solid var(--border-primary)" }}>
+              <pre className="font-mono text-xs leading-relaxed" style={{ color: "var(--text-primary)" }}>
                 <code>{codeText}</code>
               </pre>
             </div>
@@ -332,18 +330,18 @@ export default function GenAICoursePage() {
         const bodyRows = rows.slice(2); // Skip separator row
 
         elements.push(
-          <div key={nextKey} className="overflow-x-auto my-5 border border-slate-200 rounded-xl shadow-sm">
-            <table className="min-w-full divide-y divide-slate-200 text-left text-xs">
-              <thead className="bg-slate-50/70 text-slate-500 font-semibold capitalize tracking-normal">
+          <div key={nextKey} className="overflow-x-auto my-5 rounded-xl shadow-sm" style={{ border: "1px solid var(--border-primary)" }}>
+            <table className="min-w-full text-left text-xs" style={{ borderCollapse: "collapse" }}>
+              <thead style={{ backgroundColor: "var(--bg-hover)", color: "var(--text-muted)" }}>
                 <tr>
                   {headers.map((h, hIdx) => (
-                    <th key={hIdx} className="px-4 py-3 font-semibold">{h}</th>
+                    <th key={hIdx} className="px-4 py-3 font-semibold" style={{ borderBottom: "1px solid var(--border-primary)" }}>{h}</th>
                   ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-150 bg-white text-slate-700 font-medium">
+              <tbody style={{ backgroundColor: "var(--bg-card)", color: "var(--text-secondary)" }}>
                 {bodyRows.map((row, rIdx) => (
-                  <tr key={rIdx} className="hover:bg-slate-50/50 transition-colors">
+                  <tr key={rIdx} style={{ borderBottom: "1px solid var(--border-primary)" }}>
                     {row.map((val, vIdx) => (
                       <td key={vIdx} className="px-4 py-3 leading-relaxed">{parseInlineStyles(val)}</td>
                     ))}
@@ -387,7 +385,7 @@ export default function GenAICoursePage() {
       if (trimmedLine.startsWith("### ")) {
         flushBlock(`block-${i}`);
         elements.push(
-          <h3 key={`h3-${i}`} className="text-2xl font-bold font-display text-slate-900 mt-8 mb-4 border-b border-slate-100 pb-2">
+          <h3 key={`h3-${i}`} className="text-2xl font-bold font-display mt-8 mb-4 pb-2" style={{ color: "var(--text-primary)", borderBottom: "1px solid var(--border-primary)" }}>
             {trimmedLine.replace("### ", "")}
           </h3>
         );
@@ -397,7 +395,7 @@ export default function GenAICoursePage() {
       if (trimmedLine.startsWith("#### ")) {
         flushBlock(`block-${i}`);
         elements.push(
-          <h4 key={`h4-${i}`} className="text-base font-bold font-display text-slate-800 mt-6 mb-3 tracking-normal normal-case">
+          <h4 key={`h4-${i}`} className="text-base font-bold font-display mt-6 mb-3 tracking-normal normal-case" style={{ color: "var(--text-primary)" }}>
             {trimmedLine.replace("#### ", "")}
           </h4>
         );
@@ -695,12 +693,12 @@ export default function GenAICoursePage() {
             return (
               <div className="space-y-3 px-2">
                 {filteredGlossary.length === 0 ? (
-                  <p className="text-xs text-slate-400 italic">No terms matched your search.</p>
+                  <p className="text-xs italic" style={{ color: "var(--text-muted)" }}>No terms matched your search.</p>
                 ) : (
                   filteredGlossary.map((g, idx) => (
-                    <div key={idx} className="space-y-1 p-2 rounded-lg bg-slate-50 border border-slate-100 hover:bg-slate-100/40 transition-colors">
-                      <h5 className="text-xs font-bold text-indigo-700">{g.term}</h5>
-                      <p className="text-[10px] text-slate-600 leading-normal">{g.def}</p>
+                    <div key={idx} className="space-y-1 p-2 rounded-lg transition-colors" style={{ backgroundColor: "var(--bg-hover)", border: "1px solid var(--border-primary)" }}>
+                      <h5 className="text-xs font-bold" style={{ color: "var(--text-accent)" }}>{g.term}</h5>
+                      <p className="text-[10px] leading-normal" style={{ color: "var(--text-secondary)" }}>{g.def}</p>
                     </div>
                   ))
                 )}
@@ -720,7 +718,7 @@ export default function GenAICoursePage() {
 
               return (
                 <div key={rIdx} className="space-y-2 pb-3">
-                  <h5 className="text-[11px] font-semibold text-slate-400 capitalize tracking-wider px-2">
+                  <h5 className="text-[11px] font-semibold capitalize tracking-wider px-2" style={{ color: "var(--text-muted)" }}>
                     {res.category}
                   </h5>
                   <div className="space-y-1.5">
@@ -730,15 +728,16 @@ export default function GenAICoursePage() {
                         href={item.link}
                         target="_blank"
                         rel="noreferrer"
-                        className="block p-2 rounded-lg bg-slate-50 border border-slate-100 hover:border-indigo-200 hover:bg-indigo-50/20 transition-all group"
+                        className="block p-2 rounded-lg transition-all group"
+                        style={{ backgroundColor: "var(--bg-hover)", border: "1px solid var(--border-primary)" }}
                       >
                         <div className="flex items-center justify-between mb-0.5">
-                          <span className="text-xs font-bold text-slate-800 group-hover:text-indigo-700 transition-colors">
+                          <span className="text-xs font-bold transition-colors" style={{ color: "var(--text-primary)" }}>
                             {item.name}
                           </span>
-                          <ExternalLink size={10} className="text-slate-400" />
+                          <ExternalLink size={10} style={{ color: "var(--text-muted)" }} />
                         </div>
-                        <p className="text-[10px] text-slate-500 leading-normal">{item.desc}</p>
+                        <p className="text-[10px] leading-normal" style={{ color: "var(--text-muted)" }}>{item.desc}</p>
                       </a>
                     ))}
                   </div>
@@ -750,10 +749,11 @@ export default function GenAICoursePage() {
         </div>
 
         {/* Sidebar Footer Link to Home */}
-        <div className="border-t border-slate-150 p-4">
+        <div className="p-4" style={{ borderTop: "1px solid var(--border-primary)" }}>
           <a
             href="/"
-            className="flex items-center justify-center space-x-1.5 rounded-lg border border-slate-200 bg-white py-2 text-xs font-semibold text-slate-600 hover:bg-slate-50 transition-colors shadow-sm"
+            className="flex items-center justify-center space-x-1.5 rounded-lg py-2 text-xs font-semibold transition-colors shadow-sm"
+            style={{ backgroundColor: "var(--bg-hover)", border: "1px solid var(--border-primary)", color: "var(--text-secondary)" }}
           >
             <ArrowLeft size={12} />
             <span>Return to Landing Page</span>
@@ -769,13 +769,14 @@ export default function GenAICoursePage() {
           <div className="flex items-center space-x-2">
             <button 
               onClick={() => setIsSidebarOpen(true)}
-              className="rounded-lg p-1 text-slate-500 hover:text-slate-800"
+              className="rounded-lg p-1"
+              style={{ color: "var(--text-secondary)" }}
             >
               <Menu size={22} />
             </button>
-            <span className="font-bold text-sm text-slate-900 font-display">Gen AI Course</span>
+            <span className="font-bold text-sm font-display" style={{ color: "var(--text-primary)" }}>Gen AI Course</span>
           </div>
-          <div className="h-2 w-24 bg-slate-100 rounded-full overflow-hidden">
+          <div className="h-2 w-24 rounded-full overflow-hidden" style={{ backgroundColor: "var(--border-primary)" }}>
             <motion.div 
               className="h-full bg-gradient-to-r from-indigo-600 to-violet-600"
               initial={{ width: 0 }}
@@ -802,24 +803,24 @@ export default function GenAICoursePage() {
                   {/* Lesson Context Header */}
                   <div className="space-y-4">
                     {/* Category Path Badge */}
-                    <div className="flex flex-wrap items-center gap-2 text-[10px] font-semibold text-slate-400 capitalize tracking-wider">
+                    <div className="flex flex-wrap items-center gap-2 text-[10px] font-semibold capitalize tracking-wider" style={{ color: "var(--text-muted)" }}>
                       <span>{activePhase?.title.split(": ")[0]}</span>
                       <ChevronRight size={10} />
-                      <span className="text-indigo-600">{activeModule?.title.split(": ")[0]}</span>
+                      <span style={{ color: "var(--text-accent)" }}>{activeModule?.title.split(": ")[0]}</span>
                     </div>
 
                     {/* Lesson title */}
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                      <h1 className="text-2xl sm:text-3xl font-extrabold font-display text-slate-900 tracking-tight leading-tight">
+                      <h1 className="text-2xl sm:text-3xl font-extrabold font-display tracking-tight leading-tight" style={{ color: "var(--text-primary)" }}>
                         {activeLesson.title}
                       </h1>
 
                       {/* Meta info tags */}
                       <div className="flex items-center gap-2">
-                        <span className="inline-flex items-center rounded-md bg-indigo-50 border border-indigo-100 px-2.5 py-0.5 text-xs font-semibold text-indigo-700">
+                        <span className="inline-flex items-center rounded-md px-2.5 py-0.5 text-xs font-semibold" style={{ backgroundColor: "var(--bg-badge)", border: "1px solid var(--border-accent)", color: "var(--text-accent)" }}>
                           {activeLesson.time}
                         </span>
-                        <span className="inline-flex items-center rounded-md bg-slate-100 border border-slate-200 px-2.5 py-0.5 text-xs font-semibold text-slate-700">
+                        <span className="inline-flex items-center rounded-md px-2.5 py-0.5 text-xs font-semibold" style={{ backgroundColor: "var(--bg-hover)", border: "1px solid var(--border-primary)", color: "var(--text-secondary)" }}>
                           {activeModule?.difficulty}
                         </span>
                       </div>
@@ -827,18 +828,18 @@ export default function GenAICoursePage() {
                   </div>
 
                   {/* Progress Checkbox Action Banner */}
-                  <div className="flex items-center justify-between rounded-xl bg-slate-50 p-4 border border-slate-150">
+                  <div className="flex items-center justify-between rounded-xl p-4" style={{ backgroundColor: "var(--bg-hover)", border: "1px solid var(--border-primary)" }}>
                     <div className="space-y-0.5 pr-2">
-                      <div className="text-xs font-bold text-slate-800">Done studying this concept?</div>
-                      <p className="text-[10px] text-slate-500">Tick off this lesson to save progress and update the global tracker.</p>
+                      <div className="text-xs font-bold" style={{ color: "var(--text-primary)" }}>Done studying this concept?</div>
+                      <p className="text-[10px]" style={{ color: "var(--text-muted)" }}>Tick off this lesson to save progress and update the global tracker.</p>
                     </div>
                     <button
                       onClick={() => toggleComplete(activeLesson.id)}
-                      className={`flex items-center space-x-1.5 rounded-lg px-4 py-2 text-xs font-semibold shadow-sm border transition-all ${
-                        completedLessons.includes(activeLesson.id)
-                          ? "bg-indigo-50 text-indigo-700 border-indigo-200 hover:bg-indigo-100/50"
-                          : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50"
-                      }`}
+                      className="flex items-center space-x-1.5 rounded-lg px-4 py-2 text-xs font-semibold shadow-sm transition-all"
+                      style={completedLessons.includes(activeLesson.id)
+                        ? { backgroundColor: "var(--bg-badge)", color: "var(--text-accent)", border: "1px solid var(--border-accent)" }
+                        : { backgroundColor: "var(--bg-card)", color: "var(--text-secondary)", border: "1px solid var(--border-primary)" }
+                      }
                     >
                       <AnimatePresence mode="wait" initial={false}>
                         {completedLessons.includes(activeLesson.id) ? (
@@ -849,7 +850,7 @@ export default function GenAICoursePage() {
                             exit={{ scale: 0.8, opacity: 0 }}
                             className="flex items-center space-x-1.5"
                           >
-                            <CheckCircle size={14} className="text-indigo-600" />
+                            <CheckCircle size={14} style={{ color: "var(--text-accent)" }} />
                             <span>Completed!</span>
                           </motion.span>
                         ) : (
@@ -860,7 +861,7 @@ export default function GenAICoursePage() {
                             exit={{ scale: 0.8, opacity: 0 }}
                             className="flex items-center space-x-1.5"
                           >
-                            <Circle size={14} className="text-slate-400" />
+                            <Circle size={14} style={{ color: "var(--text-muted)" }} />
                             <span>Mark Completed</span>
                           </motion.span>
                         )}
@@ -878,25 +879,26 @@ export default function GenAICoursePage() {
 
                   {/* Practice Exercise Highlight Panel */}
                   {activeLesson.exercise && (
-                    <div className="rounded-xl border border-indigo-100 bg-gradient-to-r from-indigo-50/20 to-transparent p-5 space-y-3">
+                    <div className="rounded-xl p-5 space-y-3" style={{ border: "1px solid var(--border-accent)", backgroundColor: "var(--bg-badge)" }}>
                       <div className="flex items-center space-x-1.5">
-                        <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600">
+                        <div className="flex h-6 w-6 items-center justify-center rounded-lg" style={{ backgroundColor: "var(--bg-hover)", color: "var(--text-accent)" }}>
                           <Award size={14} />
                         </div>
-                        <h4 className="font-bold font-display text-slate-900 text-sm">Practice Challenge</h4>
+                        <h4 className="font-bold font-display text-sm" style={{ color: "var(--text-primary)" }}>Practice Challenge</h4>
                       </div>
-                      <p className="text-slate-700 text-xs leading-relaxed">
+                      <p className="text-xs leading-relaxed" style={{ color: "var(--text-secondary)" }}>
                         {activeLesson.exercise}
                       </p>
                     </div>
                   )}
 
                   {/* Nav buttons for Prev / Next Lesson */}
-                  <div className="flex items-center justify-between border-t border-slate-150 pt-8 mt-12 gap-4">
+                  <div className="flex items-center justify-between pt-8 mt-12 gap-4" style={{ borderTop: "1px solid var(--border-primary)" }}>
                     <button
                       onClick={handlePrev}
                       disabled={!hasPrev()}
-                      className="flex items-center space-x-1.5 rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-700 shadow-sm hover:bg-slate-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                      className="flex items-center space-x-1.5 rounded-lg px-4 py-2.5 text-xs font-semibold shadow-sm transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                      style={{ backgroundColor: "var(--bg-card)", border: "1px solid var(--border-primary)", color: "var(--text-secondary)" }}
                     >
                       <ArrowLeft size={14} />
                       <span>Previous Lesson</span>
@@ -904,7 +906,8 @@ export default function GenAICoursePage() {
                     <button
                       onClick={handleNext}
                       disabled={!hasNext()}
-                      className="flex items-center space-x-1.5 rounded-lg bg-indigo-600 px-4 py-2.5 text-xs font-semibold text-white shadow-sm hover:bg-indigo-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                      className="flex items-center space-x-1.5 rounded-lg px-4 py-2.5 text-xs font-semibold text-white shadow-sm transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                      style={{ background: "var(--accent-gradient)" }}
                     >
                       <span>Next Lesson</span>
                       <ArrowRight size={14} />
