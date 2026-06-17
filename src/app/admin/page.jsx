@@ -1,0 +1,205 @@
+"use client";
+
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
+import { Lock, Mail, ArrowRight, ShieldAlert } from "lucide-react";
+
+export default function AdminLogin() {
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  // Check if already logged in
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const isLoggedIn = localStorage.getItem("synapse_admin_session");
+      if (isLoggedIn) {
+        router.push("/admin/dashboard");
+      }
+    }
+  }, [router]);
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+
+    // Simple mock auth for the prototype
+    setTimeout(() => {
+      if (email === "admin@synapse.com" && password === "admin123") {
+        localStorage.setItem("synapse_admin_session", "true");
+        router.push("/admin/dashboard");
+      } else {
+        setError("Invalid email or password. Use the quick-fill helper below!");
+        setLoading(false);
+      }
+    }, 800);
+  };
+
+  const handleQuickFill = () => {
+    setEmail("admin@synapse.com");
+    setPassword("admin123");
+    setError("");
+  };
+
+  return (
+    <div className="relative flex min-h-screen flex-col items-center justify-center p-4 overflow-hidden" style={{ backgroundColor: "var(--bg-primary)" }}>
+      {/* Background decoration */}
+      <div className="absolute inset-0 bg-gradient-to-b from-indigo-100/20 via-transparent to-transparent pointer-events-none z-0" />
+      <div 
+        className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full blur-[120px] pointer-events-none opacity-20"
+        style={{ background: "var(--accent-gradient)" }}
+      />
+
+      <div className="relative z-10 w-full max-w-md">
+        {/* Brand header */}
+        <motion.div 
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="text-center mb-8 space-y-2"
+        >
+          <div 
+            className="inline-flex p-3 rounded-2xl border mb-2 shadow-sm"
+            style={{
+              backgroundColor: "var(--bg-badge)",
+              borderColor: "var(--border-accent)",
+              color: "var(--text-accent)"
+            }}
+          >
+            <ShieldAlert size={28} className="animate-pulse" />
+          </div>
+          <h1 className="text-3xl font-black font-display tracking-tight text-gradient">
+            Synapse Control Center
+          </h1>
+          <p className="text-xs font-semibold" style={{ color: "var(--text-secondary)" }}>
+            DMX Academy Contest & Problems Manager
+          </p>
+        </motion.div>
+
+        {/* Login Card */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="glass-panel p-8 rounded-3xl shadow-xl space-y-6"
+        >
+          <div className="space-y-1">
+            <h2 className="text-lg font-bold" style={{ color: "var(--text-primary)" }}>
+              Admin Sign In
+            </h2>
+            <p className="text-xs" style={{ color: "var(--text-secondary)" }}>
+              Access administrative features and contest creation
+            </p>
+          </div>
+
+          <form onSubmit={handleLogin} className="space-y-4">
+            {error && (
+              <motion.div 
+                initial={{ opacity: 0, y: -5 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex items-center space-x-2 p-3 rounded-2xl border text-xs bg-rose-500/10 border-rose-500/20 text-rose-500"
+              >
+                <span>{error}</span>
+              </motion.div>
+            )}
+
+            {/* Email field */}
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-extrabold uppercase tracking-wider" style={{ color: "var(--text-secondary)" }}>
+                Email Address
+              </label>
+              <div className="relative">
+                <Mail size={16} className="absolute left-4 top-3.5" style={{ color: "var(--text-muted)" }} />
+                <input
+                  id="admin-email"
+                  type="email"
+                  placeholder="name@synapse.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full rounded-2xl py-3 pl-11 pr-4 text-xs outline-none border transition-all"
+                  style={{
+                    backgroundColor: "var(--bg-input)",
+                    borderColor: "var(--border-primary)",
+                    color: "var(--text-primary)"
+                  }}
+                  required
+                />
+              </div>
+            </div>
+
+            {/* Password field */}
+            <div className="space-y-1.5">
+              <div className="flex justify-between items-center">
+                <label className="text-[10px] font-extrabold uppercase tracking-wider" style={{ color: "var(--text-secondary)" }}>
+                  Password
+                </label>
+              </div>
+              <div className="relative">
+                <Lock size={16} className="absolute left-4 top-3.5" style={{ color: "var(--text-muted)" }} />
+                <input
+                  id="admin-password"
+                  type="password"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full rounded-2xl py-3 pl-11 pr-4 text-xs outline-none border transition-all"
+                  style={{
+                    backgroundColor: "var(--bg-input)",
+                    borderColor: "var(--border-primary)",
+                    color: "var(--text-primary)"
+                  }}
+                  required
+                />
+              </div>
+            </div>
+
+            {/* Submit Button */}
+            <button
+              id="admin-login-btn"
+              type="submit"
+              disabled={loading}
+              className="w-full py-3 rounded-2xl font-bold text-xs text-white shadow-md transition-all cursor-pointer flex items-center justify-center space-x-2 group mt-2"
+              style={{ background: "var(--accent-gradient)" }}
+            >
+              <span>{loading ? "Verifying..." : "Sign In to Control Room"}</span>
+              {!loading && <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />}
+            </button>
+          </form>
+
+          {/* Quick Fill Helper */}
+          <div className="pt-4 border-t text-center space-y-2" style={{ borderColor: "var(--border-primary)" }}>
+            <span className="text-[10px] uppercase font-bold" style={{ color: "var(--text-muted)" }}>
+              Sandbox Access
+            </span>
+            <button
+              onClick={handleQuickFill}
+              className="w-full py-2.5 rounded-xl border text-[11px] font-bold transition-all cursor-pointer"
+              style={{
+                backgroundColor: "var(--bg-primary)",
+                borderColor: "var(--border-primary)",
+                color: "var(--text-accent)"
+              }}
+            >
+              Autofill Admin Credentials
+            </button>
+          </div>
+        </motion.div>
+
+        {/* Footer info */}
+        <div className="text-center mt-6">
+          <button 
+            onClick={() => router.push("/")}
+            className="text-xs transition-colors hover:underline"
+            style={{ color: "var(--text-secondary)" }}
+          >
+            ← Back to Synapse Lobby
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}

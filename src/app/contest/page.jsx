@@ -25,11 +25,13 @@ const globalLeaderboardMock = [
 export default function ContestLobby() {
   const [activeTab, setActiveTab] = useState("all"); // all, active, upcoming, past, leaderboard
   const [searchQuery, setSearchQuery] = useState("");
+  const [allContests, setAllContests] = useState([]);
   const [registeredContests, setRegisteredContests] = useState([]);
   const [pastContestResults, setPastContestResults] = useState(null);
 
-  // Load registration history from localStorage
+  // Load registration history and dynamic contests from localStorage
   useEffect(() => {
+    let merged = [...contests];
     if (typeof window !== "undefined") {
       const savedRegs = localStorage.getItem("contest_registrations");
       if (savedRegs) {
@@ -42,7 +44,20 @@ export default function ContestLobby() {
           // ignore error
         }
       }
+
+      // Load dynamic contests created by the Admin
+      const dynamicRaw = localStorage.getItem("synapse_dynamic_contests");
+      if (dynamicRaw) {
+        try {
+          const dynamicContests = JSON.parse(dynamicRaw);
+          const dynamicFiltered = dynamicContests.filter(dc => !contests.some(sc => sc.id === dc.id));
+          merged = [...dynamicFiltered, ...contests];
+        } catch (e) {
+          console.error("Error loading dynamic contests:", e);
+        }
+      }
     }
+    setAllContests(merged);
   }, []);
 
   const handleRegister = (contestId) => {
@@ -51,7 +66,7 @@ export default function ContestLobby() {
     localStorage.setItem("contest_registrations", JSON.stringify(nextRegs));
   };
 
-  const filteredContests = contests.filter(c => {
+  const filteredContests = allContests.filter(c => {
     const matchesTab = 
       activeTab === "all" ||
       (activeTab === "active" && c.status === "active") ||

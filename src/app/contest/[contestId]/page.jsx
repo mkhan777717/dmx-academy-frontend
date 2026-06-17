@@ -15,10 +15,55 @@ import { contests } from "@/data/contestData";
 const getRandom = () => Math.random();
 const getCurrentTime = () => Date.now();
 
+// Lightweight syntax highlighting tokenizer for real-time editor overlay
+function highlightCode(code, lang) {
+  if (!code) return "";
+  
+  // Escape HTML tags to prevent broken code markup
+  let html = code
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+
+  if (lang === "javascript" || lang === "js") {
+    const tokenRegex = /(\/\/.*)|("[^"]*"|'[^']*')|\b(while|for|if|else|function|return|let|const|var|new)\b|\b(console\.log|alert)\b|\b(\d+)\b/g;
+    html = html.replace(tokenRegex, (m, comment, string, keyword, builtin, number) => {
+      if (comment) return `<span class="text-emerald-500 italic font-mono">${comment}</span>`;
+      if (string) return `<span class="text-rose-400 font-mono">${string}</span>`;
+      if (keyword) return `<span class="text-blue-400 font-bold font-mono">${keyword}</span>`;
+      if (builtin) return `<span class="text-amber-400 font-semibold font-mono">${builtin}</span>`;
+      if (number) return `<span class="text-purple-400 font-mono">${number}</span>`;
+      return m;
+    });
+  } else if (lang === "python") {
+    const tokenRegex = /(#.*)|("[^"]*"|'[^']*')|\b(while|for|if|else|def|return|import|from|as|in)\b|\b(print)\b|\b(\d+)\b/g;
+    html = html.replace(tokenRegex, (m, comment, string, keyword, builtin, number) => {
+      if (comment) return `<span class="text-emerald-500 italic font-mono">${comment}</span>`;
+      if (string) return `<span class="text-rose-400 font-mono">${string}</span>`;
+      if (keyword) return `<span class="text-blue-400 font-bold font-mono">${keyword}</span>`;
+      if (builtin) return `<span class="text-amber-400 font-semibold font-mono">${builtin}</span>`;
+      if (number) return `<span class="text-purple-400 font-mono">${number}</span>`;
+      return m;
+    });
+  } else if (lang === "go") {
+    const tokenRegex = /(\/\/.*)|("[^"]*"|'[^']*')|\b(package|import|func|var|const|return|type|struct|interface|chan|select|case|default|if|else|for|range|switch|go|defer)\b|\b(fmt\.Println|fmt\.Printf|print|panic)\b|\b(\d+)\b/g;
+    html = html.replace(tokenRegex, (m, comment, string, keyword, builtin, number) => {
+      if (comment) return `<span class="text-emerald-500 italic font-mono">${comment}</span>`;
+      if (string) return `<span class="text-rose-400 font-mono">${string}</span>`;
+      if (keyword) return `<span class="text-blue-400 font-bold font-mono">${keyword}</span>`;
+      if (builtin) return `<span class="text-amber-400 font-semibold font-mono">${builtin}</span>`;
+      if (number) return `<span class="text-purple-400 font-mono">${number}</span>`;
+      return m;
+    });
+  }
+  return html;
+}
+
 export default function ContestWorkspace() {
   const params = useParams();
   const contestId = params.contestId;
-  const contest = contests.find(c => c.id === contestId);
+  const [contest, setContest] = useState(null);
+  const [loadingContest, setLoadingContest] = useState(true);
 
   // Contest lifecycle states
   const [contestStarted, setContestStarted] = useState(false);
@@ -65,35 +110,28 @@ export default function ContestWorkspace() {
   // Code Editor Textarea Ref
   const editorRef = useRef(null);
   const lineNumbersRef = useRef(null);
+  const highlightRef = useRef(null);
   const [lineCount, setLineCount] = useState(1);
 
-  // Initialize workspace when contest starts
-  const startContest = () => {
-    if (!contest) return;
-    
-    // Initialize timings
-    setSecondsLeft(contest.durationMins * 60);
-    setStartTimeStamp(getCurrentTime());
-    
-    // Initialize editor code maps with templates
-    const initialCodes = {};
-    contest.problems.forEach(prob => {
-      Object.keys(prob.editorTemplates).forEach(lang => {
-        initialCodes[`${prob.id}_${lang}`] = prob.editorTemplates[lang];
-      });
-    });
-    setEditorCodes(initialCodes);
-
-    // Initialize testcase inputs for the first question
-    if (contest.problems[0]) {
-      setTestcaseInputs(contest.problems[0].testcases.map(t => t.input));
-      setSelectedLanguage(contest.problems[0].defaultLanguage || "javascript");
+  // Fetch contest metadata on mount / id change
+  useEffect(() => {
+    let found = contests.find(c => c.id === contestId);
+    if (!found && typeof window !== "undefined") {
+      const dynamicRaw = localStorage.getItem("synapse_dynamic_contests");
+      if (dynamicRaw) {
+        try {
+          const dynamicContests = JSON.parse(dynamicRaw);
+          found = dynamicContests.find(c => c.id === contestId) || null;
+        } catch (e) {
+          console.error("Error reading dynamic contest detail:", e);
+        }
+      }
     }
+    setContest(found);
+    setLoadingContest(false);
+  }, [contestId]);
 
-    setContestStarted(true);
-  };
-
-  // Terminate contest
+  // Terminate contest callback
   const finishContest = useCallback(() => {
     if (!contest) return;
     setContestEnded(true);
@@ -104,9 +142,8 @@ export default function ContestWorkspace() {
     const timeStr = `${elapsedMins}m ${elapsedRemSecs}s`;
     setFinalElapsedTime(timeStr);
 
-    // Construct final leaderboard rank including the user
     const userEntry = {
-      rank: 1, // Will evaluate dynamically below
+      rank: 1,
       username: "You",
       score: userScore,
       time: timeStr,
@@ -115,20 +152,16 @@ export default function ContestWorkspace() {
 
     const combinedLeaderboard = [...contest.leaderboard, userEntry];
     
-    // Sort primarily by Score descending, then by Time ascending
     combinedLeaderboard.sort((a, b) => {
       if (b.score !== a.score) return b.score - a.score;
-      
       const parseTimeToSecs = (str) => {
         const parts = str.match(/(\d+)m\s+(\d+)s/);
         if (parts) return parseInt(parts[1]) * 60 + parseInt(parts[2]);
         return 9999;
       };
-      
       return parseTimeToSecs(a.time) - parseTimeToSecs(b.time);
     });
 
-    // Assign dynamic ranks
     const finalBoard = combinedLeaderboard.map((item, idx) => ({
       ...item,
       rank: idx + 1
@@ -136,7 +169,6 @@ export default function ContestWorkspace() {
 
     setFinalScoreboard(finalBoard);
 
-    // Save completed status to localStorage
     if (typeof window !== "undefined") {
       const solvedList = localStorage.getItem("contest_solved_data");
       let list = {};
@@ -170,10 +202,11 @@ export default function ContestWorkspace() {
     return () => clearInterval(timer);
   }, [contestStarted, contestEnded, secondsLeft, finishContest]);
 
-  // Sync lines count for editor line numbers
   const activeQuestion = contest ? contest.problems[activeQuestionIdx] : null;
   const currentCodeKey = activeQuestion ? `${activeQuestion.id}_${selectedLanguage}` : "";
   const currentCode = editorCodes[currentCodeKey] || "";
+
+  // Sync lines count for editor line numbers
   useEffect(() => {
     const lines = currentCode.split("\n").length;
     setTimeout(() => {
@@ -181,11 +214,109 @@ export default function ContestWorkspace() {
     }, 0);
   }, [currentCode]);
 
-  // Sync scroll between textarea and line numbers
-  const handleEditorScroll = (e) => {
-    if (lineNumbersRef.current) {
-      lineNumbersRef.current.scrollTop = e.target.scrollTop;
+  // Whiteboard sketch background helper
+  const drawCanvasBackground = (canvas, ctx) => {
+    ctx.strokeStyle = "rgba(100, 116, 139, 0.08)";
+    ctx.lineWidth = 1;
+    const gridSize = 20;
+    for (let x = 0; x < canvas.width; x += gridSize) {
+      ctx.beginPath();
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, canvas.height);
+      ctx.stroke();
     }
+    for (let y = 0; y < canvas.height; y += gridSize) {
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(canvas.width, y);
+      ctx.stroke();
+    }
+  };
+
+  // Whiteboard paths restorer
+  const restoreDrawing = () => {
+    if (!canvasRef.current) return;
+    const ctx = canvasRef.current.getContext("2d");
+    drawingPaths.current.forEach(path => {
+      ctx.beginPath();
+      ctx.strokeStyle = path.color;
+      ctx.lineWidth = path.width;
+      path.points.forEach((pt, i) => {
+        if (i === 0) {
+          ctx.moveTo(pt.x, pt.y);
+        } else {
+          ctx.lineTo(pt.x, pt.y);
+        }
+      });
+      ctx.stroke();
+    });
+  };
+
+  // Excalidraw canvas refresh
+  useEffect(() => {
+    if (activeLeftTab === "excalidraw" && canvasRef.current) {
+      const canvas = canvasRef.current;
+      const ctx = canvas.getContext("2d");
+      
+      const rect = canvas.parentElement.getBoundingClientRect();
+      canvas.width = rect.width;
+      canvas.height = 500;
+      
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
+      ctx.strokeStyle = drawColor;
+      ctx.lineWidth = lineWidth;
+      
+      drawCanvasBackground(canvas, ctx);
+      restoreDrawing();
+    }
+  }, [activeLeftTab, drawColor, lineWidth]);
+
+  // EARLY CONDITIONAL RETURNS
+  if (loadingContest) {
+    return (
+      <div className="flex h-screen items-center justify-center" style={{ backgroundColor: "var(--bg-primary)" }}>
+        <div className="text-center space-y-4">
+          <div className="w-10 h-10 border-4 rounded-full border-t-transparent animate-spin mx-auto" style={{ borderColor: "var(--text-accent)" }} />
+          <p className="text-xs font-semibold" style={{ color: "var(--text-secondary)" }}>Loading contest workspace...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!contest) {
+    return (
+      <div className="flex h-screen flex-col items-center justify-center space-y-4" style={{ backgroundColor: "var(--bg-primary)" }}>
+        <h2 className="text-lg font-bold" style={{ color: "var(--text-primary)" }}>Contest Not Found</h2>
+        <p className="text-xs" style={{ color: "var(--text-secondary)" }}>The contest you are trying to access does not exist or has been deleted.</p>
+        <Link href="/contest" className="px-4 py-2 text-xs font-bold text-white rounded-xl shadow-md" style={{ background: "var(--accent-gradient)" }}>
+          Back to Contest Arena
+        </Link>
+      </div>
+    );
+  }
+
+  // Initialize workspace when contest starts
+  const startContest = () => {
+    if (!contest) return;
+    
+    setSecondsLeft(contest.durationMins * 60);
+    setStartTimeStamp(getCurrentTime());
+    
+    const initialCodes = {};
+    contest.problems.forEach(prob => {
+      Object.keys(prob.editorTemplates).forEach(lang => {
+        initialCodes[`${prob.id}_${lang}`] = prob.editorTemplates[lang];
+      });
+    });
+    setEditorCodes(initialCodes);
+
+    if (contest.problems[0]) {
+      setTestcaseInputs(contest.problems[0].testcases.map(t => t.input));
+      setSelectedLanguage(contest.problems[0].defaultLanguage || "javascript");
+    }
+
+    setContestStarted(true);
   };
 
   // Safe tab indentation key handler
@@ -201,7 +332,6 @@ export default function ContestWorkspace() {
         [currentCodeKey]: updatedCode
       }));
       
-      // Reset cursor position
       setTimeout(() => {
         if (editorRef.current) {
           editorRef.current.selectionStart = editorRef.current.selectionEnd = start + 2;
@@ -210,7 +340,17 @@ export default function ContestWorkspace() {
     }
   };
 
-  // Sync inputs when active question index changes
+  // Sync scroll between textarea, line numbers, and syntax highlight container
+  const handleEditorScroll = (e) => {
+    if (lineNumbersRef.current) {
+      lineNumbersRef.current.scrollTop = e.target.scrollTop;
+    }
+    if (highlightRef.current) {
+      highlightRef.current.scrollTop = e.target.scrollTop;
+      highlightRef.current.scrollLeft = e.target.scrollLeft;
+    }
+  };
+
   const changeQuestion = (idx) => {
     setActiveQuestionIdx(idx);
     const targetProb = contest.problems[idx];
@@ -222,7 +362,6 @@ export default function ContestWorkspace() {
     }
   };
 
-  // Drag resizing handlers
   const startResizing = (e) => {
     e.preventDefault();
     setIsResizing(true);
@@ -246,62 +385,6 @@ export default function ContestWorkspace() {
     document.removeEventListener("mousemove", resizePanes);
     document.removeEventListener("mouseup", stopResizing);
   };
-
-  // Whiteboard sketch logic
-  const drawCanvasBackground = (canvas, ctx) => {
-    ctx.strokeStyle = "rgba(100, 116, 139, 0.08)";
-    ctx.lineWidth = 1;
-    const gridSize = 20;
-    for (let x = 0; x < canvas.width; x += gridSize) {
-      ctx.beginPath();
-      ctx.moveTo(x, 0);
-      ctx.lineTo(x, canvas.height);
-      ctx.stroke();
-    }
-    for (let y = 0; y < canvas.height; y += gridSize) {
-      ctx.beginPath();
-      ctx.moveTo(0, y);
-      ctx.lineTo(canvas.width, y);
-      ctx.stroke();
-    }
-  };
-
-  const restoreDrawing = () => {
-    if (!canvasRef.current) return;
-    const ctx = canvasRef.current.getContext("2d");
-    drawingPaths.current.forEach(path => {
-      ctx.beginPath();
-      ctx.strokeStyle = path.color;
-      ctx.lineWidth = path.width;
-      path.points.forEach((pt, i) => {
-        if (i === 0) {
-          ctx.moveTo(pt.x, pt.y);
-        } else {
-          ctx.lineTo(pt.x, pt.y);
-        }
-      });
-      ctx.stroke();
-    });
-  };
-
-  useEffect(() => {
-    if (activeLeftTab === "excalidraw" && canvasRef.current) {
-      const canvas = canvasRef.current;
-      const ctx = canvas.getContext("2d");
-      
-      const rect = canvas.parentElement.getBoundingClientRect();
-      canvas.width = rect.width;
-      canvas.height = 500;
-      
-      ctx.lineCap = "round";
-      ctx.lineJoin = "round";
-      ctx.strokeStyle = drawColor;
-      ctx.lineWidth = lineWidth;
-      
-      drawCanvasBackground(canvas, ctx);
-      restoreDrawing();
-    }
-  }, [activeLeftTab, drawColor, lineWidth]);
 
   const startDrawing = (e) => {
     if (!canvasRef.current) return;
@@ -437,8 +520,18 @@ export default function ContestWorkspace() {
             }
 
             const actual = targetFunction(...parsedInputs);
-            output = JSON.stringify(actual);
-            passed = tc.assertion(currentCode, targetFunction);
+            output = (actual !== undefined) ? JSON.stringify(actual) : "";
+            
+            if (typeof tc.assertion === "function") {
+              passed = tc.assertion(currentCode, targetFunction);
+            } else {
+              // Dynamic problem validation: fallback to comparing expectedOutput with return val or console log outputs
+              const cleanExpected = (tc.expectedOutput || tc.expected || "").toString().trim().replace(/\r/g, "");
+              const cleanActual = (actual !== undefined ? actual : "").toString().trim().replace(/\r/g, "");
+              const cleanLogs = runLogs.join("\n").trim().replace(/\r/g, "");
+              
+              passed = (cleanActual === cleanExpected) || (cleanLogs === cleanExpected);
+            }
           } catch (e) {
             error = e.message;
             passed = false;
@@ -449,7 +542,7 @@ export default function ContestWorkspace() {
             runLogs.push("> Compiling code variables...");
             runLogs.push(`> Simulating execution for ${selectedLanguage} interpreter...`);
             passed = tc.assertion ? tc.assertion(currentCode, null) : true;
-            output = tc.expected;
+            output = tc.expected || tc.expectedOutput;
           } catch(e) {
             error = e.message;
             passed = false;
@@ -459,10 +552,10 @@ export default function ContestWorkspace() {
         console.log = originalConsoleLog;
 
         results.push({
-          name: tc.name,
+          name: tc.name || "Test Case",
           input: testcaseInputs[index] || tc.input,
-          expected: tc.expected,
-          actual: output,
+          expected: tc.expected || tc.expectedOutput,
+          actual: output || runLogs.join("\n"),
           passed,
           error,
           logs: runLogs
@@ -586,6 +679,15 @@ export default function ContestWorkspace() {
   const renderTabContent = () => {
     if (!activeQuestion) return null;
 
+    // Normalize tabs mapping for custom dynamically loaded problems
+    const problemTabs = activeQuestion.tabs || {
+      description: `### Description\n${activeQuestion.desc || ""}\n\n### Input Format\n${activeQuestion.inputFormat || ""}\n\n### Output Format\n${activeQuestion.outputFormat || ""}\n\n### Constraints\n${activeQuestion.constraints || ""}`,
+      followup: "No follow-up questions for this problem.",
+      editorial: "Editorial not available for this custom problem.",
+      solution: "Official solution not available for this custom problem.",
+      evaluation: `Evaluation Limits:\n- **Time Limit:** ${activeQuestion.timeLimitMs || 1000}ms\n- **Memory Limit:** ${activeQuestion.memoryLimitMb || 256}MB`
+    };
+
     // Lock Solutions and Editorials during contest
     const isLockedTab = activeLeftTab === "editorial" || activeLeftTab === "solution";
     if (isLockedTab && !contestEnded) {
@@ -604,15 +706,15 @@ export default function ContestWorkspace() {
 
     switch (activeLeftTab) {
       case "description":
-        return <div className="space-y-4 text-sm leading-relaxed text-[var(--text-secondary)]">{renderText(activeQuestion.tabs.description)}</div>;
+        return <div className="space-y-4 text-sm leading-relaxed text-[var(--text-secondary)]">{renderText(problemTabs.description)}</div>;
       case "followup":
-        return <div className="space-y-4 text-sm leading-relaxed text-[var(--text-secondary)]">{renderText(activeQuestion.tabs.followup)}</div>;
+        return <div className="space-y-4 text-sm leading-relaxed text-[var(--text-secondary)]">{renderText(problemTabs.followup)}</div>;
       case "editorial":
-        return <div className="space-y-4 text-sm leading-relaxed text-[var(--text-secondary)]">{renderText(activeQuestion.tabs.editorial)}</div>;
+        return <div className="space-y-4 text-sm leading-relaxed text-[var(--text-secondary)]">{renderText(problemTabs.editorial)}</div>;
       case "solution":
-        return <div className="space-y-4 text-sm leading-relaxed text-[var(--text-secondary)]">{renderText(activeQuestion.tabs.solution)}</div>;
+        return <div className="space-y-4 text-sm leading-relaxed text-[var(--text-secondary)]">{renderText(problemTabs.solution)}</div>;
       case "evaluation":
-        return <div className="space-y-4 text-sm leading-relaxed text-[var(--text-secondary)]">{renderText(activeQuestion.tabs.evaluation)}</div>;
+        return <div className="space-y-4 text-sm leading-relaxed text-[var(--text-secondary)]">{renderText(problemTabs.evaluation)}</div>;
       default:
         return null;
     }
@@ -981,23 +1083,33 @@ export default function ContestWorkspace() {
                   ))}
                 </div>
 
-                {/* Textarea */}
-                <textarea
-                  ref={editorRef}
-                  value={currentCode}
-                  onChange={(e) => {
-                    const val = e.target.value;
-                    setEditorCodes(prev => ({
-                      ...prev,
-                      [currentCodeKey]: val
-                    }));
-                  }}
-                  onScroll={handleEditorScroll}
-                  onKeyDown={handleEditorKeyDown}
-                  spellCheck="false"
-                  className="flex-grow h-full w-full resize-none bg-transparent pt-4 px-4 pb-12 outline-none border-none leading-6 overflow-y-auto"
-                  style={{ fontSize: "13px", color: "var(--text-primary)" }}
-                />
+                {/* Overlay Code Editor Container */}
+                <div className="flex-grow h-full w-full relative overflow-hidden">
+                  {/* Highlight layer */}
+                  <div
+                    ref={highlightRef}
+                    className="absolute top-0 left-0 w-full h-full pt-4 px-4 pb-12 overflow-y-auto overflow-x-auto pointer-events-none font-mono whitespace-pre leading-6"
+                    style={{ fontSize: "13px" }}
+                    dangerouslySetInnerHTML={{ __html: highlightCode(currentCode, selectedLanguage) }}
+                  />
+                  {/* Editable textarea layer */}
+                  <textarea
+                    ref={editorRef}
+                    value={currentCode}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setEditorCodes(prev => ({
+                        ...prev,
+                        [currentCodeKey]: val
+                      }));
+                    }}
+                    onScroll={handleEditorScroll}
+                    onKeyDown={handleEditorKeyDown}
+                    spellCheck="false"
+                    className="absolute top-0 left-0 w-full h-full bg-transparent text-transparent pt-4 px-4 pb-12 outline-none border-none resize-none font-mono whitespace-pre leading-6 overflow-y-auto overflow-x-auto"
+                    style={{ fontSize: "13px", caretColor: "var(--text-primary)" }}
+                  />
+                </div>
               </div>
 
               {/* Run controls panel */}
