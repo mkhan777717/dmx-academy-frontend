@@ -148,6 +148,30 @@ export default function Navbar() {
                 )}
               </AnimatePresence>
             </li>
+
+            {/* Live Classes Nav Link */}
+            <li className="relative">
+              <Link
+                href="/live-classes"
+                onMouseEnter={() => setHoveredIndex("live-classes")}
+                onMouseLeave={() => setHoveredIndex(null)}
+                className="relative block px-4 py-2 text-sm font-medium transition-colors"
+                style={{ color: hoveredIndex === "live-classes" ? "var(--text-accent)" : "var(--text-secondary)" }}
+              >
+                {hoveredIndex === "live-classes" && (
+                  <motion.span
+                    layoutId="navHover"
+                    transition={{ type: "spring", stiffness: 350, damping: 25 }}
+                    className="absolute inset-0 z-0 rounded-full"
+                    style={{ backgroundColor: "var(--bg-badge)", border: "1px solid var(--border-accent)" }}
+                  />
+                )}
+                <span className="relative z-10 flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse shrink-0" />
+                  Live Classes
+                </span>
+              </Link>
+            </li>
           </ul>
 
           {/* Right: Theme Toggle + CTA */}
@@ -422,6 +446,18 @@ export default function Navbar() {
                   </a>
                 </li>
               ))}
+
+              <li>
+                <Link
+                  href="/live-classes"
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center gap-2 text-base font-semibold transition-colors"
+                  style={{ color: "var(--text-secondary)" }}
+                >
+                  <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse shrink-0" />
+                  <span>Live Classes</span>
+                </Link>
+              </li>
 
               <li className="border-t my-1" style={{ borderColor: "var(--border-primary)" }} />
 
