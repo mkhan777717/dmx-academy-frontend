@@ -10,6 +10,8 @@ import {
   FileText, MessageCircle, ClipboardCheck, Palette, Trash2,
   Trophy, Clock, Lock, Flag, Volume2
 } from "lucide-react";
+import { contests } from "@/data/contestData";
+import { useAuth } from "@/context/AuthContext";
 
 const getRandom = () => Math.random();
 const getCurrentTime = () => Date.now();
@@ -73,6 +75,7 @@ function getAuthHeaders() {
 export default function ContestWorkspace() {
   const params = useParams();
   const contestId = params.contestId;
+  const { token, API_BASE } = useAuth();
   const [contest, setContest] = useState(null);
   const [loadingContest, setLoadingContest] = useState(true);
 
@@ -125,27 +128,27 @@ export default function ContestWorkspace() {
   const highlightRef = useRef(null);
   const [lineCount, setLineCount] = useState(1);
 
-  // Fetch contest metadata on mount / id change
+  // Fetch contest metadata and linked problem definitions on mount / id change
   useEffect(() => {
     const fetchContestDetails = async () => {
       const isNumeric = /^\d+$/.test(contestId);
-      
+
       if (isNumeric) {
         try {
-          const res = await fetch(`http://localhost:5000/api/contests/${contestId}`, {
+          const res = await fetch(`${API_BASE}/api/contests/${contestId}`, {
             headers: getAuthHeaders()
           });
           const data = await res.json();
           if (data.success && data.contest) {
             const c = data.contest;
-            
+
             // Map problems from the database relation
             const mappedProblems = c.contestProblems.map(cp => {
               const dbProb = cp.problem;
               const formattedDiff = dbProb.difficulty
                 ? dbProb.difficulty.charAt(0) + dbProb.difficulty.slice(1).toLowerCase()
                 : "Medium";
-              
+
               return {
                 id: dbProb.id,
                 slug: dbProb.slug,
@@ -171,12 +174,12 @@ export default function ContestWorkspace() {
             const start = new Date(c.startTime);
             const end = new Date(c.endTime);
             const now = new Date();
-            
+
             const isCurrentlyActive = now >= start && now <= end;
             const isPast = now > end;
 
             const durationMins = Math.round((end - start) / 60000);
-            
+
             // Calculate total points
             const totalPoints = c.contestProblems.reduce((sum, cp) => sum + cp.points, 0);
 
@@ -192,7 +195,7 @@ export default function ContestWorkspace() {
               startTime: c.startTime,
               endTime: c.endTime
             };
-            
+
             setContest(mappedContestObj);
             setLoadingContest(false);
 
@@ -257,13 +260,26 @@ export default function ContestWorkspace() {
         }
       }
 
-      // Contest not found in database — show not-found state
-      setContest(null);
+      // Fallback: check static contests data and localStorage
+      let found = contests.find(c => String(c.id) === contestId) || null;
+      if (!found && typeof window !== "undefined") {
+        const dynamicRaw = localStorage.getItem("synapse_dynamic_contests");
+        if (dynamicRaw) {
+          try {
+            const dynamicContests = JSON.parse(dynamicRaw);
+            found = dynamicContests.find(c => c.id === contestId) || null;
+          } catch (e) {
+            console.error("Error reading dynamic contest detail:", e);
+          }
+        }
+      }
+
+      setContest(found);
       setLoadingContest(false);
     };
 
     fetchContestDetails();
-  }, [contestId]);
+  }, [contestId, API_BASE]);
 
   // Terminate contest callback
   const finishContest = useCallback(async () => {

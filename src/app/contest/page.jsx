@@ -5,10 +5,12 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { 
+import {
   Trophy, Search, Clock, Terminal, ChevronRight,
   UserCheck, AlertCircle, RefreshCw, Lock
 } from "lucide-react";
+import { contests } from "@/data/contestData";
+import { useAuth } from "@/context/AuthContext";
 
 const globalLeaderboardMock = [
   { rank: 1, name: "quantum_coder", points: 2840, contests: 12, rankClass: "Grandmaster", color: "text-rose-500" },
@@ -22,6 +24,7 @@ const globalLeaderboardMock = [
 ];
 
 export default function ContestLobby() {
+  const { API_BASE } = useAuth();
   const [activeTab, setActiveTab] = useState("all"); // all, active, upcoming, past, leaderboard
   const [searchQuery, setSearchQuery] = useState("");
   const [allContests, setAllContests] = useState([]);
@@ -35,7 +38,7 @@ export default function ContestLobby() {
     if (typeof window !== "undefined") {
       const savedRegs = localStorage.getItem("contest_registrations");
       if (savedRegs) {
-        try { setRegisteredContests(JSON.parse(savedRegs)); } catch {}
+        try { setRegisteredContests(JSON.parse(savedRegs)); } catch { }
       }
       // Check if a student is logged in
       setIsStudentLoggedIn(localStorage.getItem("synapse_student_session") === "true");
@@ -56,7 +59,7 @@ export default function ContestLobby() {
         }
       }
 
-      const res = await fetch("http://localhost:5000/api/contests", { headers: headersObj });
+      const res = await fetch(`${API_BASE}/api/contests`, { headers: headersObj });
       const data = await res.json();
 
       if (data.success && data.contests) {
@@ -64,7 +67,7 @@ export default function ContestLobby() {
         const mapped = data.contests.map(c => {
           const start = new Date(c.startTime);
           const end = new Date(c.endTime);
-          
+
           let status = "upcoming";
           if (now >= start && now <= end) status = "active";
           else if (now > end) status = "past";
@@ -103,18 +106,52 @@ export default function ContestLobby() {
             leaderboard: []
           };
         });
-        setAllContests(mapped);
+
+        // Merge with static + localStorage fallback
+        const dynamicRaw = typeof window !== "undefined" ? localStorage.getItem("synapse_dynamic_contests") : null;
+        let savedList = [];
+        if (dynamicRaw) {
+          try { savedList = JSON.parse(dynamicRaw); } catch { }
+        }
+        const combined = [
+          ...mapped,
+          ...savedList.filter(dc => !mapped.some(dbc => String(dbc.id) === String(dc.id))),
+          ...contests.filter(sc => !mapped.some(dbc => String(dbc.id) === String(sc.id)) && !savedList.some(dc => String(dc.id) === String(sc.id)))
+        ];
+        setAllContests(combined);
+      } else {
+        // Fallback to static + localStorage
+        const dynamicRaw = typeof window !== "undefined" ? localStorage.getItem("synapse_dynamic_contests") : null;
+        let merged = [...contests];
+        if (dynamicRaw) {
+          try {
+            const dynamicContests = JSON.parse(dynamicRaw);
+            const dynamicFiltered = dynamicContests.filter(dc => !contests.some(sc => sc.id === dc.id));
+            merged = [...dynamicFiltered, ...contests];
+          } catch { }
+        }
+        setAllContests(merged);
       }
     } catch (err) {
       console.error("Failed to fetch contests from backend API:", err);
-      setAllContests([]);
+      // Fallback to static + localStorage
+      const dynamicRaw = typeof window !== "undefined" ? localStorage.getItem("synapse_dynamic_contests") : null;
+      let merged = [...contests];
+      if (dynamicRaw) {
+        try {
+          const dynamicContests = JSON.parse(dynamicRaw);
+          const dynamicFiltered = dynamicContests.filter(dc => !contests.some(sc => sc.id === dc.id));
+          merged = [...dynamicFiltered, ...contests];
+        } catch { }
+      }
+      setAllContests(merged);
     }
     setLoading(false);
   };
 
   useEffect(() => {
     fetchContests();
-  }, []);
+  }, [API_BASE]);
 
   const handleRegister = (contestId) => {
     const nextRegs = [...registeredContests, contestId];
@@ -145,7 +182,7 @@ export default function ContestLobby() {
             score: item.totalScore,
             time: `${Math.round(item.totalExecutionTime / 1000)}s`
           }));
-          
+
           let currentUsername = "You";
           if (typeof window !== "undefined") {
             if (localStorage.getItem("synapse_student_session") === "true") {
@@ -156,7 +193,7 @@ export default function ContestLobby() {
               currentUsername = "Mentor";
             }
           }
-          
+
           if (!formattedLeaderboard.some(p => p.username === currentUsername)) {
             const localSolved = localStorage.getItem("contest_solved_data");
             if (localSolved) {
@@ -171,7 +208,7 @@ export default function ContestLobby() {
                     time: localData.time
                   });
                 }
-              } catch {}
+              } catch { }
             }
           }
 
@@ -185,22 +222,22 @@ export default function ContestLobby() {
         console.error("Failed to load database leaderboard:", err);
       }
     }
-    
+
     setPastContestResults(contest);
   };
 
   const filteredContests = allContests.filter(c => {
-    const matchesTab = 
+    const matchesTab =
       activeTab === "all" ||
       (activeTab === "active" && c.status === "active") ||
       (activeTab === "upcoming" && c.status === "upcoming") ||
       (activeTab === "past" && c.status === "past");
-    
-    const matchesSearch = 
+
+    const matchesSearch =
       c.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       c.desc.toLowerCase().includes(searchQuery.toLowerCase()) ||
       c.category.toLowerCase().includes(searchQuery.toLowerCase());
-    
+
     return matchesTab && matchesSearch;
   });
 
@@ -208,20 +245,20 @@ export default function ContestLobby() {
     <div className="relative flex min-h-screen flex-col overflow-hidden" style={{ backgroundColor: "var(--bg-primary)" }}>
       {/* Background ambient light */}
       <div className="absolute top-0 left-0 right-0 h-[450px] bg-gradient-to-b from-indigo-100/30 via-transparent to-transparent pointer-events-none z-0" />
-      
+
       <Navbar />
 
       <main className="flex-grow pt-32 pb-24 relative z-10">
         <div className="mx-auto max-w-7xl px-4 md:px-8 space-y-12">
-          
+
           {/* Main header block */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: "easeOut" }}
             className="text-center max-w-3xl mx-auto space-y-4"
           >
-            <div 
+            <div
               className="inline-flex items-center space-x-1.5 rounded-full border px-4 py-1.5 text-xs font-semibold"
               style={{
                 backgroundColor: "var(--bg-badge)",
@@ -301,7 +338,7 @@ export default function ContestLobby() {
           <div className="relative">
             {activeTab === "leaderboard" ? (
               /* Global Leaderboard Table */
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="border rounded-3xl overflow-hidden shadow-sm max-w-4xl mx-auto"
@@ -377,7 +414,7 @@ export default function ContestLobby() {
               </div>
             ) : (
               /* Contests Card Grid */
-              <motion.div 
+              <motion.div
                 layout
                 className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
               >
@@ -403,10 +440,9 @@ export default function ContestLobby() {
                         }}
                       >
                         {/* Status Line */}
-                        <div 
-                          className={`absolute top-0 left-0 right-0 h-[3px] ${
-                            isActive ? "bg-emerald-500" : isUpcoming ? "bg-indigo-500" : "bg-slate-400"
-                          }`}
+                        <div
+                          className={`absolute top-0 left-0 right-0 h-[3px] ${isActive ? "bg-emerald-500" : isUpcoming ? "bg-indigo-500" : "bg-slate-400"
+                            }`}
                         />
 
                         {/* Card Top */}
@@ -417,13 +453,12 @@ export default function ContestLobby() {
                             >
                               {contest.category}
                             </span>
-                            
+
                             {/* Dynamic Tag Pill */}
-                            <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md border ${
-                              isActive ? "text-emerald-500 bg-emerald-500/10 border-emerald-500/20" :
-                              isUpcoming ? "text-indigo-500 bg-indigo-500/10 border-indigo-500/20" :
-                              "text-[var(--text-muted)] bg-slate-500/5 border-transparent"
-                            }`}>
+                            <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md border ${isActive ? "text-emerald-500 bg-emerald-500/10 border-emerald-500/20" :
+                                isUpcoming ? "text-indigo-500 bg-indigo-500/10 border-indigo-500/20" :
+                                  "text-[var(--text-muted)] bg-slate-500/5 border-transparent"
+                              }`}>
                               {contest.status.toUpperCase()}
                             </span>
                           </div>
@@ -570,7 +605,7 @@ export default function ContestLobby() {
       <AnimatePresence>
         {pastContestResults && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4">
-            <motion.div 
+            <motion.div
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
@@ -582,7 +617,7 @@ export default function ContestLobby() {
                   <h3 className="text-base font-bold text-[var(--text-primary)]">Scoreboard: {pastContestResults.title}</h3>
                   <p className="text-[10px] text-[var(--text-muted)]">Completed on {pastContestResults.startTime}</p>
                 </div>
-                <button 
+                <button
                   onClick={() => setPastContestResults(null)}
                   className="p-1.5 rounded-lg hover:bg-slate-500/10 cursor-pointer"
                   style={{ color: "var(--text-secondary)" }}
@@ -594,10 +629,10 @@ export default function ContestLobby() {
               {/* Ranks list */}
               <div className="space-y-2 max-h-80 overflow-y-auto pr-1">
                 {pastContestResults.leaderboard.map((item) => (
-                  <div 
+                  <div
                     key={item.rank}
                     className="flex justify-between items-center p-3 rounded-2xl border"
-                    style={{ 
+                    style={{
                       backgroundColor: "var(--bg-primary)",
                       borderColor: "var(--border-primary)"
                     }}
@@ -608,7 +643,7 @@ export default function ContestLobby() {
                       </span>
                       <span className="font-bold text-[var(--text-primary)]">{item.username}</span>
                     </div>
-                    
+
                     <div className="flex items-center space-x-4 text-xs font-mono">
                       <span className="text-[var(--text-muted)]">{item.time}</span>
                       <span className="font-extrabold text-[var(--text-accent)]">{item.score} pts</span>
