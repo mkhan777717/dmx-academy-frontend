@@ -3,8 +3,8 @@
 import React, { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
-import { 
-  LayoutDashboard, PlusCircle, Trophy, LogOut, 
+import {
+  LayoutDashboard, PlusCircle, Trophy, LogOut,
   Menu, X, ChevronLeft, ChevronRight, ShieldAlert, ArrowLeftRight, Code, Radio
 } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
@@ -77,11 +77,6 @@ export default function AdminLayout({ children }) {
       icon: PlusCircle
     },
     {
-      label: "Create Problem",
-      href: "/admin/problems/new",
-      icon: Code
-    },
-    {
       label: "Go Live",
       href: "/admin/live",
       icon: Radio
@@ -96,12 +91,12 @@ export default function AdminLayout({ children }) {
   return (
     <div className="flex h-screen overflow-hidden" style={{ backgroundColor: "var(--bg-primary)" }}>
       {/* Sidebar - Desktop */}
-      <aside 
+      <aside
         className={`hidden md:flex flex-col h-full border-r transition-all duration-300 relative z-30`}
-        style={{ 
+        style={{
           width: isSidebarCollapsed ? "80px" : "260px",
-          backgroundColor: "var(--bg-sidebar)", 
-          borderColor: "var(--border-primary)" 
+          backgroundColor: "var(--bg-sidebar)",
+          borderColor: "var(--border-primary)"
         }}
       >
         {/* Sidebar Header */}
@@ -125,8 +120,8 @@ export default function AdminLayout({ children }) {
             const isActive = pathname === link.href;
 
             return (
-              <Link 
-                key={link.href} 
+              <Link
+                key={link.href}
                 href={link.href}
                 className="flex items-center space-x-3 px-4 py-3 rounded-2xl text-xs font-bold transition-all relative group cursor-pointer"
                 style={{
@@ -152,11 +147,11 @@ export default function AdminLayout({ children }) {
         </nav>
 
         {/* Collapse Button */}
-        <button 
+        <button
           onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
           className="absolute bottom-24 -right-3 p-1.5 rounded-full border shadow-sm transition-all hover:scale-105 z-50 cursor-pointer"
-          style={{ 
-            backgroundColor: "var(--bg-card)", 
+          style={{
+            backgroundColor: "var(--bg-card)",
             borderColor: "var(--border-primary)",
             color: "var(--text-secondary)"
           }}
@@ -177,7 +172,7 @@ export default function AdminLayout({ children }) {
                   <p className="text-[10px] truncate" style={{ color: "var(--text-muted)" }}>{adminUser.role}</p>
                 </div>
               </div>
-              <button 
+              <button
                 onClick={handleLogout}
                 className="p-1.5 rounded-lg hover:bg-rose-500/10 hover:text-rose-500 transition-colors cursor-pointer"
                 style={{ color: "var(--text-secondary)" }}
@@ -188,7 +183,7 @@ export default function AdminLayout({ children }) {
               </button>
             </div>
           ) : (
-            <button 
+            <button
               onClick={handleLogout}
               className="w-full flex items-center justify-center p-3 rounded-2xl hover:bg-rose-500/10 hover:text-rose-500 transition-colors cursor-pointer"
               style={{ color: "var(--text-secondary)" }}
@@ -204,7 +199,7 @@ export default function AdminLayout({ children }) {
       {/* Sidebar - Mobile Menu Drawer */}
       {isMobileMenuOpen && (
         <div className="fixed inset-0 z-50 flex md:hidden bg-slate-950/60 backdrop-blur-sm">
-          <div 
+          <div
             className="w-72 h-full flex flex-col p-6 animate-slide-right shadow-2xl"
             style={{ backgroundColor: "var(--bg-sidebar)" }}
           >
@@ -226,8 +221,8 @@ export default function AdminLayout({ children }) {
                 const isActive = pathname === link.href;
 
                 return (
-                  <Link 
-                    key={link.href} 
+                  <Link
+                    key={link.href}
                     href={link.href}
                     onClick={() => setIsMobileMenuOpen(false)}
                     className="flex items-center space-x-3 px-4 py-3 rounded-2xl text-xs font-bold transition-all"
@@ -255,7 +250,7 @@ export default function AdminLayout({ children }) {
                       <p className="text-[10px]" style={{ color: "var(--text-muted)" }}>{adminUser.role}</p>
                     </div>
                   </div>
-                  <button 
+                  <button
                     onClick={handleLogout}
                     className="p-1.5 rounded-lg hover:bg-rose-500/10 hover:text-rose-500"
                     style={{ color: "var(--text-secondary)" }}
@@ -272,16 +267,16 @@ export default function AdminLayout({ children }) {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col h-full overflow-hidden">
         {/* Header */}
-        <header 
+        <header
           className="flex items-center justify-between px-6 py-4 border-b relative z-20"
-          style={{ 
-            backgroundColor: "var(--bg-secondary)", 
-            borderColor: "var(--border-primary)" 
+          style={{
+            backgroundColor: "var(--bg-secondary)",
+            borderColor: "var(--border-primary)"
           }}
         >
           {/* Left: Mobile Toggle & Breadcrumbs */}
           <div className="flex items-center space-x-4">
-            <button 
+            <button
               onClick={() => setIsMobileMenuOpen(true)}
               className="p-2 rounded-xl md:hidden hover:bg-slate-500/10"
               style={{ color: "var(--text-primary)" }}
@@ -301,7 +296,7 @@ export default function AdminLayout({ children }) {
 
           {/* Right: Actions */}
           <div className="flex items-center space-x-4">
-            <Link 
+            <Link
               href="/"
               className="flex items-center space-x-1.5 rounded-full border px-3 py-1.5 text-[10px] font-extrabold uppercase tracking-wider transition-all hover:scale-102"
               style={{

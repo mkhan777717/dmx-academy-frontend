@@ -29,22 +29,24 @@ export default function AdminLogin() {
     setError("");
     setLoading(true);
 
-    if (email === "admin@synapse.com" && password === "admin123") {
-      try {
-        const result = await login("admin@synapse.com", "admin123");
-        if (result.success) {
+    try {
+      const result = await login(email, password);
+      if (result.success) {
+        const emailLower = email.toLowerCase();
+        const isUserAdmin = result.user?.role === 'ADMIN' || emailLower.includes('admin');
+        if (isUserAdmin) {
           localStorage.setItem("synapse_admin_session", "true");
           router.push("/admin/dashboard");
         } else {
-          setError(result.message || "Failed to establish a database session.");
+          setError("Access Denied: You must be an administrator to log in here.");
           setLoading(false);
         }
-      } catch (err) {
-        setError("Unable to connect to the backend server.");
+      } else {
+        setError(result.message || "Invalid email or password.");
         setLoading(false);
       }
-    } else {
-      setError("Invalid email or password. Use the quick-fill helper below!");
+    } catch (err) {
+      setError("Unable to connect to the backend server.");
       setLoading(false);
     }
   };

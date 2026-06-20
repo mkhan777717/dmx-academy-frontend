@@ -138,8 +138,44 @@ const getProfile = async (req, res, next) => {
   }
 };
 
+/**
+ * Get system statistics for Admin Dashboard
+ */
+const getAdminStats = async (req, res, next) => {
+  try {
+    const totalUsers = await prisma.user.count();
+    const totalSubmissions = await prisma.submission.count();
+    const totalProblems = await prisma.problem.count();
+
+    const acceptedCount = await prisma.submission.count({ where: { status: 'ACCEPTED' } });
+    const wrongAnswerCount = await prisma.submission.count({ where: { status: 'WRONG_ANSWER' } });
+    const tleCount = await prisma.submission.count({ where: { status: 'TIME_LIMIT_EXCEEDED' } });
+    const runtimeErrorCount = await prisma.submission.count({ where: { status: 'RUNTIME_ERROR' } });
+    const compilationErrorCount = await prisma.submission.count({ where: { status: 'COMPILATION_ERROR' } });
+
+    res.status(200).json({
+      success: true,
+      stats: {
+        totalUsers,
+        totalSubmissions,
+        totalProblems,
+        verdicts: {
+          AC: acceptedCount,
+          WA: wrongAnswerCount,
+          TLE: tleCount,
+          RE: runtimeErrorCount,
+          CE: compilationErrorCount
+        }
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   register,
   login,
   getProfile,
+  getAdminStats,
 };

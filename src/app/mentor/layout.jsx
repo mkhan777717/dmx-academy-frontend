@@ -19,20 +19,31 @@ export default function MentorLayout({ children }) {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const session = localStorage.getItem("synapse_mentor_session");
+      const mentorSession = localStorage.getItem("synapse_mentor_session");
+      const adminSession = localStorage.getItem("synapse_admin_session");
+      const hasSession = mentorSession || adminSession;
       const isLoginRoute = pathname === "/mentor";
 
-      if (!session) {
+      if (!hasSession) {
         router.push("/login?redirect=/mentor/dashboard");
       } else if (isLoginRoute) {
         router.push("/mentor/dashboard");
       } else {
-        setMentorUser({
-          name: "DMX Mentor",
-          email: "mentor@synapse.com",
-          role: "Senior Mentor",
-          avatar: "SM"
-        });
+        if (adminSession) {
+          setMentorUser({
+            name: "DMX Admin",
+            email: "admin@synapse.com",
+            role: "Super Admin",
+            avatar: "SA"
+          });
+        } else {
+          setMentorUser({
+            name: "DMX Mentor",
+            email: "mentor@synapse.com",
+            role: "Senior Mentor",
+            avatar: "SM"
+          });
+        }
       }
       setCheckingAuth(false);
     }

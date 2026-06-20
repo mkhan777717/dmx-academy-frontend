@@ -29,22 +29,23 @@ export default function MentorLogin() {
     setError("");
     setLoading(true);
 
-    if (email === "mentor@synapse.com" && password === "mentor123") {
-      try {
-        const result = await login("mentor@synapse.com", "mentor123");
-        if (result.success) {
+    try {
+      const result = await login(email, password);
+      if (result.success) {
+        const isUserMentor = result.user?.role === 'MENTOR' || email === 'mentor@synapse.com' || email === 'mentor@demo.com';
+        if (isUserMentor) {
           localStorage.setItem("synapse_mentor_session", "true");
           router.push("/mentor/dashboard");
         } else {
-          setError(result.message || "Failed to establish a database session.");
+          setError("Access Denied: You must be a mentor/instructor to log in here.");
           setLoading(false);
         }
-      } catch (err) {
-        setError("Unable to connect to the backend server.");
+      } else {
+        setError(result.message || "Invalid email or password.");
         setLoading(false);
       }
-    } else {
-      setError("Invalid email or password. Use the quick-fill helper below!");
+    } catch (err) {
+      setError("Unable to connect to the backend server.");
       setLoading(false);
     }
   };

@@ -29,22 +29,17 @@ export default function StudentLogin() {
     setError("");
     setLoading(true);
 
-    if (email === "student@synapse.com" && password === "student123") {
-      try {
-        const result = await login("student@synapse.com", "student123");
-        if (result.success) {
-          localStorage.setItem("synapse_student_session", "true");
-          router.push("/student/dashboard");
-        } else {
-          setError(result.message || "Failed to establish a database session.");
-          setLoading(false);
-        }
-      } catch (err) {
-        setError("Unable to connect to the backend server.");
+    try {
+      const result = await login(email, password);
+      if (result.success) {
+        localStorage.setItem("synapse_student_session", "true");
+        router.push("/student/dashboard");
+      } else {
+        setError(result.message || "Invalid email or password.");
         setLoading(false);
       }
-    } else {
-      setError("Invalid email or password. Use the quick-fill helper below!");
+    } catch (err) {
+      setError("Unable to connect to the backend server.");
       setLoading(false);
     }
   };

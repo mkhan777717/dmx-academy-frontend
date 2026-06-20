@@ -6,7 +6,7 @@ import { useAuth } from "@/context/AuthContext";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, Mail, Lock, User, ShieldAlert, ArrowRight, RefreshCw, AlertCircle } from "lucide-react";
+import { Sparkles, Mail, Lock, User, ShieldAlert, ArrowRight, RefreshCw, AlertCircle, GraduationCap, Users } from "lucide-react";
 
 function LoginForm() {
   const { login, register, user, logout } = useAuth();
@@ -21,7 +21,9 @@ function LoginForm() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("USER"); // USER, ADMIN
+
+  // Role Tab Switcher
+  const [activeTab, setActiveTab] = useState("STUDENT"); // STUDENT, MENTOR, ADMIN
 
   // State
   const [errorMsg, setErrorMsg] = useState("");
@@ -31,23 +33,44 @@ function LoginForm() {
   const isMismatched = (() => {
     if (!user || !redirectTo) return false;
     const path = redirectTo.toLowerCase();
-    if (path.startsWith('/admin') && user.role !== 'ADMIN') return true;
-    if (path.startsWith('/mentor') && user.email !== 'mentor@synapse.com') return true;
-    if (path.startsWith('/student') && user.role === 'ADMIN') return true;
+    const emailLower = (user.email || "").toLowerCase();
+    
+    const isUserAdmin = user.role === 'ADMIN' || emailLower.includes('admin');
+    const isUserMentor = user.role === 'MENTOR' || emailLower.includes('mentor');
+    const isUserStudent = !isUserAdmin && !isUserMentor;
+
+    if (path.startsWith('/admin') && !isUserAdmin) return true;
+    if (path.startsWith('/mentor') && !isUserMentor) return true;
+    // Admins and Mentors are allowed to access student views/desks without mismatch errors
+    if (path.startsWith('/student') && isUserStudent === false && !isUserAdmin && !isUserMentor) return true;
     return false;
   })();
 
   // Redirect if user is already logged in
   useEffect(() => {
     if (user && !isMismatched) {
-      router.replace(redirectTo);
+      // Determine correct redirect route if it's default
+      let targetRoute = redirectTo;
+      if (redirectTo === "/") {
+        const emailLower = (user.email || "").toLowerCase();
+        const isUserAdmin = user.role === 'ADMIN' || emailLower.includes('admin');
+        const isUserMentor = user.role === 'MENTOR' || emailLower.includes('mentor');
+        if (isUserAdmin) targetRoute = '/admin/dashboard';
+        else if (isUserMentor) targetRoute = '/mentor/dashboard';
+        else targetRoute = '/student/dashboard';
+      }
+      router.replace(targetRoute);
     }
   }, [user, redirectTo, router, isMismatched]);
 
   if (user && isMismatched) {
-    const userRoleLabel = user.email === 'mentor@synapse.com' 
+    const emailLower = (user.email || "").toLowerCase();
+    const isUserAdmin = user.role === 'ADMIN' || emailLower.includes('admin');
+    const isUserMentor = user.role === 'MENTOR' || emailLower.includes('mentor');
+
+    const userRoleLabel = isUserMentor 
       ? 'Mentor' 
-      : user.role === 'ADMIN' 
+      : isUserAdmin 
         ? 'Administrator' 
         : 'Student';
 
@@ -58,8 +81,8 @@ function LoginForm() {
         : 'Student Desk';
 
     const getDashboardPath = () => {
-      if (user.email === 'mentor@synapse.com') return '/mentor/dashboard';
-      if (user.role === 'ADMIN') return '/admin/dashboard';
+      if (isUserMentor) return '/mentor/dashboard';
+      if (isUserAdmin) return '/admin/dashboard';
       return '/student/dashboard';
     };
 
@@ -132,21 +155,33 @@ function LoginForm() {
       return;
     }
 
+    // Map active tab to registration role parameter
+    const submitRole = activeTab === "ADMIN" ? "ADMIN" : activeTab === "MENTOR" ? "MENTOR" : "USER";
+
     try {
       let result;
       if (isRegistering) {
-        result = await register(username, email, password, role);
+        result = await register(username, email, password, submitRole);
       } else {
         result = await login(email, password);
       }
 
       if (result.success) {
+        let targetRoute = redirectTo;
+        if (redirectTo === "/") {
+          const emailLower = (result.user?.email || "").toLowerCase();
+          const isUserAdmin = result.user?.role === 'ADMIN' || emailLower.includes('admin');
+          const isUserMentor = result.user?.role === 'MENTOR' || emailLower.includes('mentor');
+          if (isUserAdmin) targetRoute = '/admin/dashboard';
+          else if (isUserMentor) targetRoute = '/mentor/dashboard';
+          else targetRoute = '/student/dashboard';
+        }
+
         if (result.offlineMode) {
-          // Registered locally — show brief warning then redirect
           setErrorMsg("⚠️ Backend offline. Your account is saved locally only.");
-          setTimeout(() => router.replace(redirectTo), 2000);
+          setTimeout(() => router.replace(targetRoute), 2000);
         } else {
-          router.replace(redirectTo);
+          router.replace(targetRoute);
         }
       } else {
         setErrorMsg(result.message || "An error occurred. Please check your credentials.");
@@ -158,34 +193,99 @@ function LoginForm() {
     }
   };
 
+  // Aesthetic settings derived dynamically based on the active role tab
+  const getRoleTheme = () => {
+    switch (activeTab) {
+      case "ADMIN":
+        return {
+          accentColor: "#06b6d4", // Cyan
+          accentGradient: "linear-gradient(135deg, #06b6d4 0%, #7c3aed 100%)",
+          bgBadge: "rgba(6, 182, 212, 0.08)",
+          borderAccent: "rgba(6, 182, 212, 0.2)",
+          icon: <ShieldAlert size={22} className="text-cyan-400" />,
+          title: isRegistering ? "Register Admin Account" : "Admin Control Sign In",
+          desc: isRegistering ? "Create your administrative console account" : "Access the DMX systems scheduler and configuration room",
+          demoEmail: "admin@demo.com",
+          label: "Administrator"
+        };
+      case "MENTOR":
+        return {
+          accentColor: "#8b5cf6", // Violet
+          accentGradient: "linear-gradient(135deg, #8b5cf6 0%, #3b82f6 100%)",
+          bgBadge: "rgba(139, 92, 246, 0.08)",
+          borderAccent: "rgba(139, 92, 246, 0.2)",
+          icon: <GraduationCap size={22} className="text-violet-400" />,
+          title: isRegistering ? "Register Instructor Account" : "Mentor Workspace Sign In",
+          desc: isRegistering ? "Join the DMX instructional staff track" : "Access code review desk, office hours, and curriculum editor",
+          demoEmail: "mentor@demo.com",
+          label: "Mentor"
+        };
+      default: // STUDENT
+        return {
+          accentColor: "#10b981", // Emerald
+          accentGradient: "linear-gradient(135deg, #10b981 0%, #6366f1 100%)",
+          bgBadge: "rgba(16, 185, 129, 0.08)",
+          borderAccent: "rgba(16, 185, 129, 0.2)",
+          icon: <Sparkles size={22} className="text-emerald-400" />,
+          title: isRegistering ? "Create Scholar Account" : "Welcome Back, Coder",
+          desc: isRegistering ? "Join the DMX developer learning network" : "Access study desk, practice problems, and speedrun challenges",
+          demoEmail: "student@demo.com",
+          label: "Student"
+        };
+    }
+  };
+
+  const theme = getRoleTheme();
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
-      className="w-full max-w-md"
+      className="w-full max-w-md space-y-6"
     >
+      {/* Role selection tab bar */}
+      <div className="flex p-1.5 rounded-2xl border" style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
+        {["STUDENT", "MENTOR", "ADMIN"].map((tab) => (
+          <button
+            key={tab}
+            type="button"
+            onClick={() => {
+              setActiveTab(tab);
+              setErrorMsg("");
+            }}
+            className="flex-1 py-2.5 rounded-xl font-extrabold text-[10px] uppercase tracking-wider transition-all cursor-pointer text-center"
+            style={{
+              backgroundColor: activeTab === tab ? "var(--bg-badge)" : "transparent",
+              color: activeTab === tab ? "var(--text-accent)" : "var(--text-secondary)"
+            }}
+          >
+            {tab}
+          </button>
+        ))}
+      </div>
+
       {/* Card Container */}
       <div
-        className="glass-panel p-8 rounded-3xl border shadow-xl backdrop-blur-xl space-y-6"
+        className="glass-panel p-8 rounded-3xl border shadow-xl backdrop-blur-xl space-y-6 transition-all duration-500"
         style={{
           backgroundColor: "var(--glass-bg)",
-          borderColor: "var(--border-primary)"
+          borderColor: theme.borderAccent
         }}
       >
         {/* Logo Header */}
         <div className="text-center space-y-2">
           <div
-            className="inline-flex h-12 w-12 items-center justify-center rounded-2xl text-white shadow-md mx-auto"
-            style={{ background: "var(--accent-gradient)" }}
+            className="inline-flex h-12 w-12 items-center justify-center rounded-2xl shadow-md mx-auto transition-all"
+            style={{ background: theme.accentGradient }}
           >
-            <Sparkles size={24} className="animate-pulse" />
+            {theme.icon}
           </div>
-          <h1 className="text-2xl font-black font-display tracking-tight" style={{ color: "var(--text-primary)" }}>
-            {isRegistering ? "Create your account" : "Welcome Back"}
+          <h1 className="text-xl font-black font-display tracking-tight" style={{ color: "var(--text-primary)" }}>
+            {theme.title}
           </h1>
           <p className="text-xs" style={{ color: "var(--text-secondary)" }}>
-            {isRegistering ? "Join the DMX developer network" : "Access your workspace and coding speedruns"}
+            {theme.desc}
           </p>
         </div>
 
@@ -293,14 +393,12 @@ function LoginForm() {
             </div>
           </div>
 
-
-
           {/* Submit Button */}
           <button
             type="submit"
             disabled={loading}
             className="w-full py-3.5 mt-2 rounded-2xl font-bold text-xs text-white shadow-md transition-all flex items-center justify-center space-x-2 hover:scale-102 cursor-pointer disabled:opacity-50"
-            style={{ background: "var(--accent-gradient)" }}
+            style={{ background: theme.accentGradient }}
           >
             {loading ? (
               <>
@@ -309,7 +407,7 @@ function LoginForm() {
               </>
             ) : (
               <>
-                <span>{isRegistering ? "Register Account" : "Sign In to Workspace"}</span>
+                <span>{isRegistering ? `Register ${theme.label}` : `Sign In as ${theme.label}`}</span>
                 <ArrowRight size={14} />
               </>
             )}
@@ -330,20 +428,18 @@ function LoginForm() {
 
           {/* Demo credentials hint */}
           <div
-            className="p-3 rounded-2xl border text-left space-y-1"
+            className="p-3 rounded-2xl border text-left space-y-1.5 transition-all"
             style={{
-              backgroundColor: "var(--bg-badge)",
-              borderColor: "var(--border-accent)"
+              backgroundColor: theme.bgBadge,
+              borderColor: theme.borderAccent
             }}
           >
             <p className="text-[10px] font-extrabold uppercase tracking-wider" style={{ color: "var(--text-accent)" }}>
-              Demo Accounts (no backend needed)
+              Demo {theme.label} Access (Offline Mode)
             </p>
             <div className="text-[10px] space-y-0.5" style={{ color: "var(--text-secondary)" }}>
-              <p><span className="font-bold" style={{ color: "var(--text-primary)" }}>Admin:</span> admin@demo.com</p>
-              <p><span className="font-bold" style={{ color: "var(--text-primary)" }}>Student:</span> student@demo.com</p>
-              <p><span className="font-bold" style={{ color: "var(--text-primary)" }}>Mentor:</span> mentor@demo.com</p>
-              <p className="pt-1"><span className="font-bold" style={{ color: "var(--text-primary)" }}>Password:</span> demo123</p>
+              <p><span className="font-bold" style={{ color: "var(--text-primary)" }}>Email:</span> {theme.demoEmail}</p>
+              <p><span className="font-bold" style={{ color: "var(--text-primary)" }}>Password:</span> demo123</p>
             </div>
           </div>
         </div>

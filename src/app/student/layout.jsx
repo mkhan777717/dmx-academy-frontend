@@ -19,20 +19,39 @@ export default function StudentLayout({ children }) {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const session = localStorage.getItem("synapse_student_session");
+      const studentSession = localStorage.getItem("synapse_student_session");
+      const mentorSession = localStorage.getItem("synapse_mentor_session");
+      const adminSession = localStorage.getItem("synapse_admin_session");
+      const hasSession = studentSession || mentorSession || adminSession;
       const isLoginRoute = pathname === "/student";
 
-      if (!session) {
+      if (!hasSession) {
         router.push("/login?redirect=/student/dashboard");
       } else if (isLoginRoute) {
         router.push("/student/dashboard");
       } else {
-        setStudentUser({
-          name: "DMX Student",
-          email: "student@synapse.com",
-          role: "Elite Scholar",
-          avatar: "SS"
-        });
+        if (adminSession) {
+          setStudentUser({
+            name: "DMX Admin",
+            email: "admin@synapse.com",
+            role: "Super Admin",
+            avatar: "SA"
+          });
+        } else if (mentorSession) {
+          setStudentUser({
+            name: "DMX Mentor",
+            email: "mentor@synapse.com",
+            role: "Senior Mentor",
+            avatar: "SM"
+          });
+        } else {
+          setStudentUser({
+            name: "DMX Student",
+            email: "student@synapse.com",
+            role: "Elite Scholar",
+            avatar: "SS"
+          });
+        }
       }
       setCheckingAuth(false);
     }

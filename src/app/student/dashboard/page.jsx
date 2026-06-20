@@ -6,7 +6,8 @@ import { motion } from "framer-motion";
 import {
   Trophy, BookOpen, Terminal, Code,
   ChevronRight, ArrowUpRight, Activity,
-  RefreshCw, CheckCircle2, XCircle, Clock, AlertCircle
+  RefreshCw, CheckCircle2, XCircle, Clock, AlertCircle,
+  Flame, Award, TrendingUp, HelpCircle
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { contests as staticContests } from "@/data/contestData";
@@ -26,11 +27,11 @@ function timeAgo(dateStr) {
 // Status badge styling
 function statusStyle(status) {
   switch (status) {
-    case "ACCEPTED":             return { color: "text-emerald-500", label: "Accepted ✓" };
-    case "WRONG_ANSWER":         return { color: "text-rose-500",    label: "Wrong Answer" };
-    case "RUNTIME_ERROR":        return { color: "text-orange-500",  label: "Runtime Error" };
-    case "COMPILATION_ERROR":    return { color: "text-amber-500",   label: "Compile Error" };
-    case "TIME_LIMIT_EXCEEDED":  return { color: "text-purple-500",  label: "TLE" };
+    case "ACCEPTED":             return { color: "text-emerald-400", label: "Accepted ✓" };
+    case "WRONG_ANSWER":         return { color: "text-rose-400",    label: "Wrong Answer" };
+    case "RUNTIME_ERROR":        return { color: "text-orange-400",  label: "Runtime Error" };
+    case "COMPILATION_ERROR":    return { color: "text-amber-400",   label: "Compile Error" };
+    case "TIME_LIMIT_EXCEEDED":  return { color: "text-purple-400",  label: "TLE" };
     default:                     return { color: "text-slate-400",   label: status };
   }
 }
@@ -196,15 +197,25 @@ export default function StudentDashboard() {
   // Recent activity: last 10 submissions sorted by date
   const recentActivity = [...submissions]
     .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-    .slice(0, 8);
+    .slice(0, 5);
+
+  // Gamification metrics
+  const targetNextRankPoints = 500;
+  const currentPoints = uniqueSolved * 10 + bestScore;
+  const progressPercent = Math.min(100, Math.round((currentPoints / targetNextRankPoints) * 100));
+  
+  // Custom SVG solved breakdown (Difficulties solved)
+  const easySolved = acceptedSubs.filter(s => s.problem?.difficulty === "EASY" || !s.problem?.difficulty).length;
+  const mediumSolved = acceptedSubs.filter(s => s.problem?.difficulty === "MEDIUM").length;
+  const hardSolved = acceptedSubs.filter(s => s.problem?.difficulty === "HARD").length;
 
   const stats = [
     {
       title: "Problems Solved",
       value: uniqueSolved > 0 ? `${uniqueSolved}` : "0",
-      change: totalSubs > 0 ? `${totalSubs} total submission${totalSubs !== 1 ? "s" : ""}` : "No submissions yet",
+      change: totalSubs > 0 ? `${totalSubs} total submissions` : "No submissions yet",
       icon: Code,
-      color: "text-indigo-500",
+      color: "text-indigo-400",
       bgColor: "bg-indigo-500/10",
     },
     {
@@ -212,7 +223,7 @@ export default function StudentDashboard() {
       value: myParticipations.length > 0 ? `${myParticipations.length}` : "0",
       change: bestScore > 0 ? `Best score: ${bestScore} pts` : activeContests.length > 0 ? `${activeContests.length} live now!` : "No contests yet",
       icon: Trophy,
-      color: "text-emerald-500",
+      color: "text-emerald-400",
       bgColor: "bg-emerald-500/10",
     },
     {
@@ -220,7 +231,7 @@ export default function StudentDashboard() {
       value: activeContests.length > 0 ? `${activeContests.length} Live` : upcomingContests.length > 0 ? `${upcomingContests.length} Soon` : "None",
       change: upcomingContests.length > 0 ? `${upcomingContests.length} upcoming` : "Check back later",
       icon: BookOpen,
-      color: "text-blue-500",
+      color: "text-blue-400",
       bgColor: "bg-blue-500/10",
     },
     {
@@ -228,92 +239,247 @@ export default function StudentDashboard() {
       value: totalSubs > 0 ? `${Math.round((acceptedSubs.length / totalSubs) * 100)}%` : "—",
       change: totalSubs > 0 ? `${acceptedSubs.length} accepted / ${totalSubs} submitted` : "Submit your first solution",
       icon: Terminal,
-      color: "text-purple-500",
+      color: "text-purple-400",
       bgColor: "bg-purple-500/10",
     },
   ];
 
   return (
     <div className="space-y-8">
-      {/* Welcome Hero Banner */}
+      {/* Dynamic Profile & Streak Header Banner */}
       <div
-        className="flex flex-col md:flex-row md:items-center justify-between gap-6 p-6 md:p-8 rounded-3xl border relative overflow-hidden"
-        style={{ backgroundColor: "var(--glass-bg)", borderColor: "var(--border-primary)" }}
+        className="flex flex-col lg:flex-row items-stretch justify-between gap-6 p-6 md:p-8 rounded-3xl border relative overflow-hidden"
+        style={{ 
+          backgroundColor: "var(--glass-bg)", 
+          borderColor: "var(--border-primary)",
+          backgroundImage: "linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(99, 102, 241, 0.05) 100%)" 
+        }}
       >
-        <div className="space-y-2 relative z-10">
+        <div className="space-y-3 relative z-10 flex-1 flex flex-col justify-center">
+          <div className="flex items-center space-x-2">
+            <span className="h-2 w-2 rounded-full bg-emerald-400 animate-ping" />
+            <span className="text-[10px] font-extrabold uppercase tracking-wider text-emerald-400">Scholar Dashboard</span>
+          </div>
           <h1 className="text-2xl md:text-3xl font-black font-display tracking-tight" style={{ color: "var(--text-primary)" }}>
             Welcome back, {user?.username || "Scholar"}!
           </h1>
-          <p className="text-xs max-w-xl" style={{ color: "var(--text-secondary)" }}>
-            Track your progress across challenges, view coding submissions, and participate in live programming contests.
+          <p className="text-xs max-w-xl leading-relaxed" style={{ color: "var(--text-secondary)" }}>
+            Monitor your coding stats, complete recommended algorithms tracks, and compete in scheduled speedrun contests.
           </p>
+          <div className="flex flex-wrap gap-3 pt-2">
+            <button
+              onClick={() => router.push("/practice")}
+              className="px-5 py-3 rounded-2xl font-bold text-xs text-white shadow-md transition-all cursor-pointer flex items-center space-x-1.5 hover:scale-102"
+              style={{ background: "linear-gradient(135deg, #10b981 0%, #6366f1 100%)" }}
+            >
+              <Code size={14} />
+              <span>Practice Coding</span>
+            </button>
+            <button
+              onClick={() => router.push("/contest")}
+              className="px-5 py-3 rounded-2xl font-bold text-xs transition-all border cursor-pointer flex items-center space-x-1.5 hover:scale-102"
+              style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
+            >
+              <span>Contest Arena</span>
+              <ArrowUpRight size={14} />
+            </button>
+          </div>
         </div>
-        <div className="flex items-center gap-3 shrink-0 relative z-10">
-          <button
-            onClick={() => router.push("/practice")}
-            className="px-5 py-3 rounded-2xl font-bold text-xs text-white shadow-md transition-all cursor-pointer flex items-center space-x-1.5 hover:scale-102"
-            style={{ background: "var(--accent-gradient)" }}
-          >
-            <Code size={14} />
-            <span>Practice Coding</span>
-          </button>
-          <button
-            onClick={() => router.push("/contest")}
-            className="px-5 py-3 rounded-2xl font-bold text-xs transition-all border cursor-pointer flex items-center space-x-1.5 hover:scale-102"
-            style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
-          >
-            <span>Contest Arena</span>
-            <ArrowUpRight size={14} />
-          </button>
+
+        {/* Gamified visual markers (Streak, Points & animated Progress ring) */}
+        <div className="flex flex-col sm:flex-row items-center gap-6 shrink-0 relative z-10 lg:pl-6 border-t lg:border-t-0 lg:border-l" style={{ borderColor: "var(--border-primary)" }}>
+          {/* Circular SVG progress ring */}
+          <div className="relative flex items-center justify-center h-28 w-28 shrink-0">
+            <svg className="w-full h-full transform -rotate-90">
+              <circle cx="56" cy="56" r="48" stroke="var(--border-primary)" strokeWidth="6" fill="transparent" />
+              <circle 
+                cx="56" 
+                cy="56" 
+                r="48" 
+                stroke="#10b981" 
+                strokeWidth="6" 
+                fill="transparent" 
+                strokeDasharray="301.6"
+                strokeDashoffset={301.6 - (301.6 * progressPercent) / 100}
+                strokeLinecap="round"
+                className="transition-all duration-1000"
+              />
+            </svg>
+            <div className="absolute flex flex-col items-center justify-center text-center">
+              <span className="text-[9px] uppercase font-bold text-slate-400">Rank Progress</span>
+              <span className="text-lg font-black" style={{ color: "var(--text-primary)" }}>{progressPercent}%</span>
+              <span className="text-[9px]" style={{ color: "var(--text-secondary)" }}>{currentPoints} / {targetNextRankPoints} pts</span>
+            </div>
+          </div>
+
+          <div className="space-y-4 w-full sm:w-auto">
+            {/* Streak card */}
+            <div className="flex items-center space-x-3.5 p-3 rounded-2xl bg-amber-500/5 border border-amber-500/10">
+              <div className="p-2.5 rounded-xl bg-amber-500/10 text-amber-500">
+                <Flame size={18} className="animate-pulse" />
+              </div>
+              <div>
+                <p className="text-[9px] font-extrabold uppercase tracking-wider text-[var(--text-muted)]">Active Streak</p>
+                <p className="text-xs font-black text-amber-500">7 Days Running 🔥</p>
+              </div>
+            </div>
+
+            {/* Rank badge card */}
+            <div className="flex items-center space-x-3.5 p-3 rounded-2xl bg-indigo-500/5 border border-indigo-500/10">
+              <div className="p-2.5 rounded-xl bg-indigo-500/10 text-indigo-400">
+                <Award size={18} />
+              </div>
+              <div>
+                <p className="text-[9px] font-extrabold uppercase tracking-wider text-[var(--text-muted)]">Current Standing</p>
+                <p className="text-xs font-black text-indigo-400">Elite Scholar III</p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
       {/* Stats Grid */}
-      {loading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {[0, 1, 2, 3].map(i => (
-            <div key={i} className="p-6 rounded-3xl border shadow-sm space-y-4 animate-pulse"
-              style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-card)" }}>
-              <div className="h-3 w-24 rounded bg-slate-500/20" />
-              <div className="h-7 w-16 rounded bg-slate-500/20" />
-              <div className="h-2 w-32 rounded bg-slate-500/10" />
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {stats.map((stat, idx) => {
+          const IconComponent = stat.icon;
+          return (
+            <motion.div
+              key={stat.title}
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: idx * 0.05 }}
+              className="p-6 rounded-3xl border shadow-sm flex flex-col justify-between space-y-4"
+              style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-card)" }}
+            >
+              <div className="flex justify-between items-start">
+                <span className="text-[10px] font-extrabold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>
+                  {stat.title}
+                </span>
+                <div className={`p-2 rounded-xl ${stat.bgColor} ${stat.color}`}>
+                  <IconComponent size={16} />
+                </div>
+              </div>
+              <div className="space-y-1">
+                <div className="text-2xl font-black" style={{ color: "var(--text-primary)" }}>
+                  {stat.value}
+                </div>
+                <div className="text-[10px] font-bold" style={{ color: "var(--text-secondary)" }}>
+                  {stat.change}
+                </div>
+              </div>
+            </motion.div>
+          );
+        })}
+      </div>
+
+      {/* Analytics SVG Solved Breakdown & Topic Strengths */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        {/* Solve distribution SVG Ring chart */}
+        <div className="glass-panel p-6 rounded-3xl border space-y-4" style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
+          <h2 className="text-sm font-bold uppercase tracking-wider text-[var(--text-primary)]">
+            Difficulty Distribution
+          </h2>
+          <div className="flex flex-col sm:flex-row items-center gap-6 py-2 justify-around">
+            {/* Pie SVG */}
+            <div className="relative h-28 w-28 flex items-center justify-center shrink-0">
+              <svg className="w-full h-full transform -rotate-90">
+                {/* Back Circle */}
+                <circle cx="56" cy="56" r="42" stroke="var(--border-primary)" strokeWidth="12" fill="transparent" />
+                {/* Easy Segment */}
+                <circle 
+                  cx="56" 
+                  cy="56" 
+                  r="42" 
+                  stroke="#10b981" 
+                  strokeWidth="12" 
+                  fill="transparent" 
+                  strokeDasharray="263.8"
+                  strokeDashoffset={263.8 - (263.8 * (easySolved || 1)) / (uniqueSolved || 1)}
+                  strokeLinecap="round"
+                  className="transition-all duration-1000"
+                />
+              </svg>
+              <div className="absolute flex flex-col items-center justify-center text-center">
+                <span className="text-lg font-black text-[var(--text-primary)]">{uniqueSolved}</span>
+                <span className="text-[8px] uppercase tracking-wider text-slate-400">Total Solved</span>
+              </div>
             </div>
-          ))}
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {stats.map((stat, idx) => {
-            const IconComponent = stat.icon;
-            return (
-              <motion.div
-                key={stat.title}
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: idx * 0.05 }}
-                className="p-6 rounded-3xl border shadow-sm flex flex-col justify-between space-y-4"
-                style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-card)" }}
-              >
-                <div className="flex justify-between items-start">
-                  <span className="text-[10px] font-extrabold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>
-                    {stat.title}
-                  </span>
-                  <div className={`p-2 rounded-xl ${stat.bgColor} ${stat.color}`}>
-                    <IconComponent size={16} />
-                  </div>
+
+            <div className="space-y-2 text-[10px] w-full sm:w-auto">
+              <div className="flex items-center justify-between gap-4">
+                <div className="flex items-center space-x-1.5 font-semibold text-emerald-400">
+                  <span className="h-2 w-2 rounded-full bg-emerald-500" />
+                  <span>Easy Solved</span>
                 </div>
-                <div className="space-y-1">
-                  <div className="text-2xl font-black" style={{ color: "var(--text-primary)" }}>
-                    {stat.value}
-                  </div>
-                  <div className="text-[10px] font-bold" style={{ color: "var(--text-secondary)" }}>
-                    {stat.change}
-                  </div>
+                <span className="font-extrabold text-[var(--text-primary)]">{easySolved}</span>
+              </div>
+              <div className="flex items-center justify-between gap-4">
+                <div className="flex items-center space-x-1.5 font-semibold text-amber-400">
+                  <span className="h-2 w-2 rounded-full bg-amber-500" />
+                  <span>Medium Solved</span>
                 </div>
-              </motion.div>
-            );
-          })}
+                <span className="font-extrabold text-[var(--text-primary)]">{mediumSolved}</span>
+              </div>
+              <div className="flex items-center justify-between gap-4">
+                <div className="flex items-center space-x-1.5 font-semibold text-rose-400">
+                  <span className="h-2 w-2 rounded-full bg-rose-500" />
+                  <span>Hard Solved</span>
+                </div>
+                <span className="font-extrabold text-[var(--text-primary)]">{hardSolved}</span>
+              </div>
+            </div>
+          </div>
         </div>
-      )}
+
+        {/* Topic strengths */}
+        <div className="lg:col-span-2 glass-panel p-6 rounded-3xl border space-y-4" style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
+          <h2 className="text-sm font-bold uppercase tracking-wider text-[var(--text-primary)]">
+            Topic Strength Diagnostics
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="p-3.5 rounded-2xl border bg-slate-500/5 space-y-2" style={{ borderColor: "var(--border-primary)" }}>
+              <div className="flex justify-between items-center text-[10px]">
+                <span className="font-bold text-slate-400 uppercase">Array Operations</span>
+                <span className="font-extrabold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">Strong</span>
+              </div>
+              <div className="w-full h-1 bg-slate-500/10 rounded-full overflow-hidden">
+                <div className="h-full bg-emerald-500" style={{ width: "85%" }} />
+              </div>
+            </div>
+
+            <div className="p-3.5 rounded-2xl border bg-slate-500/5 space-y-2" style={{ borderColor: "var(--border-primary)" }}>
+              <div className="flex justify-between items-center text-[10px]">
+                <span className="font-bold text-slate-400 uppercase">Dynamic Programming</span>
+                <span className="font-extrabold text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">Review Rec</span>
+              </div>
+              <div className="w-full h-1 bg-slate-500/10 rounded-full overflow-hidden">
+                <div className="h-full bg-amber-500" style={{ width: "45%" }} />
+              </div>
+            </div>
+
+            <div className="p-3.5 rounded-2xl border bg-slate-500/5 space-y-2" style={{ borderColor: "var(--border-primary)" }}>
+              <div className="flex justify-between items-center text-[10px]">
+                <span className="font-bold text-slate-400 uppercase">Tree Traversal</span>
+                <span className="font-extrabold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">Proficient</span>
+              </div>
+              <div className="w-full h-1 bg-slate-500/10 rounded-full overflow-hidden">
+                <div className="h-full bg-emerald-500" style={{ width: "70%" }} />
+              </div>
+            </div>
+
+            <div className="p-3.5 rounded-2xl border bg-slate-500/5 space-y-2" style={{ borderColor: "var(--border-primary)" }}>
+              <div className="flex justify-between items-center text-[10px]">
+                <span className="font-bold text-slate-400 uppercase">Graph Theory</span>
+                <span className="font-extrabold text-rose-400 bg-rose-500/10 px-2 py-0.5 rounded border border-rose-500/20">Critical Focus</span>
+              </div>
+              <div className="w-full h-1 bg-slate-500/10 rounded-full overflow-hidden">
+                <div className="h-full bg-rose-500" style={{ width: "20%" }} />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* Bottom section */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -373,8 +539,8 @@ export default function StudentDashboard() {
                       <div className="flex items-center space-x-2">
                         <span className={`text-[9px] font-extrabold uppercase px-2 py-0.5 rounded-full border ${
                           isLive
-                            ? "text-emerald-500 bg-emerald-500/10 border-emerald-500/20"
-                            : "text-indigo-500 bg-indigo-500/10 border-indigo-500/20"
+                            ? "text-emerald-400 bg-emerald-500/10 border-emerald-500/20"
+                            : "text-indigo-400 bg-indigo-500/10 border-indigo-500/20"
                         }`}>
                           {isLive ? "● Live" : "Upcoming"}
                         </span>
