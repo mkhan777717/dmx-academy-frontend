@@ -1,10 +1,161 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
+model User {
+  id                    Int                    @id @default(autoincrement())
+  email                 String                 @unique
+  username              String                 @unique
+  password              String
+  role                  Role                   @default(USER)
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+  contestsCreated       Contest[]              @relation("ContestCreator")
+  contestParticipations ContestParticipation[]
+  liveSessions          LiveSession[]          @relation("SessionHost")
+  submissions           Submission[]
+  vivaSessions          VivaSession[]
+}
+
+model Problem {
+  id              Int              @id @default(autoincrement())
+  title           String
+  slug            String           @unique
+  difficulty      Difficulty
+  statement       String
+  inputFormat     String
+  outputFormat    String
+  constraints     String
+  explanation     String
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  contestProblems ContestProblem[]
+  submissions     Submission[]
+  testCases       TestCase[]
+}
+
+model TestCase {
+  id             Int      @id @default(autoincrement())
+  input          String
+  expectedOutput String
+  isSample       Boolean  @default(false)
+  problemId      Int
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  problem        Problem  @relation(fields: [problemId], references: [id], onDelete: Cascade)
+}
+
+model Submission {
+  id            Int              @id @default(autoincrement())
+  userId        Int
+  problemId     Int
+  language      Language
+  code          String
+  status        SubmissionStatus @default(PENDING)
+  executionTime Int?
+  createdAt     DateTime         @default(now())
+  problem       Problem          @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  user          User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Contest {
+  id                    Int                    @id @default(autoincrement())
+  title                 String
+  description           String?
+  startTime             DateTime
+  endTime               DateTime
+  creatorId             Int?
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+  category              String?
+  creator               User?                  @relation("ContestCreator", fields: [creatorId], references: [id])
+  contestParticipations ContestParticipation[]
+  contestProblems       ContestProblem[]
+}
+
+model ContestProblem {
+  id        Int     @id @default(autoincrement())
+  contestId Int
+  problemId Int
+  points    Int     @default(100)
+  contest   Contest @relation(fields: [contestId], references: [id], onDelete: Cascade)
+  problem   Problem @relation(fields: [problemId], references: [id], onDelete: Cascade)
+
+  @@unique([contestId, problemId])
+}
+
+model ContestParticipation {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  contestId Int
+  completed Boolean  @default(false)
+  score     Int      @default(0)
+  timeSpent String?
+  createdAt DateTime @default(now())
+  contest   Contest  @relation(fields: [contestId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, contestId])
+}
+
+model LiveSession {
+  id            Int       @id @default(autoincrement())
+  title         String
+  description   String?
+  thumbnailUrl  String?
+  roomName      String    @unique
+  hostId        Int
+  isLive        Boolean   @default(false)
+  scheduledAt   DateTime?
+  startedAt     DateTime?
+  endedAt       DateTime?
+  recordingUrl  String?
+  recordingSize Int?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  host          User      @relation("SessionHost", fields: [hostId], references: [id])
+}
+
+model VivaQuestion {
+  id             Int          @id @default(autoincrement())
+  subject        String
+  questionText   String
+  expectedAnswer String
+  keywords       String
+  difficulty     Difficulty   @default(EASY)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  vivaAnswers    VivaAnswer[]
+}
+
+model VivaSession {
+  id          Int          @id @default(autoincrement())
+  userId      Int
+  subject     String
+  status      String       @default("STARTED")
+  score       Int          @default(0)
+  feedback    String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  vivaAnswers VivaAnswer[]
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VivaAnswer {
+  id         Int          @id @default(autoincrement())
+  sessionId  Int
+  questionId Int
+  answerText String
+  score      Int          @default(0)
+  feedback   String?
+  createdAt  DateTime     @default(now())
+  question   VivaQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  session    VivaSession  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
 }
 
 enum Role {
@@ -32,160 +183,4 @@ enum SubmissionStatus {
   COMPILATION_ERROR
   TIME_LIMIT_EXCEEDED
   PENDING
-}
-
-model User {
-  id                    Int                    @id @default(autoincrement())
-  email                 String                 @unique
-  username              String                 @unique
-  password              String
-  role                  Role                   @default(USER)
-  submissions           Submission[]
-  contestsCreated       Contest[]              @relation("ContestCreator")
-  contestParticipations ContestParticipation[]
-  liveSessions          LiveSession[]          @relation("SessionHost")
-  vivaSessions          VivaSession[]
-  createdAt             DateTime               @default(now())
-  updatedAt             DateTime               @updatedAt
-}
-
-model Problem {
-  id              Int              @id @default(autoincrement())
-  title           String
-  slug            String           @unique
-  difficulty      Difficulty
-  statement       String
-  inputFormat     String
-  outputFormat    String
-  constraints     String
-  explanation     String
-  testCases       TestCase[]
-  submissions     Submission[]
-  contestProblems ContestProblem[]
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
-}
-
-model TestCase {
-  id             Int      @id @default(autoincrement())
-  input          String
-  expectedOutput String
-  isSample       Boolean  @default(false)
-  problemId      Int
-  problem        Problem  @relation(fields: [problemId], references: [id], onDelete: Cascade)
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-}
-
-model Submission {
-  id            Int              @id @default(autoincrement())
-  userId        Int
-  user          User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-  problemId     Int
-  problem       Problem          @relation(fields: [problemId], references: [id], onDelete: Cascade)
-  language      Language
-  code          String
-  status        SubmissionStatus @default(PENDING)
-  executionTime Int? // In milliseconds
-  createdAt     DateTime         @default(now())
-}
-
-model Contest {
-  id                    Int                    @id @default(autoincrement())
-  title                 String
-  description           String?
-  category              String?
-  startTime             DateTime
-  endTime               DateTime
-  creatorId             Int?
-  creator               User?                  @relation("ContestCreator", fields: [creatorId], references: [id], onDelete: SetNull)
-  contestProblems       ContestProblem[]
-  contestParticipations ContestParticipation[]
-  createdAt             DateTime               @default(now())
-  updatedAt             DateTime               @updatedAt
-}
-
-model ContestProblem {
-  id        Int     @id @default(autoincrement())
-  contestId Int
-  problemId Int
-  points    Int     @default(100)
-  contest   Contest @relation(fields: [contestId], references: [id], onDelete: Cascade)
-  problem   Problem @relation(fields: [problemId], references: [id], onDelete: Cascade)
-
-  @@unique([contestId, problemId])
-}
-
-model ContestParticipation {
-  id        Int      @id @default(autoincrement())
-  userId    Int
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  contestId Int
-  contest   Contest  @relation(fields: [contestId], references: [id], onDelete: Cascade)
-  completed Boolean  @default(false)
-  score     Int      @default(0)
-  timeSpent String?
-  createdAt DateTime @default(now())
-
-  @@unique([userId, contestId])
-}
-
-// ─── Live Session (LiveKit Integration) ─────────────────────────────
-model LiveSession {
-  id           Int       @id @default(autoincrement())
-  title        String
-  description  String?
-  thumbnailUrl String? // URL or base64 of session thumbnail
-  roomName     String    @unique // LiveKit room identifier
-  hostId       Int
-  host         User      @relation("SessionHost", fields: [hostId], references: [id])
-  isLive       Boolean   @default(false)
-  scheduledAt  DateTime? // Optional: when session is scheduled to start
-  startedAt    DateTime? // Actual start time
-  endedAt      DateTime? // Actual end time
-
-  // ── Recording placeholder (for future VPS implementation) ──
-  recordingUrl  String? // Will hold path/URL to recorded file
-  recordingSize Int? // Size in bytes, for storage management
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-// ─── AI Viva System ─────────────────────────────
-model VivaQuestion {
-  id             Int          @id @default(autoincrement())
-  subject        String
-  questionText   String
-  expectedAnswer String       @db.Text
-  keywords       String       @db.Text // Comma-separated list for local evaluation
-  difficulty     Difficulty   @default(EASY)
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
-  vivaAnswers    VivaAnswer[]
-}
-
-model VivaSession {
-  id          Int          @id @default(autoincrement())
-  userId      Int
-  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  subject     String
-  status      String       @default("STARTED") // STARTED, COMPLETED
-  score       Int          @default(0)
-  feedback    String?      @db.Text
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-  vivaAnswers VivaAnswer[]
-}
-
-model VivaAnswer {
-  id         Int          @id @default(autoincrement())
-  sessionId  Int
-  session    VivaSession  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
-  questionId Int
-  question   VivaQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
-  answerText String       @db.Text
-  score      Int          @default(0)
-  feedback   String?      @db.Text
-  createdAt  DateTime     @default(now())
 }
