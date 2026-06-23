@@ -1,5 +1,6 @@
 const prisma = require('../prisma');
 const { contestSchema, contestProblemSchema } = require('../utils/validators');
+const { broadcastParticipationReport, broadcastLeaderboardUpdate } = require('../services/socketService');
 
 /**
  * Create a new contest (Admin only)
@@ -154,11 +155,8 @@ const getContestDetails = async (req, res, next) => {
         contestProblems: {
           include: {
             problem: {
-              select: {
-                id: true,
-                title: true,
-                slug: true,
-                difficulty: true,
+              include: {
+                testCases: true,
               },
             },
           },
@@ -168,6 +166,18 @@ const getContestDetails = async (req, res, next) => {
 
     if (!contest) {
       return res.status(404).json({ success: false, message: 'Contest not found.' });
+    }
+
+    // Filter test cases based on user permission (if admin, show all, otherwise only samples)
+    const isAdmin = req.user && req.user.role === 'ADMIN';
+    if (contest.contestProblems) {
+      contest.contestProblems.forEach(cp => {
+        if (cp.problem && cp.problem.testCases) {
+          if (!isAdmin) {
+            cp.problem.testCases = cp.problem.testCases.filter(tc => tc.isSample);
+          }
+        }
+      });
     }
 
     let userParticipation = null;
@@ -336,13 +346,29 @@ const participateInContest = async (req, res, next) => {
       where: {
         userId_contestId: { userId, contestId }
       },
-      update: {},
+      update: {
+        username: req.user.username,
+        contestTitle: contest.title,
+      },
       create: {
         userId,
         contestId,
         completed: false,
+        username: req.user.username,
+        contestTitle: contest.title,
+      },
+      include: {
+        user: {
+          select: { id: true, username: true, email: true, role: true }
+        },
+        contest: {
+          select: { id: true, title: true, category: true }
+        }
       }
     });
+
+    broadcastParticipationReport(participation);
+    await broadcastLeaderboardUpdate(contestId);
 
     res.status(200).json({
       success: true,
@@ -367,6 +393,11 @@ const finishContestAttempt = async (req, res, next) => {
       return res.status(400).json({ success: false, message: 'Invalid contest ID format.' });
     }
 
+    const contest = await prisma.contest.findUnique({ where: { id: contestId } });
+    if (!contest) {
+      return res.status(404).json({ success: false, message: 'Contest not found.' });
+    }
+
     const participation = await prisma.contestParticipation.upsert({
       where: {
         userId_contestId: { userId, contestId }
@@ -374,16 +405,30 @@ const finishContestAttempt = async (req, res, next) => {
       update: {
         completed: true,
         score: score || 0,
-        timeSpent: timeSpent || '0m 0s'
+        timeSpent: timeSpent || '0m 0s',
+        username: req.user.username,
+        contestTitle: contest.title,
       },
       create: {
         userId,
         contestId,
         completed: true,
         score: score || 0,
-        timeSpent: timeSpent || '0m 0s'
+        timeSpent: timeSpent || '0m 0s',
+        username: req.user.username,
+        contestTitle: contest.title,
+      },
+      include: {
+        user: {
+          select: { id: true, username: true, email: true, role: true }
+        },
+        contest: {
+          select: { id: true, title: true, category: true }
+        }
       }
     });
+
+    broadcastParticipationReport(participation);
 
     res.status(200).json({
       success: true,

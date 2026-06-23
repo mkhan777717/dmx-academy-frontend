@@ -73,34 +73,16 @@ export default function PracticeCatalogPage() {
     async function loadProblems() {
       setLoading(true);
       
-      let localProblems = [];
-      if (typeof window !== "undefined") {
-        try {
-          const localRaw = localStorage.getItem("synapse_dynamic_problems");
-          if (localRaw) localProblems = JSON.parse(localRaw);
-        } catch { }
-      }
-
       try {
         const res = await fetch(`${API_BASE}/api/problems`, {
-          signal: AbortSignal.timeout(4000)
+          signal: AbortSignal.timeout(30000)
         });
         const data = await res.json();
         if (data.success && data.problems) {
           const mapped = data.problems.map(p => {
-            const matchedLocal = localProblems.find(lp => lp.id === p.slug);
-            
             let diffStr = "Medium";
             if (p.difficulty === "EASY") diffStr = "Easy";
             else if (p.difficulty === "HARD") diffStr = "Hard";
-
-            if (matchedLocal) {
-              return {
-                ...matchedLocal,
-                dbId: p.id,
-                difficulty: diffStr
-              };
-            }
 
             return {
               id: p.slug,
@@ -115,17 +97,13 @@ export default function PracticeCatalogPage() {
             };
           });
 
-          const combined = [
-            ...mapped,
-            ...localProblems.filter(lp => !mapped.some(mp => mp.id === lp.id))
-          ];
-          setAllProblems(combined);
+          setAllProblems(mapped);
         } else {
-          setAllProblems(localProblems);
+          setAllProblems([]);
         }
       } catch (err) {
-        console.error("Failed to fetch dynamic problems, falling back:", err);
-        setAllProblems(localProblems);
+        console.error("Failed to fetch dynamic problems:", err);
+        setAllProblems([]);
       }
       setLoading(false);
     }

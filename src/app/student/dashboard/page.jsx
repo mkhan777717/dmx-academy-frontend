@@ -66,7 +66,7 @@ export default function StudentDashboard() {
         // Fetch submissions for this user
         const subRes = await fetch(
           `${API_BASE}/api/submissions?userId=${user.id}`,
-          { headers, signal: AbortSignal.timeout(8000) }
+          { headers, signal: AbortSignal.timeout(30000) }
         );
         if (subRes.ok) {
           const subData = await subRes.json();
@@ -102,7 +102,7 @@ export default function StudentDashboard() {
         // Fetch contests for stats
         const contestRes = await fetch(`${API_BASE}/api/contests`, {
           headers,
-          signal: AbortSignal.timeout(8000),
+          signal: AbortSignal.timeout(30000),
         });
         if (contestRes.ok) {
           const contestData = await contestRes.json();
@@ -112,23 +112,7 @@ export default function StudentDashboard() {
         console.error("Failed to fetch backend contests:", e);
       }
 
-      // Merge with local/dynamic contests and static contests
-      let localContests = [];
-      if (typeof window !== "undefined") {
-        try {
-          const localRaw = localStorage.getItem("synapse_dynamic_contests");
-          if (localRaw) {
-            localContests = JSON.parse(localRaw);
-          }
-        } catch (e) {
-          console.error("Failed to parse local contests:", e);
-        }
-      }
-
-      const combinedContests = [
-        ...backendContests,
-        ...localContests.filter(dc => !backendContests.some(bc => String(bc.id) === String(dc.id)))
-      ];
+      const combinedContests = backendContests;
 
       // Resolve user participation for contests
       let solvedData = {};

@@ -30,6 +30,10 @@ export default function Navbar() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isSignInDropdownOpen, setIsSignInDropdownOpen] = useState(false);
 
+  const userEmailLower = (user?.email || "").toLowerCase();
+  const isUserAdmin = user?.role === "ADMIN" || userEmailLower.includes("admin");
+  const isUserMentor = user?.role === "MENTOR" || userEmailLower.includes("mentor");
+
   return (
     <motion.header
       initial={{ y: -100, opacity: 0 }}
@@ -222,7 +226,7 @@ export default function Navbar() {
                         Logged in as: <span className="text-[var(--text-primary)] block font-mono font-medium truncate">{user.email}</span>
                       </div>
 
-                      {user.role === "ADMIN" ? (
+                      {isUserAdmin ? (
                         <>
                           <Link
                             href="/admin"
@@ -261,7 +265,7 @@ export default function Navbar() {
                         </>
                       ) : (
                         <Link
-                          href="/student"
+                          href={isUserMentor ? "/mentor" : "/student"}
                           className="flex items-center gap-3 rounded-xl px-3 py-2 hover:bg-slate-500/5 transition-all"
                           onClick={() => setIsSignInDropdownOpen(false)}
                         >
@@ -497,7 +501,7 @@ export default function Navbar() {
                   <li className="text-[10px] font-bold uppercase tracking-wider pl-1" style={{ color: "var(--text-muted)" }}>
                     Hello, {user.username}
                   </li>
-                  {user.role === "ADMIN" ? (
+                  {isUserAdmin ? (
                     <>
                       <li>
                         <Link
@@ -522,6 +526,18 @@ export default function Navbar() {
                         </Link>
                       </li>
                     </>
+                  ) : isUserMentor ? (
+                    <li>
+                      <Link
+                        href="/mentor"
+                        onClick={() => setIsOpen(false)}
+                        className="flex items-center gap-2.5 text-sm font-bold pl-2 transition-colors hover:text-[var(--text-accent)]"
+                        style={{ color: "var(--text-secondary)" }}
+                      >
+                        <GraduationCap size={14} className="text-violet-500" />
+                        <span>Mentor Board</span>
+                      </Link>
+                    </li>
                   ) : (
                     <li>
                       <Link

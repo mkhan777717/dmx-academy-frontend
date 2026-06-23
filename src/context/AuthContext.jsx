@@ -128,7 +128,7 @@ export function AuthProvider({ children }) {
           try {
             const res = await fetch(`${API_BASE}/api/auth/profile`, {
               headers: { Authorization: `Bearer ${storedToken}` },
-              signal: AbortSignal.timeout(4000),
+              signal: AbortSignal.timeout(30000),
             });
             if (res.ok) {
               const data = await res.json();
@@ -166,12 +166,12 @@ export function AuthProvider({ children }) {
   const login = async (email, password) => {
     // 1. Try real backend
     try {
-      const res = await fetch(`${API_BASE}/api/auth/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-        signal: AbortSignal.timeout(6000),
-      });
+        const res = await fetch(`${API_BASE}/api/auth/login`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+          signal: AbortSignal.timeout(30000),
+        });
 
       const data = await res.json();
 
@@ -231,7 +231,7 @@ export function AuthProvider({ children }) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, email, password, role }),
-        signal: AbortSignal.timeout(6000),
+        signal: AbortSignal.timeout(30000),
       });
 
       const data = await res.json();

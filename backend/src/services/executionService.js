@@ -267,6 +267,75 @@ const executeCode = async (language, code, testCases) => {
   }
 };
 
+/**
+ * Runs user code once with custom input and returns execution result
+ * @param {string} language - JAVASCRIPT, PYTHON, CPP
+ * @param {string} code - User solution code
+ * @param {string} input - Custom input
+ * @returns {Promise<Object>} Execution result: { status, executionTime, output, error }
+ */
+const runCustomCode = async (language, code, input) => {
+  const uniqueId = `${Date.now()}_custom_${Math.floor(Math.random() * 10000)}`;
+  const tempDir = createTempDir(uniqueId);
+
+  try {
+    let runCmd = '';
+    let runArgs = [];
+    const timeoutLimit = language === 'CPP' ? 1500 : 3000;
+
+    if (language === 'JAVASCRIPT') {
+      const fileName = 'solution.js';
+      writeTempFile(tempDir, fileName, code);
+      runCmd = process.env.NODE_PATH || 'node';
+      runArgs = [fileName];
+    } else if (language === 'PYTHON') {
+      const fileName = 'solution.py';
+      writeTempFile(tempDir, fileName, code);
+      runCmd = process.env.PYTHON_PATH || 'python';
+      runArgs = [fileName];
+    } else if (language === 'CPP') {
+      const srcFile = 'solution.cpp';
+      const exeName = isWindows ? 'solution.exe' : 'solution.out';
+      writeTempFile(tempDir, srcFile, code);
+
+      const compileResult = await compileCpp(srcFile, exeName, tempDir);
+      if (!compileResult.success) {
+        return {
+          status: 'COMPILATION_ERROR',
+          executionTime: 0,
+          error: compileResult.error,
+        };
+      }
+
+      runCmd = path.join(tempDir, exeName);
+      runArgs = [];
+    } else {
+      return {
+        status: 'COMPILATION_ERROR',
+        executionTime: 0,
+        error: `Unsupported language: ${language}`,
+      };
+    }
+
+    const result = await runProcess(runCmd, runArgs, tempDir, input, timeoutLimit);
+    return {
+      status: result.status,
+      executionTime: result.executionTime,
+      output: result.output,
+      error: result.error,
+    };
+  } catch (error) {
+    return {
+      status: 'RUNTIME_ERROR',
+      executionTime: 0,
+      error: error.message || 'Internal Execution Error',
+    };
+  } finally {
+    await cleanupDir(tempDir);
+  }
+};
+
 module.exports = {
   executeCode,
+  runCustomCode,
 };

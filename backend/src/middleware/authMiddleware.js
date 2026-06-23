@@ -49,9 +49,17 @@ const protect = async (req, res, next) => {
     // Verify token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
+    const userId = parseInt(decoded.id, 10);
+    if (isNaN(userId)) {
+      return res.status(401).json({
+        success: false,
+        message: 'Invalid token payload: user ID must be an integer.',
+      });
+    }
+
     // Get user from database
     const user = await prisma.user.findUnique({
-      where: { id: decoded.id },
+      where: { id: userId },
       select: {
         id: true,
         username: true,
@@ -72,6 +80,7 @@ const protect = async (req, res, next) => {
     req.user = user;
     next();
   } catch (error) {
+    console.error("Auth Middleware Error:", error);
     if (error.name === 'JsonWebTokenError') {
       return res.status(401).json({
         success: false,

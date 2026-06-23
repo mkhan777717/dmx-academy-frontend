@@ -62,7 +62,7 @@ export default function AdminProblemsPage() {
     try {
       const res = await fetch(`${API_BASE}/api/problems`, {
         headers: adminHeaders,
-        signal: AbortSignal.timeout(8000),
+        signal: AbortSignal.timeout(30000),
       });
       const data = await res.json();
       if (data.success && data.problems) {

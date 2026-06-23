@@ -36,7 +36,7 @@ if input_data:
     except Exception:
         print(json.dumps({"status": 400}))`;
     }
-  } else if (problemSlug === "two-sum") {
+  } else if (String(problemSlug).includes("two-sum")) {
     if (lang === "javascript") {
       return `${userCode}
 
@@ -44,12 +44,21 @@ if input_data:
 const fs = require('fs');
 const input = fs.readFileSync(0, 'utf-8').trim();
 if (input) {
-  const lines = input.split('\\n');
-  const nums = lines[0].trim().split(/\\s+/).map(Number);
-  const target = Number(lines[1]);
-  const res = twoSum(nums, target);
+  let nums;
+  let target;
+  const bracketMatch = input.match(/\\[([^\\]]+)\\]\\s*,\\s*(-?\\d+)/);
+  if (bracketMatch) {
+    nums = bracketMatch[1].split(',').map((item) => Number(item.trim()));
+    target = Number(bracketMatch[2]);
+  } else {
+    const lines = input.split('\\n');
+    nums = lines[0].trim().split(/\\s+/).map(Number);
+    target = Number(lines[1]);
+  }
+  const solver = typeof twoSum === 'function' ? twoSum : solution;
+  const res = solver(nums, target);
   if (res && res.length === 2) {
-    console.log(res.join(' '));
+    console.log(JSON.stringify(res));
   }
 }`;
     } else if (lang === "python") {
@@ -57,14 +66,27 @@ if (input) {
 
 # Backend I/O Wrapper
 import sys
+import json
+import re
 input_data = sys.stdin.read().strip()
 if input_data:
-    lines = input_data.split('\\n')
-    nums = list(map(int, lines[0].strip().split()))
-    target = int(lines[1].strip())
-    res = two_sum(nums, target)
+    bracket_match = re.search(r"\\[([^\\]]+)\\]\\s*,\\s*(-?\\d+)", input_data)
+    if bracket_match:
+        nums = [int(item.strip()) for item in bracket_match.group(1).split(",") if item.strip()]
+        target = int(bracket_match.group(2))
+    else:
+        lines = input_data.split('\\n')
+        nums = list(map(int, lines[0].strip().split()))
+        target = int(lines[1].strip())
+    globals()["nums"] = nums
+    globals()["target"] = target
+    solver = globals().get("two_sum") or globals().get("solution")
+    try:
+        res = solver(nums, target)
+    except TypeError:
+        res = solver()
     if len(res) == 2:
-        print(f"{res[0]} {res[1]}")`;
+        print(json.dumps(res, separators=(",", ":")))`;
     }
   } else if (problemSlug === "vdom-diff") {
     if (lang === "javascript") {
@@ -153,5 +175,43 @@ if input_data:
     print("true" if res else "false")`;
     }
   }
+
+  if (lang === "javascript") {
+    return `${userCode}
+
+// Backend I/O Wrapper
+const fs = require('fs');
+const input = fs.readFileSync(0, 'utf-8');
+if (typeof solve === 'function') {
+  const res = solve(input);
+  if (res !== undefined) {
+    if (Array.isArray(res)) {
+      console.log(res.join(' '));
+    } else if (typeof res === 'object' && res !== null) {
+      console.log(JSON.stringify(res));
+    } else {
+      console.log(String(res));
+    }
+  }
+}`;
+  }
+
+  if (lang === "python") {
+    return `${userCode}
+
+# Backend I/O Wrapper
+import sys, json
+input_data = sys.stdin.read()
+if 'solve' in globals() and callable(solve):
+    res = solve(input_data)
+    if res is not None:
+        if isinstance(res, (list, tuple)):
+            print(" ".join(map(str, res)))
+        elif isinstance(res, (dict,)):
+            print(json.dumps(res))
+        else:
+            print(str(res))`;
+  }
+
   return userCode;
 }

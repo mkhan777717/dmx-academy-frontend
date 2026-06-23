@@ -115,8 +115,9 @@ export default function CreateProblem() {
   const [templateGo, setTemplateGo] = useState("// Go Starter Code\npackage main\n\nimport \"fmt\"\n\nfunc solve(input string) string {\n  // Write your code here\n  return \"\"\n}");
 
   // 4. Testcases State
-  const [sampleInput, setSampleInput] = useState("");
-  const [sampleOutput, setSampleOutput] = useState("");
+  const [testCases, setTestCases] = useState([
+    { input: "", expectedOutput: "", isSample: true }
+  ]);
   const [timeLimitMs, setTimeLimitMs] = useState(1000);
   const [memoryLimitMb, setMemoryLimitMb] = useState(256);
 
@@ -150,8 +151,13 @@ solve(15);
       setTemplateJS(`// JavaScript Starter Code\nfunction solve(n) {\n  for (let i = 1; i <= n; i++) {\n    if (i % 3 === 0 && i % 5 === 0) console.log("FizzBuzz");\n    else if (i % 3 === 0) console.log("Fizz");\n    else if (i % 5 === 0) console.log("Buzz");\n    else console.log(i);\n  }\n}`);
       setTemplatePython(`# Python 3 Starter Code\ndef solve(n):\n    for i in range(1, n + 1):\n        if i % 3 == 0 and i % 5 == 0:\n            print("FizzBuzz")\n        elif i % 3 == 0:\n            print("Fizz")\n        elif i % 5 == 0:\n            print("Buzz")\n        else:\n            print(i)`);
       setTemplateGo(`// Go Starter Code\npackage main\n\nimport "fmt"\n\nfunc solve(n int) {\n  for i := 1; i <= n; i++ {\n    if i % 3 == 0 && i % 5 == 0 {\n      fmt.Println("FizzBuzz")\n    } else if i % 3 == 0 {\n      fmt.Println("Fizz")\n    } else if i % 5 == 0 {\n      fmt.Println("Buzz")\n    } else {\n      fmt.Println(i)\n    }\n  }\n}`);
-      setSampleInput("15");
-      setSampleOutput("1\n2\nFizz\n4\nBuzz\nFizz\n7\n8\nFizz\nBuzz\n11\nFizz\n13\n14\nFizzBuzz");
+      setTestCases([
+        {
+          input: "15",
+          expectedOutput: "1\n2\nFizz\n4\nBuzz\nFizz\n7\n8\nFizz\nBuzz\n11\nFizz\n13\n14\nFizzBuzz",
+          isSample: true
+        }
+      ]);
     } else if (type === "reverse") {
       setTitle("Reverse Array Elements");
       setCode("REVERSE_ARRAY");
@@ -174,8 +180,13 @@ Explain the output: The first element becomes last, the second becomes second-to
       setTemplateJS(`// JavaScript Starter Code\nfunction solve(n, arr) {\n  return arr.reverse().join(" ");\n}`);
       setTemplatePython(`# Python 3 Starter Code\ndef solve(n, arr):\n    return " ".join(map(str, arr[::-1]))`);
       setTemplateGo(`// Go Starter Code\npackage main\n\nimport "strings"\nimport "strconv"\n\nfunc solve(n int, arr []int) string {\n  var res []string\n  for i := n - 1; i >= 0; i-- {\n    res = append(res, strconv.Itoa(arr[i]))\n  }\n  return strings.Join(res, " ")\n}`);
-      setSampleInput("5\n1 2 3 4 5");
-      setSampleOutput("5 4 3 2 1");
+      setTestCases([
+        {
+          input: "5\n1 2 3 4 5",
+          expectedOutput: "5 4 3 2 1",
+          isSample: true
+        }
+      ]);
     } else if (type === "clear") {
       setTitle("");
       setCode("");
@@ -189,8 +200,13 @@ Explain the output: The first element becomes last, the second becomes second-to
       setTemplateJS("// JavaScript Starter Code\nfunction solve(input) {\n  // Write your code here\n  return \"\";\n}");
       setTemplatePython("# Python 3 Starter Code\ndef solve(input_data):\n    # Write your code here\n    pass");
       setTemplateGo("// Go Starter Code\npackage main\n\nimport \"fmt\"\n\nfunc solve(input string) string {\n  // Write your code here\n  return \"\"\n}");
-      setSampleInput("");
-      setSampleOutput("");
+      setTestCases([
+        {
+          input: "",
+          expectedOutput: "",
+          isSample: true
+        }
+      ]);
     }
   };
 
@@ -359,15 +375,24 @@ Explain the output: The first element becomes last, the second becomes second-to
       alert("Description/Statement must be at least 10 characters long");
       return;
     }
-    if (!sampleInput.trim()) {
+    if (testCases.length === 0) {
       setActiveTab("testcases");
-      alert("Please enter a Sample Input");
+      alert("Please add at least one test case.");
       return;
     }
-    if (!sampleOutput.trim()) {
+    const hasSample = testCases.some(tc => tc.isSample);
+    if (!hasSample) {
       setActiveTab("testcases");
-      alert("Please enter a Sample Output");
+      alert("Please designate at least one test case as a Sample Case.");
       return;
+    }
+    for (let i = 0; i < testCases.length; i++) {
+      const tc = testCases[i];
+      if (!tc.expectedOutput.trim()) {
+        setActiveTab("testcases");
+        alert(`Test Case #${i + 1} is missing Expected Output.`);
+        return;
+      }
     }
 
     const probId = code.toLowerCase().trim() || title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g, "");
@@ -390,13 +415,7 @@ Explain the output: The first element becomes last, the second becomes second-to
       tags: tags.split(",").map(t => t.trim()).filter(Boolean),
       timeLimitMs: Number(timeLimitMs),
       memoryLimitMb: Number(memoryLimitMb),
-      testcases: [
-        {
-          input: sampleInput,
-          expectedOutput: sampleOutput,
-          isSample: true
-        }
-      ]
+      testcases: testCases
     };
 
     // Save to backend database
@@ -418,13 +437,11 @@ Explain the output: The first element becomes last, the second becomes second-to
         outputFormat: outputFormat || "Standard output",
         constraints: constraints || "None",
         explanation: "No explanation provided.",
-        testCases: [
-          {
-            input: sampleInput,
-            expectedOutput: sampleOutput,
-            isSample: true
-          }
-        ]
+        testCases: testCases.map(tc => ({
+          input: tc.input || "",
+          expectedOutput: tc.expectedOutput || "",
+          isSample: !!tc.isSample
+        }))
       };
 
       const res = await fetch(`${API_BASE}/api/problems`, {
@@ -453,21 +470,6 @@ Explain the output: The first element becomes last, the second becomes second-to
       return; // Halt execution
     }
 
-    // Save to localStorage
-    if (dbSaved && typeof window !== "undefined") {
-      const existingRaw = localStorage.getItem("synapse_dynamic_problems");
-      let existing = [];
-      if (existingRaw) {
-        try {
-          existing = JSON.parse(existingRaw);
-        } catch {
-          existing = [];
-        }
-      }
-      existing = existing.filter(p => p.id !== probId);
-      existing.unshift(newProblem);
-      localStorage.setItem("synapse_dynamic_problems", JSON.stringify(existing));
-    }
 
     setSuccess(true);
     setTimeout(() => {
@@ -1003,34 +1005,109 @@ Explain the output: The first element becomes last, the second becomes second-to
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-                  <div className="space-y-1.5">
-                    <label className="text-[10px] font-extrabold uppercase tracking-wider text-amber-500">
-                      Sample Test Input
-                    </label>
-                    <textarea
-                      placeholder="Input tokens for validation..."
-                      value={sampleInput}
-                      onChange={(e) => setSampleInput(e.target.value)}
-                      rows={4}
-                      className="w-full rounded-2xl py-3 px-4 text-xs outline-none border font-mono resize-none"
-                      style={{ backgroundColor: "var(--bg-input)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
-                    />
-                  </div>
+                <div className="space-y-6 pt-2">
+                  {testCases.map((tc, index) => (
+                    <div 
+                      key={index} 
+                      className="p-5 rounded-2xl border space-y-4 relative transition-all"
+                      style={{ 
+                        backgroundColor: "rgba(255, 255, 255, 0.02)", 
+                        borderColor: "var(--border-primary)" 
+                      }}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-2">
+                          <span className="text-xs font-black" style={{ color: "var(--text-primary)" }}>
+                            Test Case #{index + 1}
+                          </span>
+                          {tc.isSample && (
+                            <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-500">
+                              Sample Case
+                            </span>
+                          )}
+                        </div>
+                        <div className="flex items-center space-x-4">
+                          <label className="flex items-center space-x-1.5 cursor-pointer select-none">
+                            <input
+                              type="checkbox"
+                              checked={tc.isSample}
+                              onChange={(e) => {
+                                const newCases = [...testCases];
+                                newCases[index].isSample = e.target.checked;
+                                setTestCases(newCases);
+                              }}
+                              className="rounded border shadow-sm accent-indigo-500 w-3.5 h-3.5"
+                            />
+                            <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "var(--text-secondary)" }}>
+                              Sample Case
+                            </span>
+                          </label>
 
-                  <div className="space-y-1.5">
-                    <label className="text-[10px] font-extrabold uppercase tracking-wider text-emerald-500">
-                      Expected Sample Output
-                    </label>
-                    <textarea
-                      placeholder="Expected output string..."
-                      value={sampleOutput}
-                      onChange={(e) => setSampleOutput(e.target.value)}
-                      rows={4}
-                      className="w-full rounded-2xl py-3 px-4 text-xs outline-none border font-mono resize-none"
-                      style={{ backgroundColor: "var(--bg-input)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
-                    />
-                  </div>
+                          {testCases.length > 1 && (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const newCases = testCases.filter((_, i) => i !== index);
+                                setTestCases(newCases);
+                              }}
+                              className="p-1 rounded hover:bg-rose-500/10 text-rose-450 transition-colors cursor-pointer"
+                              title="Delete Test Case"
+                            >
+                              <Trash2 size={13} />
+                            </button>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="space-y-1.5">
+                          <label className="text-[10px] font-extrabold uppercase tracking-wider text-amber-500">
+                            Test Input
+                          </label>
+                          <textarea
+                            placeholder="Input tokens for validation..."
+                            value={tc.input}
+                            onChange={(e) => {
+                              const newCases = [...testCases];
+                              newCases[index].input = e.target.value;
+                              setTestCases(newCases);
+                            }}
+                            rows={3}
+                            className="w-full rounded-2xl py-2.5 px-4 text-xs outline-none border font-mono resize-y min-h-[80px]"
+                            style={{ backgroundColor: "var(--bg-input)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
+                          />
+                        </div>
+
+                        <div className="space-y-1.5">
+                          <label className="text-[10px] font-extrabold uppercase tracking-wider text-emerald-500">
+                            Expected Output
+                          </label>
+                          <textarea
+                            placeholder="Expected output string..."
+                            value={tc.expectedOutput}
+                            onChange={(e) => {
+                              const newCases = [...testCases];
+                              newCases[index].expectedOutput = e.target.value;
+                              setTestCases(newCases);
+                            }}
+                            rows={3}
+                            className="w-full rounded-2xl py-2.5 px-4 text-xs outline-none border font-mono resize-y min-h-[80px]"
+                            style={{ backgroundColor: "var(--bg-input)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+
+                  <button
+                    type="button"
+                    onClick={() => setTestCases([...testCases, { input: "", expectedOutput: "", isSample: false }])}
+                    className="w-full py-3 rounded-2xl border border-dashed transition-all cursor-pointer flex items-center justify-center space-x-2 text-xs font-bold text-indigo-400 hover:text-indigo-300 hover:bg-slate-500/5"
+                    style={{ borderColor: "rgba(99, 102, 241, 0.4)" }}
+                  >
+                    <Plus size={14} />
+                    <span>Add Test Case</span>
+                  </button>
                 </div>
 
                 <div className="flex justify-between pt-4">

@@ -75,7 +75,7 @@ export default function AdminContestsPage() {
     try {
       const res = await fetch(`${API_BASE}/api/contests`, {
         headers: adminHeaders,
-        signal: AbortSignal.timeout(8000),
+        signal: AbortSignal.timeout(30000),
       });
       const data = await res.json();
       if (data.success && data.contests) {
@@ -87,26 +87,10 @@ export default function AdminContestsPage() {
       }
     } catch (err) {
       console.error("Failed to fetch backend contests:", err);
-      setError("Could not connect to the backend. Showing local data.");
+      setError("Could not connect to the backend. Database is offline.");
     }
 
-    // Merge with local storage contests
-    let localContests = [];
-    if (typeof window !== "undefined") {
-      try {
-        const localRaw = localStorage.getItem("synapse_dynamic_contests");
-        if (localRaw) localContests = JSON.parse(localRaw);
-      } catch {}
-    }
-
-    const combinedContests = [
-      ...merged,
-      ...localContests
-        .filter((dc) => !merged.some((bc) => String(bc.id) === String(dc.id)))
-        .map((c) => ({ ...c, status: getContestStatus(c), isLocalContest: true })),
-    ];
-
-    setAllContests(combinedContests);
+    setAllContests(merged);
     setLoading(false);
   }, [API_BASE, token]);
 
@@ -114,28 +98,7 @@ export default function AdminContestsPage() {
     loadContests();
   }, [loadContests]);
 
-  const handleDelete = async (contestId, isDbContest) => {
-    if (!isDbContest) {
-      // Delete from localStorage only
-      if (typeof window !== "undefined") {
-        try {
-          const raw = localStorage.getItem("synapse_dynamic_contests");
-          if (raw) {
-            const arr = JSON.parse(raw).filter(
-              (c) => String(c.id) !== String(contestId)
-            );
-            localStorage.setItem("synapse_dynamic_contests", JSON.stringify(arr));
-          }
-        } catch {}
-      }
-      setAllContests((prev) =>
-        prev.filter((c) => String(c.id) !== String(contestId))
-      );
-      triggerNotification("Contest removed from local storage.");
-      setDeletingId(null);
-      return;
-    }
-
+  const handleDelete = async (contestId) => {
     try {
       const res = await fetch(`${API_BASE}/api/contests/${contestId}`, {
         method: "DELETE",
@@ -612,7 +575,7 @@ export default function AdminContestsPage() {
                       (c) => String(c.id) === deletingId
                     );
                     if (contest)
-                      handleDelete(contest.id, !!contest.isDbContest);
+                      handleDelete(contest.id);
                   }}
                   className="px-5 py-2.5 rounded-xl font-bold text-xs text-white transition-all cursor-pointer hover:scale-102 bg-rose-500 hover:bg-rose-600"
                 >

@@ -90,15 +90,17 @@ model ContestProblem {
 }
 
 model ContestParticipation {
-  id        Int      @id @default(autoincrement())
-  userId    Int
-  contestId Int
-  completed Boolean  @default(false)
-  score     Int      @default(0)
-  timeSpent String?
-  createdAt DateTime @default(now())
-  contest   Contest  @relation(fields: [contestId], references: [id], onDelete: Cascade)
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id           Int      @id @default(autoincrement())
+  userId       Int
+  contestId    Int
+  completed    Boolean  @default(false)
+  score        Int      @default(0)
+  timeSpent    String?
+  createdAt    DateTime @default(now())
+  username     String?
+  contestTitle String?
+  contest      Contest  @relation(fields: [contestId], references: [id], onDelete: Cascade)
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, contestId])
 }
