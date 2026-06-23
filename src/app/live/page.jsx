@@ -42,6 +42,36 @@ import { getApiBase } from "@/utils/api";
 const LIVEKIT_URL = process.env.NEXT_PUBLIC_LIVEKIT_URL;
 const API_BASE_FALLBACK = getApiBase();
 
+const playRaiseHandSound = () => {
+  try {
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const now = audioCtx.currentTime;
+
+    const playNote = (freq, duration, startTime) => {
+      const osc = audioCtx.createOscillator();
+      const gainNode = audioCtx.createGain();
+
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(freq, startTime);
+
+      gainNode.gain.setValueAtTime(0.08, startTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+
+      osc.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+
+      osc.start(startTime);
+      osc.stop(startTime + duration);
+    };
+
+    // Modern Digital Chime: Two ascending notes (D5 and A5) with exponential decay
+    playNote(587.33, 0.12, now);
+    playNote(880.00, 0.40, now + 0.10);
+  } catch (e) {
+    console.error("Failed to play hand raise notification sound:", e);
+  }
+};
+
 // ─── Session Timer ───────────────────────────────────────────────────
 function SessionTimer({ startTime }) {
   const [elapsed, setElapsed] = useState("00:00:00");
@@ -210,6 +240,8 @@ function VideoPlayer({
   isSidebarOpen,
   setIsSidebarOpen,
   onSessionEnded,
+  blockedUsers,
+  setBlockedUsers,
 }) {
   const [isMuted, setIsMuted] = useState(false);
   const [isHostCameraHiddenLocal, setIsHostCameraHiddenLocal] = useState(false);
@@ -244,6 +276,25 @@ function VideoPlayer({
   const room = useRoomContext();
   const { user } = useAuth();
   const [showAcceptedModal, setShowAcceptedModal] = useState(false);
+
+  const participants = useParticipants();
+  const [isConnectionReady, setIsConnectionReady] = useState(false);
+
+  useEffect(() => {
+    if (room && room.state === "connected") {
+      const timer = setTimeout(() => {
+        setIsConnectionReady(true);
+      }, 2000);
+      return () => clearTimeout(timer);
+    } else {
+      setIsConnectionReady(false);
+    }
+  }, [room, room?.state]);
+
+  const isHost = user?.username === session?.host?.username;
+  const isMentorPresent = participants.some((p) => p.identity === session?.host?.username);
+  const showAwayOverlay = isConnectionReady && !isHost && !isMentorPresent;
+
 
   useEffect(() => {
     if (!room) return;
@@ -304,13 +355,17 @@ function VideoPlayer({
   const isStudentCameraActive = !!speakingStudentCameraTrack?.publication?.track && !speakingStudentCameraTrack?.publication?.isMuted;
 
   const sendData = (payloadObj) => {
-    if (!room) return;
-    const encoder = new TextEncoder();
-    const payload = encoder.encode(JSON.stringify(payloadObj));
-    room.localParticipant.publishData(payload, {
-      reliable: true,
-      topic: "raise-hand-actions"
-    });
+    if (!room || room.state !== "connected" || !room.localParticipant) return;
+    try {
+      const encoder = new TextEncoder();
+      const payload = encoder.encode(JSON.stringify(payloadObj));
+      room.localParticipant.publishData(payload, {
+        reliable: true,
+        topic: "raise-hand-actions"
+      });
+    } catch (e) {
+      console.warn("Failed to publish data packet:", e);
+    }
   };
 
   const toggleRaiseHand = () => {
@@ -361,9 +416,27 @@ function VideoPlayer({
           if (data.username === user?.username) {
             setIsHandRaised(false);
           }
+        } else if (data.action === "RAISE_HAND") {
+          playRaiseHandSound();
+        } else if (data.action === "BLOCK_STUDENT") {
+          setBlockedUsers((prev) => [...prev.filter((u) => u !== data.username), data.username]);
+          if (data.username === user?.username) {
+            setIsHandRaised(false);
+            room.localParticipant.setMicrophoneEnabled(false);
+            room.localParticipant.setCameraEnabled(false);
+          }
+        } else if (data.action === "UNBLOCK_STUDENT") {
+          setBlockedUsers((prev) => prev.filter((u) => u !== data.username));
         } else if (data.action === "SYNC_STATE") {
           setActiveSpeaker(data.activeSpeaker);
           setRaisedHands(data.raisedHands || []);
+          setBlockedUsers(data.blockedUsers || []);
+
+          if (data.blockedUsers?.includes(user?.username)) {
+            setIsHandRaised(false);
+            room.localParticipant.setMicrophoneEnabled(false);
+            room.localParticipant.setCameraEnabled(false);
+          }
           
           // If sync says I'm not active speaker, disable my feeds and hand raise
           if (data.activeSpeaker !== user?.username) {
@@ -389,7 +462,7 @@ function VideoPlayer({
       room.off(RoomEvent.DataReceived, handleData);
       clearTimeout(timer);
     };
-  }, [room, activeSpeaker, user]);
+  }, [room, activeSpeaker, user, setBlockedUsers]);
 
   const renderControls = () => (
     <div className="flex items-center justify-between">
@@ -402,15 +475,15 @@ function VideoPlayer({
 
         {/* Session Title & Taker */}
         <div className="flex flex-col min-w-0 mr-1.5">
-          <span className="text-[11px] font-black text-white truncate max-w-[140px] sm:max-w-[220px]" title={session.title}>
+          <span className="text-[11px] font-black truncate max-w-[140px] sm:max-w-[220px]" style={{ color: "var(--text-primary)" }} title={session.title}>
             {session.title}
           </span>
-          <span className="text-[9px] font-bold text-slate-400 truncate">
+          <span className="text-[9px] font-bold truncate" style={{ color: "var(--text-muted)" }}>
             by {session.host?.username || "Mentor"}
           </span>
         </div>
 
-        <div className="w-px h-6 bg-white/10 shrink-0 hidden sm:block" />
+        <div className="w-px h-6 shrink-0 hidden sm:block" style={{ backgroundColor: "var(--border-primary)" }} />
 
         <SessionTimer startTime={session.startedAt} />
         <ViewerCount />
@@ -421,7 +494,7 @@ function VideoPlayer({
         {isHostCameraActive && isHostCameraHiddenLocal && (
           <button
             onClick={() => setIsHostCameraHiddenLocal(false)}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-750 text-white text-[10px] font-bold uppercase transition-all cursor-pointer mr-1.5 shadow-md shadow-indigo-650/20 border border-indigo-500/20"
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[var(--accent-primary)] hover:bg-[var(--accent-secondary)] text-white text-[10px] font-bold uppercase transition-all cursor-pointer mr-1.5 shadow-md shadow-[var(--accent-glow)] border border-transparent"
             title="Restore Mentor Camera Feed"
           >
             <Camera size={12} />
@@ -430,22 +503,32 @@ function VideoPlayer({
         )}
         {/* Active Speaker Controls */}
         {activeSpeaker === user?.username ? (
-          <div className="flex items-center gap-1.5 bg-indigo-500/10 p-1 rounded-full border border-indigo-500/20 mr-2">
-            <div className="flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-indigo-500/20 text-indigo-300 text-[9px] font-black uppercase tracking-wider select-none">
+          <div className="flex items-center gap-1.5 p-1 rounded-full border mr-2"
+            style={{
+              backgroundColor: "var(--bg-primary)",
+              borderColor: "var(--border-primary)"
+            }}
+          >
+            <div className="flex items-center gap-1 px-2.5 py-1.5 rounded-full text-[9px] font-black uppercase tracking-wider select-none"
+              style={{
+                backgroundColor: "var(--bg-badge)",
+                color: "var(--text-accent)"
+              }}
+            >
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
               Stage
             </div>
             <TrackToggle
               source={Track.Source.Microphone}
-              className="!w-8 !h-8 !rounded-full !flex !items-center !justify-center bg-indigo-600 hover:bg-indigo-700 text-white transition-all cursor-pointer !p-0 border border-white/10"
+              className="!w-8 !h-8 !rounded-full !flex !items-center !justify-center text-white transition-all cursor-pointer !p-0 border border-transparent data-[lk-on=true]:bg-[var(--accent-primary)] data-[lk-on=true]:hover:bg-[var(--accent-secondary)] data-[lk-on=false]:bg-red-600 data-[lk-on=false]:hover:bg-red-700"
             />
             <TrackToggle
               source={Track.Source.Camera}
-              className="!w-8 !h-8 !rounded-full !flex !items-center !justify-center bg-indigo-600 hover:bg-indigo-700 text-white transition-all cursor-pointer !p-0 border border-white/10"
+              className="!w-8 !h-8 !rounded-full !flex !items-center !justify-center text-white transition-all cursor-pointer !p-0 border border-transparent data-[lk-on=true]:bg-[var(--accent-primary)] data-[lk-on=true]:hover:bg-[var(--accent-secondary)] data-[lk-on=false]:bg-red-600 data-[lk-on=false]:hover:bg-red-700"
             />
             <button
               onClick={stopSpeaking}
-              className="flex items-center gap-1 py-1.5 px-3 rounded-full bg-red-600 hover:bg-red-750 text-white text-[10px] font-bold uppercase transition-all cursor-pointer shadow-md shadow-red-600/20 border border-red-500/20"
+              className="flex items-center gap-1 py-1.5 px-3 rounded-full bg-red-600 hover:bg-red-700 text-white text-[10px] font-bold uppercase transition-all cursor-pointer shadow-md shadow-red-600/20 border border-red-500/20"
               id="stop-speaking-btn"
             >
               <XCircle size={12} />
@@ -456,15 +539,35 @@ function VideoPlayer({
           /* Raise Hand Button */
           <button
             onClick={toggleRaiseHand}
-            className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer mr-2 ${
-              isHandRaised
-                ? "bg-amber-500 text-white hover:bg-amber-600 shadow-lg shadow-amber-500/20"
-                : "bg-white/10 hover:bg-white/20 text-white"
+            disabled={blockedUsers?.includes(user?.username)}
+            className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold transition-all mr-2 ${
+              blockedUsers?.includes(user?.username)
+                ? "bg-red-500/10 text-red-500 border border-red-500/20 cursor-not-allowed"
+                : isHandRaised
+                ? "bg-amber-500 text-white hover:bg-amber-600 shadow-lg shadow-amber-500/20 cursor-pointer"
+                : "cursor-pointer"
             }`}
+            style={
+              blockedUsers?.includes(user?.username)
+                ? {}
+                : isHandRaised
+                ? {}
+                : {
+                    backgroundColor: "var(--bg-primary)",
+                    border: "1px solid var(--border-primary)",
+                    color: "var(--text-primary)"
+                  }
+            }
             id="raise-hand-btn"
           >
-            <Hand size={14} className={isHandRaised ? "animate-bounce" : ""} />
-            <span>{isHandRaised ? "Hand Raised" : "Raise Hand"}</span>
+            <Hand size={14} className={isHandRaised && !blockedUsers?.includes(user?.username) ? "animate-bounce" : ""} />
+            <span>
+              {blockedUsers?.includes(user?.username)
+                ? "Blocked"
+                : isHandRaised
+                ? "Hand Raised"
+                : "Raise Hand"}
+            </span>
           </button>
         )}
 
@@ -472,11 +575,12 @@ function VideoPlayer({
         {isFullscreen && (
           <button
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-            className={`p-2 rounded-lg transition-all cursor-pointer ${
-              isSidebarOpen
-                ? "bg-indigo-650 hover:bg-indigo-700 text-white border border-indigo-500/40"
-                : "bg-white/10 hover:bg-white/20 text-white border border-transparent"
-            }`}
+            className="p-2 rounded-lg transition-all cursor-pointer"
+            style={{
+              backgroundColor: isSidebarOpen ? "var(--bg-badge)" : "var(--bg-primary)",
+              border: isSidebarOpen ? "1px solid var(--border-accent)" : "1px solid var(--border-primary)",
+              color: isSidebarOpen ? "var(--text-accent)" : "var(--text-primary)"
+            }}
             title={isSidebarOpen ? "Close Chat & Hands" : "Open Chat & Hands"}
           >
             <MessageSquare size={16} />
@@ -486,7 +590,12 @@ function VideoPlayer({
         {/* Mute Toggle */}
         <button
           onClick={() => setIsMuted(!isMuted)}
-          className="p-2 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-all cursor-pointer"
+          className="p-2 rounded-lg transition-all cursor-pointer"
+          style={{
+            backgroundColor: "var(--bg-primary)",
+            border: "1px solid var(--border-primary)",
+            color: "var(--text-primary)"
+          }}
           id="viewer-mute-btn"
         >
           {isMuted ? <VolumeX size={16} /> : <Volume2 size={16} />}
@@ -495,7 +604,12 @@ function VideoPlayer({
         {/* Fullscreen Toggle */}
         <button
           onClick={toggleFullscreen}
-          className="p-2 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-all cursor-pointer"
+          className="p-2 rounded-lg transition-all cursor-pointer"
+          style={{
+            backgroundColor: "var(--bg-primary)",
+            border: "1px solid var(--border-primary)",
+            color: "var(--text-primary)"
+          }}
           id="viewer-fullscreen-btn"
         >
           {isFullscreen ? <Minimize size={16} /> : <Maximize size={16} />}
@@ -573,16 +687,44 @@ function VideoPlayer({
             </div>
           </div>
         )}
+
+        {/* Mentor Away Overlay */}
+        {showAwayOverlay && (
+          <div className="absolute inset-0 z-[60] flex flex-col items-center justify-center bg-black/85 backdrop-blur-lg transition-all duration-300">
+            <div className="text-center space-y-5 max-w-sm px-6">
+              <div className="relative w-20 h-20 mx-auto">
+                <div className="absolute inset-0 rounded-3xl bg-amber-500/20 animate-ping opacity-75" />
+                <div className="relative w-20 h-20 rounded-3xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center shadow-lg shadow-amber-500/10 text-amber-400">
+                  <WifiOff size={36} />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <h3 className="text-lg font-black text-white tracking-tight">Mentor is Temporarily Away</h3>
+                <p className="text-xs text-slate-400 leading-relaxed">
+                  The mentor has disconnected from the session. Please hold on; the broadcast will resume automatically once they reconnect.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Controls displayed below the shared screen in normal mode, or overlayed on hover in fullscreen */}
       <div 
         className={
           isFullscreen 
-            ? `absolute bottom-6 left-6 right-6 z-50 p-3.5 bg-[#0a0b10]/95 backdrop-blur-md border border-white/10 rounded-2xl transition-all duration-300 shadow-2xl ${
+            ? `absolute bottom-6 left-6 right-6 z-50 p-3.5 border rounded-2xl transition-all duration-300 shadow-2xl live-control-bar-fullscreen backdrop-blur-md ${
                 showControls ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 translate-y-4 pointer-events-none"
               }`
-            : "p-3.5 bg-[#0a0b10] border border-white/5 rounded-2xl"
+            : "p-3.5 border rounded-2xl"
+        }
+        style={
+          isFullscreen 
+            ? {} 
+            : {
+                backgroundColor: "var(--bg-card)",
+                borderColor: "var(--border-primary)"
+              }
         }
       >
         {renderControls()}
@@ -640,7 +782,13 @@ function VideoPlayer({
               backgroundImage: "linear-gradient(to bottom right, var(--bg-card), rgba(99, 102, 241, 0.05))"
             }}
           >
-            <div className="w-16 h-16 rounded-full bg-indigo-500/10 text-indigo-400 flex items-center justify-center mx-auto border border-indigo-500/20">
+            <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto border"
+              style={{
+                backgroundColor: "var(--bg-badge)",
+                color: "var(--text-accent)",
+                borderColor: "var(--border-accent)"
+              }}
+            >
               <Mic size={32} className="animate-pulse" />
             </div>
             
@@ -683,7 +831,7 @@ function VideoPlayer({
             
             <button
               onClick={() => setShowAcceptedModal(false)}
-              className="text-[10px] font-bold underline transition-colors hover:text-indigo-400"
+              className="text-[10px] font-bold underline transition-colors hover:text-[var(--text-accent)]"
               style={{ color: "var(--text-muted)" }}
             >
               Configure manually later
@@ -713,6 +861,7 @@ export default function LiveViewerPage() {
   const [raisedHands, setRaisedHands] = useState([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [sessionEnded, setSessionEnded] = useState(false);
+  const [blockedUsers, setBlockedUsers] = useState([]);
 
   const toggleFullscreen = () => {
     if (!workspaceRef.current) return;
@@ -744,10 +893,64 @@ export default function LiveViewerPage() {
     return () => document.removeEventListener("fullscreenchange", handler);
   }, []);
 
+  // Accidental Leave Protection Dialogs
+  useEffect(() => {
+    // 1. Browser tab close or refresh warning
+    const handleBeforeUnload = (e) => {
+      e.preventDefault();
+      e.returnValue = "Are you sure you want to leave the live session?";
+      return e.returnValue;
+    };
+
+    // 2. Intercept local client-side navigation click events
+    const handleGlobalClick = (e) => {
+      let target = e.target;
+      while (target && target.tagName !== "A") {
+        target = target.parentElement;
+      }
+      if (target && target.getAttribute("href")) {
+        const href = target.getAttribute("href");
+        if (href && !href.startsWith("#") && href !== "/live" && href !== "") {
+          const confirmed = window.confirm("Are you sure you want to leave the live session?");
+          if (!confirmed) {
+            e.preventDefault();
+            e.stopPropagation();
+          }
+        }
+      }
+    };
+
+    // 3. Handle browser back button (history navigation)
+    window.history.pushState(null, "", window.location.href);
+
+    const handlePopState = () => {
+      const confirmed = window.confirm("Are you sure you want to leave the live session?");
+      if (!confirmed) {
+        window.history.pushState(null, "", window.location.href);
+      } else {
+        window.history.back();
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    document.addEventListener("click", handleGlobalClick, { capture: true });
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+      document.removeEventListener("click", handleGlobalClick, { capture: true });
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, []);
+
   useEffect(() => {
     checkActiveSession();
+  }, [authToken, API_BASE]);
 
-    // Set up polling interval to check if session has ended
+  // Set up polling interval to check if session has ended, without refetching token
+  useEffect(() => {
+    if (!session) return;
+
     const interval = setInterval(async () => {
       try {
         const res = await fetch(`${API_BASE}/api/livekit/session/active`);
@@ -756,7 +959,7 @@ export default function LiveViewerPage() {
           if (!data.session) {
             // No active session anymore
             setSessionEnded(true);
-          } else if (session && data.session.id !== session.id) {
+          } else if (data.session.id !== session.id) {
             // A different session is active now, meaning the previous one ended
             setSessionEnded(true);
           }
@@ -822,8 +1025,13 @@ export default function LiveViewerPage() {
               backgroundImage: "linear-gradient(to bottom right, var(--bg-card), rgba(99, 102, 241, 0.02))"
             }}
           >
-            <div className="w-20 h-20 rounded-3xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center mx-auto border border-indigo-500/20">
-              <Radio size={40} className="text-indigo-400" />
+            <div className="w-20 h-20 rounded-3xl flex items-center justify-center mx-auto border"
+              style={{
+                backgroundColor: "var(--bg-badge)",
+                borderColor: "var(--border-accent)"
+              }}
+            >
+              <Radio size={40} style={{ color: "var(--text-accent)" }} />
             </div>
             
             <div className="space-y-3">
@@ -992,18 +1200,21 @@ export default function LiveViewerPage() {
                   isSidebarOpen={isSidebarOpen}
                   setIsSidebarOpen={setIsSidebarOpen}
                   onSessionEnded={() => setSessionEnded(true)}
+                  blockedUsers={blockedUsers}
+                  setBlockedUsers={setBlockedUsers}
                 />
               </div>
               {/* Chat Sidebar (1/3) */}
               {(!isFullscreen || isSidebarOpen) && (
-                <div className={`flex flex-col gap-4 ${isFullscreen ? "w-[360px] h-full bg-[#0a0a0f]/95 border-l border-white/10 p-4 backdrop-blur-md shadow-2xl shrink-0" : "lg:flex-1 lg:min-w-[280px] lg:max-w-[350px]"}`}>
+                <div className={`flex flex-col gap-4 ${isFullscreen ? "w-[360px] h-full border-l p-4 backdrop-blur-md shadow-2xl shrink-0 live-chat-sidebar-fullscreen" : "lg:flex-1 lg:min-w-[280px] lg:max-w-[350px]"}`}>
                   {/* Fullscreen Sidebar Header */}
                   {isFullscreen && (
-                    <div className="flex items-center justify-between pb-2.5 border-b border-white/5">
-                      <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Live Chat & Stage</span>
+                    <div className="flex items-center justify-between pb-2.5 border-b border-[var(--border-primary)]">
+                      <span className="text-[10px] font-extrabold uppercase tracking-wider" style={{ color: "var(--text-secondary)" }}>Live Chat & Stage</span>
                       <button
                         onClick={() => setIsSidebarOpen(false)}
-                        className="p-1 rounded-lg hover:bg-white/5 text-white transition-colors cursor-pointer flex items-center justify-center border border-transparent hover:border-white/5"
+                        className="p-1 rounded-lg transition-colors cursor-pointer flex items-center justify-center border border-transparent hover:bg-[var(--bg-hover)]"
+                        style={{ color: "var(--text-primary)" }}
                         title="Close Sidebar"
                       >
                         <X size={15} />
@@ -1052,9 +1263,15 @@ export default function LiveViewerPage() {
                       <div className="pt-3 border-t flex items-center justify-between" style={{ borderColor: "var(--border-primary)" }}>
                         <div className="space-y-0.5">
                           <p className="text-[9px] font-bold" style={{ color: "var(--text-muted)" }}>Speaking Student</p>
-                          <p className="text-xs font-black text-indigo-400">{activeSpeaker}</p>
+                          <p className="text-xs font-black text-[var(--text-accent)]">{activeSpeaker}</p>
                         </div>
-                        <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-indigo-500/10 text-indigo-300 text-[9px] font-black uppercase tracking-wider select-none border border-indigo-500/20">
+                        <div className="flex items-center gap-1 px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-wider select-none border"
+                          style={{
+                            backgroundColor: "var(--bg-badge)",
+                            color: "var(--text-accent)",
+                            borderColor: "var(--border-accent)"
+                          }}
+                        >
                           <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                           On Stage
                         </div>
@@ -1063,7 +1280,13 @@ export default function LiveViewerPage() {
                   </div>
 
                   <div className="flex-1">
-                    <LiveChat className="h-full" />
+                    <LiveChat 
+                      className="h-full" 
+                      blockedUsers={blockedUsers} 
+                      setBlockedUsers={setBlockedUsers} 
+                      hostUsername={session?.host?.username} 
+                      sessionId={session?.id}
+                    />
                   </div>
                 </div>
               )}
