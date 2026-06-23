@@ -22,8 +22,8 @@
     --bg-code:          #f8fafc;
 
     --text-primary:     #0f172a;
-    --text-secondary:   #475569;
-    --text-muted:       #94a3b8;
+    --text-secondary:   #334155;
+    --text-muted:       #64748b;
     --text-accent:      #4f46e5;
     --text-accent2:     #7c3aed;
 
@@ -108,7 +108,7 @@
 
     --text-primary:     #064e3b;
     --text-secondary:   #065f46;
-    --text-muted:       #6ee7b7;
+    --text-muted:       #0d9488;
     --text-accent:      #059669;
     --text-accent2:     #0d9488;
 
@@ -247,3 +247,37 @@
 html {
   transition: background-color 0.35s ease;
 }
+
+/* =============================================
+   FULLSCREEN LIVE CLASSROOM HUD OVERRIDES
+   ============================================= */
+.live-control-bar-fullscreen,
+.live-chat-sidebar-fullscreen {
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+}
+
+html.theme-light .live-control-bar-fullscreen,
+html.theme-light .live-chat-sidebar-fullscreen {
+  background-color: rgba(255, 255, 255, 0.96) !important;
+  border-color: rgba(15, 23, 42, 0.08) !important;
+}
+
+html.theme-mint .live-control-bar-fullscreen,
+html.theme-mint .live-chat-sidebar-fullscreen {
+  background-color: rgba(240, 253, 247, 0.96) !important;
+  border-color: rgba(6, 95, 70, 0.12) !important;
+}
+
+html.theme-dark .live-control-bar-fullscreen,
+html.theme-dark .live-chat-sidebar-fullscreen {
+  background-color: rgba(15, 22, 36, 0.88) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+html.theme-violet .live-control-bar-fullscreen,
+html.theme-violet .live-chat-sidebar-fullscreen {
+  background-color: rgba(13, 8, 24, 0.88) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
