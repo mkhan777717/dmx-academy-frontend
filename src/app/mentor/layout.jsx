@@ -24,7 +24,7 @@ export default function MentorLayout({ children }) {
   const [pendingNavAction, setPendingNavAction] = useState(null);
 
   const handleSafeNavigation = (target) => {
-    if (activeSession) {
+    if (activeSession && target !== "/admin/live") {
       setPendingNavAction({ action: target });
       setShowEndConfirmModal(true);
     } else {
@@ -412,8 +412,10 @@ export default function MentorLayout({ children }) {
       {showEndConfirmModal && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-md p-4 animate-in fade-in duration-200">
           <div 
-            className="w-full max-w-md rounded-3xl p-6 border shadow-2xl text-center space-y-6 bg-[#0c0e17]/95 border-red-500/20"
+            className="w-full max-w-md rounded-3xl p-6 border shadow-2xl text-center space-y-6"
             style={{ 
+              backgroundColor: "var(--bg-card)",
+              borderColor: "var(--border-primary)",
               backgroundImage: "linear-gradient(to bottom right, var(--bg-card), rgba(239, 68, 68, 0.05))"
             }}
           >
@@ -422,10 +424,10 @@ export default function MentorLayout({ children }) {
             </div>
             
              <div className="space-y-2">
-              <h3 className="text-lg font-black text-white tracking-tight">
+              <h3 className="text-lg font-black tracking-tight" style={{ color: "var(--text-primary)" }}>
                 End Active Live Session?
               </h3>
-              <p className="text-xs text-slate-400 leading-relaxed">
+              <p className="text-xs leading-relaxed" style={{ color: "var(--text-secondary)" }}>
                 Navigating away or logging out will immediately end your active live session for all students. Are you sure you want to end the session?
               </p>
             </div>
@@ -436,13 +438,18 @@ export default function MentorLayout({ children }) {
                   setShowEndConfirmModal(false);
                   setPendingNavAction(null);
                 }}
-                className="flex-1 py-3 px-4 rounded-xl border border-white/10 text-white font-extrabold text-xs uppercase tracking-wider transition-all hover:bg-white/5 cursor-pointer"
+                className="flex-1 py-3 px-4 rounded-xl border transition-all cursor-pointer"
+                style={{
+                  backgroundColor: "var(--bg-primary)",
+                  borderColor: "var(--border-primary)",
+                  color: "var(--text-primary)"
+                }}
               >
                 Cancel
               </button>
               <button
                 onClick={handleConfirmEndSession}
-                className="flex-1 py-3 px-4 rounded-xl bg-red-650 hover:bg-red-750 text-white font-extrabold text-xs uppercase tracking-wider transition-all cursor-pointer shadow-lg shadow-red-500/20"
+                className="flex-1 py-3 px-4 rounded-xl bg-red-600 hover:bg-red-700 text-white font-extrabold text-xs uppercase tracking-wider transition-all cursor-pointer shadow-lg shadow-red-500/20"
               >
                 End Session
               </button>

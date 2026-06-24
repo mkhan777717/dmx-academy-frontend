@@ -135,8 +135,35 @@ const getSingleSubmission = async (req, res, next) => {
   }
 };
 
+/**
+ * Run user code once with custom inputs in real-time (without database persistence)
+ */
+const runCode = async (req, res, next) => {
+  try {
+    const { language, code, input } = req.body;
+
+    if (!language || !code) {
+      return res.status(400).json({
+        success: false,
+        message: 'Language and code are required.',
+      });
+    }
+
+    const { runCustomCode } = require('../services/executionService');
+    const result = await runCustomCode(language, code, input || '');
+
+    res.status(200).json({
+      success: true,
+      result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   submitSolution,
   getAllSubmissions,
   getSingleSubmission,
+  runCode,
 };

@@ -10,6 +10,7 @@ import {
   CheckCircle, AlertTriangle, AlertCircle, Play, Settings
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
+import { getSocket } from "@/utils/socket";
 
 // Helper: time-ago formatter
 function timeAgo(dateStr) {
@@ -57,7 +58,7 @@ export default function AdminDashboard() {
 
     // 1. Fetch contests from backend API
     try {
-      const res = await fetch(`${API_BASE}/api/contests`, { headers });
+      const res = await fetch(`${API_BASE}/api/contests`, { headers, signal: AbortSignal.timeout(30000) });
       const data = await res.json();
       if (data.success && data.contests) {
         const now = new Date();
@@ -91,39 +92,9 @@ export default function AdminDashboard() {
     } catch (err) {
       console.error("Failed to fetch backend contests:", err);
     }
-
-    // Merge with local storage dynamic contests
-    let localContests = [];
-    if (typeof window !== "undefined") {
-      try {
-        const localRaw = localStorage.getItem("synapse_dynamic_contests");
-        if (localRaw) localContests = JSON.parse(localRaw);
-      } catch { }
-    }
-
-    const combinedContests = [
-      ...merged,
-      ...localContests.filter(dc => !merged.some(bc => String(bc.id) === String(dc.id)))
-    ].map(c => {
-      if (c.isDbContest) return c;
-      // Compute status if local
-      const start = new Date(c.startTime);
-      const end = new Date(c.endTime);
-      const now = new Date();
-      let status = c.status || "upcoming";
-      if (!isNaN(start.getTime()) && !isNaN(end.getTime())) {
-        if (now >= start && now <= end) status = "active";
-        else if (now > end) status = "past";
-      }
-      return {
-        ...c,
-        status
-      };
-    });
-
-    setAllContests(combinedContests);
-    setTotalContestsCount(combinedContests.length);
-    setActiveContestsCount(combinedContests.filter(c => c.status === "active").length);
+    setAllContests(merged);
+    setTotalContestsCount(merged.length);
+    setActiveContestsCount(merged.filter(c => c.status === "active").length);
 
     // 2. Fetch live system stats from backend API
     try {
@@ -167,6 +138,48 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     loadData();
+
+    // Connect to WebSocket server for real-time updates
+    const socket = getSocket();
+    if (socket) {
+      socket.on("newLiveSubmission", (submission) => {
+        setLiveSubmissions((prev) => {
+          if (prev.some((s) => s.id === submission.id)) return prev;
+          return [submission, ...prev].slice(0, 50);
+        });
+
+        setSystemStats((prev) => {
+          if (!prev) return prev;
+          return {
+            ...prev,
+            totalSubmissions: (prev.totalSubmissions || 0) + 1,
+            verdicts: {
+              ...prev.verdicts,
+              AC: submission.status === "ACCEPTED" ? (prev.verdicts?.AC || 0) + 1 : (prev.verdicts?.AC || 0),
+              WA: submission.status === "WRONG_ANSWER" ? (prev.verdicts?.WA || 0) + 1 : (prev.verdicts?.WA || 0),
+              TLE: submission.status === "TIME_LIMIT_EXCEEDED" ? (prev.verdicts?.TLE || 0) + 1 : (prev.verdicts?.TLE || 0),
+              RE: submission.status === "RUNTIME_ERROR" ? (prev.verdicts?.RE || 0) + 1 : (prev.verdicts?.RE || 0),
+              CE: submission.status === "COMPILATION_ERROR" ? (prev.verdicts?.CE || 0) + 1 : (prev.verdicts?.CE || 0),
+            }
+          };
+        });
+      });
+
+      socket.on("newParticipationReport", (report) => {
+        setParticipationReports((prev) => {
+          const filtered = prev.filter(
+            (r) => !(String(r.userId) === String(report.userId) && String(r.contestId) === String(report.contestId))
+          );
+          return [report, ...filtered];
+        });
+      });
+
+      return () => {
+        socket.off("newLiveSubmission");
+        socket.off("newParticipationReport");
+      };
+    }
+
     // Refresh stats every 10 seconds
     const syncInterval = setInterval(() => {
       loadData();

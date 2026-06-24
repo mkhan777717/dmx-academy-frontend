@@ -52,20 +52,9 @@ export default function PracticeWorkspace() {
       if (!problemId) return;
       setLoadingProblem(true);
       
-      let localProblem = null;
-      if (typeof window !== "undefined") {
-        try {
-          const localRaw = localStorage.getItem("synapse_dynamic_problems");
-          if (localRaw) {
-            const parsed = JSON.parse(localRaw);
-            localProblem = parsed.find(p => p.id === problemId);
-          }
-        } catch { }
-      }
-
       try {
         const res = await fetch(`${API_BASE}/api/problems/${problemId}`, {
-          signal: AbortSignal.timeout(4000)
+          signal: AbortSignal.timeout(30000)
         });
         if (res.ok) {
           const data = await res.json();
@@ -73,65 +62,55 @@ export default function PracticeWorkspace() {
             const dbp = data.problem;
             setDbProblem(dbp);
 
-            const matchedSource = localProblem;
-
             let diffStr = "Medium";
             if (dbp.difficulty === "EASY") diffStr = "Easy";
             else if (dbp.difficulty === "HARD") diffStr = "Hard";
 
-            if (matchedSource) {
-              setProblem({
-                ...matchedSource,
-                dbId: dbp.id,
-                difficulty: diffStr
-              });
-            } else {
-              const dynamicTC = dbp.testCases.map((tc, index) => ({
-                name: `Test Case ${index + 1}${tc.isSample ? " (Sample)" : ""}`,
-                input: tc.input,
-                expected: tc.expectedOutput,
-                assertion: (codeStr, runFunc) => {
-                  if (!runFunc) return true;
+            const dynamicTC = dbp.testCases.map((tc, index) => ({
+              name: `Test Case ${index + 1}${tc.isSample ? " (Sample)" : ""}`,
+              input: tc.input,
+              expected: tc.expectedOutput,
+              assertion: (codeStr, runFunc) => {
+                if (!runFunc) return true;
+                try {
+                  let parsed;
                   try {
-                    let parsed;
-                    try {
-                      parsed = JSON.parse(`[${tc.input}]`);
-                    } catch {
-                      parsed = [tc.input];
-                    }
-                    const actual = runFunc(...parsed);
-                    const expectedNormalized = tc.expectedOutput.trim();
-                    return JSON.stringify(actual) === expectedNormalized || String(actual).trim() === expectedNormalized;
+                    parsed = JSON.parse(`[${tc.input}]`);
                   } catch {
-                    return false;
+                    parsed = [tc.input];
                   }
+                  const actual = runFunc(...parsed);
+                  const expectedNormalized = tc.expectedOutput.trim();
+                  return JSON.stringify(actual) === expectedNormalized || String(actual).trim() === expectedNormalized;
+                } catch {
+                  return false;
                 }
-              }));
+              }
+            }));
 
-              setProblem({
-                id: dbp.slug,
-                dbId: dbp.id,
-                title: dbp.title,
-                difficulty: diffStr,
-                category: "Algorithms",
-                desc: dbp.statement,
-                time: "20 min",
-                tags: ["Database", "Dynamic"],
-                defaultLanguage: "javascript",
-                editorTemplates: {
-                  javascript: `// JavaScript Starter Code\nfunction solve(input) {\n  // Write your code here\n}`,
-                  python: `# Python Starter Code\ndef solve(input):\n    pass`
-                },
-                testcases: dynamicTC,
-                tabs: {
-                  description: dbp.statement,
-                  followup: "Review complexity bounds and optimize your implementation.",
-                  editorial: dbp.explanation || "No editorial guide published yet.",
-                  solution: "No official reference solutions yet.",
-                  evaluation: "Verify against sample assertions below."
-                }
-              });
-            }
+            setProblem({
+              id: dbp.slug,
+              dbId: dbp.id,
+              title: dbp.title,
+              difficulty: diffStr,
+              category: "Algorithms",
+              desc: dbp.statement,
+              time: "20 min",
+              tags: ["Database", "Dynamic"],
+              defaultLanguage: "javascript",
+              editorTemplates: {
+                javascript: `// JavaScript Starter Code\nfunction solve(input) {\n  // Write your code here\n}`,
+                python: `# Python Starter Code\ndef solve(input):\n    pass`
+              },
+              testcases: dynamicTC,
+              tabs: {
+                description: dbp.statement,
+                followup: "Review complexity bounds and optimize your implementation.",
+                editorial: dbp.explanation || "No editorial guide published yet.",
+                solution: "No official reference solutions yet.",
+                evaluation: "Verify against sample assertions below."
+              }
+            });
             setLoadingProblem(false);
             return;
           }
@@ -140,10 +119,6 @@ export default function PracticeWorkspace() {
         console.error("Failed to load db problem details:", err);
       }
 
-      const matchedSource = localProblem;
-      if (matchedSource) {
-        setProblem(matchedSource);
-      }
       setLoadingProblem(false);
     }
     loadProblemData();
@@ -463,29 +438,30 @@ export default function PracticeWorkspace() {
   }, []);
 
   // Execution JS Sandboxed Test Runner
-  const runCode = () => {
+  const runCode = async () => {
     if (!problem) return;
     setIsRunning(true);
     setActiveConsoleTab("result");
     setTestResults([]);
 
-    setTimeout(() => {
-      const code = editorCodes[selectedLanguage] || "";
-      const results = [];
-      const originalConsoleLog = console.log;
-      
-      problem.testcases.forEach((tc, index) => {
-        let passed = false;
-        let output = "";
-        let error = "";
-        const runLogs = [];
+    const code = editorCodes[selectedLanguage] || "";
 
-        // Redirect console logs to capture student feedback
-        console.log = (...args) => {
-          runLogs.push(args.map(a => typeof a === 'object' ? JSON.stringify(a) : a).join(' '));
-        };
+    if (false && selectedLanguage === "javascript") {
+      setTimeout(() => {
+        const results = [];
+        const originalConsoleLog = console.log;
+        
+        problem.testcases.forEach((tc, index) => {
+          let passed = false;
+          let output = "";
+          let error = "";
+          const runLogs = [];
 
-        if (selectedLanguage === "javascript") {
+          // Redirect console logs to capture student feedback
+          console.log = (...args) => {
+            runLogs.push(args.map(a => typeof a === 'object' ? JSON.stringify(a) : a).join(' '));
+          };
+
           try {
             // Find function name dynamically
             const funcNameMatch = code.match(/function\s+(\w+)\s*\(/) || code.match(/const\s+(\w+)\s*=\s*\(/);
@@ -517,46 +493,188 @@ export default function PracticeWorkspace() {
             error = e.message;
             passed = false;
           }
-        } else {
-          // Simulated runner for non-JS files
-          try {
-            runLogs.push("> Compiling syntax trees...");
-            runLogs.push(`> Running simulated logs for ${selectedLanguage} interpreter...`);
-            passed = tc.assertion ? tc.assertion(code, null) : true;
-            output = tc.expected;
-          } catch(e) {
-            error = e.message;
-            passed = false;
+
+          // Restore logger
+          console.log = originalConsoleLog;
+
+          results.push({
+            name: tc.name,
+            input: testcaseInputs[index] || tc.input,
+            expected: tc.expected,
+            actual: output,
+            passed,
+            error,
+            logs: runLogs
+          });
+        });
+
+        setTestResults(results);
+        setIsRunning(false);
+      }, 1200);
+    } else {
+      // Call backend real-time run endpoint
+      const hasRealToken = token && !token.startsWith("demo-") && !token.startsWith("local-");
+      const headers = {
+        "Content-Type": "application/json",
+        ...(hasRealToken
+          ? { Authorization: `Bearer ${token}` }
+          : { "x-bypass-auth": "true", "x-bypass-role": user?.role === "ADMIN" ? "ADMIN" : "USER" }),
+      };
+
+      const mappedLang = selectedLanguage.toUpperCase();
+      const wrappedCode = wrapCodeForBackend(problemId, selectedLanguage, code);
+
+      try {
+        const runPromises = problem.testcases.map(async (tc, index) => {
+          const currentInput = testcaseInputs[index] || tc.input;
+          const res = await fetch(`${API_BASE}/api/submissions/run`, {
+            method: "POST",
+            headers,
+            body: JSON.stringify({
+              language: mappedLang,
+              code: wrappedCode,
+              input: currentInput,
+            }),
+            signal: AbortSignal.timeout(15000),
+          });
+
+          if (!res.ok) {
+            throw new Error(`Execution failed with status ${res.status}`);
           }
-        }
 
-        // Restore logger
-        console.log = originalConsoleLog;
+          const data = await res.json();
+          if (!data.success || !data.result) {
+            throw new Error(data.message || "Failed to run code");
+          }
 
-        results.push({
+          const runResult = data.result;
+          const runLogs = [];
+          if (runResult.error) {
+            runLogs.push(runResult.error);
+          }
+
+          // Normalize expected and actual outputs to perform check
+          const cleanExpected = (tc.expected || "").toString().trim().replace(/\r/g, "");
+          const cleanActual = (runResult.output || "").toString().trim().replace(/\r/g, "");
+          const passed = runResult.status === "SUCCESS" && (cleanActual === cleanExpected);
+
+          return {
+            name: tc.name,
+            input: currentInput,
+            expected: tc.expected,
+            actual: runResult.output || "",
+            passed,
+            error: runResult.error || "",
+            logs: runLogs,
+          };
+        });
+
+        const completedResults = await Promise.all(runPromises);
+        setTestResults(completedResults);
+      } catch (e) {
+        const fallbackResults = problem.testcases.map((tc, index) => ({
           name: tc.name,
           input: testcaseInputs[index] || tc.input,
           expected: tc.expected,
-          actual: output,
-          passed,
-          error,
-          logs: runLogs
-        });
-      });
-
-      setTestResults(results);
+          actual: "",
+          passed: false,
+          error: e.message || "Network error",
+          logs: ["Error running code: " + (e.message || "Network connection issue")]
+        }));
+        setTestResults(fallbackResults);
+      }
       setIsRunning(false);
-    }, 1200);
+    }
   };
 
   // Submit flow
-  const submitCode = () => {
+  const submitCode = async () => {
     if (!problem) return;
     setIsSubmitting(true);
     setActiveConsoleTab("result");
+    setTestResults([]);
     
-    // Inline execution compiler to prevent React state closure bug
     const code = editorCodes[selectedLanguage] || "";
+    const mappedLang = selectedLanguage.toUpperCase() === "JAVASCRIPT" ? "JAVASCRIPT" : selectedLanguage.toUpperCase() === "PYTHON" ? "PYTHON" : "CPP";
+    const wrappedCode = wrapCodeForBackend(problemId, selectedLanguage, code);
+    const hasRealToken = token && !token.startsWith("demo-") && !token.startsWith("local-");
+    const headers = {
+      "Content-Type": "application/json",
+      ...(hasRealToken
+        ? { Authorization: `Bearer ${token}` }
+        : { "x-bypass-auth": "true", "x-bypass-role": user?.role === "ADMIN" ? "ADMIN" : "USER" }),
+    };
+
+    try {
+      if (!dbProblem?.id) {
+        throw new Error("This problem is missing backend test cases.");
+      }
+
+      const res = await fetch(`${API_BASE}/api/submissions/problem/${dbProblem.id}`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify({
+          language: mappedLang,
+          code: wrappedCode,
+        }),
+        signal: AbortSignal.timeout(30000),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.success || !data.submission) {
+        throw new Error(data.message || `Submission failed with status ${res.status}`);
+      }
+
+      const verdict = data.submission.status;
+      const isAccepted = verdict === "ACCEPTED";
+      setTestResults([{
+        name: "Official Judge",
+        input: "Hidden and sample test cases",
+        expected: "ACCEPTED",
+        actual: verdict,
+        passed: isAccepted,
+        error: isAccepted ? "" : verdict.replace(/_/g, " "),
+        logs: [`Execution time: ${data.submission.executionTime ?? 0} ms`],
+      }]);
+
+      saveLocalSubmission({
+        problemId,
+        dbProblemId: dbProblem.id,
+        title: problem.title,
+        language: mappedLang,
+        code,
+        status: verdict,
+      });
+
+      if (isAccepted) {
+        setShowSubmissionSuccess(true);
+        triggerConfettiParticles();
+        if (typeof window !== "undefined") {
+          const solved = localStorage.getItem("solved_problems");
+          let solvedArray = [];
+          if (solved) {
+            try { solvedArray = JSON.parse(solved); } catch { }
+          }
+          if (!solvedArray.includes(problemId)) {
+            solvedArray.push(problemId);
+            localStorage.setItem("solved_problems", JSON.stringify(solvedArray));
+          }
+        }
+      }
+    } catch (err) {
+      setTestResults([{
+        name: "Official Judge",
+        input: "Hidden and sample test cases",
+        expected: "ACCEPTED",
+        actual: "SUBMISSION_FAILED",
+        passed: false,
+        error: err.message || "Could not submit to compiler.",
+        logs: [],
+      }]);
+    } finally {
+      setIsSubmitting(false);
+    }
+    return;
+
     const results = [];
     const originalConsoleLog = console.log;
     
@@ -676,7 +794,7 @@ export default function PracticeWorkspace() {
               language: mappedLang,
               code: wrappedCode,
             }),
-            signal: AbortSignal.timeout(6000),
+            signal: AbortSignal.timeout(30000),
           });
           if (!res.ok) throw new Error("Server rejected submission");
           console.log("Submission successfully posted to backend DB");
@@ -778,17 +896,24 @@ export default function PracticeWorkspace() {
 
   // Format problem details to render safely
   const renderTabContent = () => {
+    const tabs = problem?.tabs || {
+      description: problem?.desc || problem?.statement || "",
+      followup: "Review complexity bounds and optimize your implementation.",
+      editorial: "No editorial guide published yet.",
+      solution: "No official reference solutions yet.",
+      evaluation: "Verify against sample assertions below."
+    };
     switch (activeLeftTab) {
       case "description":
-        return <div className="space-y-4 text-sm leading-relaxed text-[var(--text-secondary)]">{renderText(problem.tabs.description)}</div>;
+        return <div className="space-y-4 text-sm leading-relaxed text-[var(--text-secondary)]">{renderText(tabs.description)}</div>;
       case "followup":
-        return <div className="space-y-4 text-sm leading-relaxed text-[var(--text-secondary)]">{renderText(problem.tabs.followup)}</div>;
+        return <div className="space-y-4 text-sm leading-relaxed text-[var(--text-secondary)]">{renderText(tabs.followup)}</div>;
       case "editorial":
-        return <div className="space-y-4 text-sm leading-relaxed text-[var(--text-secondary)]">{renderText(problem.tabs.editorial)}</div>;
+        return <div className="space-y-4 text-sm leading-relaxed text-[var(--text-secondary)]">{renderText(tabs.editorial)}</div>;
       case "solution":
-        return <div className="space-y-4 text-sm leading-relaxed text-[var(--text-secondary)]">{renderText(problem.tabs.solution)}</div>;
+        return <div className="space-y-4 text-sm leading-relaxed text-[var(--text-secondary)]">{renderText(tabs.solution)}</div>;
       case "evaluation":
-        return <div className="space-y-4 text-sm leading-relaxed text-[var(--text-secondary)]">{renderText(problem.tabs.evaluation)}</div>;
+        return <div className="space-y-4 text-sm leading-relaxed text-[var(--text-secondary)]">{renderText(tabs.evaluation)}</div>;
       default:
         return null;
     }

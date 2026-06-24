@@ -37,6 +37,36 @@ import {
 
 const LIVEKIT_URL = process.env.NEXT_PUBLIC_LIVEKIT_URL;
 
+const playRaiseHandSound = () => {
+  try {
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const now = audioCtx.currentTime;
+
+    const playNote = (freq, duration, startTime) => {
+      const osc = audioCtx.createOscillator();
+      const gainNode = audioCtx.createGain();
+
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(freq, startTime);
+
+      gainNode.gain.setValueAtTime(0.08, startTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+
+      osc.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+
+      osc.start(startTime);
+      osc.stop(startTime + duration);
+    };
+
+    // Modern Digital Chime: Two ascending notes (D5 and A5) with exponential decay
+    playNote(587.33, 0.12, now);
+    playNote(880.00, 0.40, now + 0.10);
+  } catch (e) {
+    console.error("Failed to play hand raise notification sound:", e);
+  }
+};
+
 // ─── Session Timer ───────────────────────────────────────────────────
 function SessionTimer({ startTime }) {
   const [elapsed, setElapsed] = useState("00:00:00");
@@ -183,6 +213,7 @@ function BroadcastPanel({ session, onEndSession }) {
   const room = useRoomContext();
   const [raisedHands, setRaisedHands] = useState([]);
   const [activeSpeaker, setActiveSpeaker] = useState(null);
+  const [blockedUsers, setBlockedUsers] = useState([]);
   const [activeNotification, setActiveNotification] = useState(null);
 
   // Auto-dismiss the temporary raised hand notification after 4 seconds
@@ -217,18 +248,23 @@ function BroadcastPanel({ session, onEndSession }) {
   const isStudentCameraActive = !!speakingStudentCameraTrack?.publication?.track && !speakingStudentCameraTrack?.publication?.isMuted;
 
   const sendStateSync = () => {
-    if (!room) return;
-    const payload = {
-      action: "SYNC_STATE",
-      activeSpeaker,
-      raisedHands,
-    };
-    const encoder = new TextEncoder();
-    const encodedPayload = encoder.encode(JSON.stringify(payload));
-    room.localParticipant.publishData(encodedPayload, {
-      reliable: true,
-      topic: "raise-hand-actions",
-    });
+    if (!room || room.state !== "connected" || !room.localParticipant) return;
+    try {
+      const payload = {
+        action: "SYNC_STATE",
+        activeSpeaker,
+        raisedHands,
+        blockedUsers,
+      };
+      const encoder = new TextEncoder();
+      const encodedPayload = encoder.encode(JSON.stringify(payload));
+      room.localParticipant.publishData(encodedPayload, {
+        reliable: true,
+        topic: "raise-hand-actions",
+      });
+    } catch (e) {
+      console.warn("Failed to publish SYNC_STATE:", e);
+    }
   };
 
   const acceptSpeaker = (studentUsername) => {
@@ -239,25 +275,33 @@ function BroadcastPanel({ session, onEndSession }) {
     setActiveSpeaker(studentUsername);
     setRaisedHands((prev) => prev.filter((u) => u !== studentUsername));
 
-    if (room) {
-      const payload = { action: "ACCEPT_SPEAKER", username: studentUsername };
-      const encoder = new TextEncoder();
-      room.localParticipant.publishData(encoder.encode(JSON.stringify(payload)), {
-        reliable: true,
-        topic: "raise-hand-actions",
-      });
+    if (room && room.state === "connected" && room.localParticipant) {
+      try {
+        const payload = { action: "ACCEPT_SPEAKER", username: studentUsername };
+        const encoder = new TextEncoder();
+        room.localParticipant.publishData(encoder.encode(JSON.stringify(payload)), {
+          reliable: true,
+          topic: "raise-hand-actions",
+        });
+      } catch (e) {
+        console.error("Failed to publish ACCEPT_SPEAKER:", e);
+      }
     }
   };
 
   const rejectHand = (studentUsername) => {
     setRaisedHands((prev) => prev.filter((u) => u !== studentUsername));
-    if (room) {
-      const payload = { action: "DISMISS_HAND", username: studentUsername };
-      const encoder = new TextEncoder();
-      room.localParticipant.publishData(encoder.encode(JSON.stringify(payload)), {
-        reliable: true,
-        topic: "raise-hand-actions",
-      });
+    if (room && room.state === "connected" && room.localParticipant) {
+      try {
+        const payload = { action: "DISMISS_HAND", username: studentUsername };
+        const encoder = new TextEncoder();
+        room.localParticipant.publishData(encoder.encode(JSON.stringify(payload)), {
+          reliable: true,
+          topic: "raise-hand-actions",
+        });
+      } catch (e) {
+        console.error("Failed to publish DISMISS_HAND:", e);
+      }
     }
   };
 
@@ -267,13 +311,17 @@ function BroadcastPanel({ session, onEndSession }) {
     setActiveSpeaker(null);
     setRaisedHands((prev) => prev.filter((u) => u !== oldSpeaker));
 
-    if (room) {
-      const payload = { action: "REMOVE_SPEAKER", username: oldSpeaker };
-      const encoder = new TextEncoder();
-      room.localParticipant.publishData(encoder.encode(JSON.stringify(payload)), {
-        reliable: true,
-        topic: "raise-hand-actions",
-      });
+    if (room && room.state === "connected" && room.localParticipant) {
+      try {
+        const payload = { action: "REMOVE_SPEAKER", username: oldSpeaker };
+        const encoder = new TextEncoder();
+        room.localParticipant.publishData(encoder.encode(JSON.stringify(payload)), {
+          reliable: true,
+          topic: "raise-hand-actions",
+        });
+      } catch (e) {
+        console.error("Failed to publish REMOVE_SPEAKER:", e);
+      }
     }
   };
 
@@ -281,13 +329,49 @@ function BroadcastPanel({ session, onEndSession }) {
     setRaisedHands([]);
   };
 
+  // Lower hand and end stage speak if a student gets blocked
+  useEffect(() => {
+    let changed = false;
+    let newHands = [...raisedHands];
+    let newSpeaker = activeSpeaker;
+
+    blockedUsers.forEach((blockedUsername) => {
+      if (newHands.includes(blockedUsername)) {
+        newHands = newHands.filter((u) => u !== blockedUsername);
+        changed = true;
+      }
+      if (newSpeaker === blockedUsername) {
+        newSpeaker = null;
+        changed = true;
+        // Notify the room to remove this speaker
+        if (room && room.state === "connected" && room.localParticipant) {
+          try {
+            const payload = { action: "REMOVE_SPEAKER", username: blockedUsername };
+            const encoder = new TextEncoder();
+            room.localParticipant.publishData(encoder.encode(JSON.stringify(payload)), {
+              reliable: true,
+              topic: "raise-hand-actions",
+            });
+          } catch (e) {
+            console.error("Failed to publish REMOVE_SPEAKER on block:", e);
+          }
+        }
+      }
+    });
+
+    if (changed) {
+      setRaisedHands(newHands);
+      setActiveSpeaker(newSpeaker);
+    }
+  }, [blockedUsers, activeSpeaker, raisedHands, room]);
+
   // Sync state periodically
   useEffect(() => {
     const interval = setInterval(() => {
       sendStateSync();
     }, 3000);
     return () => clearInterval(interval);
-  }, [room, activeSpeaker, raisedHands]);
+  }, [room, activeSpeaker, raisedHands, blockedUsers]);
 
   // Handle incoming data
   useEffect(() => {
@@ -298,6 +382,10 @@ function BroadcastPanel({ session, onEndSession }) {
       try {
         const data = JSON.parse(decoder.decode(payload));
         if (data.action === "RAISE_HAND") {
+          // Ignore hand raises from blocked students
+          if (blockedUsers.includes(data.username)) return;
+
+          playRaiseHandSound();
           setRaisedHands((prev) => {
             if (prev.includes(data.username)) return prev;
             return [...prev, data.username];
@@ -321,7 +409,7 @@ function BroadcastPanel({ session, onEndSession }) {
     return () => {
       room.off(RoomEvent.DataReceived, handleData);
     };
-  }, [room, activeSpeaker, raisedHands]);
+  }, [room, activeSpeaker, raisedHands, blockedUsers]);
 
   // Handle student disconnection
   useEffect(() => {
@@ -424,30 +512,15 @@ function BroadcastPanel({ session, onEndSession }) {
           >
             <TrackToggle
               source={Track.Source.Microphone}
-              className="p-3 rounded-xl border transition-all hover:scale-105 cursor-pointer"
-              style={{ 
-                backgroundColor: "var(--bg-primary)", 
-                borderColor: "var(--border-primary)",
-                color: "var(--text-primary)" 
-              }}
+              className="p-3 rounded-xl border transition-all hover:scale-105 cursor-pointer bg-[var(--bg-primary)] border-[var(--border-primary)] text-[var(--text-primary)] data-[lk-on=true]:!bg-[var(--accent-primary)] data-[lk-on=true]:hover:!bg-[var(--accent-secondary)] data-[lk-on=true]:!text-white data-[lk-on=true]:!border-transparent data-[lk-on=false]:!bg-red-600 data-[lk-on=false]:hover:!bg-red-700 data-[lk-on=false]:!text-white data-[lk-on=false]:!border-transparent shadow-sm"
             />
             <TrackToggle
               source={Track.Source.Camera}
-              className="p-3 rounded-xl border transition-all hover:scale-105 cursor-pointer"
-              style={{ 
-                backgroundColor: "var(--bg-primary)", 
-                borderColor: "var(--border-primary)",
-                color: "var(--text-primary)" 
-              }}
+              className="p-3 rounded-xl border transition-all hover:scale-105 cursor-pointer bg-[var(--bg-primary)] border-[var(--border-primary)] text-[var(--text-primary)] data-[lk-on=true]:!bg-[var(--accent-primary)] data-[lk-on=true]:hover:!bg-[var(--accent-secondary)] data-[lk-on=true]:!text-white data-[lk-on=true]:!border-transparent data-[lk-on=false]:!bg-red-600 data-[lk-on=false]:hover:!bg-red-700 data-[lk-on=false]:!text-white data-[lk-on=false]:!border-transparent shadow-sm"
             />
             <TrackToggle
               source={Track.Source.ScreenShare}
-              className="p-3 rounded-xl border transition-all hover:scale-105 cursor-pointer"
-              style={{ 
-                backgroundColor: "var(--bg-primary)", 
-                borderColor: "var(--border-primary)",
-                color: "var(--text-primary)" 
-              }}
+              className="p-3 rounded-xl border transition-all hover:scale-105 cursor-pointer bg-[var(--bg-primary)] border-[var(--border-primary)] text-[var(--text-primary)] data-[lk-on=true]:!bg-[var(--accent-primary)] data-[lk-on=true]:hover:!bg-[var(--accent-secondary)] data-[lk-on=true]:!text-white data-[lk-on=true]:!border-transparent shadow-sm"
             />
 
             <div className="w-px h-8 bg-slate-500/20 mx-2" />
@@ -522,7 +595,7 @@ function BroadcastPanel({ session, onEndSession }) {
               <div className="pt-3 border-t flex items-center justify-between" style={{ borderColor: "var(--border-primary)" }}>
                 <div className="space-y-0.5">
                   <p className="text-[10px] font-bold" style={{ color: "var(--text-muted)" }}>Speaking Student</p>
-                  <p className="text-xs font-black text-indigo-400">{activeSpeaker}</p>
+                  <p className="text-xs font-black text-[var(--text-accent)]">{activeSpeaker}</p>
                 </div>
                 <button
                   onClick={revokeSpeaker}
@@ -535,7 +608,12 @@ function BroadcastPanel({ session, onEndSession }) {
             )}
           </div>
 
-          <LiveChat />
+          <LiveChat 
+            blockedUsers={blockedUsers} 
+            setBlockedUsers={setBlockedUsers} 
+            hostUsername={session?.host?.username || user?.username} 
+            sessionId={session?.id}
+          />
         </div>
       </div>
 

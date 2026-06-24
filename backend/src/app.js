@@ -5,6 +5,8 @@ require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
+const http = require('http');
+const { initSocket } = require('./services/socketService');
 const { apiLimiter } = require('./middleware/rateLimiter');
 const { errorHandler } = require('./middleware/errorMiddleware');
 
@@ -151,7 +153,10 @@ const seedDefaultUsers = async () => {
 };
 
 // Start server
-app.listen(PORT, async () => {
+const server = http.createServer(app);
+initSocket(server);
+
+server.listen(PORT, async () => {
   console.log(`=================================`);
   console.log(`  Server running in ${process.env.NODE_ENV || 'development'} mode`);
   console.log(`  Listening on port: ${PORT}`);

@@ -245,6 +245,16 @@ const endSession = async (req, res) => {
       },
     });
 
+    // Delete all chat messages associated with this session after it has ended
+    try {
+      await prisma.liveChatMessage.deleteMany({
+        where: { sessionId: sessionId },
+      });
+      console.log(`Successfully deleted chat messages for ended session ID: ${sessionId}`);
+    } catch (dbErr) {
+      console.error('Failed to clean up session chat messages:', dbErr);
+    }
+
     // Close the LiveKit room if we have the service client configured
     if (LIVEKIT_URL && LIVEKIT_API_KEY && LIVEKIT_API_SECRET) {
       try {
@@ -319,6 +329,76 @@ const deleteSession = async (req, res) => {
   }
 };
 
+/**
+ * @desc    Get all chat messages for a live session
+ * @route   GET /api/livekit/session/:id/chat
+ * @access  Protected
+ */
+const getSessionChat = async (req, res) => {
+  try {
+    const sessionId = parseInt(req.params.id, 10);
+    if (isNaN(sessionId)) {
+      return res.status(400).json({ success: false, message: 'Invalid session ID.' });
+    }
+
+    const messages = await prisma.liveChatMessage.findMany({
+      where: { sessionId },
+      orderBy: { createdAt: 'asc' },
+    });
+
+    return res.status(200).json({
+      success: true,
+      messages,
+    });
+  } catch (error) {
+    console.error('Error fetching session chat messages:', error);
+    return res.status(500).json({ success: false, message: 'Failed to fetch messages.' });
+  }
+};
+
+/**
+ * @desc    Post a new chat message for a live session
+ * @route   POST /api/livekit/session/:id/chat
+ * @access  Protected
+ */
+const postChatMessage = async (req, res) => {
+  try {
+    const sessionId = parseInt(req.params.id, 10);
+    const { messageText } = req.body;
+
+    if (isNaN(sessionId)) {
+      return res.status(400).json({ success: false, message: 'Invalid session ID.' });
+    }
+    if (!messageText || messageText.trim().length === 0) {
+      return res.status(400).json({ success: false, message: 'Message text is required.' });
+    }
+
+    // Verify session exists and is live
+    const session = await prisma.liveSession.findUnique({
+      where: { id: sessionId },
+    });
+    if (!session || !session.isLive) {
+      return res.status(400).json({ success: false, message: 'Session is not active.' });
+    }
+
+    const message = await prisma.liveChatMessage.create({
+      data: {
+        sessionId,
+        senderUsername: req.user.username,
+        messageText: messageText.trim(),
+      },
+    });
+
+    return res.status(201).json({
+      success: true,
+      message,
+    });
+  } catch (error) {
+    console.error('Error creating chat message:', error);
+    return res.status(500).json({ success: false, message: 'Failed to save message.' });
+  }
+};
+
 module.exports = {
   createSession,
   generateToken,
@@ -326,4 +406,6 @@ module.exports = {
   getAllSessions,
   endSession,
   deleteSession,
+  getSessionChat,
+  postChatMessage,
 };

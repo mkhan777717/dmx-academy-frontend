@@ -172,39 +172,13 @@ export default function ContestLobby() {
           };
         });
 
-        // Merge with localStorage fallback
-        const dynamicRaw = typeof window !== "undefined" ? localStorage.getItem("synapse_dynamic_contests") : null;
-        let savedList = [];
-        if (dynamicRaw) {
-          try { savedList = JSON.parse(dynamicRaw); } catch { }
-        }
-        const combined = [
-          ...mapped,
-          ...savedList.filter(dc => !mapped.some(dbc => String(dbc.id) === String(dc.id)))
-        ];
-        setAllContests(combined);
+        setAllContests(mapped);
       } else {
-        // Fallback to localStorage
-        const dynamicRaw = typeof window !== "undefined" ? localStorage.getItem("synapse_dynamic_contests") : null;
-        let merged = [];
-        if (dynamicRaw) {
-          try {
-            merged = JSON.parse(dynamicRaw);
-          } catch { }
-        }
-        setAllContests(merged);
+        setAllContests([]);
       }
     } catch (err) {
       console.error("Failed to fetch contests from backend API:", err);
-      // Fallback to localStorage
-      const dynamicRaw = typeof window !== "undefined" ? localStorage.getItem("synapse_dynamic_contests") : null;
-      let merged = [];
-      if (dynamicRaw) {
-        try {
-          merged = JSON.parse(dynamicRaw);
-        } catch { }
-      }
-      setAllContests(merged);
+      setAllContests([]);
     }
     setLoading(false);
   };

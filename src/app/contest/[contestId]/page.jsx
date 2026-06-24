@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { wrapCodeForBackend } from "@/utils/codeWrapper";
+import { getSocket } from "@/utils/socket";
 
 function saveLocalSubmission(sub) {
   if (typeof window === "undefined") return;
@@ -166,7 +167,8 @@ export default function ContestWorkspace() {
       if (isNumeric) {
         try {
           const res = await fetch(`${API_BASE}/api/contests/${contestId}`, {
-            headers: getAuthHeaders()
+            headers: getAuthHeaders(),
+            signal: AbortSignal.timeout(30000)
           });
           const data = await res.json();
           if (data.success && data.contest) {
@@ -194,7 +196,7 @@ export default function ContestWorkspace() {
                 testcases: dbProb.testCases || [],
                 editorTemplates: {
                   javascript: `// Solve: ${dbProb.title}\nfunction solution() {\n  // Write your code here\n}`,
-                  python: `# Solve: ${dbProb.title}\ndef solution():\n    # Write your code here\n    pass`
+                  python: `# Solve: ${dbProb.title}\ndef solution(nums, target):\n    # Write your code here\n    pass`
                 },
                 defaultLanguage: "javascript"
               };
@@ -228,6 +230,19 @@ export default function ContestWorkspace() {
 
             setContest(mappedContestObj);
             setLoadingContest(false);
+
+            // Register participation in backend immediately upon entering/loading
+            try {
+              fetch(`${API_BASE}/api/contests/${contestId}/participate`, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  ...getAuthHeaders()
+                }
+              });
+            } catch (err) {
+              console.error("Failed to auto-register participation:", err);
+            }
 
             // Fetch dynamic username from session details
             let currentUsername = "You";
@@ -290,26 +305,46 @@ export default function ContestWorkspace() {
         }
       }
 
-      // Fallback: check localStorage only
-      let found = null;
-      if (typeof window !== "undefined") {
-        const dynamicRaw = localStorage.getItem("synapse_dynamic_contests");
-        if (dynamicRaw) {
-          try {
-            const dynamicContests = JSON.parse(dynamicRaw);
-            found = dynamicContests.find(c => String(c.id) === String(contestId)) || null;
-          } catch (e) {
-            console.error("Error reading dynamic contest detail:", e);
-          }
-        }
-      }
-
-      setContest(found);
+      setContest(null);
       setLoadingContest(false);
     };
 
     fetchContestDetails();
   }, [contestId, API_BASE]);
+
+  // Real-time leaderboard WebSocket updates
+  useEffect(() => {
+    if (!contestId) return;
+
+    const socket = getSocket();
+    if (socket) {
+      socket.emit("joinContest", contestId);
+
+      socket.on("contestLeaderboardUpdate", (data) => {
+        if (String(data.contest.id) === String(contestId)) {
+          const formatted = data.leaderboard.map((item, index) => ({
+            rank: index + 1,
+            username: item.user.username,
+            score: item.totalScore,
+            time: `${Math.round(item.totalExecutionTime / 1000)}s`
+          }));
+          setFinalScoreboard(formatted);
+          setContest(prev => {
+            if (!prev) return prev;
+            return {
+              ...prev,
+              leaderboard: formatted
+            };
+          });
+        }
+      });
+
+      return () => {
+        socket.emit("leaveContest", contestId);
+        socket.off("contestLeaderboardUpdate");
+      };
+    }
+  }, [contestId]);
 
   // Terminate contest callback
   const finishContest = useCallback(async () => {
@@ -736,27 +771,27 @@ export default function ContestWorkspace() {
   };
 
   // Execution JS Sandboxed Test Runner
-  const runCode = () => {
+  const runCode = async () => {
     if (!activeQuestion) return;
     setIsRunning(true);
     setActiveConsoleTab("result");
     setTestResults([]);
 
-    setTimeout(() => {
-      const results = [];
-      const originalConsoleLog = console.log;
-      
-      activeQuestion.testcases.forEach((tc, index) => {
-        let passed = false;
-        let output = "";
-        let error = "";
-        const runLogs = [];
+    if (false && selectedLanguage === "javascript") {
+      setTimeout(() => {
+        const results = [];
+        const originalConsoleLog = console.log;
+        
+        activeQuestion.testcases.forEach((tc, index) => {
+          let passed = false;
+          let output = "";
+          let error = "";
+          const runLogs = [];
 
-        console.log = (...args) => {
-          runLogs.push(args.map(a => typeof a === 'object' ? JSON.stringify(a) : a).join(' '));
-        };
+          console.log = (...args) => {
+            runLogs.push(args.map(a => typeof a === 'object' ? JSON.stringify(a) : a).join(' '));
+          };
 
-        if (selectedLanguage === "javascript") {
           try {
             const funcNameMatch = currentCode.match(/function\s+(\w+)\s*\(/) || currentCode.match(/const\s+(\w+)\s*=\s*\(/);
             const functionName = funcNameMatch ? funcNameMatch[1] : null;
@@ -808,43 +843,170 @@ export default function ContestWorkspace() {
             error = e.message;
             passed = false;
           }
-        } else {
-          // Simulated runner for other files
-          try {
-            runLogs.push("> Compiling code variables...");
-            runLogs.push(`> Simulating execution for ${selectedLanguage} interpreter...`);
-            passed = tc.assertion ? tc.assertion(currentCode, null) : true;
-            output = tc.expected || tc.expectedOutput;
-          } catch(e) {
-            error = e.message;
-            passed = false;
+
+          console.log = originalConsoleLog;
+
+          results.push({
+            name: tc.name || "Test Case",
+            input: testcaseInputs[index] || tc.input,
+            expected: tc.expected || tc.expectedOutput,
+            actual: output || runLogs.join("\n"),
+            passed,
+            error,
+            logs: runLogs
+          });
+        });
+
+        setTestResults(results);
+        setIsRunning(false);
+      }, 1200);
+    } else {
+      // Call backend real-time run endpoint
+      const headers = {
+        "Content-Type": "application/json",
+        ...getAuthHeaders(),
+      };
+
+      const mappedLang = selectedLanguage.toUpperCase();
+      const wrappedCode = wrapCodeForBackend(activeQuestion.slug || activeQuestion.id, selectedLanguage, currentCode);
+
+      try {
+        const runPromises = activeQuestion.testcases.map(async (tc, index) => {
+          const currentInput = testcaseInputs[index] || tc.input;
+          const res = await fetch(`${API_BASE}/api/submissions/run`, {
+            method: "POST",
+            headers,
+            body: JSON.stringify({
+              language: mappedLang,
+              code: wrappedCode,
+              input: currentInput,
+            }),
+            signal: AbortSignal.timeout(15000),
+          });
+
+          if (!res.ok) {
+            throw new Error(`Execution failed with status ${res.status}`);
           }
-        }
 
-        console.log = originalConsoleLog;
+          const data = await res.json();
+          if (!data.success || !data.result) {
+            throw new Error(data.message || "Failed to run code");
+          }
 
-        results.push({
+          const runResult = data.result;
+          const runLogs = [];
+          if (runResult.error) {
+            runLogs.push(runResult.error);
+          }
+
+          // Normalize expected and actual outputs to perform check
+          const cleanExpected = (tc.expected || tc.expectedOutput || "").toString().trim().replace(/\r/g, "");
+          const cleanActual = (runResult.output || "").toString().trim().replace(/\r/g, "");
+          const passed = runResult.status === "SUCCESS" && (cleanActual === cleanExpected);
+
+          return {
+            name: tc.name || "Test Case",
+            input: currentInput,
+            expected: tc.expected || tc.expectedOutput,
+            actual: runResult.output || "",
+            passed,
+            error: runResult.error || "",
+            logs: runLogs,
+          };
+        });
+
+        const completedResults = await Promise.all(runPromises);
+        setTestResults(completedResults);
+      } catch (e) {
+        const fallbackResults = activeQuestion.testcases.map((tc, index) => ({
           name: tc.name || "Test Case",
           input: testcaseInputs[index] || tc.input,
           expected: tc.expected || tc.expectedOutput,
-          actual: output || runLogs.join("\n"),
-          passed,
-          error,
-          logs: runLogs
-        });
-      });
-
-      setTestResults(results);
+          actual: "",
+          passed: false,
+          error: e.message || "Network error",
+          logs: ["Error running code: " + (e.message || "Network connection issue")]
+        }));
+        setTestResults(fallbackResults);
+      }
       setIsRunning(false);
-    }, 1200);
+    }
   };
 
   // Submit flow — runs tests inline to avoid stale React state closure bug
-  const submitCode = () => {
+  const submitCode = async () => {
     if (!activeQuestion) return;
     setIsSubmitting(true);
     setActiveConsoleTab("result");
     setTestResults([]);
+
+    const mappedLang = selectedLanguage.toUpperCase() === "JAVASCRIPT" ? "JAVASCRIPT" : selectedLanguage.toUpperCase() === "PYTHON" ? "PYTHON" : "CPP";
+    const wrappedCode = wrapCodeForBackend(activeQuestion.slug || activeQuestion.id, selectedLanguage, currentCode);
+    const hasRealToken = token && !token.startsWith("demo-") && !token.startsWith("local-");
+    const headers = {
+      "Content-Type": "application/json",
+      ...(hasRealToken
+        ? { Authorization: `Bearer ${token}` }
+        : { "x-bypass-auth": "true", "x-bypass-role": "USER" }),
+    };
+
+    try {
+      const res = await fetch(`${API_BASE}/api/submissions/problem/${activeQuestion.id}`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify({
+          language: mappedLang,
+          code: wrappedCode,
+        }),
+        signal: AbortSignal.timeout(30000),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.success || !data.submission) {
+        throw new Error(data.message || `Submission failed with status ${res.status}`);
+      }
+
+      const verdict = data.submission.status;
+      const isAccepted = verdict === "ACCEPTED";
+      setTestResults([{
+        name: "Official Judge",
+        input: "Hidden and sample test cases",
+        expected: "ACCEPTED",
+        actual: verdict,
+        passed: isAccepted,
+        error: isAccepted ? "" : verdict.replace(/_/g, " "),
+        logs: [`Execution time: ${data.submission.executionTime ?? 0} ms`],
+      }]);
+
+      if (isAccepted) {
+        triggerConfettiParticles();
+        setSolvedQuestions(prev => {
+          if (prev.includes(activeQuestion.id)) return prev;
+          setUserScore(score => score + activeQuestion.points);
+          return [...prev, activeQuestion.id];
+        });
+        saveLocalSubmission({
+          problemId: activeQuestion.slug || activeQuestion.id,
+          dbProblemId: activeQuestion.id,
+          title: activeQuestion.title,
+          language: mappedLang,
+          code: currentCode,
+          status: verdict,
+        });
+      }
+    } catch (err) {
+      setTestResults([{
+        name: "Official Judge",
+        input: "Hidden and sample test cases",
+        expected: "ACCEPTED",
+        actual: "SUBMISSION_FAILED",
+        passed: false,
+        error: err.message || "Could not submit to compiler.",
+        logs: [],
+      }]);
+    } finally {
+      setIsSubmitting(false);
+    }
+    return;
 
     setTimeout(() => {
       const results = [];
@@ -984,7 +1146,7 @@ export default function ContestWorkspace() {
               language: mappedLang,
               code: wrappedCode,
             }),
-            signal: AbortSignal.timeout(6000),
+            signal: AbortSignal.timeout(30000),
           }).then(res => {
             if (res.ok) {
               console.log("Contest submission recorded in backend database");

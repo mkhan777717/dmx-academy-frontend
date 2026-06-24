@@ -50,19 +50,6 @@ export default function CreateContest() {
       console.error("Failed to fetch problems from backend API:", err);
     }
 
-    // Fallback if backend API is not responding or returned empty list
-    if (merged.length === 0) {
-      if (typeof window !== "undefined") {
-        const dynamicRaw = localStorage.getItem("synapse_dynamic_problems");
-        if (dynamicRaw) {
-          try {
-            merged = JSON.parse(dynamicRaw);
-          } catch (e) {
-            console.error("Error reading dynamic problems:", e);
-          }
-        }
-      }
-    }
     setAvailableProblems(merged);
   };
 
@@ -128,23 +115,6 @@ export default function CreateContest() {
       leaderboard: []
     };
 
-    // Save to localStorage
-    if (typeof window !== "undefined") {
-      const existingRaw = localStorage.getItem("synapse_dynamic_contests");
-      let existing = [];
-      if (existingRaw) {
-        try {
-          existing = JSON.parse(existingRaw);
-        } catch {
-          existing = [];
-        }
-      }
-      // Avoid duplicate slug
-      existing = existing.filter(c => c.id !== slug);
-      existing.unshift(newContestObj);
-      localStorage.setItem("synapse_dynamic_contests", JSON.stringify(existing));
-    }
-
     const hasRealToken = token && !token.startsWith("demo-") && !token.startsWith("local-");
     const headers = {
       "Content-Type": "application/json",
@@ -166,36 +136,45 @@ export default function CreateContest() {
         })
       });
       const data = await res.json();
-      if (data.success && data.contest) {
-        const createdContest = data.contest;
-        // Post problem links to the contest
-        for (const problemId of selectedProblemIds) {
-          const numId = typeof problemId === "number" ? problemId : parseInt(problemId);
-          if (!isNaN(numId)) {
-            try {
-              await fetch(`${API_BASE}/api/contests/${createdContest.id}/problem`, {
-                method: "POST",
-                headers,
-                body: JSON.stringify({
-                  problemId: numId,
-                  points: Math.round(totalPoints / (selectedProblemIds.length || 1))
-                })
-              });
-            } catch (err) {
-              console.error("Failed to add problem to contest in database:", err);
+      if (!res.ok || !data.success) {
+        let errMsg = data.message || "Failed to create contest in database.";
+        alert(`Failed to save to database:\n• ${errMsg}`);
+        return;
+      }
+
+      const createdContest = data.contest;
+      // Post problem links to the contest
+      for (const problemId of selectedProblemIds) {
+        const numId = typeof problemId === "number" ? problemId : parseInt(problemId);
+        if (!isNaN(numId)) {
+          try {
+            const probRes = await fetch(`${API_BASE}/api/contests/${createdContest.id}/problem`, {
+              method: "POST",
+              headers,
+              body: JSON.stringify({
+                problemId: numId,
+                points: Math.round(totalPoints / (selectedProblemIds.length || 1))
+              })
+            });
+            const probData = await probRes.json();
+            if (!probRes.ok || !probData.success) {
+              console.error("Failed to add problem to contest in database:", probData.message);
             }
+          } catch (err) {
+            console.error("Failed to add problem to contest in database due to network error:", err);
           }
         }
-        console.log("Contest created and problems linked in backend database successfully");
       }
-    } catch (err) {
-      console.error("Failed to save contest to database, fallback to local storage:", err);
-    }
 
-    setSuccess(true);
-    setTimeout(() => {
-      router.push("/contest");
-    }, 1200);
+      console.log("Contest created and problems linked in backend database successfully");
+      setSuccess(true);
+      setTimeout(() => {
+        router.push("/contest");
+      }, 1200);
+    } catch (err) {
+      console.error("Failed to save contest to database:", err);
+      alert("Network error connecting to the database server. Check your connection.");
+    }
   };
 
   return (

@@ -8,6 +8,8 @@ const {
   getAllSessions,
   endSession,
   deleteSession,
+  getSessionChat,
+  postChatMessage,
 } = require('../controllers/livekitController');
 
 // ─── Public Routes ──────────────────────────────────────────────────
@@ -16,6 +18,8 @@ router.get('/sessions', getAllSessions);             // Anyone can see past sess
 
 // ─── Protected Routes ───────────────────────────────────────────────
 router.post('/token', protect, generateToken);      // Any logged-in user can request a token
+router.get('/session/:id/chat', protect, getSessionChat);   // Get chat history for a session
+router.post('/session/:id/chat', protect, postChatMessage); // Post a new chat message
 
 // ─── Admin/Mentor Only ──────────────────────────────────────────────
 router.post('/session', protect, restrictTo('ADMIN', 'MENTOR'), createSession);

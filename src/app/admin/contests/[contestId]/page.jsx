@@ -7,6 +7,7 @@ import {
   Trophy, Users, Clock, ArrowLeft, CheckCircle2, XCircle, RefreshCw
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
+import { getSocket } from "@/utils/socket";
 
 export default function ContestParticipantsPage() {
   const params = useParams();
@@ -60,6 +61,22 @@ export default function ContestParticipantsPage() {
   useEffect(() => {
     if (!contestId) return;
     fetchData();
+
+    const socket = getSocket();
+    if (socket) {
+      socket.emit("joinContest", contestId);
+
+      socket.on("contestParticipantsUpdate", (data) => {
+        if (String(data.contestId) === String(contestId)) {
+          setParticipants(data.participants);
+        }
+      });
+
+      return () => {
+        socket.emit("leaveContest", contestId);
+        socket.off("contestParticipantsUpdate");
+      };
+    }
   }, [contestId]);
 
   const formatDate = (dateStr) => {
