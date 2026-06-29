@@ -19,7 +19,7 @@ const slugify = (title) => {
 const createProblem = async (req, res, next) => {
   try {
     const validatedData = problemSchema.parse(req.body);
-    const { title, difficulty, statement, inputFormat, outputFormat, constraints, explanation, testCases } = validatedData;
+    const { title, difficulty, statement, inputFormat, outputFormat, constraints, explanation, followup, editorial, solution, evaluation, templateJS, templatePython, templateGo, testCases } = validatedData;
 
     // Generate unique slug
     let slug = slugify(title);
@@ -39,6 +39,13 @@ const createProblem = async (req, res, next) => {
         outputFormat,
         constraints,
         explanation,
+        followup: followup || '',
+        editorial: editorial || '',
+        solution: solution || '',
+        evaluation: evaluation || '',
+        templateJS: templateJS || '',
+        templatePython: templatePython || '',
+        templateGo: templateGo || '',
         testCases: {
           create: testCases,
         },
@@ -71,7 +78,7 @@ const updateProblem = async (req, res, next) => {
     }
 
     const validatedData = problemUpdateSchema.parse(req.body);
-    const { title, difficulty, statement, inputFormat, outputFormat, constraints, explanation, testCases } = validatedData;
+    const { title, difficulty, statement, inputFormat, outputFormat, constraints, explanation, followup, editorial, solution, evaluation, templateJS, templatePython, templateGo, testCases } = validatedData;
 
     // Find the problem first
     const problemExists = await prisma.problem.findUnique({ where: { id: problemId } });
@@ -98,6 +105,13 @@ const updateProblem = async (req, res, next) => {
     if (outputFormat !== undefined) updateData.outputFormat = outputFormat;
     if (constraints !== undefined) updateData.constraints = constraints;
     if (explanation !== undefined) updateData.explanation = explanation;
+    if (followup !== undefined) updateData.followup = followup;
+    if (editorial !== undefined) updateData.editorial = editorial;
+    if (solution !== undefined) updateData.solution = solution;
+    if (evaluation !== undefined) updateData.evaluation = evaluation;
+    if (templateJS !== undefined) updateData.templateJS = templateJS;
+    if (templatePython !== undefined) updateData.templatePython = templatePython;
+    if (templateGo !== undefined) updateData.templateGo = templateGo;
 
     // Perform update in a transaction
     const result = await prisma.$transaction(async (tx) => {

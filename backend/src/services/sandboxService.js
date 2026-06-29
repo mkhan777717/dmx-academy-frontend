@@ -257,7 +257,7 @@ const runInSandbox = async (language, code, problemConfig, testCases, options = 
 
       if (useDocker) {
         const runCmd = config.needsCompile
-          ? (langKey === 'cpp' ? config.runCmd('/sandbox/main.out') : config.runCmd())
+          ? (['cpp', 'go'].includes(langKey) ? config.runCmd('/sandbox/main.out') : config.runCmd())
           : config.runCmd(`/sandbox/${srcFile}`);
 
         // Mount user code read-only, configure constraints

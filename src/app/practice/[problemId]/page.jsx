@@ -11,7 +11,10 @@ import {
   Volume2
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
-import { wrapCodeForBackend } from "@/utils/codeWrapper";export default function PracticeWorkspace() {
+import { wrapCodeForBackend } from "@/utils/codeWrapper";
+import { getProblemTabs } from "@/utils/problemTabsData";
+
+export default function PracticeWorkspace() {
   const params = useParams();
   const problemId = params.problemId;
   const { user, token, API_BASE } = useAuth();
@@ -72,9 +75,9 @@ import { wrapCodeForBackend } from "@/utils/codeWrapper";export default function
               tags: ["Database", "Dynamic"],
               defaultLanguage: "javascript",
               editorTemplates: {
-                javascript: `// JavaScript Starter Code\nfunction solve(input) {\n  // Write your code here\n}`,
-                python: `# Python Starter Code\ndef solve(input):\n    pass`,
-                go: `// Go Starter Code\npackage main\n\nimport "fmt"\n\nfunc solve(input string) {\n  // Write your Go code here\n}`
+                javascript: dbp.templateJS || `// JavaScript Starter Code\nfunction solve(input) {\n  // Write your code here\n}`,
+                python: dbp.templatePython || `# Python Starter Code\ndef solve(input):\n    pass`,
+                go: dbp.templateGo || `// Go Starter Code\npackage main\n\nimport "fmt"\n\nfunc solve(input string) {\n  // Write your Go code here\n}`
               },
               testcases: dynamicTC,
               tabs: {
@@ -264,23 +267,29 @@ import { wrapCodeForBackend } from "@/utils/codeWrapper";export default function
       const canvas = canvasRef.current;
       const ctx = canvas.getContext("2d");
       
-      // Make canvas high DPI responsive
-      const rect = canvas.parentElement.getBoundingClientRect();
-      canvas.width = rect.width;
-      canvas.height = 500;
+      const updateCanvasSize = () => {
+        if (!canvasRef.current) return;
+        const rect = canvas.parentElement.getBoundingClientRect();
+        canvas.width = rect.width;
+        canvas.height = 400; // Match CSS height of h-[400px]
+        
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+        ctx.strokeStyle = drawColor;
+        ctx.lineWidth = lineWidth;
+        
+        drawCanvasBackground(canvas, ctx);
+        restoreDrawing();
+      };
+
+      updateCanvasSize();
       
-      ctx.lineCap = "round";
-      ctx.lineJoin = "round";
-      ctx.strokeStyle = drawColor;
-      ctx.lineWidth = lineWidth;
-      
-      // Draw grid pattern behind sketch
-      drawCanvasBackground(canvas, ctx);
-      
-      // Re-draw history
-      restoreDrawing();
+      window.addEventListener("resize", updateCanvasSize);
+      return () => {
+        window.removeEventListener("resize", updateCanvasSize);
+      };
     }
-  }, [activeLeftTab, drawColor, lineWidth]);
+  }, [activeLeftTab, drawColor, lineWidth, leftWidth]);
 
   const startDrawing = (e) => {
     if (!canvasRef.current) return;
@@ -718,13 +727,18 @@ import { wrapCodeForBackend } from "@/utils/codeWrapper";export default function
 
   // Format problem details to render safely
   const renderTabContent = () => {
-    const tabs = problem?.tabs || {
-      description: problem?.desc || problem?.statement || "",
-      followup: "Review complexity bounds and optimize your implementation.",
-      editorial: "No editorial guide published yet.",
-      solution: "No official reference solutions yet.",
-      evaluation: "Verify against sample assertions below."
-    };
+    const tabs = getProblemTabs(problem?.id || problemId, problem?.title, {
+      desc: problem?.desc || problem?.statement,
+      inputFormat: problem?.inputFormat,
+      outputFormat: problem?.outputFormat,
+      constraints: problem?.constraints,
+      timeout: problem?.timeout,
+      memoryLimit: problem?.memoryLimit,
+      followup: problem?.followup,
+      editorial: problem?.editorial,
+      solution: problem?.solution,
+      evaluation: problem?.evaluation,
+    });
     switch (activeLeftTab) {
       case "description":
         return <div className="space-y-4 text-sm leading-relaxed text-[var(--text-secondary)]">{renderText(tabs.description)}</div>;

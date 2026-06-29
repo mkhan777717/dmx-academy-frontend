@@ -13,6 +13,7 @@ import {
 import { useAuth } from "@/context/AuthContext";
 import { wrapCodeForBackend } from "@/utils/codeWrapper";
 import { getSocket } from "@/utils/socket";
+import { getProblemTabs } from "@/utils/problemTabsData";
 
 
 const getRandom = () => Math.random();
@@ -100,6 +101,7 @@ export default function ContestWorkspace() {
   const [showViolationOverlay, setShowViolationOverlay] = useState(false);
   const [violationReason, setViolationReason] = useState("");
   const fullscreenRequestedRef = useRef(false);
+  const [showSubmitConfirm, setShowSubmitConfirm] = useState(false);
 
   // Layout resize state
   const [leftWidth, setLeftWidth] = useState(50); // percentage
@@ -254,9 +256,9 @@ export default function ContestWorkspace() {
                 explanation: dbProb.explanation,
                 testcases: dbProb.testCases || [],
                 editorTemplates: {
-                  javascript: `// Solve: ${dbProb.title}\nfunction solution() {\n    // Write your code here\n}`,
-                  python: `# Solve: ${dbProb.title}\ndef solution():\n    # Write your code here\n    pass`,
-                  go: `package main\n\nimport "fmt"\n\n// Solve: ${dbProb.title}\nfunc solution() {\n    // Write your code here\n    fmt.Println(0)\n}\n\nfunc main() {\n    solution()\n}`
+                  javascript: dbProb.templateJS || `// Solve: ${dbProb.title}\nfunction solution() {\n    // Write your code here\n}`,
+                  python: dbProb.templatePython || `# Solve: ${dbProb.title}\ndef solution():\n    # Write your code here\n    pass`,
+                  go: dbProb.templateGo || `package main\n\nimport "fmt"\n\n// Solve: ${dbProb.title}\nfunc solution() {\n    // Write your code here\n    fmt.Println(0)\n}\n\nfunc main() {\n    solution()\n}`
                 },
                 defaultLanguage: "javascript"
               };
@@ -609,19 +611,29 @@ export default function ContestWorkspace() {
       const canvas = canvasRef.current;
       const ctx = canvas.getContext("2d");
       
-      const rect = canvas.parentElement.getBoundingClientRect();
-      canvas.width = rect.width;
-      canvas.height = 500;
+      const updateCanvasSize = () => {
+        if (!canvasRef.current) return;
+        const rect = canvas.parentElement.getBoundingClientRect();
+        canvas.width = rect.width;
+        canvas.height = 400; // Match CSS height of h-[400px]
+        
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+        ctx.strokeStyle = drawColor;
+        ctx.lineWidth = lineWidth;
+        
+        drawCanvasBackground(canvas, ctx);
+        restoreDrawing();
+      };
+
+      updateCanvasSize();
       
-      ctx.lineCap = "round";
-      ctx.lineJoin = "round";
-      ctx.strokeStyle = drawColor;
-      ctx.lineWidth = lineWidth;
-      
-      drawCanvasBackground(canvas, ctx);
-      restoreDrawing();
+      window.addEventListener("resize", updateCanvasSize);
+      return () => {
+        window.removeEventListener("resize", updateCanvasSize);
+      };
     }
-  }, [activeLeftTab, drawColor, lineWidth]);
+  }, [activeLeftTab, drawColor, lineWidth, leftWidth]);
 
   // Clean speaking on unmount
   useEffect(() => {
@@ -1382,13 +1394,18 @@ export default function ContestWorkspace() {
     if (!activeQuestion) return null;
 
     // Normalize tabs mapping for custom dynamically loaded problems
-    const problemTabs = activeQuestion.tabs || {
-      description: `### Description\n${activeQuestion.desc || ""}\n\n### Input Format\n${activeQuestion.inputFormat || ""}\n\n### Output Format\n${activeQuestion.outputFormat || ""}\n\n### Constraints\n${activeQuestion.constraints || ""}`,
-      followup: "No follow-up questions for this problem.",
-      editorial: "Editorial not available for this custom problem.",
-      solution: "Official solution not available for this custom problem.",
-      evaluation: `Evaluation Limits:\n- **Time Limit:** ${activeQuestion.timeLimitMs || 1000}ms\n- **Memory Limit:** ${activeQuestion.memoryLimitMb || 256}MB`
-    };
+    const problemTabs = getProblemTabs(activeQuestion.slug || activeQuestion.id, activeQuestion.title, {
+      desc: activeQuestion.desc || activeQuestion.statement,
+      inputFormat: activeQuestion.inputFormat,
+      outputFormat: activeQuestion.outputFormat,
+      constraints: activeQuestion.constraints,
+      timeout: activeQuestion.timeLimitMs || activeQuestion.timeout,
+      memoryLimit: activeQuestion.memoryLimitMb || activeQuestion.memoryLimit,
+      followup: activeQuestion.followup,
+      editorial: activeQuestion.editorial,
+      solution: activeQuestion.solution,
+      evaluation: activeQuestion.evaluation,
+    });
 
     // Lock Solutions and Editorials during contest
     const isLockedTab = activeLeftTab === "editorial" || activeLeftTab === "solution";
@@ -1425,61 +1442,103 @@ export default function ContestWorkspace() {
   const renderText = (markdownText) => {
     if (!markdownText) return null;
     
-    return markdownText.split("\n").map((line, idx) => {
+    const processInline = (str) => {
+      const backtickParts = str.split(/`([^`]+)`/g);
+      return backtickParts.flatMap((part, i) => {
+        if (i % 2 === 1) {
+          return (
+            <code key={`code-${i}`} className="px-1.5 py-0.5 rounded font-mono text-xs mx-0.5 text-indigo-600 dark:text-indigo-400 bg-indigo-500/5 border border-indigo-500/10 font-semibold">
+              {part}
+            </code>
+          );
+        }
+        const boldParts = part.split(/\*\*([^*]+)\*\*/);
+        return boldParts.map((sub, j) => {
+          if (j % 2 === 1) {
+            return <strong key={`bold-${i}-${j}`} className="font-bold text-[var(--text-primary)]">{sub}</strong>;
+          }
+          return sub;
+        });
+      });
+    };
+
+    const lines = markdownText.split("\n");
+    const blocks = [];
+    let currentCodeBlock = null;
+
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
       const trimmed = line.trim();
-      if (!trimmed) return <div key={idx} className="h-2" />;
-      
+
+      if (trimmed.startsWith("```")) {
+        if (currentCodeBlock) {
+          blocks.push({ type: "code", content: currentCodeBlock.join("\n"), lang: trimmed.replace("```", "") });
+          currentCodeBlock = null;
+        } else {
+          currentCodeBlock = [];
+        }
+        continue;
+      }
+
+      if (currentCodeBlock !== null) {
+        currentCodeBlock.push(line);
+        continue;
+      }
+
       if (trimmed.startsWith("### ")) {
+        blocks.push({ type: "h3", content: trimmed.replace("### ", "") });
+      } else if (trimmed.startsWith("#### ")) {
+        blocks.push({ type: "h4", content: trimmed.replace("#### ", "") });
+      } else if (trimmed.startsWith("* ") || trimmed.startsWith("- ")) {
+        blocks.push({ type: "bullet", content: trimmed.replace(/^[\*\-]\s+/, "") });
+      } else if (!trimmed) {
+        blocks.push({ type: "spacer" });
+      } else {
+        blocks.push({ type: "paragraph", content: line });
+      }
+    }
+
+    return blocks.map((block, idx) => {
+      if (block.type === "spacer") {
+        return <div key={idx} className="h-3" />;
+      }
+      if (block.type === "h3") {
         return (
-          <h3 key={idx} className="text-xl font-bold font-display mt-6 mb-3 text-[var(--text-primary)] border-b pb-1" style={{ borderColor: "var(--border-primary)" }}>
-            {trimmed.replace("### ", "")}
+          <h3 key={idx} className="text-base font-extrabold font-display mt-6 mb-3 text-[var(--text-primary)] border-l-4 border-indigo-500 pl-3 pb-0.5 tracking-tight flex items-center">
+            {block.content}
           </h3>
         );
       }
-      if (trimmed.startsWith("#### ")) {
+      if (block.type === "h4") {
         return (
-          <h4 key={idx} className="text-sm font-extrabold uppercase mt-5 mb-2 text-[var(--text-primary)] tracking-wide">
-            {trimmed.replace("#### ", "")}
+          <h4 key={idx} className="text-xs font-black uppercase mt-5 mb-2 text-[var(--text-primary)] tracking-wider border-l-2 border-indigo-500/60 pl-2">
+            {block.content}
           </h4>
         );
       }
-      
-      if (trimmed.startsWith("```")) return null;
-
-      const isBullet = trimmed.startsWith("* ") || trimmed.startsWith("- ");
-      
-      const processInline = (str) => {
-        const backtickParts = str.split(/`([^`]+)`/g);
-        return backtickParts.flatMap((part, i) => {
-          if (i % 2 === 1) {
-            return (
-              <code key={`code-${i}`} className="px-1.5 py-0.5 rounded font-mono text-xs mx-0.5 text-pink-500 font-semibold bg-slate-500/10 border border-slate-500/20">
-                {part}
-              </code>
-            );
-          }
-          const boldParts = part.split(/\*\*([^*]+)\*\*/);
-          return boldParts.map((sub, j) => {
-            if (j % 2 === 1) {
-              return <strong key={`bold-${i}-${j}`} className="font-bold text-[var(--text-primary)]">{sub}</strong>;
-            }
-            return sub;
-          });
-        });
-      };
-
-      if (isBullet) {
+      if (block.type === "bullet") {
         return (
-          <div key={idx} className="flex items-start pl-4 space-x-2 my-1.5">
-            <span className="text-[var(--text-accent)] mt-1.5 text-[8px]">•</span>
-            <span className="flex-1">{processInline(trimmed.replace(/^[\*\-]\s+/, ""))}</span>
+          <div key={idx} className="flex items-start pl-4 space-x-2 my-1.5 text-xs sm:text-sm text-[var(--text-secondary)]">
+            <span className="text-indigo-500 mt-1.5 text-[8px]">•</span>
+            <span className="flex-1">{processInline(block.content)}</span>
           </div>
         );
       }
-
+      if (block.type === "code") {
+        return (
+          <div key={idx} className="my-4 rounded-xl border border-indigo-500/10 dark:border-indigo-500/15 overflow-hidden shadow-[0_4px_12px_rgba(99,102,241,0.02)]">
+            <div className="flex justify-between items-center px-4 py-1.5 border-b border-indigo-500/10 bg-indigo-500/5 text-[10px] text-indigo-400 font-mono font-semibold">
+              <span>Example / Code Block</span>
+            </div>
+            <pre className="p-4 overflow-x-auto text-xs font-mono text-indigo-500 dark:text-indigo-400 bg-indigo-500/5 leading-relaxed">
+              <code>{block.content}</code>
+            </pre>
+          </div>
+        );
+      }
       return (
         <p key={idx} className="mb-2.5 text-xs sm:text-sm leading-relaxed text-[var(--text-secondary)]">
-          {processInline(line)}
+          {processInline(block.content)}
         </p>
       );
     });
@@ -1489,6 +1548,74 @@ export default function ContestWorkspace() {
 
   return (
     <div className="flex h-screen w-screen flex-col overflow-hidden" style={{ backgroundColor: "var(--bg-primary)" }}>
+
+      {/* ══════ Submit Contest Confirmation Overlay ══════ */}
+      <AnimatePresence>
+        {showSubmitConfirm && !contestEnded && (
+          <motion.div
+            key="submit-confirm-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[9998] flex items-center justify-center"
+            style={{ backdropFilter: "blur(12px)", backgroundColor: "rgba(10, 10, 14, 0.8)" }}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              className="w-full max-w-md p-8 rounded-3xl border border-indigo-500/20 shadow-2xl flex flex-col items-center text-center space-y-6"
+              style={{
+                background: "linear-gradient(135deg, rgba(20, 20, 25, 0.95), rgba(15, 15, 20, 0.95))",
+                boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 40px rgba(99, 102, 241, 0.15)"
+              }}
+            >
+              {/* Flag Icon */}
+              <div className="h-16 w-16 rounded-full flex items-center justify-center bg-indigo-500/10 border border-indigo-500/20 shadow-lg">
+                <Flag className="h-8 w-8 text-indigo-500" />
+              </div>
+
+              {/* Title */}
+              <div className="space-y-2">
+                <h3 className="text-xl font-bold tracking-tight text-white">Submit Contest?</h3>
+                <p className="text-xs font-semibold text-indigo-400/95 uppercase tracking-wider">
+                  Confirmation Required
+                </p>
+              </div>
+
+              {/* Description */}
+              <div className="p-4 w-full rounded-2xl bg-indigo-500/5 border border-indigo-500/10 text-left">
+                <p className="text-xs text-indigo-200/80 leading-relaxed">
+                  Are you sure you want to finish and submit your contest attempt? Once submitted, you cannot change your code or answer further questions.
+                </p>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex w-full space-x-3">
+                <button
+                  onClick={() => setShowSubmitConfirm(false)}
+                  className="flex-1 py-3 font-bold rounded-2xl text-xs text-[var(--text-secondary)] border border-[var(--border-primary)] hover:bg-slate-500/5 active:scale-[0.98] transition-all cursor-pointer"
+                  style={{ backgroundColor: "rgba(255,255,255,0.02)" }}
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={async () => {
+                    setShowSubmitConfirm(false);
+                    await finishContest();
+                  }}
+                  className="flex-1 py-3 font-bold rounded-2xl text-xs text-white shadow-lg shadow-indigo-950/20 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
+                  style={{
+                    background: "linear-gradient(135deg, #6366f1, #4f46e5)"
+                  }}
+                >
+                  Yes, Submit
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* ══════ Anti-Cheat Security Violation Overlay ══════ */}
       <AnimatePresence>
@@ -1774,21 +1901,29 @@ export default function ContestWorkspace() {
       {/* Lobby entrance start screen */}
 
       {!contestStarted ? (
-        <div className="flex-1 flex flex-col justify-center items-center p-6 relative">
-          <div className="absolute top-0 left-0 right-0 h-[300px] bg-gradient-to-b from-indigo-100/20 via-transparent to-transparent pointer-events-none" />
+        <div className="flex-1 flex flex-col justify-center items-center p-6 relative bg-slate-50/50 dark:bg-[#0b0f19]/30">
+          {/* Futuristic grid and glow backdrop */}
+          <div className="absolute top-0 left-0 right-0 h-[400px] bg-gradient-to-b from-indigo-500/5 via-purple-500/5 to-transparent pointer-events-none" />
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(99,102,241,0.02)_1px,transparent_1px),linear-gradient(to_bottom,rgba(99,102,241,0.02)_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none" />
           
+          {/* Glowing backdrop blobs */}
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-indigo-500/10 dark:bg-indigo-500/15 rounded-full blur-[100px] pointer-events-none" />
+          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/10 dark:bg-purple-500/15 rounded-full blur-[100px] pointer-events-none" />
+
           <motion.div 
-            initial={{ scale: 0.95, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            className="max-w-xl w-full border rounded-3xl p-8 shadow-2xl space-y-6"
-            style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}
+            initial={{ scale: 0.96, opacity: 0, y: 15 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            className="max-w-xl w-full backdrop-blur-lg bg-white/70 dark:bg-slate-900/70 border border-slate-200/50 dark:border-slate-800/50 shadow-2xl rounded-3xl p-8 space-y-6 relative overflow-hidden transition-all duration-300 hover:shadow-indigo-500/10 hover:border-indigo-500/30"
           >
-            <div className="h-14 w-14 rounded-2xl flex items-center justify-center text-white shadow-md bg-indigo-600">
-              <Trophy size={28} />
+            {/* Top gradient indicator */}
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500" />
+
+            <div className="h-14 w-14 rounded-2xl flex items-center justify-center text-white shadow-lg bg-gradient-to-tr from-indigo-500 to-purple-600 shadow-indigo-500/20">
+              <Trophy size={26} className="animate-pulse" />
             </div>
 
-            <div className="space-y-2">
-              <h1 className="text-2xl sm:text-3xl font-black font-display text-[var(--text-primary)] leading-snug">
+            <div className="space-y-2.5">
+              <h1 className="text-2xl sm:text-3xl font-black font-display tracking-tight text-[var(--text-primary)] leading-snug">
                 {contest.title}
               </h1>
               <p className="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed">
@@ -1797,41 +1932,51 @@ export default function ContestWorkspace() {
             </div>
 
             {/* instructions details */}
-            <div className="space-y-3 p-4 rounded-2xl border bg-slate-500/5 text-xs" style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}>
-              <div className="flex items-center space-x-2 text-[var(--text-primary)] font-bold">
-                <Clock size={14} className="text-indigo-500" />
-                <span>Contest Duration: {contest.durationMins} minutes</span>
+            <div className="space-y-4 p-5 rounded-2xl border bg-slate-500/5 backdrop-blur-sm text-xs" style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}>
+              <div className="flex items-center space-x-2 text-[var(--text-primary)] font-extrabold text-sm border-b pb-2" style={{ borderColor: "var(--border-primary)" }}>
+                <Clock size={16} className="text-indigo-500" />
+                <span>Contest Rules & Parameters</span>
               </div>
-              <ul className="list-disc pl-4 space-y-1.5 leading-relaxed text-[var(--text-secondary)]">
-                <li>Once you click <strong>{"Start in Fullscreen"}</strong>, the browser enters <strong>fullscreen mode</strong> and the countdown timer begins — it cannot be paused.</li>
-                <li>Your final rank is calculated based on total points earned and the speed of your submissions.</li>
-                <li>Editorial and reference solution tabs will be locked during the timed contest block.</li>
-                <li>When the timer hits <code>00:00</code>, your editor access will lock and submissions will close automatically.</li>
-                <li><strong className="text-indigo-400">Anti-cheat active:</strong> Fullscreen is locked for the duration. Tab switching, AI shortcuts (Ctrl+K, F12, etc.), and right-click are disabled.</li>
-                <li>Supported languages: <strong>JavaScript</strong>, <strong>Python</strong>, <strong>Go</strong>.</li>
+              <ul className="space-y-2.5 leading-relaxed text-[var(--text-secondary)]">
+                <li className="flex items-start space-x-2">
+                  <span className="text-indigo-500 mt-1">•</span>
+                  <span>Duration: <strong>{contest.durationMins} minutes</strong> (countdown timer begins immediately and cannot be paused).</span>
+                </li>
+                <li className="flex items-start space-x-2">
+                  <span className="text-indigo-500 mt-1">•</span>
+                  <span>Submission Metrics: Your final rank is calculated based on total points and submission speed.</span>
+                </li>
+                <li className="flex items-start space-x-2">
+                  <span className="text-indigo-500 mt-1">•</span>
+                  <span>Auto-Lock: Editorial/solution tabs are hidden during active contest. Editor locks at `00:00`.</span>
+                </li>
+                <li className="flex items-start space-x-2 text-rose-500">
+                  <span className="text-rose-500 mt-1 font-bold">!</span>
+                  <span><strong>Anti-Cheat Active:</strong> Fullscreen mode is enforced. Tab switching, AI shortcut keys (Ctrl+K, F12), and right-clicks are locked. 3 exits triggers auto-submission.</span>
+                </li>
               </ul>
             </div>
 
             <div className="flex space-x-3 pt-2">
               <Link
                 href="/contest"
-                className="flex-1 py-3 text-center bg-slate-500/10 hover:bg-slate-500/20 font-bold rounded-xl text-xs text-[var(--text-secondary)] cursor-pointer"
+                className="flex-1 py-3 text-center bg-slate-500/5 hover:bg-slate-500/10 border border-[var(--border-primary)] transition-all font-bold rounded-xl text-xs text-[var(--text-secondary)] cursor-pointer"
               >
                 Exit to Lobby
               </Link>
               <button
                 disabled={isUpcoming}
                 onClick={startContest}
-                className={`flex-grow py-3 font-bold rounded-xl text-xs text-white shadow-md flex items-center justify-center space-x-2 ${
-                  isUpcoming ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+                className={`flex-grow py-3 px-6 font-bold rounded-xl text-xs text-white flex items-center justify-center space-x-2 transition-all hover:scale-102 active:scale-98 shadow-[0_4px_15px_rgba(99,102,241,0.25)] hover:shadow-[0_4px_22px_rgba(99,102,241,0.4)] ${
+                  isUpcoming ? "opacity-50 cursor-not-allowed" : "cursor-pointer hover:brightness-110"
                 }`}
                 style={{
-                  background: isUpcoming ? "gray" : "var(--accent-gradient)"
+                  background: isUpcoming ? "gray" : "linear-gradient(135deg, #6366f1, #8b5cf6)"
                 }}
               >
                 {isUpcoming ? `Starts at ${new Date(contest.startTime).toLocaleTimeString()}` : (
                   <>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
+                    <Play size={13} fill="currentColor" />
                     <span>Start in Fullscreen</span>
                   </>
                 )}
@@ -1844,15 +1989,15 @@ export default function ContestWorkspace() {
         /* Timed active workspace */
         <>
           {/* Contest header */}
-          <header className="flex h-14 items-center justify-between px-6 border-b shrink-0 z-30 animate-fade-in" style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)" }}>
+          <header className="flex h-14 items-center justify-between px-6 border-b shrink-0 z-30 animate-fade-in shadow-sm" style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)" }}>
             <div className="flex items-center space-x-5">
-              <span className="text-sm font-black text-[var(--text-primary)] tracking-tight">
+              <span className="text-sm font-black text-[var(--text-primary)] tracking-tight font-display bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-transparent bg-clip-text">
                 {contest.title}
               </span>
               <span className="h-4 w-px bg-slate-500/20" />
               
               {/* Question list selector pills */}
-              <div className="flex items-center bg-slate-500/5 p-0.5 rounded-lg border" style={{ borderColor: "var(--border-primary)" }}>
+              <div className="flex items-center bg-slate-500/5 p-1 rounded-full border space-x-1" style={{ borderColor: "var(--border-primary)" }}>
                 {contest.problems.map((prob, idx) => {
                   const isCurrent = activeQuestionIdx === idx;
                   const isSolved = solvedQuestions.includes(prob.id);
@@ -1860,14 +2005,16 @@ export default function ContestWorkspace() {
                     <button
                       key={prob.id}
                       onClick={() => changeQuestion(idx)}
-                      className={`px-3 py-1 rounded-md text-[10px] font-extrabold uppercase tracking-wider transition-all cursor-pointer flex items-center space-x-1 ${
+                      className={`px-3.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider transition-all duration-200 cursor-pointer flex items-center space-x-1.5 relative ${
                         isCurrent 
-                          ? "bg-indigo-500 text-white shadow-sm" 
-                          : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+                          ? "bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white shadow-[0_0_15px_rgba(99,102,241,0.3)] scale-105 hover:scale-110" 
+                          : "text-[var(--text-secondary)] hover:bg-slate-500/10 hover:text-[var(--text-primary)] hover:scale-102 bg-transparent"
                       }`}
                     >
                       <span>Q{idx + 1}</span>
-                      {isSolved && <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />}
+                      {isSolved && (
+                        <span className="h-2 w-2 rounded-full bg-emerald-500 border border-white dark:border-slate-900 shadow-[0_0_8px_#10b981] animate-pulse" />
+                      )}
                     </button>
                   );
                 })}
@@ -1875,22 +2022,29 @@ export default function ContestWorkspace() {
             </div>
 
             {/* Timers and scoring status */}
-            <div className="flex items-center space-x-5">
-              <div className="flex items-center space-x-1.5 text-sm font-extrabold"
-                style={{ color: secondsLeft < 120 ? "#ef4444" : "var(--text-primary)" }}
-              >
-                <Clock size={16} className={secondsLeft < 120 ? "animate-pulse" : ""} />
-                <span className="font-mono text-base">{formatTimer()}</span>
+            <div className="flex items-center space-x-4">
+              {/* Sports-scoreboard style countdown timer */}
+              <div className={`flex items-center space-x-2 px-3.5 py-1.5 rounded-full border text-xs font-bold shadow-[0_0_15px_rgba(99,102,241,0.05)] font-mono transition-all duration-300 ${
+                secondsLeft < 120 
+                  ? "bg-rose-500/10 border-rose-500/30 text-rose-500 shadow-[0_0_15px_rgba(244,63,94,0.15)] animate-pulse" 
+                  : "bg-indigo-500/10 border-indigo-500/20 text-indigo-500 dark:text-indigo-400"
+              }`}>
+                <Clock size={14} className={secondsLeft < 120 ? "animate-pulse text-rose-500" : "text-indigo-500"} />
+                <span>{formatTimer()}</span>
               </div>
 
-              <div className="text-xs font-bold" style={{ color: "var(--text-secondary)" }}>
-                Score: <span className="text-[var(--text-accent)] font-extrabold">{userScore}</span> / {contest.totalPoints} pts
+              {/* High-end score badge */}
+              <div className="flex items-center space-x-1.5 px-3.5 py-1.5 bg-amber-500/5 rounded-full border border-amber-500/20 text-[11px] font-bold shadow-[0_0_15px_rgba(245,158,11,0.05)]" style={{ color: "var(--text-secondary)" }}>
+                <Trophy size={13} className="text-amber-500 animate-bounce" />
+                <span>Score:</span>
+                <span className="bg-gradient-to-r from-amber-500 to-orange-500 text-transparent bg-clip-text font-extrabold text-sm px-0.5">{userScore}</span>
+                <span className="text-[var(--text-muted)]">/ {contest.totalPoints} pts</span>
               </div>
 
               <button 
-                onClick={finishContest}
-                className="flex items-center space-x-1.5 px-4 py-1.5 rounded-full text-xs font-bold text-white shadow-sm cursor-pointer"
-                style={{ background: "linear-gradient(135deg, #ef4444, #dc2626)" }}
+                onClick={() => setShowSubmitConfirm(true)}
+                className="flex items-center space-x-1.5 px-4 py-2 rounded-full text-xs font-bold text-white shadow-[0_4px_12px_rgba(239,68,68,0.25)] hover:scale-105 hover:shadow-[0_4px_20px_rgba(239,68,68,0.4)] active:scale-95 transition-all duration-200 cursor-pointer border border-rose-500/30 shadow-red-500/10"
+                style={{ background: "linear-gradient(135deg, #f43f5e, #e11d48)" }}
               >
                 <Flag size={12} />
                 <span>Finish & Submit</span>
@@ -1908,8 +2062,8 @@ export default function ContestWorkspace() {
               className="flex flex-col h-full overflow-hidden shrink-0"
               style={{ width: `${leftWidth}%` }}
             >
-              {/* Tabs selector */}
-              <div className="flex h-10 border-b overflow-x-auto shrink-0 animate-fade-in" style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)" }}>
+              {/* Floating pill tabs selector */}
+              <div className="flex h-12 border-b overflow-x-auto shrink-0 items-center px-4 space-x-2" style={{ backgroundColor: "rgba(var(--bg-secondary-rgb), 0.5)", backdropFilter: "blur(8px)", borderColor: "var(--border-primary)" }}>
                 {[
                   { id: "description", label: "Description", icon: <FileText size={13} /> },
                   { id: "followup", label: "Followup", icon: <MessageCircle size={13} /> },
@@ -1919,14 +2073,15 @@ export default function ContestWorkspace() {
                   { id: "excalidraw", label: "Excalidraw", icon: <Palette size={13} /> }
                 ].map(tab => {
                   const isLocked = (tab.id === "editorial" || tab.id === "solution") && !contestEnded;
+                  const isActive = activeLeftTab === tab.id;
                   return (
                     <button
                       key={tab.id}
                       onClick={() => setActiveLeftTab(tab.id)}
-                      className={`flex items-center space-x-1 px-4 py-2 text-xs font-semibold cursor-pointer border-b-2 transition-all whitespace-nowrap ${
-                        activeLeftTab === tab.id 
-                          ? "border-indigo-500 text-indigo-500" 
-                          : "border-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+                      className={`flex items-center space-x-1.5 px-3 py-1.5 text-[11px] font-extrabold cursor-pointer rounded-full transition-all duration-200 whitespace-nowrap hover:-translate-y-0.5 active:translate-y-0 ${
+                        isActive 
+                          ? "bg-gradient-to-r from-indigo-500/15 to-purple-500/15 text-indigo-500 border border-indigo-500/30 shadow-[0_2px_10px_rgba(99,102,241,0.1)]" 
+                          : "text-[var(--text-secondary)] bg-transparent border border-transparent hover:bg-slate-500/5 hover:text-[var(--text-primary)]"
                       }`}
                     >
                       {isLocked ? <Lock size={11} className="text-[var(--text-muted)]" /> : tab.icon}
@@ -2026,48 +2181,63 @@ export default function ContestWorkspace() {
               </div>
 
               {/* Voice Assistant panel */}
-              <div className="flex items-center justify-between p-3 border-b bg-slate-500/5 shadow-sm" style={{ borderColor: "var(--border-primary)" }}>
-                <div className="flex items-center space-x-2.5">
+              <div 
+                className="flex items-center justify-between p-3.5 border-b shadow-[0_4px_15px_rgba(99,102,241,0.03)] transition-all duration-300 relative overflow-hidden" 
+                style={{ 
+                  borderColor: "var(--border-primary)",
+                  background: "linear-gradient(90deg, rgba(99, 102, 241, 0.03) 0%, rgba(139, 92, 246, 0.03) 50%, rgba(244, 63, 94, 0.03) 100%)"
+                }}
+              >
+                {/* Glowing edge accents */}
+                <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-indigo-500/20 via-purple-500/20 to-pink-500/20" />
+                
+                <div className="flex items-center space-x-3.5 relative z-10">
                   <button
                     onClick={isSpeaking ? stopSpeaking : () => askVoiceAssistant()}
                     disabled={isListening || assistantTyping}
-                    className={`relative h-8 w-8 rounded-full flex items-center justify-center text-white shadow-sm transition-all border border-transparent outline-none focus:outline-none ${
+                    className={`relative h-9 w-9 rounded-full flex items-center justify-center text-white transition-all border border-transparent outline-none focus:outline-none shadow-md ${
                       isSpeaking 
-                        ? "bg-rose-600 hover:bg-rose-700 cursor-pointer" 
+                        ? "bg-rose-500 hover:bg-rose-600 cursor-pointer shadow-rose-500/25" 
                         : isListening 
-                          ? "bg-red-500" 
-                          : "bg-indigo-600 hover:bg-indigo-700 cursor-pointer"
+                          ? "bg-red-500 shadow-red-500/35 scale-105" 
+                          : "bg-indigo-600 hover:bg-indigo-700 cursor-pointer shadow-indigo-600/25 hover:scale-105 active:scale-95"
                     }`}
                     title={isSpeaking ? "Stop speaking" : "Start query"}
                   >
                     {isSpeaking ? (
-                      <Volume2 size={14} className="animate-bounce" />
+                      <Volume2 size={15} className="animate-bounce" />
                     ) : (
-                      <Mic size={14} className={isListening ? "animate-pulse" : ""} />
+                      <Mic size={15} className={isListening ? "animate-pulse" : ""} />
                     )}
                     {isListening && (
-                      <span className="absolute -top-0.5 -right-0.5 h-3.5 w-3.5 rounded-full bg-red-400 border border-white animate-ping" />
+                      <span className="absolute inset-0 rounded-full border-2 border-red-500 animate-ping opacity-75" />
                     )}
                   </button>
+                  
                   <div>
-                    <div className="text-xs font-bold text-[var(--text-primary)]">VOICE DEVELOPER ASSISTANT</div>
-                    <div className="text-[10px] text-[var(--text-secondary)]">
+                    <div className="text-xs font-black tracking-wider text-[var(--text-primary)] flex items-center space-x-1.5">
+                      <span>VOICE AI DEVELOPER ASSISTANT</span>
+                      <span className="h-1.5 w-1.5 rounded-full bg-indigo-500 animate-pulse" />
+                    </div>
+                    <div className="text-[10px] text-[var(--text-secondary)] font-semibold mt-0.5">
                       {isListening ? "Listening to query..." : assistantTyping ? "AI typing hints..." : isSpeaking ? "Speaking... (Click speaker icon to stop)" : "Locked on explaining security & algorithms."}
                     </div>
                   </div>
                 </div>
 
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-3 relative z-10">
                   {/* Animated Wave equalizer */}
                   {voiceWaveform && (
-                    <div className="flex space-x-0.5 items-end h-4 px-3">
-                      {[1, 2, 3, 4, 5].map(bar => (
+                    <div className="flex space-x-1 items-end h-5 px-3">
+                      {[1, 2, 3, 4, 5, 6].map(bar => (
                         <span 
                           key={bar} 
-                          className="w-0.5 bg-indigo-500 rounded-full animate-waveform-bar"
+                          className="w-0.75 bg-gradient-to-t from-indigo-500 to-purple-500 rounded-full animate-waveform-bar"
                           style={{ 
-                            animationDelay: `${bar * 0.15}s`,
-                            height: "100%"
+                            animationDelay: `${bar * 0.1}s`,
+                            animationDuration: `${0.6 + (bar % 3) * 0.2}s`,
+                            height: "100%",
+                            minHeight: "4px"
                           }} 
                         />
                       ))}
@@ -2077,7 +2247,7 @@ export default function ContestWorkspace() {
                   <button
                     onClick={() => askVoiceAssistant()}
                     disabled={isListening || assistantTyping}
-                    className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg text-[10px] shadow-sm transition-all cursor-pointer disabled:opacity-50"
+                    className="px-3.5 py-1.8 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-full text-[10px] shadow-md hover:shadow-indigo-600/15 transition-all cursor-pointer disabled:opacity-50 hover:scale-102 active:scale-98"
                   >
                     Start Query
                   </button>
@@ -2197,12 +2367,12 @@ export default function ContestWorkspace() {
                 </div>
 
                 {/* Console results logs */}
-                <div className="h-40 overflow-y-auto p-4 font-mono text-xs space-y-3" style={{ backgroundColor: "var(--bg-input)", color: "var(--text-primary)" }}>
+                <div className="h-44 overflow-y-auto p-5 font-mono text-xs space-y-4 shadow-inner" style={{ backgroundColor: "var(--bg-input)", color: "var(--text-primary)" }}>
                   {activeConsoleTab === "testcase" && (
-                    <div className="space-y-3">
+                    <div className="space-y-4">
                       {activeQuestion && activeQuestion.testcases.map((tc, idx) => (
-                        <div key={idx} className="space-y-1">
-                          <div className="font-bold text-[10px] text-slate-500 uppercase tracking-wide">{tc.name}</div>
+                        <div key={idx} className="space-y-1.5">
+                          <div className="font-bold text-[9px] text-slate-500 dark:text-slate-400 uppercase tracking-wider">{tc.name}</div>
                           <input
                             type="text"
                             value={testcaseInputs[idx] || ""}
@@ -2214,8 +2384,8 @@ export default function ContestWorkspace() {
                                 return copy;
                               });
                             }}
-                            className="w-full border rounded px-3 py-2 outline-none focus:border-indigo-500 font-mono"
-                            style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
+                            className="w-full border rounded-xl px-4 py-2.5 outline-none font-mono text-xs transition-all duration-200 focus:border-indigo-500/80 focus:shadow-[0_0_12px_rgba(99,102,241,0.15)] bg-slate-500/5 hover:bg-slate-500/10"
+                            style={{ borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
                           />
                         </div>
                       ))}
@@ -2223,58 +2393,68 @@ export default function ContestWorkspace() {
                   )}
 
                   {activeConsoleTab === "result" && (
-                    <div className="space-y-3">
+                    <div className="space-y-4">
                       {isRunning ? (
-                        <div className="flex items-center space-x-2 text-indigo-400 py-2">
+                        <div className="flex items-center space-x-2.5 text-indigo-400 py-3 font-semibold">
                           <RefreshCw size={14} className="animate-spin" />
                           <span>Running dynamic assertions checks...</span>
                         </div>
                       ) : testResults ? (
                         testResults.map((res, idx) => (
-                          <div key={idx} className="border-b pb-3 space-y-2 last:border-b-0 last:pb-0" style={{ borderColor: "var(--border-primary)" }}>
+                          <div 
+                            key={idx} 
+                            className={`p-4 rounded-2xl border transition-all duration-300 shadow-[0_4px_12px_rgba(0,0,0,0.03)] space-y-3.5 ${
+                              res.passed 
+                                ? "bg-emerald-500/5 dark:bg-emerald-500/5 border-emerald-500/20 shadow-emerald-500/5 hover:border-emerald-500/40" 
+                                : "bg-rose-500/5 dark:bg-rose-500/5 border-rose-500/20 shadow-rose-500/5 hover:border-rose-500/40"
+                            }`}
+                          >
                             <div className="flex justify-between items-center">
-                              <span className="font-bold uppercase tracking-wider text-[10px]" style={{ color: "var(--text-secondary)" }}>{res.name}</span>
-                              <span className={`font-extrabold text-[10px] px-2 py-0.5 rounded border uppercase ${
+                              <span className="font-extrabold uppercase tracking-wider text-[10px]" style={{ color: "var(--text-secondary)" }}>{res.name}</span>
+                              <span className={`font-black text-[10px] px-2.5 py-0.8 rounded-full border uppercase tracking-wider ${
                                 res.passed 
-                                  ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400" 
-                                  : "bg-rose-500/10 border-rose-500/30 text-rose-400"
+                                  ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.15)]" 
+                                  : "bg-rose-500/10 border-rose-500/30 text-rose-400 shadow-[0_0_10px_rgba(244,63,94,0.15)]"
                               }`}>
                                 {res.passed ? "Passed" : "Failed"}
                               </span>
                             </div>
 
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] p-2.5 rounded-lg border" style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)" }}>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-[11px] p-3 rounded-xl border bg-slate-900/30 border-slate-500/10 font-mono">
                               <div>
-                                <span className="font-bold" style={{ color: "var(--text-muted)" }}>Input:</span>
-                                <pre className="mt-0.5 truncate" style={{ color: "var(--text-secondary)" }}>{res.input}</pre>
+                                <span className="font-bold text-[9px] uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Input</span>
+                                <pre className="mt-1 p-2 rounded-lg bg-slate-500/5 border border-slate-500/10 overflow-x-auto whitespace-pre-wrap max-h-24 scrollbar-thin" style={{ color: "var(--text-secondary)" }}>{res.input}</pre>
                               </div>
                               <div>
-                                <span className="font-bold" style={{ color: "var(--text-muted)" }}>Expected:</span>
-                                <pre className="mt-0.5 truncate" style={{ color: "var(--text-secondary)" }}>{res.expected}</pre>
+                                <span className="font-bold text-[9px] uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Expected</span>
+                                <pre className="mt-1 p-2 rounded-lg bg-slate-500/5 border border-slate-500/10 overflow-x-auto whitespace-pre-wrap max-h-24 scrollbar-thin" style={{ color: "var(--text-secondary)" }}>{res.expected}</pre>
                               </div>
                               <div className="sm:col-span-2">
-                                <span className="font-bold" style={{ color: "var(--text-muted)" }}>Actual:</span>
+                                <span className="font-bold text-[9px] uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Actual Output</span>
                                 {res.error ? (
-                                  <pre className="text-rose-400 mt-0.5 whitespace-pre-wrap">{res.error}</pre>
+                                  <pre className="mt-1 p-2 rounded-lg bg-rose-500/5 border border-rose-500/10 text-rose-400/90 whitespace-pre-wrap overflow-x-auto max-h-32 scrollbar-thin">{res.error}</pre>
                                 ) : (
-                                  <pre className="mt-0.5 truncate" style={{ color: "var(--text-secondary)" }}>{res.actual}</pre>
+                                  <pre className={`mt-1 p-2 rounded-lg bg-slate-500/5 border overflow-x-auto whitespace-pre-wrap max-h-24 scrollbar-thin ${res.passed ? "border-emerald-500/20 text-emerald-400/95" : "border-rose-500/20 text-rose-400/95"}`}>{res.actual}</pre>
                                 )}
                               </div>
                             </div>
 
                             {res.logs && res.logs.length > 0 && (
-                              <div className="mt-1 space-y-0.5 p-2 rounded border text-[10px]" style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}>
-                                <div className="font-bold uppercase text-[9px] mb-1" style={{ color: "var(--text-muted)" }}>Standard Console Output:</div>
-                                {res.logs.map((log, lIdx) => (
-                                  <div key={lIdx}>{log}</div>
-                                ))}
+                              <div className="mt-1 space-y-1 p-3 rounded-xl border text-[10px] bg-slate-900/40 border-slate-500/10 font-mono" style={{ color: "var(--text-secondary)" }}>
+                                <div className="font-bold uppercase tracking-wider text-[9px] mb-1.5" style={{ color: "var(--text-muted)" }}>Standard Console Output</div>
+                                <div className="space-y-0.5 max-h-24 overflow-y-auto whitespace-pre-wrap scrollbar-thin">
+                                  {res.logs.map((log, lIdx) => (
+                                    <div key={lIdx} className="border-l border-slate-500/20 pl-2 py-0.5">{log}</div>
+                                  ))}
+                                </div>
                               </div>
                             )}
                           </div>
                         ))
                       ) : (
-                        <div className="text-center py-4" style={{ color: "var(--text-muted)" }}>
-                          {"No tests executed yet. Click \"Run Testcases\" above."}
+                        <div className="text-center py-8 text-xs font-semibold" style={{ color: "var(--text-muted)" }}>
+                          <Terminal size={24} className="mx-auto mb-2 text-indigo-500/40" />
+                          <span>No tests executed yet. Click "Run Testcases" above.</span>
                         </div>
                       )}
                     </div>

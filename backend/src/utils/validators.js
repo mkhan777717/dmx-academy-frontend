@@ -32,6 +32,13 @@ const problemSchema = z.object({
   outputFormat: z.string().min(1, 'Output format is required'),
   constraints: z.string().min(1, 'Constraints are required'),
   explanation: z.string().min(1, 'Explanation is required'),
+  followup: z.string().optional().default(''),
+  editorial: z.string().optional().default(''),
+  solution: z.string().optional().default(''),
+  evaluation: z.string().optional().default(''),
+  templateJS: z.string().optional().default(''),
+  templatePython: z.string().optional().default(''),
+  templateGo: z.string().optional().default(''),
   testCases: z.array(testCaseSchema).min(1, 'At least one testcase is required'),
 });
 

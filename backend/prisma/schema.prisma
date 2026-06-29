@@ -20,6 +20,8 @@ contestParticipations ContestParticipation[]
 liveSessions LiveSession[] @relation("SessionHost")
 submissions Submission[]
 vivaSessions VivaSession[]
+instituteId Int?
+institute Institute? @relation(fields: [instituteId], references: [id])
 }
 
 model Problem {
@@ -32,6 +34,13 @@ inputFormat String
 outputFormat String
 constraints String
 explanation String
+followup    String  @default("")
+editorial   String  @default("")
+solution    String  @default("")
+evaluation  String  @default("")
+templateJS     String  @default("")
+templatePython String  @default("")
+templateGo     String  @default("")
 createdAt DateTime @default(now())
 updatedAt DateTime @updatedAt
 comparator String @default("tokens")
@@ -195,9 +204,10 @@ FAILED
 }
 
 enum Role {
-USER
-ADMIN
-MENTOR
+  USER
+  ADMIN
+  MENTOR
+  INSTITUTE_ADMIN
 }
 
 enum Difficulty {
@@ -259,12 +269,20 @@ poll LivePoll @relation(fields: [pollId], references: [id], onDelete: Cascade)
 // ─── Live Chat Messages ───────────────────────────────────────────────────────
 
 model LiveChatMessage {
-id Int @id @default(autoincrement())
-sessionId Int
-senderUsername String
-messageText String
-createdAt DateTime @default(now())
-session LiveSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  id             Int         @id @default(autoincrement())
+  sessionId      Int
+  senderUsername String
+  messageText    String
+  createdAt      DateTime    @default(now())
+  session        LiveSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
 
-@@index([sessionId, createdAt])
+  @@index([sessionId, createdAt])
+}
+
+model Institute {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  users     User[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

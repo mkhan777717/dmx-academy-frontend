@@ -482,9 +482,10 @@ if (_fn) {
   }
 
   if (_res !== undefined) {
-    if (Array.isArray(_res)) process.stdout.write(JSON.stringify(_res) + '\\n');
-    else if (typeof _res === 'object' && _res !== null) process.stdout.write(JSON.stringify(_res) + '\\n');
-    else process.stdout.write(String(_res) + '\\n');
+    if (Array.isArray(_res)) process.stdout.write(JSON.stringify(_res) + '\n');
+    else if (typeof _res === 'object' && _res !== null) process.stdout.write(JSON.stringify(_res) + '\n');
+    else if (typeof _res === 'string') process.stdout.write(JSON.stringify(_res) + '\n');
+    else process.stdout.write(String(_res) + '\n');
   }
 }`;
   }
@@ -561,6 +562,7 @@ if _fn is not None:
     if _res is not None:
         if isinstance(_res, (list, tuple)): print(json.dumps(list(_res)))
         elif isinstance(_res, dict): print(json.dumps(_res))
+        elif isinstance(_res, str): print(json.dumps(_res))
         else: print(str(_res))`;
   }
 

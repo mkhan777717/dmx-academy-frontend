@@ -7,7 +7,7 @@ import { useAuth } from "@/context/AuthContext";
 import { 
   Sparkles, FileText, Code, CheckCircle, Save, 
   ArrowLeft, ArrowRight, Settings, Plus, Trash2,
-  Bold, Italic, List
+  Bold, Italic, List, BookOpen
 } from "lucide-react";
 
 // Custom light-weight markdown rendering parser matching CodeChef's layout
@@ -120,6 +120,17 @@ export default function CreateProblem() {
   ]);
   const [timeLimitMs, setTimeLimitMs] = useState(1000);
   const [memoryLimitMb, setMemoryLimitMb] = useState(256);
+
+  // 5. Tab Content State (Followup, Editorial, Solution, Evaluation)
+  const [tabFollowup, setTabFollowup] = useState("");
+  const [tabEditorial, setTabEditorial] = useState("");
+  const [tabSolution, setTabSolution] = useState("");
+  const [tabEvaluation, setTabEvaluation] = useState("");
+  const [activeTabContent, setActiveTabContent] = useState("followup"); // sub-tab within Tab 5
+  const followupRef = useRef(null);
+  const editorialRef = useRef(null);
+  const solutionRef = useRef(null);
+  const evaluationRef = useRef(null);
 
   // Load a quick demo problem template to show how formatting works
   const handleLoadTemplate = (type) => {
@@ -350,7 +361,8 @@ Explain the output: The first element becomes last, the second becomes second-to
     { id: "details", label: "1. Problem Details", icon: Settings },
     { id: "statement", label: "2. Description & Statement", icon: FileText },
     { id: "templates", label: "3. Starter Templates", icon: Code },
-    { id: "testcases", label: "4. Test Cases & Limits", icon: CheckCircle }
+    { id: "testcases", label: "4. Test Cases & Limits", icon: CheckCircle },
+    { id: "tabcontent", label: "5. Tab Content", icon: BookOpen },
   ];
 
   const handleSave = async (e) => {
@@ -437,6 +449,13 @@ Explain the output: The first element becomes last, the second becomes second-to
         outputFormat: outputFormat || "Standard output",
         constraints: constraints || "None",
         explanation: "No explanation provided.",
+        followup: tabFollowup || "",
+        editorial: tabEditorial || "",
+        solution: tabSolution || "",
+        evaluation: tabEvaluation || "",
+        templateJS: templateJS || "",
+        templatePython: templatePython || "",
+        templateGo: templateGo || "",
         testCases: testCases.map(tc => ({
           input: tc.input || "",
           expectedOutput: tc.expectedOutput || "",
@@ -1114,6 +1133,179 @@ Explain the output: The first element becomes last, the second becomes second-to
                   <button
                     type="button"
                     onClick={() => setActiveTab("templates")}
+                    className="px-5 py-2.5 rounded-xl font-bold text-xs border transition-all cursor-pointer"
+                    style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}
+                  >
+                    Back
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab("tabcontent")}
+                    className="px-5 py-2.5 rounded-xl font-bold text-xs text-white shadow-md flex items-center space-x-1.5 cursor-pointer"
+                    style={{ background: "var(--accent-gradient)" }}
+                  >
+                    <span>Next: Tab Content</span>
+                    <ArrowRight size={13} />
+                  </button>
+                </div>
+              </motion.div>
+            )}
+
+            {/* Tab 5: Tab Content (Followup, Editorial, Solution, Evaluation) */}
+            {activeTab === "tabcontent" && (
+              <motion.div
+                initial={{ opacity: 0, x: 10 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="space-y-5"
+              >
+                <div className="space-y-1">
+                  <h2 className="text-base font-bold font-display" style={{ color: "var(--text-primary)" }}>
+                    Tab Content
+                  </h2>
+                  <p className="text-[10px]" style={{ color: "var(--text-secondary)" }}>
+                    Write the content that will appear in the <strong>Followup</strong>, <strong>Editorial</strong>, <strong>Solution</strong>, and <strong>Evaluation</strong> tabs when students view this problem. All fields support Markdown.
+                  </p>
+                </div>
+
+                {/* Sub-Tab Switcher */}
+                <div className="flex flex-wrap gap-2 p-1 rounded-2xl border" style={{ backgroundColor: "var(--bg-input)", borderColor: "var(--border-primary)" }}>
+                  {[
+                    { id: "followup", label: "Followup", color: "text-indigo-500", bg: "bg-indigo-500" },
+                    { id: "editorial", label: "Editorial", color: "text-violet-500", bg: "bg-violet-500" },
+                    { id: "solution", label: "Solution", color: "text-emerald-500", bg: "bg-emerald-500" },
+                    { id: "evaluation", label: "Evaluation", color: "text-amber-500", bg: "bg-amber-500" },
+                  ].map(sub => (
+                    <button
+                      key={sub.id}
+                      type="button"
+                      onClick={() => setActiveTabContent(sub.id)}
+                      className={`flex-1 py-2 rounded-xl text-[10px] font-bold transition-all cursor-pointer ${
+                        activeTabContent === sub.id
+                          ? `${sub.color} ${sub.bg}/10 border border-current`
+                          : "text-[var(--text-secondary)] hover:bg-slate-500/5"
+                      }`}
+                    >
+                      {sub.label}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Followup */}
+                {activeTabContent === "followup" && (
+                  <motion.div key="followup" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <label className="text-[10px] font-extrabold uppercase tracking-wider text-indigo-500">
+                        Followup Questions (Markdown)
+                      </label>
+                      <MarkdownToolbar textareaRef={followupRef} setValue={setTabFollowup} />
+                    </div>
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                      <textarea
+                        ref={followupRef}
+                        placeholder={`### Complexity Followup\n1. Can you improve the time complexity?\n2. What edge cases should we consider?`}
+                        value={tabFollowup}
+                        onChange={e => setTabFollowup(e.target.value)}
+                        rows={14}
+                        className="w-full rounded-2xl py-3 px-4 text-xs outline-none border resize-none font-mono"
+                        style={{ backgroundColor: "var(--bg-input)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
+                      />
+                      <div
+                        className="rounded-2xl p-4 border overflow-auto text-xs"
+                        style={{ backgroundColor: "var(--bg-badge)", borderColor: "var(--border-accent)", minHeight: "14rem" }}
+                        dangerouslySetInnerHTML={{ __html: renderMarkdown(tabFollowup || "*Preview will appear here...*") }}
+                      />
+                    </div>
+                  </motion.div>
+                )}
+
+                {/* Editorial */}
+                {activeTabContent === "editorial" && (
+                  <motion.div key="editorial" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <label className="text-[10px] font-extrabold uppercase tracking-wider text-violet-500">
+                        Editorial / Approach Guide (Markdown)
+                      </label>
+                      <MarkdownToolbar textareaRef={editorialRef} setValue={setTabEditorial} />
+                    </div>
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                      <textarea
+                        ref={editorialRef}
+                        placeholder={`### Approach\nExplain the optimal algorithm step by step...\n\n### Complexity\n- **Time:** O(N)\n- **Space:** O(1)`}
+                        value={tabEditorial}
+                        onChange={e => setTabEditorial(e.target.value)}
+                        rows={14}
+                        className="w-full rounded-2xl py-3 px-4 text-xs outline-none border resize-none font-mono"
+                        style={{ backgroundColor: "var(--bg-input)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
+                      />
+                      <div
+                        className="rounded-2xl p-4 border overflow-auto text-xs"
+                        style={{ backgroundColor: "var(--bg-badge)", borderColor: "var(--border-accent)", minHeight: "14rem" }}
+                        dangerouslySetInnerHTML={{ __html: renderMarkdown(tabEditorial || "*Preview will appear here...*") }}
+                      />
+                    </div>
+                  </motion.div>
+                )}
+
+                {/* Solution */}
+                {activeTabContent === "solution" && (
+                  <motion.div key="solution" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <label className="text-[10px] font-extrabold uppercase tracking-wider text-emerald-500">
+                        Official Solution Code (Markdown)
+                      </label>
+                      <MarkdownToolbar textareaRef={solutionRef} setValue={setTabSolution} />
+                    </div>
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                      <textarea
+                        ref={solutionRef}
+                        placeholder={"```javascript\nfunction solve(input) {\n  // Official solution here\n}\n```"}
+                        value={tabSolution}
+                        onChange={e => setTabSolution(e.target.value)}
+                        rows={14}
+                        className="w-full rounded-2xl py-3 px-4 text-xs outline-none border resize-none font-mono"
+                        style={{ backgroundColor: "var(--bg-input)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
+                      />
+                      <div
+                        className="rounded-2xl p-4 border overflow-auto text-xs"
+                        style={{ backgroundColor: "var(--bg-badge)", borderColor: "var(--border-accent)", minHeight: "14rem" }}
+                        dangerouslySetInnerHTML={{ __html: renderMarkdown(tabSolution || "*Preview will appear here...*") }}
+                      />
+                    </div>
+                  </motion.div>
+                )}
+
+                {/* Evaluation */}
+                {activeTabContent === "evaluation" && (
+                  <motion.div key="evaluation" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <label className="text-[10px] font-extrabold uppercase tracking-wider text-amber-500">
+                        Evaluation Criteria (Markdown)
+                      </label>
+                      <MarkdownToolbar textareaRef={evaluationRef} setValue={setTabEvaluation} />
+                    </div>
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                      <textarea
+                        ref={evaluationRef}
+                        placeholder={`### Evaluation Limits\n* **Time Limit:** 2000ms\n* **Memory Limit:** 256MB\n* **Expected Complexity:** O(N log N)`}
+                        value={tabEvaluation}
+                        onChange={e => setTabEvaluation(e.target.value)}
+                        rows={14}
+                        className="w-full rounded-2xl py-3 px-4 text-xs outline-none border resize-none font-mono"
+                        style={{ backgroundColor: "var(--bg-input)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
+                      />
+                      <div
+                        className="rounded-2xl p-4 border overflow-auto text-xs"
+                        style={{ backgroundColor: "var(--bg-badge)", borderColor: "var(--border-accent)", minHeight: "14rem" }}
+                        dangerouslySetInnerHTML={{ __html: renderMarkdown(tabEvaluation || "*Preview will appear here...*") }}
+                      />
+                    </div>
+                  </motion.div>
+                )}
+
+                <div className="flex justify-between pt-4">
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab("testcases")}
                     className="px-5 py-2.5 rounded-xl font-bold text-xs border transition-all cursor-pointer"
                     style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}
                   >

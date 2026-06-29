@@ -46,6 +46,16 @@ export default function StudentDashboard() {
   const [error, setError]               = useState(null);
   const [activeBottomTab, setActiveBottomTab] = useState("contests");
 
+  const handleEnterContest = (contestId) => {
+    const el = document.documentElement;
+    if (el.requestFullscreen) {
+      el.requestFullscreen({ navigationUI: "hide" }).catch((err) => {
+        console.warn("Fullscreen request deferred or blocked in student dashboard:", err);
+      });
+    }
+    router.push(`/contest/${contestId}`);
+  };
+
   // Fetch live data
   useEffect(() => {
     if (!user) return;
@@ -481,7 +491,7 @@ export default function StudentDashboard() {
                       animate={{ opacity: 1, x: 0 }}
                       className="p-5 rounded-3xl border shadow-sm flex items-center justify-between gap-4 cursor-pointer hover:shadow-md transition-all"
                       style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-card)" }}
-                      onClick={() => router.push(`/contest/${contest.id}`)}
+                      onClick={() => handleEnterContest(contest.id)}
                     >
                       <div className="space-y-1.5 min-w-0">
                         <div className="flex items-center space-x-2">
@@ -556,7 +566,7 @@ export default function StudentDashboard() {
                       animate={{ opacity: 1, x: 0 }}
                       className="p-5 rounded-3xl border shadow-sm flex items-center justify-between gap-4 cursor-pointer hover:shadow-md transition-all"
                       style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-card)" }}
-                      onClick={() => router.push(`/contest/${contest.id}`)}
+                      onClick={() => handleEnterContest(contest.id)}
                     >
                       <div className="space-y-1.5 min-w-0">
                         <div className="flex items-center space-x-2">
