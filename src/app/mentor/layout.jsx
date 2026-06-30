@@ -18,6 +18,7 @@ export default function MentorLayout({ children }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [checkingAuth, setCheckingAuth] = useState(true);
   const [mentorUser, setMentorUser] = useState(null);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
   const { activeSession, setActiveSession, token, API_BASE, logout } = useAuth();
   const [showEndConfirmModal, setShowEndConfirmModal] = useState(false);
@@ -100,8 +101,7 @@ export default function MentorLayout({ children }) {
   }, [pathname, router]);
 
   const handleLogout = () => {
-    logout();
-    router.push("/login?redirect=/mentor/dashboard");
+    setShowLogoutConfirm(true);
   };
 
   const isLoginRoute = pathname === "/mentor";
@@ -458,6 +458,53 @@ export default function MentorLayout({ children }) {
                 className="flex-1 py-3 px-4 rounded-xl bg-red-600 hover:bg-red-700 text-white font-extrabold text-xs uppercase tracking-wider transition-all cursor-pointer shadow-lg shadow-red-500/20"
               >
                 End Session
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Logout Confirmation Modal */}
+      {showLogoutConfirm && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-md p-4 animate-in fade-in duration-200">
+          <div
+            className="w-full max-w-sm rounded-3xl p-6 border shadow-2xl text-center space-y-5"
+            style={{
+              backgroundColor: "var(--bg-card)",
+              borderColor: "var(--border-primary)"
+            }}
+          >
+            <div className="w-12 h-12 rounded-2xl bg-rose-500/10 text-rose-500 flex items-center justify-center mx-auto border border-rose-500/20">
+              <AlertTriangle size={24} />
+            </div>
+
+            <div className="space-y-2">
+              <h3 className="text-sm font-black uppercase tracking-wider text-rose-500">
+                Are u sure want to logout
+              </h3>
+              <p className="text-[11px]" style={{ color: "var(--text-muted)" }}>
+                You will need to sign back in to access the mentor dashboard.
+              </p>
+            </div>
+
+            <div className="flex items-center justify-center gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setShowLogoutConfirm(false)}
+                className="px-4 py-2.5 rounded-2xl border text-xs font-bold transition-all hover:bg-[var(--bg-primary)] cursor-pointer text-[var(--text-secondary)]"
+                style={{ borderColor: "var(--border-primary)" }}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowLogoutConfirm(false);
+                  logout();
+                  router.push("/login?redirect=/mentor/dashboard");
+                }}
+                className="px-5 py-2.5 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-black uppercase transition-all shadow-lg hover:scale-[1.02] cursor-pointer"
+              >
+                Logout
               </button>
             </div>
           </div>

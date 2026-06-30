@@ -64,9 +64,9 @@ function LoginForm() {
     if (!user || !redirectTo) return false;
     const path = redirectTo.toLowerCase();
     const emailLower = (user.email || "").toLowerCase();
-    
-    const isUserAdmin = user.role === 'ADMIN' || user.role === 'INSTITUTE_ADMIN' || emailLower.includes('admin');
-    const isUserMentor = user.role === 'MENTOR' || emailLower.includes('mentor');
+
+    const isUserAdmin = user.role === 'ADMIN' || user.role === 'INSTITUTE_ADMIN' || user.role === 'BATCH_MANAGER' || emailLower.includes('admin');
+    const isUserMentor = user.role === 'MENTOR' || user.role === 'BATCH_MANAGER' || emailLower.includes('mentor');
 
     if (path.startsWith('/admin') && !isUserAdmin && !isUserMentor) return true;
     if (path.startsWith('/mentor') && !isUserMentor) return true;
@@ -81,7 +81,7 @@ function LoginForm() {
       let targetRoute = redirectTo;
       if (redirectTo === "/") {
         const emailLower = (user.email || "").toLowerCase();
-        const isUserAdmin = user.role === 'ADMIN' || user.role === 'INSTITUTE_ADMIN' || emailLower.includes('admin');
+        const isUserAdmin = user.role === 'ADMIN' || user.role === 'INSTITUTE_ADMIN' || user.role === 'BATCH_MANAGER' || emailLower.includes('admin');
         const isUserMentor = user.role === 'MENTOR' || emailLower.includes('mentor');
         if (isUserAdmin) targetRoute = '/admin/dashboard';
         else if (isUserMentor) targetRoute = '/mentor/dashboard';
@@ -93,24 +93,24 @@ function LoginForm() {
 
   if (user && isMismatched) {
     const emailLower = (user.email || "").toLowerCase();
-    const isUserAdmin = user.role === 'ADMIN' || user.role === 'INSTITUTE_ADMIN' || emailLower.includes('admin');
+    const isUserAdmin = user.role === 'ADMIN' || user.role === 'INSTITUTE_ADMIN' || user.role === 'BATCH_MANAGER' || emailLower.includes('admin');
     const isUserMentor = user.role === 'MENTOR' || emailLower.includes('mentor');
 
-    const userRoleLabel = isUserMentor 
-      ? 'Mentor' 
-      : isUserAdmin 
-        ? 'Administrator' 
+    const userRoleLabel = isUserMentor
+      ? 'Mentor'
+      : isUserAdmin
+        ? 'Administrator'
         : 'Student';
 
-    const targetPortalLabel = redirectTo.toLowerCase().startsWith('/admin') 
-      ? 'Admin Control' 
-      : redirectTo.toLowerCase().startsWith('/mentor') 
-        ? 'Mentor Board' 
+    const targetPortalLabel = redirectTo.toLowerCase().startsWith('/admin')
+      ? 'Admin Control'
+      : redirectTo.toLowerCase().startsWith('/mentor')
+        ? 'Mentor Board'
         : 'Student Desk';
 
     const getDashboardPath = () => {
-      if (isUserMentor) return '/mentor/dashboard';
       if (isUserAdmin) return '/admin/dashboard';
+      if (isUserMentor) return '/mentor/dashboard';
       return '/student/dashboard';
     };
 
@@ -198,7 +198,7 @@ function LoginForm() {
         let targetRoute = redirectTo;
         if (redirectTo === "/") {
           const emailLower = (result.user?.email || "").toLowerCase();
-          const isUserAdmin = result.user?.role === 'ADMIN' || result.user?.role === 'INSTITUTE_ADMIN' || emailLower.includes('admin');
+          const isUserAdmin = result.user?.role === 'ADMIN' || result.user?.role === 'INSTITUTE_ADMIN' || result.user?.role === 'BATCH_MANAGER' || emailLower.includes('admin');
           const isUserMentor = result.user?.role === 'MENTOR' || emailLower.includes('mentor');
           if (isUserAdmin) targetRoute = '/admin/dashboard';
           else if (isUserMentor) targetRoute = '/mentor/dashboard';
@@ -326,11 +326,10 @@ function LoginForm() {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
-              className={`flex items-start space-x-2 p-3.5 rounded-2xl border text-xs font-bold ${
-                errorMsg.startsWith("⚠️")
-                  ? "bg-amber-500/10 border-amber-500/20 text-amber-500"
-                  : "bg-rose-500/10 border-rose-500/20 text-rose-500"
-              }`}
+              className={`flex items-start space-x-2 p-3.5 rounded-2xl border text-xs font-bold ${errorMsg.startsWith("⚠️")
+                ? "bg-amber-500/10 border-amber-500/20 text-amber-500"
+                : "bg-rose-500/10 border-rose-500/20 text-rose-500"
+                }`}
             >
               <AlertCircle size={16} className="shrink-0 mt-0.5" />
               <span className="whitespace-pre-line">{errorMsg}</span>
