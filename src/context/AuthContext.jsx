@@ -48,9 +48,21 @@ function findLocalAccount(email, password) {
 // Built-in demo accounts (always available, no backend needed)
 // ---------------------------------------------------------------------------
 const DEMO_ACCOUNTS = [
-  { email: "admin@demo.com",   password: "demo123", user: { id: "demo-1", username: "Admin",   email: "admin@demo.com",   role: "ADMIN" } },
-  { email: "student@demo.com", password: "demo123", user: { id: "demo-2", username: "Student", email: "student@demo.com", role: "USER"  } },
-  { email: "mentor@demo.com",  password: "demo123", user: { id: "demo-3", username: "Mentor",  email: "mentor@demo.com",  role: "MENTOR" } },
+  { email: "admin@demo.com", password: "demo123", user: { id: "demo-1", username: "Admin", email: "admin@demo.com", role: "ADMIN" } },
+  { email: "student@demo.com", password: "demo123", user: { id: "demo-2", username: "Student", email: "student@demo.com", role: "USER" } },
+  { email: "mentor@demo.com", password: "demo123", user: { id: "demo-3", username: "Mentor", email: "mentor@demo.com", role: "MENTOR" } },
+  // Batch Managers
+  { email: "aditya@dmx.com", password: "demo123", user: { id: "demo-bm-1", username: "Aditya", email: "aditya@dmx.com", role: "BATCH_MANAGER" } },
+  { email: "sakshi@dmx.com", password: "demo123", user: { id: "demo-bm-2", username: "Sakshi", email: "sakshi@dmx.com", role: "BATCH_MANAGER" } },
+  // Mentors
+  { email: "majeed@dmx.com", password: "demo123", user: { id: "demo-men-1", username: "Mohammed Majeed Khan", email: "majeed@dmx.com", role: "MENTOR" } },
+  { email: "nitin@dmx.com", password: "demo123", user: { id: "demo-men-2", username: "Nitin Singh", email: "nitin@dmx.com", role: "MENTOR" } },
+  { email: "divyashant@dmx.com", password: "demo123", user: { id: "demo-men-3", username: "Divyashant Kumar", email: "divyashant@dmx.com", role: "MENTOR" } },
+  // Students
+  { email: "arhan@dmx.com", password: "demo123", user: { id: "demo-std-1", username: "Arhan Khan", email: "arhan@dmx.com", role: "USER" } },
+  { email: "shahazadi@dmx.com", password: "demo123", user: { id: "demo-std-2", username: "Shahazadi Syed", email: "shahazadi@dmx.com", role: "USER" } },
+  { email: "abhishek@dmx.com", password: "demo123", user: { id: "demo-std-3", username: "Abhishek Kumar", email: "abhishek@dmx.com", role: "USER" } },
+  { email: "ishaan@dmx.com", password: "demo123", user: { id: "demo-std-4", username: "Ishaan Khandelwaal", email: "ishaan@dmx.com", role: "USER" } },
 ];
 
 // ---------------------------------------------------------------------------
@@ -67,7 +79,7 @@ function setLegacySession(user) {
   const email = user.email || "";
   const emailLower = email.toLowerCase();
 
-  if (role === "ADMIN" || role === "INSTITUTE_ADMIN" || emailLower.includes("admin")) {
+  if (role === "ADMIN" || role === "INSTITUTE_ADMIN" || role === "BATCH_MANAGER" || emailLower.includes("admin")) {
     localStorage.setItem("synapse_admin_session", "true");
   } else if (role === "MENTOR" || emailLower.includes("mentor")) {
     localStorage.setItem("synapse_admin_session", "true");
@@ -87,8 +99,8 @@ function clearLegacySessions() {
 // ---------------------------------------------------------------------------
 
 export function AuthProvider({ children }) {
-  const [user, setUser]     = useState(null);
-  const [token, setToken]   = useState(null);
+  const [user, setUser] = useState(null);
+  const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeSession, setActiveSession] = useState(null);
 
@@ -120,7 +132,7 @@ export function AuthProvider({ children }) {
       if (typeof window === "undefined") { setLoading(false); return; }
 
       const storedToken = localStorage.getItem("dmx_auth_token");
-      const storedUser  = localStorage.getItem("dmx_auth_user");
+      const storedUser = localStorage.getItem("dmx_auth_user");
 
       if (storedToken && storedUser) {
         // Only verify with the real backend if this is a real JWT (not demo/local)
@@ -164,14 +176,26 @@ export function AuthProvider({ children }) {
 
   // ---------------------------------------------------------------------------
   const login = async (email, password) => {
+    // 0. Check built-in demo accounts first (always take precedence for mock testing)
+    const demo = DEMO_ACCOUNTS.find(a => a.email === email && a.password === password);
+    if (demo) {
+      const demoToken = `demo-token-${Date.now()}`;
+      setToken(demoToken);
+      setUser(demo.user);
+      setLegacySession(demo.user);
+      localStorage.setItem("dmx_auth_token", demoToken);
+      localStorage.setItem("dmx_auth_user", JSON.stringify(demo.user));
+      return { success: true, user: demo.user };
+    }
+
     // 1. Try real backend
     try {
-        const res = await fetch(`${API_BASE}/api/auth/login`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password }),
-          signal: AbortSignal.timeout(30000),
-        });
+      const res = await fetch(`${API_BASE}/api/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+        signal: AbortSignal.timeout(30000),
+      });
 
       const data = await res.json();
 
@@ -203,18 +227,6 @@ export function AuthProvider({ children }) {
       localStorage.setItem("dmx_auth_token", localToken);
       localStorage.setItem("dmx_auth_user", JSON.stringify(localAccount.user));
       return { success: true, user: localAccount.user };
-    }
-
-    // 3. Check built-in demo accounts
-    const demo = DEMO_ACCOUNTS.find(a => a.email === email && a.password === password);
-    if (demo) {
-      const demoToken = `demo-token-${Date.now()}`;
-      setToken(demoToken);
-      setUser(demo.user);
-      setLegacySession(demo.user);
-      localStorage.setItem("dmx_auth_token", demoToken);
-      localStorage.setItem("dmx_auth_user", JSON.stringify(demo.user));
-      return { success: true, user: demo.user };
     }
 
     return {

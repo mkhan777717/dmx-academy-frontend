@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, Menu, X, ArrowRight, ChevronDown, User, GraduationCap, ShieldAlert, LogOut } from "lucide-react";
+import { Sparkles, Menu, X, ArrowRight, ChevronDown, User, GraduationCap, ShieldAlert, LogOut, AlertTriangle } from "lucide-react";
 import ThemeToggle from "./ThemeToggle";
 import { useAuth } from "@/context/AuthContext";
 
@@ -29,6 +29,7 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isSignInDropdownOpen, setIsSignInDropdownOpen] = useState(false);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
   const userEmailLower = (user?.email || "").toLowerCase();
   const isUserAdmin = user?.role === "ADMIN" || userEmailLower.includes("admin");
@@ -287,9 +288,8 @@ export default function Navbar() {
 
                       <button
                         onClick={() => {
-                          logout();
                           setIsSignInDropdownOpen(false);
-                          router.push("/");
+                          setShowLogoutConfirm(true);
                         }}
                         className="w-full flex items-center gap-3 rounded-xl px-3 py-2.5 text-left hover:bg-rose-500/10 text-rose-500 transition-all font-bold text-xs cursor-pointer"
                       >
@@ -554,9 +554,8 @@ export default function Navbar() {
                   <li className="pt-2">
                     <button
                       onClick={() => {
-                        logout();
                         setIsOpen(false);
-                        router.push("/");
+                        setShowLogoutConfirm(true);
                       }}
                       className="w-full flex items-center justify-center gap-2.5 rounded-xl py-3 font-semibold text-rose-500 border border-rose-500/20 bg-rose-500/5 cursor-pointer"
                     >
@@ -625,6 +624,55 @@ export default function Navbar() {
               </li>
             </ul>
           </motion.div>
+        )}
+      </AnimatePresence>
+      {/* Logout Confirmation Modal */}
+      <AnimatePresence>
+        {showLogoutConfirm && (
+          <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-md p-4 animate-in fade-in duration-200">
+            <div
+              className="w-full max-w-sm rounded-3xl p-6 border shadow-2xl text-center space-y-5"
+              style={{
+                backgroundColor: "var(--bg-card)",
+                borderColor: "var(--border-primary)"
+              }}
+            >
+              <div className="w-12 h-12 rounded-2xl bg-rose-500/10 text-rose-500 flex items-center justify-center mx-auto border border-rose-500/20">
+                <AlertTriangle size={24} />
+              </div>
+
+              <div className="space-y-2">
+                <h3 className="text-sm font-black uppercase tracking-wider text-rose-500">
+                  Are u sure want to logout
+                </h3>
+                <p className="text-[11px]" style={{ color: "var(--text-muted)" }}>
+                  You will need to sign back in to access your DMX account.
+                </p>
+              </div>
+
+              <div className="flex items-center justify-center gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setShowLogoutConfirm(false)}
+                  className="px-4 py-2.5 rounded-2xl border text-xs font-bold transition-all hover:bg-[var(--bg-primary)] cursor-pointer text-[var(--text-secondary)]"
+                  style={{ borderColor: "var(--border-primary)" }}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowLogoutConfirm(false);
+                    logout();
+                    router.push("/");
+                  }}
+                  className="px-5 py-2.5 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-black uppercase transition-all shadow-lg hover:scale-[1.02] cursor-pointer"
+                >
+                  Logout
+                </button>
+              </div>
+            </div>
+          </div>
         )}
       </AnimatePresence>
     </motion.header>
