@@ -29,9 +29,9 @@ router.post('/poll/:pollId/answer', protect, savePollAnswer);           // Stude
 router.get('/poll/:pollId/results', protect, getPollResults);           // Per-question results after poll ends
 
 // ─── Admin/Mentor Only ──────────────────────────────────────────────
-router.post('/session', protect, restrictTo('ADMIN', 'MENTOR'), createSession);
-router.patch('/session/:id/end', protect, restrictTo('ADMIN', 'MENTOR'), endSession);
-router.delete('/session/:id', protect, restrictTo('ADMIN', 'MENTOR'), deleteSession);
-router.post('/session/:id/poll', protect, restrictTo('ADMIN', 'MENTOR'), createPoll); // Launch a poll
+router.post('/session', protect, restrictTo('ADMIN', 'INSTITUTE_ADMIN', 'BATCH_MANAGER', 'MENTOR'), createSession);
+router.patch('/session/:id/end', protect, restrictTo('ADMIN', 'INSTITUTE_ADMIN', 'BATCH_MANAGER', 'MENTOR'), endSession);
+router.delete('/session/:id', protect, restrictTo('ADMIN', 'INSTITUTE_ADMIN', 'BATCH_MANAGER', 'MENTOR'), deleteSession);
+router.post('/session/:id/poll', protect, restrictTo('ADMIN', 'INSTITUTE_ADMIN', 'BATCH_MANAGER', 'MENTOR'), createPoll); // Launch a poll
 
 module.exports = router;

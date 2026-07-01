@@ -70,13 +70,22 @@ export default function AdminLayout({ children }) {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const session = localStorage.getItem("synapse_admin_session") === "true";
+      const isAdminSession = localStorage.getItem("synapse_admin_session") === "true";
+      const isMentorSession = localStorage.getItem("synapse_mentor_session") === "true";
       const isLoginRoute = pathname === "/admin";
 
-      if (!session) {
-        router.push("/login?redirect=/admin/dashboard");
+      const isAllowedMentorPath =
+        isMentorSession &&
+        (pathname.startsWith("/admin/live") ||
+         pathname.startsWith("/admin/contests") ||
+         pathname.startsWith("/admin/problems"));
+
+      const hasSession = isAdminSession || isAllowedMentorPath;
+
+      if (!hasSession) {
+        router.push(`/login?redirect=${encodeURIComponent(pathname || "/admin/dashboard")}`);
       } else if (isLoginRoute) {
-        router.push("/admin/dashboard");
+        router.push(isMentorSession ? "/mentor/dashboard" : "/admin/dashboard");
       } else {
         const name = user?.username || "DMX Admin";
         const email = user?.email || "admin@synapse.com";
@@ -84,7 +93,9 @@ export default function AdminLayout({ children }) {
           ? "Institute Admin"
           : user?.role === "BATCH_MANAGER"
             ? "Batch Manager"
-            : "Super Admin";
+            : user?.role === "MENTOR"
+              ? "Mentor"
+              : "Super Admin";
         const avatar = name.slice(0, 2).toUpperCase();
 
         setAdminUser({
@@ -123,11 +134,12 @@ export default function AdminLayout({ children }) {
   const isSuperAdmin = user?.role === "ADMIN";
   const isInstAdmin = user?.role === "INSTITUTE_ADMIN";
   const isBatchMgr = user?.role === "BATCH_MANAGER";
+  const isMentor = user?.role === "MENTOR";
 
   const sidebarLinks = [
     {
       label: "Dashboard",
-      href: "/admin/dashboard",
+      href: isMentor ? "/mentor/dashboard" : "/admin/dashboard",
       icon: LayoutDashboard
     },
     isSuperAdmin && {
@@ -165,22 +177,22 @@ export default function AdminLayout({ children }) {
       href: "/mentor/viva/ai-settings",
       icon: Settings
     },
-    {
+    (isSuperAdmin || isInstAdmin || isBatchMgr || isMentor) && {
       label: "All Contests",
       href: "/admin/contests",
       icon: Trophy
     },
-    {
+    (isSuperAdmin || isInstAdmin || isBatchMgr || isMentor) && {
       label: "Create Contest",
       href: "/admin/contests/new",
       icon: PlusCircle
     },
-    {
+    (isSuperAdmin || isInstAdmin || isBatchMgr || isMentor) && {
       label: "All Problems",
       href: "/admin/problems",
       icon: Code
     },
-    {
+    (isSuperAdmin || isInstAdmin || isBatchMgr || isMentor) && {
       label: "Go Live",
       href: "/admin/live",
       icon: Radio

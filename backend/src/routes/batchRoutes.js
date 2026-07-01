@@ -12,7 +12,7 @@ const router = express.Router();
 
 // Institute Admin Cohort CRUD
 router.route('/')
-  .get(protect, restrictTo('INSTITUTE_ADMIN', 'ADMIN'), getBatches)
+  .get(protect, restrictTo('INSTITUTE_ADMIN', 'ADMIN', 'BATCH_MANAGER', 'MENTOR'), getBatches)
   .post(protect, restrictTo('INSTITUTE_ADMIN', 'ADMIN'), createBatch);
 
 router.route('/:id')

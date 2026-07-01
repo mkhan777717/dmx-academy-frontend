@@ -57,18 +57,6 @@ const createBatch = async (req, res, next) => {
     const mentIds = Array.isArray(mentorIds) ? mentorIds.map(id => parseInt(id, 10)) : [];
     const studIds = Array.isArray(studentIds) ? studentIds.map(id => parseInt(id, 10)) : [];
 
-    // If manager is provided, ensure unique assignment
-    if (mId) {
-      const existingBatchWithManager = await prisma.batch.findUnique({
-        where: { managerId: mId }
-      });
-      if (existingBatchWithManager) {
-        return res.status(400).json({
-          success: false,
-          message: "The selected manager is already assigned to another batch."
-        });
-      }
-    }
 
     const batch = await prisma.batch.create({
       data: {
@@ -394,17 +382,6 @@ const updateBatch = async (req, res, next) => {
     const mentIds = Array.isArray(mentorIds) ? mentorIds.map(id => parseInt(id, 10)) : [];
     const studIds = Array.isArray(studentIds) ? studentIds.map(id => parseInt(id, 10)) : [];
 
-    if (mId && mId !== existing.managerId) {
-      const otherBatchWithManager = await prisma.batch.findUnique({
-        where: { managerId: mId }
-      });
-      if (otherBatchWithManager) {
-        return res.status(400).json({
-          success: false,
-          message: "The selected manager is already assigned to another batch."
-        });
-      }
-    }
 
     const updatedBatch = await prisma.batch.update({
       where: { id: batchId },
