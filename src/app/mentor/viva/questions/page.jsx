@@ -32,6 +32,24 @@ export default function QuestionBankPage() {
   const [selectedSubject, setSelectedSubject] = useState("");
   const [questionPage, setQuestionPage] = useState(1);
 
+  // Tab state: "institute" or "global"
+  const [activeTab, setActiveTab] = useState("institute");
+
+  useEffect(() => {
+    if (user) {
+      setActiveTab(user.role === "ADMIN" ? "global" : "institute");
+    }
+  }, [user]);
+
+  const filteredQuestions = useMemo(() => {
+    return questions.filter(q => {
+      const isGlobal = q.instituteId === null;
+      if (activeTab === "global" && !isGlobal) return false;
+      if (activeTab === "institute" && isGlobal) return false;
+      return true;
+    });
+  }, [questions, activeTab]);
+
   // Subjects & topics for folder view and modal datalists
   const [allSubjects, setAllSubjects] = useState([]);
   const [allTopics, setAllTopics] = useState([]);
@@ -129,15 +147,15 @@ export default function QuestionBankPage() {
   };
 
   // Stats
-  const total = questions.length;
+  const total = filteredQuestions.length;
   const byDiff = { EASY: 0, MEDIUM: 0, HARD: 0 };
-  questions.forEach(q => { if (byDiff[q.difficulty] !== undefined) byDiff[q.difficulty]++; });
+  filteredQuestions.forEach(q => { if (byDiff[q.difficulty] !== undefined) byDiff[q.difficulty]++; });
   const subjectNames = useMemo(() => {
-    const names = new Set([...allSubjects, ...questions.map(q => q.subject)].filter(Boolean));
+    const names = new Set([...allSubjects, ...filteredQuestions.map(q => q.subject)].filter(Boolean));
     return Array.from(names).sort((a, b) => a.localeCompare(b));
-  }, [allSubjects, questions]);
+  }, [allSubjects, filteredQuestions]);
   const selectedQuestions = selectedSubject
-    ? questions.filter(q => q.subject === selectedSubject)
+    ? filteredQuestions.filter(q => q.subject === selectedSubject)
     : [];
   const questionPageCount = Math.max(1, Math.ceil(selectedQuestions.length / QUESTIONS_PER_PAGE));
   const currentQuestionPage = Math.min(questionPage, questionPageCount);
@@ -158,15 +176,55 @@ export default function QuestionBankPage() {
           <h1 className="text-2xl font-black font-display" style={{ color: "var(--text-primary)" }}>Question Bank</h1>
           <p className="text-sm" style={{ color: "var(--text-secondary)" }}>Manage questions used in AI Viva sessions.</p>
         </div>
-        <button
-          onClick={openCreate}
-          className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-2xl font-bold text-sm text-white shadow-md transition-all hover:scale-105 cursor-pointer"
-          style={{ background: "var(--accent-gradient)" }}
-        >
-          <Plus size={16} />
-          <span>Add Question</span>
-        </button>
+        {!(activeTab === "global" && user?.role !== "ADMIN") && (
+          <button
+            onClick={openCreate}
+            className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-2xl font-bold text-sm text-white shadow-md transition-all hover:scale-105 cursor-pointer"
+            style={{ background: "var(--accent-gradient)" }}
+          >
+            <Plus size={16} />
+            <span>Add Question</span>
+          </button>
+        )}
       </div>
+
+      {/* Tab Switcher */}
+      {user?.role !== "ADMIN" && (
+        <div className="flex space-x-1 p-1 bg-[var(--bg-card)] border border-[var(--border-card)] rounded-2xl max-w-sm">
+          <button
+            type="button"
+            onClick={() => {
+              setActiveTab("institute");
+              setSelectedSubject("");
+              setQuestionPage(1);
+            }}
+            className={`flex-1 py-2 px-4 rounded-xl font-bold text-xs transition-all cursor-pointer ${
+              activeTab === "institute"
+                ? "shadow-sm text-white"
+                : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+            }`}
+            style={activeTab === "institute" ? { background: "var(--accent-gradient)" } : {}}
+          >
+            Your Institute
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setActiveTab("global");
+              setSelectedSubject("");
+              setQuestionPage(1);
+            }}
+            className={`flex-1 py-2 px-4 rounded-xl font-bold text-xs transition-all cursor-pointer ${
+              activeTab === "global"
+                ? "shadow-sm text-white"
+                : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+            }`}
+            style={activeTab === "global" ? { background: "var(--accent-gradient)" } : {}}
+          >
+            Global Questions
+          </button>
+        </div>
+      )}
 
       {/* Stats Row */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -218,7 +276,7 @@ export default function QuestionBankPage() {
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
               {subjectNames.map(subject => {
-                const count = questions.filter(q => q.subject === subject).length;
+                const count = filteredQuestions.filter(q => q.subject === subject).length;
                 const active = selectedSubject === subject;
                 const Icon = active ? FolderOpen : Folder;
                 return (
@@ -267,18 +325,20 @@ export default function QuestionBankPage() {
                         <p className="mt-1 text-xs" style={{ color: "var(--text-muted)" }}>{q.topic}</p>
                       )}
                     </div>
-                    <div className="flex items-center space-x-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button onClick={() => openEdit(q)}
-                              className="p-2 rounded-xl hover:bg-indigo-500/10 hover:text-indigo-500 transition-colors cursor-pointer"
-                              style={{ color: "var(--text-secondary)" }} title="Edit">
-                        <Edit2 size={14} />
-                      </button>
-                      <button onClick={() => setDeleteTarget({ id: q.id, questionText: q.questionText })}
-                              className="p-2 rounded-xl hover:bg-rose-500/10 hover:text-rose-500 transition-colors cursor-pointer"
-                              style={{ color: "var(--text-secondary)" }} title="Delete">
-                        <Trash2 size={14} />
-                      </button>
-                    </div>
+                    {!(q.instituteId === null && user?.role !== "ADMIN") && (
+                      <div className="flex items-center space-x-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button onClick={() => openEdit(q)}
+                                className="p-2 rounded-xl hover:bg-indigo-500/10 hover:text-indigo-500 transition-colors cursor-pointer"
+                                style={{ color: "var(--text-secondary)" }} title="Edit">
+                          <Edit2 size={14} />
+                        </button>
+                        <button onClick={() => setDeleteTarget({ id: q.id, questionText: q.questionText })}
+                                className="p-2 rounded-xl hover:bg-rose-500/10 hover:text-rose-500 transition-colors cursor-pointer"
+                                style={{ color: "var(--text-secondary)" }} title="Delete">
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>

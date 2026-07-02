@@ -13,8 +13,23 @@ const getPDFParseClass = () => {
 const UPLOADS_DIR = path.join(__dirname, '..', 'uploads', 'study-materials');
 
 /** List all study materials, newest first. */
-const listMaterials = async () => {
-  return prisma.studyMaterial.findMany({ orderBy: { createdAt: 'desc' } });
+const listMaterials = async (instituteId) => {
+  const where = {};
+  if (instituteId !== undefined) {
+    if (instituteId === null) {
+      where.instituteId = null;
+    } else {
+      where.OR = [
+        { instituteId: null },
+        { instituteId }
+      ];
+    }
+  }
+
+  return prisma.studyMaterial.findMany({
+    where,
+    orderBy: { createdAt: 'desc' }
+  });
 };
 
 /** Get a single material by ID. */
@@ -28,7 +43,7 @@ const getMaterial = async (id) => {
  * Save upload metadata to DB. Actual file is already on disk (via multer).
  * Triggers async extraction immediately.
  */
-const createMaterial = async ({ title, subject, fileName, filePath, uploadedById }) => {
+const createMaterial = async ({ title, subject, fileName, filePath, uploadedById, instituteId }) => {
   const material = await prisma.studyMaterial.create({
     data: {
       title: title.trim(),
@@ -36,7 +51,8 @@ const createMaterial = async ({ title, subject, fileName, filePath, uploadedById
       fileName,
       filePath,
       uploadedById,
-      processingStatus: 'UPLOADED'
+      processingStatus: 'UPLOADED',
+      instituteId
     }
   });
   // Fire-and-forget extraction so the HTTP response is instant
@@ -103,14 +119,14 @@ const generateFromMaterial = async (id, count = 10) => {
  * Save selected/reviewed questions to the VivaQuestion table (Question Bank).
  * Returns the saved records.
  */
-const saveQuestionsToBank = async (questions) => {
+const saveQuestionsToBank = async (questions, instituteId) => {
   if (!questions || questions.length === 0) throw new Error('No questions provided.');
   const saved = [];
   for (const q of questions) {
     if (!q.questionText?.trim() || !q.subject?.trim()) continue;
     // Skip duplicates silently
     const existing = await prisma.vivaQuestion.findFirst({
-      where: { questionText: q.questionText.trim(), subject: q.subject.trim() }
+      where: { questionText: q.questionText.trim(), subject: q.subject.trim(), instituteId }
     });
     if (existing) { saved.push(existing); continue; }
     const created = await prisma.vivaQuestion.create({
@@ -120,7 +136,8 @@ const saveQuestionsToBank = async (questions) => {
         topic: q.topic?.trim() || '',
         difficulty: ['EASY', 'MEDIUM', 'HARD'].includes(q.difficulty) ? q.difficulty : 'EASY',
         expectedAnswer: q.expectedAnswer?.trim() || '',
-        keywords: q.keywords?.trim() || ''
+        keywords: q.keywords?.trim() || '',
+        instituteId
       }
     });
     saved.push(created);

@@ -10,13 +10,13 @@ const { protect, restrictTo, fetchUserIfExists } = require('../middleware/authMi
 
 const router = express.Router();
 
-// Public routes
-router.get('/', getAllProblems);
+// Public/Authed routes
+router.get('/', fetchUserIfExists, getAllProblems);
 router.get('/:slug', fetchUserIfExists, getSingleProblem);
 
-// Admin/Mentor routes
-router.post('/', protect, restrictTo('ADMIN', 'MENTOR'), createProblem);
-router.put('/:id', protect, restrictTo('ADMIN', 'MENTOR'), updateProblem);
-router.delete('/:id', protect, restrictTo('ADMIN', 'MENTOR'), deleteProblem);
+// Admin/Institute/Mentor routes
+router.post('/', protect, restrictTo('ADMIN', 'INSTITUTE_ADMIN', 'MENTOR'), createProblem);
+router.put('/:id', protect, restrictTo('ADMIN', 'INSTITUTE_ADMIN', 'MENTOR'), updateProblem);
+router.delete('/:id', protect, restrictTo('ADMIN', 'INSTITUTE_ADMIN', 'MENTOR'), deleteProblem);
 
 module.exports = router;

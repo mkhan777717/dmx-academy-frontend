@@ -30,7 +30,7 @@ function getDifficultyStyle(difficulty) {
 
 export default function AdminProblemsPage() {
   const router = useRouter();
-  const { token, API_BASE } = useAuth();
+  const { token, API_BASE, user } = useAuth();
 
   const [allProblems, setAllProblems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -39,6 +39,13 @@ export default function AdminProblemsPage() {
   const [filterDiff, setFilterDiff] = useState("all");
   const [deletingId, setDeletingId] = useState(null);
   const [notification, setNotification] = useState(null);
+  const [activeTab, setActiveTab] = useState("institute");
+
+  useEffect(() => {
+    if (user) {
+      setActiveTab(user.role === "ADMIN" ? "global" : "institute");
+    }
+  }, [user]);
 
   const hasRealToken =
     token && !token.startsWith("demo-") && !token.startsWith("local-");
@@ -113,7 +120,21 @@ export default function AdminProblemsPage() {
     setDeletingId(null);
   };
 
-  const filteredProblems = allProblems.filter((p) => {
+  const canDeleteProblem = (problem) => {
+    if (!problem.isDbProblem) return false;
+    if (user?.role === "ADMIN") return true;
+    return problem.instituteId && Number(problem.instituteId) === Number(user?.instituteId);
+  };
+
+  const tabProblems = allProblems.filter((p) => {
+    if (user?.role === "ADMIN") return true;
+    const isGlobal = p.instituteId === null || !p.instituteId;
+    if (activeTab === "global" && !isGlobal) return false;
+    if (activeTab === "institute" && isGlobal) return false;
+    return true;
+  });
+
+  const filteredProblems = tabProblems.filter((p) => {
     const matchesSearch =
       p.title?.toLowerCase().includes(search.toLowerCase()) ||
       p.slug?.toLowerCase().includes(search.toLowerCase()) ||
@@ -126,14 +147,14 @@ export default function AdminProblemsPage() {
   });
 
   const counts = {
-    all: allProblems.length,
-    easy: allProblems.filter(
+    all: tabProblems.length,
+    easy: tabProblems.filter(
       (p) => (p.difficulty || "").toUpperCase() === "EASY"
     ).length,
-    medium: allProblems.filter(
+    medium: tabProblems.filter(
       (p) => (p.difficulty || "").toUpperCase() === "MEDIUM"
     ).length,
-    hard: allProblems.filter(
+    hard: tabProblems.filter(
       (p) => (p.difficulty || "").toUpperCase() === "HARD"
     ).length,
   };
@@ -183,16 +204,18 @@ export default function AdminProblemsPage() {
               style={{ color: "var(--text-secondary)" }}
             />
           </button>
-          <button
-            onClick={() => router.push("/admin/problems/new")}
-            className="px-5 py-3 rounded-2xl font-bold text-xs text-white shadow-md transition-all cursor-pointer flex items-center space-x-1.5 hover:scale-102"
-            style={{
-              background: "linear-gradient(135deg, #6366f1 0%, #10b981 100%)",
-            }}
-          >
-            <Plus size={14} />
-            <span>Create Problem</span>
-          </button>
+          {!(activeTab === "global" && user?.role !== "ADMIN") && (
+            <button
+              onClick={() => router.push("/admin/problems/new")}
+              className="px-5 py-3 rounded-2xl font-bold text-xs text-white shadow-md transition-all cursor-pointer flex items-center space-x-1.5 hover:scale-102"
+              style={{
+                background: "linear-gradient(135deg, #6366f1 0%, #10b981 100%)",
+              }}
+            >
+              <Plus size={14} />
+              <span>Create Problem</span>
+            </button>
+          )}
         </div>
       </div>
 
@@ -203,11 +226,10 @@ export default function AdminProblemsPage() {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
-            className={`p-4 rounded-2xl border text-xs text-center font-bold ${
-              notification.type === "error"
+            className={`p-4 rounded-2xl border text-xs text-center font-bold ${notification.type === "error"
                 ? "bg-rose-500/10 border-rose-500/20 text-rose-400"
                 : "bg-emerald-500/10 border-emerald-500/20 text-emerald-400"
-            }`}
+              }`}
           >
             {notification.msg}
           </motion.div>
@@ -225,11 +247,10 @@ export default function AdminProblemsPage() {
           <button
             key={key}
             onClick={() => setFilterDiff(key)}
-            className={`p-4 rounded-2xl border text-left transition-all cursor-pointer ${
-              filterDiff === key
+            className={`p-4 rounded-2xl border text-left transition-all cursor-pointer ${filterDiff === key
                 ? "ring-1 ring-current"
                 : "hover:bg-slate-500/5"
-            } ${color}`}
+              } ${color}`}
             style={{
               backgroundColor: "var(--bg-card)",
               borderColor: "var(--border-card)",
@@ -247,6 +268,36 @@ export default function AdminProblemsPage() {
           </button>
         ))}
       </div>
+
+      {/* Scope Tabs */}
+      {user?.role !== "ADMIN" && (
+        <div className="flex border-b" style={{ borderColor: "var(--border-primary)" }}>
+          <button
+            onClick={() => {
+              setActiveTab("institute");
+              setFilterDiff("all");
+            }}
+            className={`px-6 py-3.5 text-xs font-black uppercase tracking-wider transition-all border-b-2 -mb-[2px] cursor-pointer ${activeTab === "institute"
+                ? "border-[var(--accent-primary)] text-[var(--accent-primary)]"
+                : "border-transparent text-[var(--text-muted)] hover:text-[var(--text-primary)]"
+              }`}
+          >
+            Your Institute Problems
+          </button>
+          <button
+            onClick={() => {
+              setActiveTab("global");
+              setFilterDiff("all");
+            }}
+            className={`px-6 py-3.5 text-xs font-black uppercase tracking-wider transition-all border-b-2 -mb-[2px] cursor-pointer ${activeTab === "global"
+                ? "border-[var(--accent-primary)] text-[var(--accent-primary)]"
+                : "border-transparent text-[var(--text-muted)] hover:text-[var(--text-primary)]"
+              }`}
+          >
+            Global Problems
+          </button>
+        </div>
+      )}
 
       {/* Search */}
       <div className="relative">
@@ -504,37 +555,20 @@ export default function AdminProblemsPage() {
                               />
                             </button>
                             {problem.isDbProblem && (
-                              <>
-                                <button
-                                  onClick={() =>
-                                    router.push(
-                                      `/admin/problems/${problem.slug || problem.id}/edit`
-                                    )
-                                  }
-                                  className="p-1.5 rounded-lg border transition-all cursor-pointer hover:bg-slate-500/10 group"
-                                  style={{ borderColor: "var(--border-primary)" }}
-                                  title="Edit Problem"
-                                >
-                                  <Edit3
-                                    size={12}
-                                    style={{ color: "var(--text-secondary)" }}
-                                  />
-                                </button>
-                                <button
-                                  onClick={() =>
-                                    setDeletingId({
-                                      id: problem.id,
-                                      slug: problem.slug,
-                                      isDb: true,
-                                    })
-                                  }
-                                  className="p-1.5 rounded-lg border transition-all cursor-pointer hover:bg-rose-500/10 hover:border-rose-500/20"
-                                  style={{ borderColor: "var(--border-primary)" }}
-                                  title="Delete Problem"
-                                >
-                                  <Trash2 size={12} className="text-rose-400" />
-                                </button>
-                              </>
+                              <button
+                                onClick={() =>
+                                  setDeletingId({
+                                    id: problem.id,
+                                    slug: problem.slug,
+                                    isDb: true,
+                                  })
+                                }
+                                className="p-1.5 rounded-lg border transition-all cursor-pointer hover:bg-rose-500/10 hover:border-rose-500/20"
+                                style={{ borderColor: "var(--border-primary)" }}
+                                title="Delete Problem"
+                              >
+                                <Trash2 size={12} className="text-rose-400" />
+                              </button>
                             )}
                           </div>
                         </td>

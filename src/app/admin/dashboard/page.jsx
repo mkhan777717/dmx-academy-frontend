@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -271,7 +272,7 @@ export default function AdminDashboard() {
             <span className="text-[10px] font-extrabold uppercase tracking-wider text-cyan-400">DMX Core Console</span>
           </div>
           <h1 className="text-2xl md:text-3xl font-black font-display tracking-tight" style={{ color: "var(--text-primary)" }}>
-            Welcome back, System Administrator
+            Welcome back, {user?.username || "System Administrator"}
           </h1>
           <p className="text-xs max-w-xl" style={{ color: "var(--text-secondary)" }}>
             Manage the competitive programming workspace, verify active web streams, audit problem schemas, and publish synchronized contest events.

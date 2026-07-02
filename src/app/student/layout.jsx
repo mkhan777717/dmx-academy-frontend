@@ -14,7 +14,7 @@ import { useAuth } from "@/context/AuthContext";
 export default function StudentLayout({ children }) {
   const router = useRouter();
   const pathname = usePathname();
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [checkingAuth, setCheckingAuth] = useState(true);
@@ -23,43 +23,29 @@ export default function StudentLayout({ children }) {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const studentSession = localStorage.getItem("synapse_student_session");
-      const mentorSession = localStorage.getItem("synapse_mentor_session");
-      const adminSession = localStorage.getItem("synapse_admin_session");
-      const hasSession = studentSession || mentorSession || adminSession;
+      const studentSession = localStorage.getItem("synapse_student_session") === "true";
       const isLoginRoute = pathname === "/student";
 
-      if (!hasSession) {
+      if (!studentSession) {
         router.push("/login?redirect=/student/dashboard");
       } else if (isLoginRoute) {
         router.push("/student/dashboard");
       } else {
-        if (adminSession) {
-          setStudentUser({
-            name: "DMX Admin",
-            email: "admin@synapse.com",
-            role: "Super Admin",
-            avatar: "SA"
-          });
-        } else if (mentorSession) {
-          setStudentUser({
-            name: "DMX Mentor",
-            email: "mentor@synapse.com",
-            role: "Senior Mentor",
-            avatar: "SM"
-          });
-        } else {
-          setStudentUser({
-            name: "DMX Student",
-            email: "student@synapse.com",
-            role: "Elite Scholar",
-            avatar: "SS"
-          });
-        }
+        const name = user?.username || "DMX Student";
+        const email = user?.email || "student@synapse.com";
+        const roleName = "Elite Scholar";
+        const avatar = name.slice(0, 2).toUpperCase();
+
+        setStudentUser({
+          name,
+          email,
+          role: roleName,
+          avatar
+        });
       }
       setCheckingAuth(false);
     }
-  }, [pathname, router]);
+  }, [pathname, router, user]);
 
   const handleLogout = () => {
     setShowLogoutConfirm(true);

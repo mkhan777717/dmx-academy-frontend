@@ -8,8 +8,24 @@ const { broadcastParticipationReport, broadcastLeaderboardUpdate } = require('..
 const createContest = async (req, res, next) => {
   try {
     const validatedData = contestSchema.parse(req.body);
-    const { title, description, category, startTime, endTime } = validatedData;
+    const { title, description, category, startTime, endTime, batchIds } = validatedData;
     const creatorId = req.user.id;
+
+    // Validate that all targeted batches belong to the creator's institute for non-super-admins
+    if (req.user.role !== 'ADMIN' && batchIds && batchIds.length > 0) {
+      const dbBatches = await prisma.batch.findMany({
+        where: {
+          id: { in: batchIds },
+          instituteId: req.user.instituteId
+        }
+      });
+      if (dbBatches.length !== batchIds.length) {
+        return res.status(403).json({
+          success: false,
+          message: 'You can only target cohorts/batches belonging to your own institute.'
+        });
+      }
+    }
 
     const contest = await prisma.contest.create({
       data: {
@@ -19,6 +35,9 @@ const createContest = async (req, res, next) => {
         startTime: new Date(startTime),
         endTime: new Date(endTime),
         creatorId,
+        batches: batchIds && batchIds.length > 0 ? {
+          connect: batchIds.map(id => ({ id }))
+        } : undefined
       },
     });
 
@@ -92,7 +111,39 @@ const addProblemToContest = async (req, res, next) => {
  */
 const getAllContests = async (req, res, next) => {
   try {
+    let whereClause = {};
+
+    if (req.user && req.user.role === 'USER') {
+      const student = await prisma.user.findUnique({
+        where: { id: req.user.id },
+        select: {
+          batchesStudied: { select: { id: true } }
+        }
+      });
+      const batchIds = student ? student.batchesStudied.map(b => b.id) : [];
+
+      whereClause = {
+        OR: [
+          {
+            batches: {
+              some: { id: { in: batchIds } }
+            }
+          },
+          {
+            batches: { none: {} },
+            creator: {
+              OR: [
+                { role: 'ADMIN' },
+                { instituteId: req.user.instituteId }
+              ]
+            }
+          }
+        ]
+      };
+    }
+
     const contests = await prisma.contest.findMany({
+      where: whereClause,
       include: {
         creator: {
           select: {
@@ -536,9 +587,22 @@ const updateContest = async (req, res, next) => {
     }
 
     // Verify contest exists
-    const contest = await prisma.contest.findUnique({ where: { id: contestId } });
+    const contest = await prisma.contest.findUnique({
+      where: { id: contestId },
+      include: { creator: true }
+    });
     if (!contest) {
       return res.status(404).json({ success: false, message: 'Contest not found.' });
+    }
+
+    // Permission check: Non-super admins can only update contests created within their own institute
+    if (req.user.role !== 'ADMIN') {
+      if (!contest.creator || contest.creator.instituteId !== req.user.instituteId) {
+        return res.status(403).json({
+          success: false,
+          message: 'You are not authorized to update this contest.'
+        });
+      }
     }
 
     const { title, description, category, startTime, endTime, problems, totalPoints } = req.body;
@@ -601,9 +665,22 @@ const deleteContest = async (req, res, next) => {
     }
 
     // Verify contest exists
-    const contest = await prisma.contest.findUnique({ where: { id: contestId } });
+    const contest = await prisma.contest.findUnique({
+      where: { id: contestId },
+      include: { creator: true }
+    });
     if (!contest) {
       return res.status(404).json({ success: false, message: 'Contest not found.' });
+    }
+
+    // Permission check: Non-super admins can only delete contests created within their own institute
+    if (req.user.role !== 'ADMIN') {
+      if (!contest.creator || contest.creator.instituteId !== req.user.instituteId) {
+        return res.status(403).json({
+          success: false,
+          message: 'You are not authorized to delete this contest.'
+        });
+      }
     }
 
     // Delete the contest

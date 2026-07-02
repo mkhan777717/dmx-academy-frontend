@@ -57,6 +57,7 @@ const contestSchema = z.object({
   endTime: z.string().refine(val => !isNaN(Date.parse(val)), {
     message: 'Invalid end time date string',
   }),
+  batchIds: z.array(z.number()).optional(),
 }).refine(data => new Date(data.startTime) < new Date(data.endTime), {
   message: 'End time must be after start time',
   path: ['endTime'],

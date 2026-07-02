@@ -819,6 +819,31 @@ export default function AdminLivePage() {
   const [isStarting, setIsStarting] = useState(false);
   const [error, setError] = useState(null);
 
+  // Batches targeting state
+  const [batches, setBatches] = useState([]);
+  const [selectedBatchIds, setSelectedBatchIds] = useState([]);
+
+  useEffect(() => {
+    const fetchBatches = async () => {
+      try {
+        if (!authToken) return;
+        const url = user?.role === "BATCH_MANAGER" 
+          ? `${API_BASE}/api/batches/batch-manager/batches`
+          : `${API_BASE}/api/batches`;
+        const res = await fetch(url, {
+          headers: { Authorization: `Bearer ${authToken}` }
+        });
+        const data = await res.json();
+        if (data.success && Array.isArray(data.batches)) {
+          setBatches(data.batches);
+        }
+      } catch (err) {
+        console.error("Failed to load batches in live view:", err);
+      }
+    };
+    fetchBatches();
+  }, [authToken, user, API_BASE]);
+
   const [pastSessions, setPastSessions] = useState([]);
   const [loadingPast, setLoadingPast] = useState(false);
   const [checkingSession, setCheckingSession] = useState(true); // true until we've checked for active session
@@ -971,6 +996,7 @@ export default function AdminLivePage() {
           title: formState.title,
           description: formState.description,
           thumbnailUrl: formState.thumbnailUrl,
+          batchIds: selectedBatchIds,
         }),
       });
 
@@ -1160,6 +1186,54 @@ export default function AdminLivePage() {
                 Optional thumbnail that students will see before joining. Recommended: 16:9 aspect ratio, max size: 2MB.
               </p>
             </div>
+          </div>
+
+          {/* Target Cohorts (Batches) */}
+          <div className="space-y-2">
+            <label className="text-xs font-extrabold uppercase tracking-wider block" style={{ color: "var(--text-secondary)" }}>
+              Target Cohorts (Batches)
+            </label>
+            <div 
+              className="w-full rounded-xl p-4 border grid grid-cols-1 sm:grid-cols-2 gap-2"
+              style={{
+                backgroundColor: "var(--bg-primary)",
+                borderColor: "var(--border-primary)",
+              }}
+            >
+              {batches.length === 0 ? (
+                <span className="text-xs text-[var(--text-muted)] italic col-span-2">
+                  No cohorts found. This session will be public.
+                </span>
+              ) : (
+                batches.map(b => (
+                  <label 
+                    key={b.id} 
+                    className="flex items-center gap-2 cursor-pointer text-xs font-semibold py-1 hover:text-[var(--text-accent)] transition-colors"
+                    style={{ color: "var(--text-primary)" }}
+                  >
+                    <input 
+                      type="checkbox" 
+                      checked={selectedBatchIds.includes(b.id)}
+                      onChange={() => {
+                        setSelectedBatchIds(prev => 
+                          prev.includes(b.id) 
+                            ? prev.filter(id => id !== b.id) 
+                            : [...prev, b.id]
+                        );
+                      }}
+                      className="rounded border-[var(--border-primary)] text-[var(--accent-primary)] focus:ring-[var(--accent-primary)] cursor-pointer"
+                    />
+                    <span>{b.name}</span>
+                  </label>
+                ))
+              )}
+            </div>
+            <p className="text-[9px] text-[var(--text-muted)] italic">
+              {user?.role === "ADMIN" 
+                ? "Leave all unchecked to publish this broadcast globally to all students in the world."
+                : "Leave all unchecked to target all cohorts in your institute."
+              }
+            </p>
           </div>
 
           {/* Error Message */}

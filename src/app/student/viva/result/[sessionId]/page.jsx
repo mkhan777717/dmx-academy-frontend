@@ -167,7 +167,7 @@ export default function VivaResultPage() {
         </div>
 
         {/* Overall Feedback */}
-        {session.feedback && (
+        {session.feedback && (!session.aiSummary || session.feedback !== session.aiSummary.overallRemark) && (
           <div className="relative z-10 mt-4 p-4 rounded-2xl border text-sm"
                style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}>
             <span className="font-bold" style={{ color: "var(--text-primary)" }}>Feedback: </span>
@@ -251,62 +251,6 @@ export default function VivaResultPage() {
         </div>
       )}
 
-      {/* Performance Summary */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Strengths */}
-        <div className="p-6 rounded-3xl border space-y-4"
-             style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
-          <div className="flex items-center space-x-2">
-            <div className="p-1.5 rounded-lg bg-emerald-500/10">
-              <TrendingUp size={16} className="text-emerald-500" />
-            </div>
-            <h2 className="font-bold text-sm" style={{ color: "var(--text-primary)" }}>Strengths</h2>
-            <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500">{strengths.length}</span>
-          </div>
-          {strengths.length === 0 ? (
-            <p className="text-xs italic" style={{ color: "var(--text-muted)" }}>No strengths identified (score ≥ 7).</p>
-          ) : (
-            <ul className="space-y-2">
-              {strengths.map((a, i) => (
-                <li key={i} className="flex items-start space-x-2">
-                  <CheckCircle2 size={14} className="text-emerald-500 shrink-0 mt-0.5" />
-                  <span className="text-xs font-semibold" style={{ color: "var(--text-primary)" }}
-                        title={a.questionText}>
-                    {a.questionText.length > 80 ? a.questionText.slice(0, 80) + "…" : a.questionText}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-
-        {/* Needs Improvement */}
-        <div className="p-6 rounded-3xl border space-y-4"
-             style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
-          <div className="flex items-center space-x-2">
-            <div className="p-1.5 rounded-lg bg-amber-500/10">
-              <TrendingDown size={16} className="text-amber-500" />
-            </div>
-            <h2 className="font-bold text-sm" style={{ color: "var(--text-primary)" }}>Needs Improvement</h2>
-            <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-500">{improvements.length}</span>
-          </div>
-          {improvements.length === 0 ? (
-            <p className="text-xs italic" style={{ color: "var(--text-muted)" }}>No weak areas — excellent performance!</p>
-          ) : (
-            <ul className="space-y-2">
-              {improvements.map((a, i) => (
-                <li key={i} className="flex items-start space-x-2">
-                  <XCircle size={14} className="text-amber-500 shrink-0 mt-0.5" />
-                  <span className="text-xs font-semibold" style={{ color: "var(--text-primary)" }}
-                        title={a.questionText}>
-                    {a.questionText.length > 80 ? a.questionText.slice(0, 80) + "…" : a.questionText}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-      </div>
 
       {/* Question Breakdown */}
       <div className="space-y-4">

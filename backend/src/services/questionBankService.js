@@ -5,14 +5,14 @@ const VALID_DIFFICULTIES = ['EASY', 'MEDIUM', 'HARD'];
 /**
  * Create a new question. Prevents duplicates within the same subject.
  */
-const createQuestion = async ({ questionText, subject, topic, difficulty, expectedAnswer, keywords }) => {
+const createQuestion = async ({ questionText, subject, topic, difficulty, expectedAnswer, keywords, instituteId }) => {
   if (!questionText?.trim()) throw new Error("Question text is required.");
   if (!subject?.trim()) throw new Error("Subject is required.");
   if (!difficulty || !VALID_DIFFICULTIES.includes(difficulty)) throw new Error("Difficulty must be EASY, MEDIUM, or HARD.");
 
   // Duplicate check within same subject
   const existing = await prisma.vivaQuestion.findFirst({
-    where: { questionText: questionText.trim(), subject: subject.trim() }
+    where: { questionText: questionText.trim(), subject: subject.trim(), instituteId }
   });
   if (existing) throw new Error("A question with this text already exists for this subject.");
 
@@ -23,16 +23,24 @@ const createQuestion = async ({ questionText, subject, topic, difficulty, expect
       topic: topic?.trim() || "",
       difficulty,
       expectedAnswer: expectedAnswer?.trim() || "",
-      keywords: keywords?.trim() || ""
+      keywords: keywords?.trim() || "",
+      instituteId
     }
   });
 };
 
-/**
- * Get questions with optional filters: subject, topic, difficulty, search.
- */
-const getQuestions = async ({ subject, topic, difficulty, search } = {}) => {
+const getQuestions = async ({ subject, topic, difficulty, search, instituteId } = {}) => {
   const where = {};
+  if (instituteId !== undefined) {
+    if (instituteId === null) {
+      where.instituteId = null;
+    } else {
+      where.OR = [
+        { instituteId: null },
+        { instituteId }
+      ];
+    }
+  }
 
   if (subject) where.subject = subject;
   if (topic) where.topic = { contains: topic, mode: 'insensitive' };
@@ -70,7 +78,7 @@ const updateQuestion = async (id, { questionText, subject, topic, difficulty, ex
     const newText = questionText?.trim() ?? existing.questionText;
     const newSubject = subject?.trim() ?? existing.subject;
     const dup = await prisma.vivaQuestion.findFirst({
-      where: { questionText: newText, subject: newSubject, NOT: { id } }
+      where: { questionText: newText, subject: newSubject, instituteId: existing.instituteId, NOT: { id } }
     });
     if (dup) throw new Error("A question with this text already exists for this subject.");
   }
@@ -101,8 +109,21 @@ const deleteQuestion = async (id) => {
 /**
  * Get distinct subjects.
  */
-const getSubjects = async () => {
+const getSubjects = async (instituteId) => {
+  const where = {};
+  if (instituteId !== undefined) {
+    if (instituteId === null) {
+      where.instituteId = null;
+    } else {
+      where.OR = [
+        { instituteId: null },
+        { instituteId }
+      ];
+    }
+  }
+
   const rows = await prisma.vivaQuestion.findMany({
+    where,
     select: { subject: true },
     distinct: ['subject'],
     orderBy: { subject: 'asc' }
@@ -113,8 +134,20 @@ const getSubjects = async () => {
 /**
  * Get distinct topics, optionally filtered by subject.
  */
-const getTopics = async (subject) => {
-  const where = subject ? { subject } : {};
+const getTopics = async (subject, instituteId) => {
+  const where = {};
+  if (instituteId !== undefined) {
+    if (instituteId === null) {
+      where.instituteId = null;
+    } else {
+      where.OR = [
+        { instituteId: null },
+        { instituteId }
+      ];
+    }
+  }
+
+  if (subject) where.subject = subject;
   const rows = await prisma.vivaQuestion.findMany({
     select: { topic: true },
     where: { ...where, topic: { not: "" } },

@@ -11,7 +11,7 @@ import { useAuth } from "@/context/AuthContext";
 
 export default function CreateContest() {
   const router = useRouter();
-  const { token, API_BASE } = useAuth();
+  const { token, API_BASE, user } = useAuth();
   const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
   const [category, setCategory] = useState("Algorithms & Frontend");
@@ -26,13 +26,54 @@ export default function CreateContest() {
   const [submitting, setSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState(null);
 
+  // Batches targeting state
+  const [batches, setBatches] = useState([]);
+  const [selectedBatchIds, setSelectedBatchIds] = useState([]);
+
+  useEffect(() => {
+    const fetchBatches = async () => {
+      try {
+        if (!token) return;
+        const url = user?.role === "BATCH_MANAGER"
+          ? `${API_BASE}/api/batches/batch-manager/batches`
+          : `${API_BASE}/api/batches`;
+        const res = await fetch(url, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const data = await res.json();
+        if (data.success && Array.isArray(data.batches)) {
+          setBatches(data.batches);
+        }
+      } catch (err) {
+        console.error("Failed to load batches in contest view:", err);
+      }
+    };
+    fetchBatches();
+  }, [token, user]);
+
   // Custom problems states
   const [availableProblems, setAvailableProblems] = useState([]);
+  const [contestProbTab, setContestProbTab] = useState("institute");
+
+  useEffect(() => {
+    if (user) {
+      setContestProbTab(user.role === "ADMIN" ? "global" : "institute");
+    }
+  }, [user]);
+
   // Reload available problems from backend & local storage fallback
   const refreshProblemsList = async () => {
     let merged = [];
     try {
-      const res = await fetch(`${API_BASE}/api/problems`);
+      const hasRealToken = token && !token.startsWith("demo-") && !token.startsWith("local-");
+      const headers = {
+        "Content-Type": "application/json",
+        ...(hasRealToken
+          ? { Authorization: `Bearer ${token}` }
+          : { "x-bypass-auth": "true", "x-bypass-role": user?.role === "MENTOR" ? "MENTOR" : "ADMIN" }),
+      };
+
+      const res = await fetch(`${API_BASE}/api/problems`, { headers });
       const data = await res.json();
       if (data.success && data.problems) {
         // Map database problems to match the UI format
@@ -44,7 +85,8 @@ export default function CreateContest() {
             slug: prob.slug,
             title: prob.title,
             difficulty: formattedDiff,
-            category: "Algorithms"
+            category: "Algorithms",
+            instituteId: prob.instituteId
           };
         });
       }
@@ -57,8 +99,10 @@ export default function CreateContest() {
 
   // Load available problems on mount
   useEffect(() => {
-    refreshProblemsList();
-  }, []);
+    if (token) {
+      refreshProblemsList();
+    }
+  }, [token]);
 
   // Auto-generate slug from title
   useEffect(() => {
@@ -78,6 +122,14 @@ export default function CreateContest() {
       setSelectedProblemIds([...selectedProblemIds, problemId]);
     }
   };
+
+  const filteredProblemsForContest = availableProblems.filter(p => {
+    if (user?.role === "ADMIN") return true;
+    const isGlobal = p.instituteId === null || !p.instituteId;
+    if (contestProbTab === "global" && !isGlobal) return false;
+    if (contestProbTab === "institute" && isGlobal) return false;
+    return true;
+  });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -137,7 +189,8 @@ export default function CreateContest() {
           description: desc,
           category,
           startTime: start.toISOString(),
-          endTime: end.toISOString()
+          endTime: end.toISOString(),
+          batchIds: selectedBatchIds
         })
       });
       const data = await res.json();
@@ -278,26 +331,57 @@ export default function CreateContest() {
                 />
               </div>
 
-              {/* Category */}
-              <div className="space-y-1.5">
+
+
+              {/* Target Cohorts (Batches) */}
+              <div className="space-y-1.5 md:col-span-2">
                 <label className="text-[10px] font-extrabold uppercase tracking-wider" style={{ color: "var(--text-secondary)" }}>
-                  Category
+                  Target Cohorts (Batches)
                 </label>
-                <select
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
-                  className="w-full rounded-2xl py-3 px-4 text-xs outline-none border transition-all"
+                <div
+                  className="w-full rounded-2xl p-4 border grid grid-cols-1 sm:grid-cols-2 gap-2"
                   style={{
                     backgroundColor: "var(--bg-input)",
                     borderColor: "var(--border-primary)",
-                    color: "var(--text-primary)"
                   }}
                 >
-                  <option value="Algorithms & Frontend">Algorithms & Frontend</option>
-                  <option value="System Design & Security">System Design & Security</option>
-                  <option value="Full Stack Mastery">Full Stack Mastery</option>
-                  <option value="Machine Learning & Data">Machine Learning & Data</option>
-                </select>
+                  {batches.length === 0 ? (
+                    <span className="text-xs text-[var(--text-muted)] italic col-span-2">
+                      {user?.role === "ADMIN"
+                        ? "No cohorts found. This contest will be published globally."
+                        : "No cohorts found. This contest will be published to all cohorts in your institute."
+                      }
+                    </span>
+                  ) : (
+                    batches.map(b => (
+                      <label
+                        key={b.id}
+                        className="flex items-center gap-2 cursor-pointer text-xs font-semibold py-1 hover:text-[var(--text-accent)] transition-colors"
+                        style={{ color: "var(--text-primary)" }}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={selectedBatchIds.includes(b.id)}
+                          onChange={() => {
+                            setSelectedBatchIds(prev =>
+                              prev.includes(b.id)
+                                ? prev.filter(id => id !== b.id)
+                                : [...prev, b.id]
+                            );
+                          }}
+                          className="rounded border-[var(--border-primary)] text-[var(--accent-primary)] focus:ring-[var(--accent-primary)] cursor-pointer"
+                        />
+                        <span>{b.name}</span>
+                      </label>
+                    ))
+                  )}
+                </div>
+                <p className="text-[9px] text-[var(--text-muted)] italic">
+                  {user?.role === "ADMIN"
+                    ? "Leave all unchecked to publish this contest globally to all students in the world."
+                    : "Leave all unchecked to target all cohorts in your institute."
+                  }
+                </p>
               </div>
 
               {/* Status */}
@@ -464,66 +548,97 @@ export default function CreateContest() {
                 </button>
               </div>
             </div>
-
-            <div className="max-h-72 overflow-y-auto pr-1 space-y-2">
-              {availableProblems.map((problem) => {
-                const isSelected = selectedProblemIds.includes(problem.id);
-                return (
-                  <div
-                    key={problem.id}
-                    onClick={() => toggleProblemSelection(problem.id)}
-                    className="p-3.5 rounded-2xl border flex items-center justify-between cursor-pointer transition-all hover:scale-101"
-                    style={{
-                      backgroundColor: isSelected ? "var(--bg-badge)" : "var(--bg-primary)",
-                      borderColor: isSelected ? "var(--border-accent)" : "var(--border-primary)"
-                    }}
+              {/* Tab selection pills */}
+              {user?.role !== "ADMIN" && (
+                <div className="flex border-b border-[var(--border-primary)] pb-2 text-[10px]">
+                  <button
+                    type="button"
+                    onClick={() => setContestProbTab("institute")}
+                    className={`px-4 py-1.5 font-bold uppercase tracking-wider transition-all rounded-lg cursor-pointer mr-2 ${contestProbTab === "institute"
+                      ? "bg-[var(--accent-primary)] text-white"
+                      : "text-[var(--text-muted)] hover:bg-[var(--bg-primary)]"
+                      }`}
                   >
-                    <div className="space-y-1">
-                      <p className="text-xs font-bold" style={{ color: "var(--text-primary)" }}>{problem.title}</p>
-                      <div className="flex items-center space-x-2 text-[10px]" style={{ color: "var(--text-secondary)" }}>
-                        <span className={`font-semibold ${problem.difficulty === "Easy" ? "text-emerald-500" :
-                          problem.difficulty === "Medium" ? "text-amber-500" : "text-rose-500"
-                          }`}>{problem.difficulty}</span>
-                        <span>•</span>
-                        <span>{problem.category}</span>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center space-x-2">
-                      <input
-                        type="checkbox"
-                        checked={isSelected}
-                        readOnly
-                        className="rounded border shadow-sm accent-indigo-500 w-4 h-4"
-                      />
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Submit Action */}
-          <div className="flex justify-end pt-2">
-            <button
-              type="submit"
-              disabled={submitting || success}
-              className="px-8 py-3.5 rounded-2xl font-bold text-xs text-white shadow-md transition-all flex items-center space-x-2 hover:scale-102 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100"
-              style={{ background: "var(--accent-gradient)", cursor: submitting ? "not-allowed" : "pointer" }}
-            >
-              {submitting ? (
-                <>
-                  <RefreshCw size={14} className="animate-spin" />
-                  <span>Creating Contest...</span>
-                </>
-              ) : (
-                <>
-                  <Save size={14} />
-                  <span>Create Contest &amp; Publish</span>
-                </>
+                    Your Institute
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setContestProbTab("global")}
+                    className={`px-4 py-1.5 font-bold uppercase tracking-wider transition-all rounded-lg cursor-pointer ${contestProbTab === "global"
+                      ? "bg-[var(--accent-primary)] text-white"
+                      : "text-[var(--text-muted)] hover:bg-[var(--bg-primary)]"
+                      }`}
+                  >
+                    Global Problems
+                  </button>
+                </div>
               )}
-            </button>
-          </div>
+
+              <div className="max-h-72 overflow-y-auto pr-1 space-y-2">
+                {filteredProblemsForContest.length === 0 ? (
+                  <div className="text-center py-8 text-xs italic text-[var(--text-muted)] border rounded-2xl border-dashed" style={{ borderColor: "var(--border-primary)" }}>
+                    No problems found in this scope.
+                  </div>
+                ) :
+                  filteredProblemsForContest.map((problem) => {
+                    const isSelected = selectedProblemIds.includes(problem.id);
+                    return (
+                      <div
+                        key={problem.id}
+                        onClick={() => toggleProblemSelection(problem.id)}
+                        className="p-3.5 rounded-2xl border flex items-center justify-between cursor-pointer transition-all hover:scale-101"
+                        style={{
+                          backgroundColor: isSelected ? "var(--bg-badge)" : "var(--bg-primary)",
+                          borderColor: isSelected ? "var(--border-accent)" : "var(--border-primary)"
+                        }}
+                      >
+                        <div className="space-y-1">
+                          <p className="text-xs font-bold" style={{ color: "var(--text-primary)" }}>{problem.title}</p>
+                          <div className="flex items-center space-x-2 text-[10px]" style={{ color: "var(--text-secondary)" }}>
+                            <span className={`font-semibold ${problem.difficulty === "Easy" ? "text-emerald-500" :
+                              problem.difficulty === "Medium" ? "text-amber-500" : "text-rose-500"
+                              }`}>{problem.difficulty}</span>
+                            <span>•</span>
+                            <span>{problem.category}</span>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center space-x-2">
+                          <input
+                            type="checkbox"
+                            checked={isSelected}
+                            readOnly
+                            className="rounded border shadow-sm accent-indigo-500 w-4 h-4"
+                          />
+                        </div>
+                      </div>
+                    );
+                  })
+                }
+              </div>
+            </div>
+
+            {/* Submit Action */}
+            <div className="flex justify-end pt-2">
+              <button
+                type="submit"
+                disabled={submitting || success}
+                className="px-8 py-3.5 rounded-2xl font-bold text-xs text-white shadow-md transition-all flex items-center space-x-2 hover:scale-102 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100"
+                style={{ background: "var(--accent-gradient)", cursor: submitting ? "not-allowed" : "pointer" }}
+              >
+                {submitting ? (
+                  <>
+                    <RefreshCw size={14} className="animate-spin" />
+                    <span>Creating Contest...</span>
+                  </>
+                ) : (
+                  <>
+                    <Save size={14} />
+                    <span>Create Contest &amp; Publish</span>
+                  </>
+                )}
+              </button>
+            </div>
 
         </form>
 

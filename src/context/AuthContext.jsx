@@ -79,10 +79,9 @@ function setLegacySession(user) {
   const email = user.email || "";
   const emailLower = email.toLowerCase();
 
-  if (role === "ADMIN" || role === "INSTITUTE_ADMIN" || role === "BATCH_MANAGER" || emailLower.includes("admin")) {
+  if (role === "ADMIN" || role === "INSTITUTE_ADMIN" || role === "BATCH_MANAGER") {
     localStorage.setItem("synapse_admin_session", "true");
-  } else if (role === "MENTOR" || emailLower.includes("mentor")) {
-    localStorage.setItem("synapse_admin_session", "true");
+  } else if (role === "MENTOR") {
     localStorage.setItem("synapse_mentor_session", "true");
   } else {
     localStorage.setItem("synapse_student_session", "true");

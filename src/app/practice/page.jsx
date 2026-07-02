@@ -87,7 +87,15 @@ export default function PracticeCatalogPage() {
       setLoading(true);
       
       try {
+        const hasRealToken = token && !token.startsWith("demo-") && !token.startsWith("local-");
+        const headers = {
+          "Content-Type": "application/json",
+          ...(hasRealToken
+            ? { Authorization: `Bearer ${token}` }
+            : {}),
+        };
         const res = await fetch(`${API_BASE}/api/problems`, {
+          headers,
           signal: AbortSignal.timeout(30000)
         });
         const data = await res.json();

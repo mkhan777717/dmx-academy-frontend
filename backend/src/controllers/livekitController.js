@@ -17,7 +17,7 @@ const getHttpLivekitUrl = (url) => {
  */
 const createSession = async (req, res) => {
   try {
-    const { title, description, thumbnailUrl, scheduledAt } = req.body;
+    const { title, description, thumbnailUrl, scheduledAt, batchIds } = req.body;
 
     if (!title || title.trim().length === 0) {
       return res.status(400).json({
@@ -26,15 +26,30 @@ const createSession = async (req, res) => {
       });
     }
 
-    // Check if there's already an active live session
+    // Check if there's already an active live session for the targeted scope
+    let conflictWhere = { isLive: true };
+    if (batchIds && batchIds.length > 0) {
+      conflictWhere.batches = {
+        some: { id: { in: batchIds } }
+      };
+    } else {
+      if (req.user?.role === "ADMIN") {
+        // Global Super Admin session conflict check
+        conflictWhere.batches = { none: {} };
+      } else {
+        // Institute Admin/Mentor session conflict check within their own institute
+        conflictWhere.host = { instituteId: req.user.instituteId };
+      }
+    }
+
     const existingLive = await prisma.liveSession.findFirst({
-      where: { isLive: true },
+      where: conflictWhere,
     });
 
     if (existingLive) {
       return res.status(409).json({
         success: false,
-        message: 'Another session is already live. End it before starting a new one.',
+        message: 'Another session is already live for the selected targeted group. End it before starting a new one.',
         activeSession: existingLive,
       });
     }
@@ -52,6 +67,9 @@ const createSession = async (req, res) => {
         isLive: true,
         scheduledAt: scheduledAt ? new Date(scheduledAt) : null,
         startedAt: new Date(),
+        batches: batchIds && batchIds.length > 0 ? {
+          connect: batchIds.map(id => ({ id }))
+        } : undefined
       },
       include: {
         host: {
@@ -137,8 +155,40 @@ const generateToken = async (req, res) => {
  */
 const getActiveSession = async (req, res) => {
   try {
+    let whereClause = { isLive: true };
+
+    if (req.user && req.user.role === 'USER') {
+      const student = await prisma.user.findUnique({
+        where: { id: req.user.id },
+        select: {
+          batchesStudied: { select: { id: true } }
+        }
+      });
+      const batchIds = student ? student.batchesStudied.map(b => b.id) : [];
+
+      whereClause = {
+        isLive: true,
+        OR: [
+          {
+            batches: {
+              some: { id: { in: batchIds } }
+            }
+          },
+          {
+            batches: { none: {} },
+            host: {
+              OR: [
+                { role: 'ADMIN' },
+                { instituteId: req.user.instituteId }
+              ]
+            }
+          }
+        ]
+      };
+    }
+
     const session = await prisma.liveSession.findFirst({
-      where: { isLive: true },
+      where: whereClause,
       include: {
         host: {
           select: { id: true, username: true, role: true },
@@ -166,7 +216,39 @@ const getActiveSession = async (req, res) => {
  */
 const getAllSessions = async (req, res) => {
   try {
+    let whereClause = {};
+
+    if (req.user && req.user.role === 'USER') {
+      const student = await prisma.user.findUnique({
+        where: { id: req.user.id },
+        select: {
+          batchesStudied: { select: { id: true } }
+        }
+      });
+      const batchIds = student ? student.batchesStudied.map(b => b.id) : [];
+
+      whereClause = {
+        OR: [
+          {
+            batches: {
+              some: { id: { in: batchIds } }
+            }
+          },
+          {
+            batches: { none: {} },
+            host: {
+              OR: [
+                { role: 'ADMIN' },
+                { instituteId: req.user.instituteId }
+              ]
+            }
+          }
+        ]
+      };
+    }
+
     const sessions = await prisma.liveSession.findMany({
+      where: whereClause,
       orderBy: { createdAt: 'desc' },
       take: 20,
       include: {

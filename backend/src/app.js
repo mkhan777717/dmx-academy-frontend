@@ -19,6 +19,8 @@ const livekitRoutes = require('./routes/livekitRoutes');
 const vivaRoutes = require('./routes/vivaRoutes');
 const courseRoutes = require('./routes/courseRoutes');
 const aiRoutes = require('./routes/aiRoutes');
+const instituteRoutes = require('./routes/instituteRoutes');
+const batchRoutes = require('./routes/batchRoutes');
 
 
 const app = express();
@@ -55,6 +57,8 @@ app.use('/api/livekit', livekitRoutes);
 app.use('/api/viva', vivaRoutes);
 app.use('/api/courses', courseRoutes);
 app.use('/api/ai', aiRoutes);
+app.use('/api/institutes', instituteRoutes);
+app.use('/api/batches', batchRoutes);
 
 // Fallback for undefined routes
 app.use((req, res, next) => {
@@ -79,18 +83,6 @@ const seedDefaultUsers = async () => {
         email: 'admin@synapse.com',
         password: 'admin123',
         role: 'ADMIN',
-      },
-      {
-        username: 'mentor',
-        email: 'mentor@synapse.com',
-        password: 'mentor123',
-        role: 'USER',
-      },
-      {
-        username: 'student',
-        email: 'student@synapse.com',
-        password: 'student123',
-        role: 'USER',
       }
     ];
 
