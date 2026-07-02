@@ -13,7 +13,14 @@ export default function EditContest() {
   const params = useParams();
   const router = useRouter();
   const contestId = params.contestId;
-  const { token, API_BASE } = useAuth();
+  const { token, API_BASE, user } = useAuth();
+  const [contestProbTab, setContestProbTab] = useState("institute");
+
+  useEffect(() => {
+    if (user) {
+      setContestProbTab(user.role === "ADMIN" ? "global" : "institute");
+    }
+  }, [user]);
 
   const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
@@ -36,7 +43,15 @@ export default function EditContest() {
   const refreshProblemsList = async () => {
     let merged = [];
     try {
-      const res = await fetch(`${API_BASE}/api/problems`);
+      const hasRealToken = token && !token.startsWith("demo-") && !token.startsWith("local-");
+      const headers = {
+        "Content-Type": "application/json",
+        ...(hasRealToken
+          ? { Authorization: `Bearer ${token}` }
+          : { "x-bypass-auth": "true", "x-bypass-role": user?.role === "MENTOR" ? "MENTOR" : "ADMIN" }),
+      };
+
+      const res = await fetch(`${API_BASE}/api/problems`, { headers });
       const data = await res.json();
       if (data.success && data.problems) {
         merged = data.problems.map(prob => {
@@ -46,7 +61,8 @@ export default function EditContest() {
             slug: prob.slug,
             title: prob.title,
             difficulty: formattedDiff,
-            category: "Algorithms"
+            category: "Algorithms",
+            instituteId: prob.instituteId
           };
         });
       }
@@ -122,12 +138,14 @@ export default function EditContest() {
 
   // Load problems and contest details on mount
   useEffect(() => {
-    const init = async () => {
-      await refreshProblemsList();
-      await loadContestData();
-    };
-    init();
-  }, [contestId, loadContestData]);
+    if (token) {
+      const init = async () => {
+        await refreshProblemsList();
+        await loadContestData();
+      };
+      init();
+    }
+  }, [contestId, loadContestData, token]);
 
   // Auto-generate slug from title
   useEffect(() => {
@@ -147,6 +165,14 @@ export default function EditContest() {
       setSelectedProblemIds([...selectedProblemIds, problemId]);
     }
   };
+
+  const filteredProblemsForContest = availableProblems.filter(p => {
+    if (user?.role === "ADMIN") return true;
+    const isGlobal = p.instituteId === null || !p.instituteId;
+    if (contestProbTab === "global" && !isGlobal) return false;
+    if (contestProbTab === "institute" && isGlobal) return false;
+    return true;
+  });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -493,41 +519,75 @@ export default function EditContest() {
               </div>
             </div>
 
+            {/* Tab selection pills */}
+            {user?.role !== "ADMIN" && (
+              <div className="flex border-b border-[var(--border-primary)] pb-2 text-[10px]">
+                <button
+                  type="button"
+                  onClick={() => setContestProbTab("institute")}
+                  className={`px-4 py-1.5 font-bold uppercase tracking-wider transition-all rounded-lg cursor-pointer mr-2 ${
+                    contestProbTab === "institute"
+                      ? "bg-[var(--accent-primary)] text-white"
+                      : "text-[var(--text-muted)] hover:bg-[var(--bg-primary)]"
+                  }`}
+                >
+                  Your Institute
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setContestProbTab("global")}
+                  className={`px-4 py-1.5 font-bold uppercase tracking-wider transition-all rounded-lg cursor-pointer ${
+                    contestProbTab === "global"
+                      ? "bg-[var(--accent-primary)] text-white"
+                      : "text-[var(--text-muted)] hover:bg-[var(--bg-primary)]"
+                  }`}
+                >
+                  Global Problems
+                </button>
+              </div>
+            )}
+
             <div className="max-h-72 overflow-y-auto pr-1 space-y-2">
-              {availableProblems.map((problem) => {
-                const isSelected = selectedProblemIds.includes(problem.id);
-                return (
-                  <div
-                    key={problem.id}
-                    onClick={() => toggleProblemSelection(problem.id)}
-                    className="p-3.5 rounded-2xl border flex items-center justify-between cursor-pointer transition-all hover:scale-101"
-                    style={{
-                      backgroundColor: isSelected ? "var(--bg-badge)" : "var(--bg-primary)",
-                      borderColor: isSelected ? "var(--border-accent)" : "var(--border-primary)"
-                    }}
-                  >
-                    <div className="space-y-1">
-                      <p className="text-xs font-bold" style={{ color: "var(--text-primary)" }}>{problem.title}</p>
-                      <div className="flex items-center space-x-2 text-[10px]" style={{ color: "var(--text-secondary)" }}>
-                        <span className={`font-semibold ${problem.difficulty === "Easy" ? "text-emerald-500" :
-                          problem.difficulty === "Medium" ? "text-amber-500" : "text-rose-500"
-                          }`}>{problem.difficulty}</span>
-                        <span>•</span>
-                        <span>{problem.category}</span>
+              {filteredProblemsForContest.length === 0 ? (
+                <div className="text-center py-8 text-xs italic text-[var(--text-muted)] border rounded-2xl border-dashed" style={{ borderColor: "var(--border-primary)" }}>
+                  No problems found in this scope.
+                </div>
+              ) :
+                filteredProblemsForContest.map((problem) => {
+                  const isSelected = selectedProblemIds.includes(problem.id);
+                  return (
+                    <div
+                      key={problem.id}
+                      onClick={() => toggleProblemSelection(problem.id)}
+                      className="p-3.5 rounded-2xl border flex items-center justify-between cursor-pointer transition-all hover:scale-101"
+                      style={{
+                        backgroundColor: isSelected ? "var(--bg-badge)" : "var(--bg-primary)",
+                        borderColor: isSelected ? "var(--border-accent)" : "var(--border-primary)"
+                      }}
+                    >
+                      <div className="space-y-1">
+                        <p className="text-xs font-bold" style={{ color: "var(--text-primary)" }}>{problem.title}</p>
+                        <div className="flex items-center space-x-2 text-[10px]" style={{ color: "var(--text-secondary)" }}>
+                          <span className={`font-semibold ${problem.difficulty === "Easy" ? "text-emerald-500" :
+                            problem.difficulty === "Medium" ? "text-amber-500" : "text-rose-500"
+                            }`}>{problem.difficulty}</span>
+                          <span>•</span>
+                          <span>{problem.category}</span>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center space-x-2">
+                        <input
+                          type="checkbox"
+                          checked={isSelected}
+                          readOnly
+                          className="rounded border shadow-sm accent-indigo-500 w-4 h-4"
+                        />
                       </div>
                     </div>
-
-                    <div className="flex items-center space-x-2">
-                      <input
-                        type="checkbox"
-                        checked={isSelected}
-                        readOnly
-                        className="rounded border shadow-sm accent-indigo-500 w-4 h-4"
-                      />
-                    </div>
-                  </div>
-                );
-              })}
+                  );
+                })
+              }
             </div>
           </div>
 

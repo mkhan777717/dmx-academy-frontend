@@ -111,9 +111,26 @@ const evaluateAnswer = (question, answerText) => {
 const startVivaSession = async (userId, subject, { difficulty, numQuestions } = {}) => {
   await seedQuestionsIfNeeded();
 
+  const studentUser = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { instituteId: true }
+  });
+  const studentInstId = studentUser?.instituteId;
+
   const filter = { subject };
   if (difficulty && ['EASY', 'MEDIUM', 'HARD'].includes(difficulty)) {
     filter.difficulty = difficulty;
+  }
+
+  if (studentInstId) {
+    // Institute Student: Can pull global (null) and their institute's questions
+    filter.OR = [
+      { instituteId: null },
+      { instituteId: studentInstId }
+    ];
+  } else {
+    // Global Student: Can pull only global (null) questions
+    filter.instituteId = null;
   }
 
   const allMatchingQuestions = await prisma.vivaQuestion.findMany({

@@ -53,20 +53,20 @@ router.get('/questions',          protect, listQuestions);
 router.get('/questions/:id',      protect, getQuestion);
 
 // ── Question Bank (write: mentor/admin only) ─────────────────────────
-router.post(  '/questions',      protect, restrictTo('ADMIN', 'MENTOR'), createQuestion);
-router.put(   '/questions/:id',  protect, restrictTo('ADMIN', 'MENTOR'), updateQuestion);
-router.delete('/questions/:id',  protect, restrictTo('ADMIN', 'MENTOR'), deleteQuestion);
+router.post(  '/questions',      protect, restrictTo('ADMIN', 'MENTOR', 'INSTITUTE_ADMIN', 'BATCH_MANAGER'), createQuestion);
+router.put(   '/questions/:id',  protect, restrictTo('ADMIN', 'MENTOR', 'INSTITUTE_ADMIN', 'BATCH_MANAGER'), updateQuestion);
+router.delete('/questions/:id',  protect, restrictTo('ADMIN', 'MENTOR', 'INSTITUTE_ADMIN', 'BATCH_MANAGER'), deleteQuestion);
 
 // ── Study Materials (mentor/admin only) ──────────────────────────────
 // save-questions must come BEFORE /:id routes to avoid param collision
-router.post('/materials/save-questions', protect, restrictTo('ADMIN', 'MENTOR'), saveQuestions);
+router.post('/materials/save-questions', protect, restrictTo('ADMIN', 'MENTOR', 'INSTITUTE_ADMIN', 'BATCH_MANAGER'), saveQuestions);
 
-router.get(   '/materials',          protect, restrictTo('ADMIN', 'MENTOR'), listMaterials);
-router.post(  '/materials',          protect, restrictTo('ADMIN', 'MENTOR'), uploadMiddleware.single('file'), uploadMaterial);
-router.get(   '/materials/:id',      protect, restrictTo('ADMIN', 'MENTOR'), getMaterial);
-router.delete('/materials/:id',      protect, restrictTo('ADMIN', 'MENTOR'), deleteMaterial);
-router.post(  '/materials/:id/retry',    protect, restrictTo('ADMIN', 'MENTOR'), retryExtraction);
-router.post(  '/materials/:id/generate', protect, restrictTo('ADMIN', 'MENTOR'), generateQuestions);
+router.get(   '/materials',          protect, restrictTo('ADMIN', 'MENTOR', 'INSTITUTE_ADMIN', 'BATCH_MANAGER'), listMaterials);
+router.post(  '/materials',          protect, restrictTo('ADMIN', 'MENTOR', 'INSTITUTE_ADMIN', 'BATCH_MANAGER'), uploadMiddleware.single('file'), uploadMaterial);
+router.get(   '/materials/:id',      protect, restrictTo('ADMIN', 'MENTOR', 'INSTITUTE_ADMIN', 'BATCH_MANAGER'), getMaterial);
+router.delete('/materials/:id',      protect, restrictTo('ADMIN', 'MENTOR', 'INSTITUTE_ADMIN', 'BATCH_MANAGER'), deleteMaterial);
+router.post(  '/materials/:id/retry',    protect, restrictTo('ADMIN', 'MENTOR', 'INSTITUTE_ADMIN', 'BATCH_MANAGER'), retryExtraction);
+router.post(  '/materials/:id/generate', protect, restrictTo('ADMIN', 'MENTOR', 'INSTITUTE_ADMIN', 'BATCH_MANAGER'), generateQuestions);
 
 // ── Session routes (all protected) ───────────────────────────────────
 router.use(protect);

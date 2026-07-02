@@ -30,6 +30,24 @@ export default function StudyMaterialsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  // Tab state: "institute" or "global"
+  const [activeTab, setActiveTab] = useState("institute");
+
+  useEffect(() => {
+    if (user) {
+      setActiveTab(user.role === "ADMIN" ? "global" : "institute");
+    }
+  }, [user]);
+
+  const filteredMaterials = React.useMemo(() => {
+    return materials.filter(m => {
+      const isGlobal = m.instituteId === null;
+      if (activeTab === "global" && !isGlobal) return false;
+      if (activeTab === "institute" && isGlobal) return false;
+      return true;
+    });
+  }, [materials, activeTab]);
+
   // Upload state
   const [uploadOpen, setUploadOpen] = useState(false);
   const [uploadFile, setUploadFile] = useState(null);
@@ -351,13 +369,49 @@ export default function StudyMaterialsPage() {
           <h1 className="text-2xl font-black font-display" style={{ color: "var(--text-primary)" }}>Study Materials</h1>
           <p className="text-sm" style={{ color: "var(--text-secondary)" }}>Upload PDFs and generate Viva questions automatically.</p>
         </div>
-        <button onClick={() => setUploadOpen(true)}
-                className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-2xl font-bold text-sm text-white shadow-md transition-all hover:scale-105 cursor-pointer"
-                style={{ background: "var(--accent-gradient)" }}>
-          <Upload size={15} />
-          <span>Upload PDF</span>
-        </button>
+        {!(activeTab === "global" && user?.role !== "ADMIN") && (
+          <button onClick={() => setUploadOpen(true)}
+                  className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-2xl font-bold text-sm text-white shadow-md transition-all hover:scale-105 cursor-pointer"
+                  style={{ background: "var(--accent-gradient)" }}>
+            <Upload size={15} />
+            <span>Upload PDF</span>
+          </button>
+        )}
       </div>
+
+      {/* Tab Switcher */}
+      {user?.role !== "ADMIN" && (
+        <div className="flex space-x-1 p-1 bg-[var(--bg-card)] border border-[var(--border-card)] rounded-2xl max-w-sm">
+          <button
+            type="button"
+            onClick={() => {
+              setActiveTab("institute");
+            }}
+            className={`flex-1 py-2 px-4 rounded-xl font-bold text-xs transition-all cursor-pointer ${
+              activeTab === "institute"
+                ? "shadow-sm text-white"
+                : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+            }`}
+            style={activeTab === "institute" ? { background: "var(--accent-gradient)" } : {}}
+          >
+            Your Institute
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setActiveTab("global");
+            }}
+            className={`flex-1 py-2 px-4 rounded-xl font-bold text-xs transition-all cursor-pointer ${
+              activeTab === "global"
+                ? "shadow-sm text-white"
+                : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+            }`}
+            style={activeTab === "global" ? { background: "var(--accent-gradient)" } : {}}
+          >
+            Global Materials
+          </button>
+        </div>
+      )}
 
       {error && (
         <div className="p-4 rounded-2xl border bg-rose-500/10 border-rose-500/20 flex items-center space-x-3">
@@ -370,7 +424,7 @@ export default function StudyMaterialsPage() {
         <div className="flex items-center justify-center h-48">
           <div className="w-8 h-8 border-4 border-t-transparent rounded-full animate-spin" style={{ borderColor: "var(--text-accent)" }} />
         </div>
-      ) : materials.length === 0 ? (
+      ) : filteredMaterials.length === 0 ? (
         <div className="p-12 rounded-3xl border border-dashed text-center space-y-4" style={{ borderColor: "var(--border-primary)" }}>
           <div className="w-14 h-14 rounded-2xl mx-auto flex items-center justify-center"
                style={{ backgroundColor: "var(--bg-badge)", color: "var(--text-accent)" }}>
@@ -381,7 +435,7 @@ export default function StudyMaterialsPage() {
         </div>
       ) : (
         <div className="space-y-3">
-          {materials.map(m => {
+          {filteredMaterials.map(m => {
             const st = STATUS_META[m.processingStatus] || STATUS_META.UPLOADED;
             const StIcon = st.icon;
             const isReady = m.processingStatus === "COMPLETED";
@@ -429,11 +483,13 @@ export default function StudyMaterialsPage() {
                       <span>Generate</span>
                     </button>
                   )}
-                  <button onClick={() => setDeleteTarget(m)} title="Delete"
-                          className="p-2 rounded-xl opacity-0 group-hover:opacity-100 hover:bg-rose-500/10 hover:text-rose-500 transition-all cursor-pointer"
-                          style={{ color: "var(--text-muted)" }}>
-                    <Trash2 size={14} />
-                  </button>
+                  {!(m.instituteId === null && user?.role !== "ADMIN") && (
+                    <button onClick={() => setDeleteTarget(m)} title="Delete"
+                            className="p-2 rounded-xl opacity-0 group-hover:opacity-100 hover:bg-rose-500/10 hover:text-rose-500 transition-all cursor-pointer"
+                            style={{ color: "var(--text-muted)" }}>
+                      <Trash2 size={14} />
+                    </button>
+                  )}
                 </div>
               </div>
             );

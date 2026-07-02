@@ -28,6 +28,8 @@ const createProblem = async (req, res, next) => {
       slug = `${slug}-${Date.now()}`;
     }
 
+    const instituteId = req.user && req.user.role !== 'ADMIN' ? req.user.instituteId : null;
+
     // Create problem along with testcases in a transaction
     const problem = await prisma.problem.create({
       data: {
@@ -46,6 +48,7 @@ const createProblem = async (req, res, next) => {
         templateJS: templateJS || '',
         templatePython: templatePython || '',
         templateGo: templateGo || '',
+        instituteId,
         testCases: {
           create: testCases,
         },
@@ -84,6 +87,16 @@ const updateProblem = async (req, res, next) => {
     const problemExists = await prisma.problem.findUnique({ where: { id: problemId } });
     if (!problemExists) {
       return res.status(404).json({ success: false, message: 'Problem not found.' });
+    }
+
+    // Permission check: Non-super admins can only update their own institute's problems
+    if (req.user && req.user.role !== 'ADMIN') {
+      if (!problemExists.instituteId || problemExists.instituteId !== req.user.instituteId) {
+        return res.status(403).json({
+          success: false,
+          message: 'You are not authorized to update this problem.'
+        });
+      }
     }
 
     // Prepare update data
@@ -160,6 +173,16 @@ const deleteProblem = async (req, res, next) => {
       return res.status(404).json({ success: false, message: 'Problem not found.' });
     }
 
+    // Permission check: Non-super admins can only delete their own institute's problems
+    if (req.user && req.user.role !== 'ADMIN') {
+      if (!problemExists.instituteId || problemExists.instituteId !== req.user.instituteId) {
+        return res.status(403).json({
+          success: false,
+          message: 'You are not authorized to delete this problem.'
+        });
+      }
+    }
+
     // Delete problem (testcases will delete cascade due to schema mapping)
     await prisma.problem.delete({
       where: { id: problemId },
@@ -175,17 +198,40 @@ const deleteProblem = async (req, res, next) => {
 };
 
 /**
- * Get all problems (Public)
+ * Get all problems (Public/Authenticated)
  */
 const getAllProblems = async (req, res, next) => {
   try {
+    const user = req.user;
+    let whereClause = {};
+
+    if (user) {
+      if (user.role === 'ADMIN') {
+        // Super Admin only manages global problems
+        whereClause = { instituteId: null };
+      } else {
+        // Institute Admin/Mentor/Batch Manager see global problems + their institute's problems
+        whereClause = {
+          OR: [
+            { instituteId: null },
+            { instituteId: user.instituteId }
+          ]
+        };
+      }
+    } else {
+      // Guests only see global problems
+      whereClause = { instituteId: null };
+    }
+
     const problems = await prisma.problem.findMany({
+      where: whereClause,
       select: {
         id: true,
         title: true,
         slug: true,
         difficulty: true,
         createdAt: true,
+        instituteId: true,
       },
       orderBy: { id: 'desc' },
     });

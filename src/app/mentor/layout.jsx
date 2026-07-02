@@ -70,17 +70,26 @@ export default function MentorLayout({ children }) {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const session = localStorage.getItem("synapse_mentor_session") === "true";
+      const isMentorSession = localStorage.getItem("synapse_mentor_session") === "true";
+      const isAdminSession = localStorage.getItem("synapse_admin_session") === "true";
+      const isVivaRoute = pathname.startsWith("/mentor/viva/questions") || pathname.startsWith("/mentor/viva/materials") || pathname.startsWith("/mentor/viva/ai-settings");
       const isLoginRoute = pathname === "/mentor";
 
-      if (!session) {
-        router.push("/login?redirect=/mentor/dashboard");
+      const hasAccess = isMentorSession || (isVivaRoute && isAdminSession);
+
+      if (!hasAccess) {
+        router.push(`/login?redirect=${pathname}`);
       } else if (isLoginRoute) {
         router.push("/mentor/dashboard");
       } else {
-        const name = user?.username || "DMX Mentor";
-        const email = user?.email || "mentor@synapse.com";
-        const roleName = "Senior Mentor";
+        const name = user?.username || (isMentorSession ? "DMX Mentor" : "DMX Admin");
+        const email = user?.email || (isMentorSession ? "mentor@synapse.com" : "admin@synapse.com");
+        
+        let roleName = "Senior Mentor";
+        if (user?.role === "ADMIN") roleName = "Super Admin";
+        else if (user?.role === "INSTITUTE_ADMIN") roleName = "Institute Admin";
+        else if (user?.role === "BATCH_MANAGER") roleName = "Batch Manager";
+
         const avatar = name.slice(0, 2).toUpperCase();
 
         setMentorUser({
@@ -142,7 +151,7 @@ export default function MentorLayout({ children }) {
       href: "/mentor/viva/materials",
       icon: FileText
     },
-    {
+    (user?.role === "ADMIN") && {
       label: "AI Settings",
       href: "/mentor/viva/ai-settings",
       icon: Settings
@@ -162,7 +171,7 @@ export default function MentorLayout({ children }) {
       href: "/courses",
       icon: BookOpen
     }
-  ];
+  ].filter(Boolean);
 
   return (
     <div className="flex h-screen overflow-hidden" style={{ backgroundColor: "var(--bg-primary)" }}>

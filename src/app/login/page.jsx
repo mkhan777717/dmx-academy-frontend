@@ -69,7 +69,14 @@ function LoginForm() {
     const isUserStudent = user.role === 'USER';
 
     if (path.startsWith('/admin') && !isUserAdmin) return true;
-    if (path.startsWith('/mentor') && !isUserMentor) return true;
+    if (path.startsWith('/mentor')) {
+      const isVivaAccess = path.startsWith('/mentor/viva/questions') || path.startsWith('/mentor/viva/materials') || path.startsWith('/mentor/viva/ai-settings');
+      if (isVivaAccess) {
+        if (!isUserAdmin && !isUserMentor) return true;
+      } else {
+        if (!isUserMentor) return true;
+      }
+    }
     if (path.startsWith('/student') && !isUserStudent) return true;
     return false;
   })();
@@ -77,6 +84,20 @@ function LoginForm() {
   // Redirect if user is already logged in
   useEffect(() => {
     if (user && !isMismatched) {
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("synapse_admin_session");
+        localStorage.removeItem("synapse_student_session");
+        localStorage.removeItem("synapse_mentor_session");
+        const role = user.role;
+        if (role === "ADMIN" || role === "INSTITUTE_ADMIN" || role === "BATCH_MANAGER") {
+          localStorage.setItem("synapse_admin_session", "true");
+        } else if (role === "MENTOR") {
+          localStorage.setItem("synapse_mentor_session", "true");
+        } else {
+          localStorage.setItem("synapse_student_session", "true");
+        }
+      }
+
       let targetRoute = redirectTo;
       if (redirectTo === "/") {
         const isUserAdmin = user.role === 'ADMIN' || user.role === 'INSTITUTE_ADMIN' || user.role === 'BATCH_MANAGER';

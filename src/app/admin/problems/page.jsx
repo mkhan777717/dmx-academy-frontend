@@ -30,7 +30,7 @@ function getDifficultyStyle(difficulty) {
 
 export default function AdminProblemsPage() {
   const router = useRouter();
-  const { token, API_BASE } = useAuth();
+  const { token, API_BASE, user } = useAuth();
 
   const [allProblems, setAllProblems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -39,6 +39,13 @@ export default function AdminProblemsPage() {
   const [filterDiff, setFilterDiff] = useState("all");
   const [deletingId, setDeletingId] = useState(null);
   const [notification, setNotification] = useState(null);
+  const [activeTab, setActiveTab] = useState("institute");
+
+  useEffect(() => {
+    if (user) {
+      setActiveTab(user.role === "ADMIN" ? "global" : "institute");
+    }
+  }, [user]);
 
   const hasRealToken =
     token && !token.startsWith("demo-") && !token.startsWith("local-");
@@ -113,7 +120,21 @@ export default function AdminProblemsPage() {
     setDeletingId(null);
   };
 
-  const filteredProblems = allProblems.filter((p) => {
+  const canDeleteProblem = (problem) => {
+    if (!problem.isDbProblem) return false;
+    if (user?.role === "ADMIN") return true;
+    return problem.instituteId && Number(problem.instituteId) === Number(user?.instituteId);
+  };
+
+  const tabProblems = allProblems.filter((p) => {
+    if (user?.role === "ADMIN") return true;
+    const isGlobal = p.instituteId === null || !p.instituteId;
+    if (activeTab === "global" && !isGlobal) return false;
+    if (activeTab === "institute" && isGlobal) return false;
+    return true;
+  });
+
+  const filteredProblems = tabProblems.filter((p) => {
     const matchesSearch =
       p.title?.toLowerCase().includes(search.toLowerCase()) ||
       p.slug?.toLowerCase().includes(search.toLowerCase()) ||
@@ -126,14 +147,14 @@ export default function AdminProblemsPage() {
   });
 
   const counts = {
-    all: allProblems.length,
-    easy: allProblems.filter(
+    all: tabProblems.length,
+    easy: tabProblems.filter(
       (p) => (p.difficulty || "").toUpperCase() === "EASY"
     ).length,
-    medium: allProblems.filter(
+    medium: tabProblems.filter(
       (p) => (p.difficulty || "").toUpperCase() === "MEDIUM"
     ).length,
-    hard: allProblems.filter(
+    hard: tabProblems.filter(
       (p) => (p.difficulty || "").toUpperCase() === "HARD"
     ).length,
   };
@@ -183,16 +204,18 @@ export default function AdminProblemsPage() {
               style={{ color: "var(--text-secondary)" }}
             />
           </button>
-          <button
-            onClick={() => router.push("/admin/problems/new")}
-            className="px-5 py-3 rounded-2xl font-bold text-xs text-white shadow-md transition-all cursor-pointer flex items-center space-x-1.5 hover:scale-102"
-            style={{
-              background: "linear-gradient(135deg, #6366f1 0%, #10b981 100%)",
-            }}
-          >
-            <Plus size={14} />
-            <span>Create Problem</span>
-          </button>
+          {!(activeTab === "global" && user?.role !== "ADMIN") && (
+            <button
+              onClick={() => router.push("/admin/problems/new")}
+              className="px-5 py-3 rounded-2xl font-bold text-xs text-white shadow-md transition-all cursor-pointer flex items-center space-x-1.5 hover:scale-102"
+              style={{
+                background: "linear-gradient(135deg, #6366f1 0%, #10b981 100%)",
+              }}
+            >
+              <Plus size={14} />
+              <span>Create Problem</span>
+            </button>
+          )}
         </div>
       </div>
 
@@ -247,6 +270,38 @@ export default function AdminProblemsPage() {
           </button>
         ))}
       </div>
+
+      {/* Scope Tabs */}
+      {user?.role !== "ADMIN" && (
+        <div className="flex border-b" style={{ borderColor: "var(--border-primary)" }}>
+          <button
+            onClick={() => {
+              setActiveTab("institute");
+              setFilterDiff("all");
+            }}
+            className={`px-6 py-3.5 text-xs font-black uppercase tracking-wider transition-all border-b-2 -mb-[2px] cursor-pointer ${
+              activeTab === "institute"
+                ? "border-[var(--accent-primary)] text-[var(--accent-primary)]"
+                : "border-transparent text-[var(--text-muted)] hover:text-[var(--text-primary)]"
+            }`}
+          >
+            Your Institute Problems
+          </button>
+          <button
+            onClick={() => {
+              setActiveTab("global");
+              setFilterDiff("all");
+            }}
+            className={`px-6 py-3.5 text-xs font-black uppercase tracking-wider transition-all border-b-2 -mb-[2px] cursor-pointer ${
+              activeTab === "global"
+                ? "border-[var(--accent-primary)] text-[var(--accent-primary)]"
+                : "border-transparent text-[var(--text-muted)] hover:text-[var(--text-primary)]"
+            }`}
+          >
+            Global Problems
+          </button>
+        </div>
+      )}
 
       {/* Search */}
       <div className="relative">
@@ -503,7 +558,7 @@ export default function AdminProblemsPage() {
                                 style={{ color: "var(--text-secondary)" }}
                               />
                             </button>
-                            {problem.isDbProblem && (
+                            {canDeleteProblem(problem) && (
                               <button
                                 onClick={() =>
                                   setDeletingId({

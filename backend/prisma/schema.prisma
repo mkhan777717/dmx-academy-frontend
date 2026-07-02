@@ -50,9 +50,11 @@ comparator String @default("tokens")
 epsilon Float @default(0.000001)
 memoryLimit Int @default(256)
 timeout Int @default(2000)
-contestProblems ContestProblem[]
-submissions Submission[]
-testCases TestCase[]
+  contestProblems ContestProblem[]
+  submissions Submission[]
+  testCases TestCase[]
+  instituteId Int?
+  institute   Institute? @relation(fields: [instituteId], references: [id], onDelete: Cascade)
 }
 
 model TestCase {
@@ -152,6 +154,8 @@ model VivaQuestion {
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
   vivaAnswers    VivaAnswer[]
+  instituteId    Int?
+  institute      Institute?   @relation(fields: [instituteId], references: [id], onDelete: Cascade)
 }
 
 model VivaSession {
@@ -199,6 +203,8 @@ processingStatus StudyMaterialStatus @default(UPLOADED)
 extractedText String? @db.Text
 createdAt DateTime @default(now())
 updatedAt DateTime @updatedAt
+instituteId    Int?
+institute      Institute?   @relation(fields: [instituteId], references: [id], onDelete: Cascade)
 }
 
 enum StudyMaterialStatus {
@@ -286,12 +292,15 @@ model LiveChatMessage {
 }
 
 model Institute {
-  id        Int      @id @default(autoincrement())
-  name      String   @unique
-  users     User[]
-  batches   Batch[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id             Int             @id @default(autoincrement())
+  name           String          @unique
+  users          User[]
+  batches        Batch[]
+  problems       Problem[]
+  vivaQuestions  VivaQuestion[]
+  studyMaterials StudyMaterial[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
 }
 
 model Batch {

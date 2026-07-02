@@ -4,8 +4,8 @@ const { protect, restrictTo } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
-// All AI settings routes are mentor/admin only
-router.use(protect, restrictTo('ADMIN', 'MENTOR'));
+// All AI settings routes are admin only
+router.use(protect, restrictTo('ADMIN'));
 
 router.get( '/settings', getSettings);
 router.post('/settings', updateSettings);

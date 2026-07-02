@@ -15,6 +15,7 @@ export default function ManagePeoplePage() {
 
   // Tab state: 'managers' | 'mentors' | 'students'
   const [activeTab, setActiveTab] = useState("managers");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const [people, setPeople] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -345,9 +346,21 @@ export default function ManagePeoplePage() {
   };
 
   const filteredPeople = people.filter(p => {
-    if (activeTab === "managers") return p.role === "BATCH_MANAGER";
-    if (activeTab === "mentors") return p.role === "MENTOR";
-    return p.role === "STUDENT";
+    const matchesTab = 
+      activeTab === "managers" ? p.role === "BATCH_MANAGER" :
+      activeTab === "mentors" ? p.role === "MENTOR" :
+      p.role === "STUDENT";
+    
+    if (!matchesTab) return false;
+    
+    const query = searchQuery.toLowerCase().trim();
+    if (!query) return true;
+    
+    return (
+      (p.name || "").toLowerCase().includes(query) ||
+      (p.email || "").toLowerCase().includes(query) ||
+      (p.assignedBatch || "").toLowerCase().includes(query)
+    );
   });
 
   if (!user || (user.role !== "INSTITUTE_ADMIN" && user.role !== "ADMIN")) {
@@ -385,41 +398,72 @@ export default function ManagePeoplePage() {
         </button>
       </div>
 
-      {/* Tabs list */}
-      <div className="flex gap-2 p-1.5 rounded-2xl w-fit border shrink-0 bg-[var(--bg-card)]" style={{ borderColor: "var(--border-primary)" }}>
-        <button
-          onClick={() => setActiveTab("managers")}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${activeTab === "managers"
-            ? "bg-[var(--accent-primary)] text-white shadow-md shadow-[var(--accent-glow)]"
-            : "hover:bg-[var(--bg-primary)]"
-            }`}
-        >
-          <Briefcase size={14} />
-          <span>Batch Managers</span>
-        </button>
-        <button
-          onClick={() => setActiveTab("mentors")}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${activeTab === "mentors"
-            ? "bg-[var(--accent-primary)] text-white shadow-md shadow-[var(--accent-glow)]"
-            : "hover:bg-[var(--bg-primary)]"
-            }`}
-        >
-          <Award size={14} />
-          <span>Mentors</span>
-        </button>
-        <button
-          onClick={() => setActiveTab("students")}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${activeTab === "students"
-            ? "bg-[var(--accent-primary)] text-white shadow-md shadow-[var(--accent-glow)]"
-            : "hover:bg-[var(--bg-primary)]"
-            }`}
-        >
-          <GraduationCap size={14} />
-          <span>Students</span>
-        </button>
-      </div>
+      {/* Search & Tabs Row */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 shrink-0">
+        {/* Tabs list */}
+        <div className="flex gap-2 p-1.5 rounded-2xl w-fit border shrink-0 bg-[var(--bg-card)]" style={{ borderColor: "var(--border-primary)" }}>
+          <button
+            onClick={() => setActiveTab("managers")}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${activeTab === "managers"
+              ? "bg-[var(--accent-primary)] text-white shadow-md shadow-[var(--accent-glow)]"
+              : "hover:bg-[var(--bg-primary)]"
+              }`}
+          >
+            <Briefcase size={14} />
+            <span>Batch Managers</span>
+          </button>
+          <button
+            onClick={() => setActiveTab("mentors")}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${activeTab === "mentors"
+              ? "bg-[var(--accent-primary)] text-white shadow-md shadow-[var(--accent-glow)]"
+              : "hover:bg-[var(--bg-primary)]"
+              }`}
+          >
+            <Award size={14} />
+            <span>Mentors</span>
+          </button>
+          <button
+            onClick={() => setActiveTab("students")}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${activeTab === "students"
+              ? "bg-[var(--accent-primary)] text-white shadow-md shadow-[var(--accent-glow)]"
+              : "hover:bg-[var(--bg-primary)]"
+              }`}
+          >
+            <GraduationCap size={14} />
+            <span>Students</span>
+          </button>
+          
+        </div>
 
-      {/* Directory Table Grid */}
+        {/* Search & Refresh Actions */}
+        <div className="flex items-center gap-2 w-full sm:w-auto shrink-0">
+          {/* Search Input Bar */}
+          <div className="relative w-full sm:w-64">
+            <input
+              type="text"
+              placeholder={`Search ${activeTab}...`}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full bg-[var(--bg-card)] border rounded-2xl px-4 py-2.5 text-xs font-semibold focus:outline-none focus:border-[var(--border-accent)] transition-all placeholder:text-[var(--text-muted)]"
+              style={{ borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
+            />
+          </div>
+
+          {/* Refresh Directory Button */}
+          <button
+            onClick={() => {
+              fetchMembers();
+              fetchBatches();
+            }}
+            title="Refresh Directory"
+            className="p-2.5 rounded-2xl border bg-[var(--bg-card)] hover:bg-[var(--bg-primary)] transition-all flex items-center justify-center cursor-pointer hover:scale-105 active:scale-95 disabled:opacity-50"
+            style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}
+            disabled={loading}
+          >
+            <RefreshCw size={14} className={loading ? "animate-spin text-[var(--text-accent)]" : ""} />
+          </button>
+        </div>
+      </div>
       <div className="flex-1 min-h-0 overflow-y-auto rounded-3xl border bg-[var(--bg-card)]" style={{ borderColor: "var(--border-primary)" }}>
         {loading ? (
           <div className="flex h-64 flex-col items-center justify-center space-y-4">
@@ -514,11 +558,11 @@ export default function ManagePeoplePage() {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="w-full max-w-md rounded-3xl border shadow-2xl overflow-hidden bg-[var(--bg-card)]"
+              className="w-full max-w-md rounded-3xl border shadow-2xl overflow-hidden bg-[var(--bg-card)] flex flex-col max-h-[85vh]"
               style={{ borderColor: "var(--border-primary)" }}
             >
               {/* Modal Header */}
-              <div className="px-6 pt-6 pb-4 flex items-center justify-between border-b" style={{ borderColor: "var(--border-primary)" }}>
+              <div className="px-6 pt-6 pb-4 flex items-center justify-between border-b shrink-0" style={{ borderColor: "var(--border-primary)" }}>
                 <div className="flex items-center gap-2">
                   <div className="p-1.5 rounded-xl bg-[var(--bg-badge)] text-[var(--text-accent)]">
                     <UserPlus size={16} />
@@ -536,120 +580,129 @@ export default function ManagePeoplePage() {
               </div>
 
               {/* Form body */}
-              <form onSubmit={handleAddMember} className="p-6 space-y-4">
-                <fieldset disabled={submitting} className="space-y-4 border-none p-0 m-0">
-                  {formError && (
-                    <div className="flex items-center gap-2 p-3.5 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-500 text-xs font-semibold animate-shake">
-                      <AlertCircle size={14} className="shrink-0" />
-                      <span>{formError}</span>
+              <form onSubmit={handleAddMember} className="flex-1 flex flex-col min-h-0">
+                <div className="flex-1 overflow-y-auto p-6 space-y-4 min-h-0">
+                  <fieldset disabled={submitting} className="space-y-4 border-none p-0 m-0">
+                    {formError && (
+                      <div className="flex items-center gap-2 p-3.5 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-500 text-xs font-semibold animate-shake">
+                        <AlertCircle size={14} className="shrink-0" />
+                        <span>{formError}</span>
+                      </div>
+                    )}
+                    {formSuccess && (
+                      <div className="flex items-center gap-2 p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-xs font-semibold">
+                        <CheckCircle2 size={14} className="shrink-0" />
+                        <span>{formSuccess}</span>
+                      </div>
+                    )}
+
+                    {/* Name Input */}
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] font-extrabold uppercase tracking-wider text-[var(--text-secondary)]">
+                        Full Name
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        placeholder="e.g. Rahul Mishra"
+                        className="w-full bg-[var(--bg-primary)] border rounded-2xl px-4 py-3 text-xs font-semibold focus:outline-none focus:border-[var(--border-accent)] transition-all placeholder:text-[var(--text-muted)]"
+                        style={{ borderColor: "var(--border-primary)" }}
+                      />
                     </div>
-                  )}
-                  {formSuccess && (
-                    <div className="flex items-center gap-2 p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-xs font-semibold">
-                      <CheckCircle2 size={14} className="shrink-0" />
-                      <span>{formSuccess}</span>
+
+                    {/* Email Input */}
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] font-extrabold uppercase tracking-wider text-[var(--text-secondary)]">
+                        Email Address
+                      </label>
+                      <input
+                        type="email"
+                        required
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="e.g. rahul@dmx.com"
+                        className="w-full bg-[var(--bg-primary)] border rounded-2xl px-4 py-3 text-xs font-semibold focus:outline-none focus:border-[var(--border-accent)] transition-all placeholder:text-[var(--text-muted)]"
+                        style={{ borderColor: "var(--border-primary)" }}
+                      />
                     </div>
-                  )}
 
-                  {/* Name Input */}
-                  <div className="space-y-1.5">
-                    <label className="text-[10px] font-extrabold uppercase tracking-wider text-[var(--text-secondary)]">
-                      Full Name
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      placeholder="e.g. Rahul Mishra"
-                      className="w-full bg-[var(--bg-primary)] border rounded-2xl px-4 py-3 text-xs font-semibold focus:outline-none focus:border-[var(--border-accent)] transition-all placeholder:text-[var(--text-muted)]"
-                      style={{ borderColor: "var(--border-primary)" }}
-                    />
-                  </div>
-
-                  {/* Email Input */}
-                  <div className="space-y-1.5">
-                    <label className="text-[10px] font-extrabold uppercase tracking-wider text-[var(--text-secondary)]">
-                      Email Address
-                    </label>
-                    <input
-                      type="email"
-                      required
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="e.g. rahul@dmx.com"
-                      className="w-full bg-[var(--bg-primary)] border rounded-2xl px-4 py-3 text-xs font-semibold focus:outline-none focus:border-[var(--border-accent)] transition-all placeholder:text-[var(--text-muted)]"
-                      style={{ borderColor: "var(--border-primary)" }}
-                    />
-                  </div>
-
-                  {/* Password Input */}
-                  <div className="space-y-1.5">
-                    <label className="text-[10px] font-extrabold uppercase tracking-wider text-[var(--text-secondary)]">
-                      Password
-                    </label>
-                    <input
-                      type="password"
-                      required
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      placeholder="••••••••"
-                      className="w-full bg-[var(--bg-primary)] border rounded-2xl px-4 py-3 text-xs font-semibold focus:outline-none focus:border-[var(--border-accent)] transition-all placeholder:text-[var(--text-muted)]"
-                      style={{ borderColor: "var(--border-primary)" }}
-                    />
-                  </div>
-
-                  {/* Role Selector */}
-                  <div className="space-y-1.5">
-                    <label className="text-[10px] font-extrabold uppercase tracking-wider text-[var(--text-secondary)]">
-                      Role Category
-                    </label>
-                    <select
-                      value={memberRole}
-                      onChange={(e) => {
-                        setMemberRole(e.target.value);
-                        setSelectedBatchIds([]);
-                      }}
-                      className="w-full bg-[var(--bg-primary)] border rounded-2xl px-4 py-3 text-xs font-semibold focus:outline-none focus:border-[var(--border-accent)] transition-all"
-                      style={{ borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
-                    >
-                      <option value="BATCH_MANAGER">Batch Manager</option>
-                      <option value="MENTOR">Mentor</option>
-                      <option value="STUDENT">Student</option>
-                    </select>
-                  </div>
-
-                  {/* Cohort (Batch) Assignment */}
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-extrabold uppercase tracking-wider text-[var(--text-secondary)] block">
-                      Cohort (Batch) Assignment
-                    </label>
-                    <div className="max-h-28 overflow-y-auto p-3 rounded-2xl bg-[var(--bg-primary)] border space-y-2" style={{ borderColor: "var(--border-primary)" }}>
-                      {batches.length === 0 ? (
-                        <span className="text-[10px] text-[var(--text-muted)] italic">No cohorts found.</span>
-                      ) : (
-                        batches.map(b => (
-                          <label key={b.id} className="flex items-center gap-2 cursor-pointer text-xs font-semibold py-1">
-                            <input 
-                              type="checkbox"
-                              checked={selectedBatchIds.includes(b.id)}
-                              onChange={() => {
-                                setSelectedBatchIds(prev => 
-                                  prev.includes(b.id) ? prev.filter(id => id !== b.id) : [...prev, b.id]
-                                );
-                              }}
-                              className="rounded border-[var(--border-primary)] text-[var(--accent-primary)] focus:ring-[var(--accent-primary)] cursor-pointer"
-                            />
-                            <span style={{ color: "var(--text-primary)" }}>{b.name}</span>
-                          </label>
-                        ))
-                      )}
+                    {/* Password Input */}
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] font-extrabold uppercase tracking-wider text-[var(--text-secondary)]">
+                        Password
+                      </label>
+                      <input
+                        type="password"
+                        required
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="••••••••"
+                        className="w-full bg-[var(--bg-primary)] border rounded-2xl px-4 py-3 text-xs font-semibold focus:outline-none focus:border-[var(--border-accent)] transition-all placeholder:text-[var(--text-muted)]"
+                        style={{ borderColor: "var(--border-primary)" }}
+                      />
                     </div>
-                  </div>
-                </fieldset>
+
+                    {/* Role Selector */}
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] font-extrabold uppercase tracking-wider text-[var(--text-secondary)]">
+                        Role Category
+                      </label>
+                      <select
+                        value={memberRole}
+                        onChange={(e) => {
+                          setMemberRole(e.target.value);
+                          setSelectedBatchIds([]);
+                        }}
+                        className="w-full bg-[var(--bg-primary)] border rounded-2xl px-4 py-3 text-xs font-semibold focus:outline-none focus:border-[var(--border-accent)] transition-all"
+                        style={{ borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
+                      >
+                        <option value="BATCH_MANAGER">Batch Manager</option>
+                        <option value="MENTOR">Mentor</option>
+                        <option value="STUDENT">Student</option>
+                      </select>
+                    </div>
+
+                    {/* Cohort (Batch) Assignment */}
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-extrabold uppercase tracking-wider text-[var(--text-secondary)] block">
+                        Cohort (Batch) Assignment
+                      </label>
+                      <div className="max-h-28 overflow-y-auto p-3 rounded-2xl bg-[var(--bg-primary)] border space-y-2" style={{ borderColor: "var(--border-primary)" }}>
+                        {batches.length === 0 ? (
+                          <span className="text-[10px] text-[var(--text-muted)] italic">No cohorts found.</span>
+                        ) : (
+                          batches.map(b => (
+                            <label key={b.id} className="flex items-start gap-2 cursor-pointer text-xs font-semibold py-1">
+                              <input 
+                                type="checkbox"
+                                checked={selectedBatchIds.includes(b.id)}
+                                onChange={() => {
+                                  setSelectedBatchIds(prev => 
+                                    prev.includes(b.id) ? prev.filter(id => id !== b.id) : [...prev, b.id]
+                                  );
+                                }}
+                                className="mt-0.5 rounded border-[var(--border-primary)] text-[var(--accent-primary)] focus:ring-[var(--accent-primary)] cursor-pointer"
+                              />
+                              <div className="flex flex-col">
+                                <span style={{ color: "var(--text-primary)" }}>{b.name}</span>
+                                {memberRole === "BATCH_MANAGER" && b.manager && (
+                                  <span className="text-[9px] text-amber-500 font-bold leading-none">
+                                    (Will remove {b.manager.username} as Batch Manager)
+                                  </span>
+                                )}
+                              </div>
+                            </label>
+                          ))
+                        )}
+                      </div>
+                    </div>
+                  </fieldset>
+                </div>
 
                 {/* Actions */}
-                <div className="flex justify-end gap-3 pt-2">
+                <div className="p-6 border-t shrink-0 flex justify-end gap-3 bg-[var(--bg-card)]" style={{ borderColor: "var(--border-primary)" }}>
                   <button
                     type="button"
                     disabled={submitting}
@@ -662,7 +715,6 @@ export default function ManagePeoplePage() {
                   <button
                     type="submit"
                     disabled={submitting}
-                    onClick={handleAddMember}
                     className="px-5 py-2.5 rounded-2xl bg-[var(--accent-primary)] hover:bg-[var(--accent-secondary)] text-white text-xs font-black uppercase transition-all shadow-lg hover:scale-[1.02] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                   >
                     {submitting ? (
@@ -730,11 +782,11 @@ export default function ManagePeoplePage() {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="w-full max-w-md rounded-3xl border shadow-2xl overflow-hidden bg-[var(--bg-card)]"
+              className="w-full max-w-md rounded-3xl border shadow-2xl overflow-hidden bg-[var(--bg-card)] flex flex-col max-h-[85vh]"
               style={{ borderColor: "var(--border-primary)" }}
             >
               {/* Modal Header */}
-              <div className="px-6 pt-6 pb-4 flex items-center justify-between border-b" style={{ borderColor: "var(--border-primary)" }}>
+              <div className="px-6 pt-6 pb-4 flex items-center justify-between border-b shrink-0" style={{ borderColor: "var(--border-primary)" }}>
                 <div className="flex items-center gap-2">
                   <div className="p-1.5 rounded-xl bg-[var(--bg-badge)] text-[var(--text-accent)]">
                     <Edit size={16} />
@@ -752,126 +804,144 @@ export default function ManagePeoplePage() {
               </div>
 
               {/* Form body */}
-              <form onSubmit={handleEditMember} className="p-6 space-y-4">
-                <fieldset disabled={editing} className="space-y-4 border-none p-0 m-0">
-                  {formError && (
-                    <div className="flex items-center gap-2 p-3.5 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-500 text-xs font-semibold animate-shake">
-                      <AlertCircle size={14} className="shrink-0" />
-                      <span>{formError}</span>
-                    </div>
-                  )}
-                  {formSuccess && (
-                    <div className="flex items-center gap-2 p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-xs font-semibold">
-                      <CheckCircle2 size={14} className="shrink-0" />
-                      <span>{formSuccess}</span>
-                    </div>
-                  )}
+              <form onSubmit={handleEditMember} className="flex-1 flex flex-col min-h-0">
+                <div className="flex-1 overflow-y-auto p-6 space-y-4 min-h-0">
+                  <fieldset disabled={editing} className="space-y-4 border-none p-0 m-0">
+                    {formError && (
+                      <div className="flex items-center gap-2 p-3.5 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-500 text-xs font-semibold animate-shake">
+                        <AlertCircle size={14} className="shrink-0" />
+                        <span>{formError}</span>
+                      </div>
+                    )}
+                    {formSuccess && (
+                      <div className="flex items-center gap-2 p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-xs font-semibold">
+                        <CheckCircle2 size={14} className="shrink-0" />
+                        <span>{formSuccess}</span>
+                      </div>
+                    )}
 
-                  {/* Name Input */}
-                  <div className="space-y-1.5">
-                    <label className="text-[10px] font-extrabold uppercase tracking-wider text-[var(--text-secondary)]">
-                      Full Name
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={editName}
-                      onChange={(e) => setEditName(e.target.value)}
-                      placeholder="e.g. Rahul Mishra"
-                      className="w-full bg-[var(--bg-primary)] border rounded-2xl px-4 py-3 text-xs font-semibold focus:outline-none focus:border-[var(--border-accent)] transition-all placeholder:text-[var(--text-muted)]"
-                      style={{ borderColor: "var(--border-primary)" }}
-                    />
-                  </div>
-
-                  {/* Email Input */}
-                  <div className="space-y-1.5">
-                    <label className="text-[10px] font-extrabold uppercase tracking-wider text-[var(--text-secondary)]">
-                      Email Address
-                    </label>
-                    <input
-                      type="email"
-                      required
-                      value={editEmail}
-                      onChange={(e) => setEditEmail(e.target.value)}
-                      placeholder="e.g. rahul@dmx.com"
-                      className="w-full bg-[var(--bg-primary)] border rounded-2xl px-4 py-3 text-xs font-semibold focus:outline-none focus:border-[var(--border-accent)] transition-all placeholder:text-[var(--text-muted)]"
-                      style={{ borderColor: "var(--border-primary)" }}
-                    />
-                  </div>
-
-                  {/* Password Input (Optional) */}
-                  <div className="space-y-1.5">
-                    <div className="flex items-center justify-between">
+                    {/* Name Input */}
+                    <div className="space-y-1.5">
                       <label className="text-[10px] font-extrabold uppercase tracking-wider text-[var(--text-secondary)]">
-                        Password
+                        Full Name
                       </label>
-                      <span className="text-[9px] text-[var(--text-muted)] italic">
-                        Leave blank to keep current
+                      <input
+                        type="text"
+                        required
+                        value={editName}
+                        onChange={(e) => setEditName(e.target.value)}
+                        placeholder="e.g. Rahul Mishra"
+                        className="w-full bg-[var(--bg-primary)] border rounded-2xl px-4 py-3 text-xs font-semibold focus:outline-none focus:border-[var(--border-accent)] transition-all placeholder:text-[var(--text-muted)]"
+                        style={{ borderColor: "var(--border-primary)" }}
+                      />
+                    </div>
+
+                    {/* Email Input */}
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] font-extrabold uppercase tracking-wider text-[var(--text-secondary)]">
+                        Email Address
+                      </label>
+                      <input
+                        type="email"
+                        required
+                        value={editEmail}
+                        onChange={(e) => setEditEmail(e.target.value)}
+                        placeholder="e.g. rahul@dmx.com"
+                        className="w-full bg-[var(--bg-primary)] border rounded-2xl px-4 py-3 text-xs font-semibold focus:outline-none focus:border-[var(--border-accent)] transition-all placeholder:text-[var(--text-muted)]"
+                        style={{ borderColor: "var(--border-primary)" }}
+                      />
+                    </div>
+
+                    {/* Password Input (Optional) */}
+                    <div className="space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <label className="text-[10px] font-extrabold uppercase tracking-wider text-[var(--text-secondary)]">
+                          Password
+                        </label>
+                        <span className="text-[9px] text-[var(--text-muted)] italic">
+                          Leave blank to keep current
+                        </span>
+                      </div>
+                      <input
+                        type="password"
+                        value={editPassword}
+                        onChange={(e) => setEditPassword(e.target.value)}
+                        placeholder="Enter new password"
+                        className="w-full bg-[var(--bg-primary)] border rounded-2xl px-4 py-3 text-xs font-semibold focus:outline-none focus:border-[var(--border-accent)] transition-all placeholder:text-[var(--text-muted)]"
+                        style={{ borderColor: "var(--border-primary)" }}
+                      />
+                    </div>
+
+                    {/* Role Badge (Read-Only) */}
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] font-extrabold uppercase tracking-wider text-[var(--text-secondary)] block">
+                        Account Role
+                      </label>
+                      <span className="inline-block text-[9px] px-2.5 py-1 rounded-lg border uppercase font-extrabold bg-[var(--bg-badge)] text-[var(--text-accent)] border-[var(--border-accent)]/10">
+                        {itemToEdit?.role.replace("_", " ")}
                       </span>
                     </div>
-                    <input
-                      type="password"
-                      value={editPassword}
-                      onChange={(e) => setEditPassword(e.target.value)}
-                      placeholder="Enter new password"
-                      className="w-full bg-[var(--bg-primary)] border rounded-2xl px-4 py-3 text-xs font-semibold focus:outline-none focus:border-[var(--border-accent)] transition-all placeholder:text-[var(--text-muted)]"
-                      style={{ borderColor: "var(--border-primary)" }}
-                    />
-                  </div>
 
-                  {/* Role Badge (Read-Only) */}
-                  <div className="space-y-1.5">
-                    <label className="text-[10px] font-extrabold uppercase tracking-wider text-[var(--text-secondary)] block">
-                      Account Role
-                    </label>
-                    <span className="inline-block text-[9px] px-2.5 py-1 rounded-lg border uppercase font-extrabold bg-[var(--bg-badge)] text-[var(--text-accent)] border-[var(--border-accent)]/10">
-                      {itemToEdit?.role.replace("_", " ")}
-                    </span>
-                  </div>
-
-                  {/* Cohort (Batch) Assignment */}
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-extrabold uppercase tracking-wider text-[var(--text-secondary)] block">
-                      Cohort (Batch) Assignment
-                    </label>
-                    <div className="max-h-28 overflow-y-auto p-3 rounded-2xl bg-[var(--bg-primary)] border space-y-2" style={{ borderColor: "var(--border-primary)" }}>
-                      {batches.length === 0 ? (
-                        <span className="text-[10px] text-[var(--text-muted)] italic">No cohorts found.</span>
-                      ) : (
-                        batches.map(b => (
-                          <label key={b.id} className="flex items-center gap-2 cursor-pointer text-xs font-semibold py-1">
-                            <input 
-                              type="checkbox"
-                              checked={editSelectedBatchIds.includes(b.id)}
-                              onChange={() => {
-                                setEditSelectedBatchIds(prev => 
-                                  prev.includes(b.id) ? prev.filter(id => id !== b.id) : [...prev, b.id]
-                                );
-                              }}
-                              className="rounded border-[var(--border-primary)] text-[var(--accent-primary)] focus:ring-[var(--accent-primary)] cursor-pointer"
-                            />
-                            <span style={{ color: "var(--text-primary)" }}>{b.name}</span>
-                          </label>
-                        ))
-                      )}
+                    {/* Cohort (Batch) Assignment */}
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-extrabold uppercase tracking-wider text-[var(--text-secondary)] block">
+                        Cohort (Batch) Assignment
+                      </label>
+                      <div className="max-h-28 overflow-y-auto p-3 rounded-2xl bg-[var(--bg-primary)] border space-y-2" style={{ borderColor: "var(--border-primary)" }}>
+                        {batches.length === 0 ? (
+                          <span className="text-[10px] text-[var(--text-muted)] italic">No cohorts found.</span>
+                        ) : (
+                          batches.map(b => (
+                            <label key={b.id} className="flex items-start gap-2 cursor-pointer text-xs font-semibold py-1">
+                              <input 
+                                type="checkbox"
+                                checked={editSelectedBatchIds.includes(b.id)}
+                                onChange={() => {
+                                  setEditSelectedBatchIds(prev => 
+                                    prev.includes(b.id) ? prev.filter(id => id !== b.id) : [...prev, b.id]
+                                  );
+                                }}
+                                className="mt-0.5 rounded border-[var(--border-primary)] text-[var(--accent-primary)] focus:ring-[var(--accent-primary)] cursor-pointer"
+                              />
+                              <div className="flex flex-col">
+                                <span style={{ color: "var(--text-primary)" }}>{b.name}</span>
+                                {itemToEdit?.role === "BATCH_MANAGER" && b.manager && Number(b.managerId) !== Number(itemToEdit.id) && (
+                                  <span className="text-[9px] text-amber-500 font-bold leading-none">
+                                    (Will remove {b.manager.username} as Batch Manager)
+                                  </span>
+                                )}
+                              </div>
+                            </label>
+                          ))
+                        )}
+                      </div>
                     </div>
-                  </div>
-                </fieldset>
+                  </fieldset>
+                </div>
 
-                {/* Save Button */}
-                <div className="pt-2">
+                {/* Actions */}
+                <div className="p-6 border-t shrink-0 flex justify-end gap-3 bg-[var(--bg-card)]" style={{ borderColor: "var(--border-primary)" }}>
+                  <button
+                    type="button"
+                    disabled={editing}
+                    onClick={() => setIsEditModalOpen(false)}
+                    className="px-4 py-2.5 rounded-2xl border text-xs font-bold transition-all hover:bg-[var(--bg-primary)] cursor-pointer text-[var(--text-secondary)] disabled:opacity-50 disabled:cursor-not-allowed"
+                    style={{ borderColor: "var(--border-primary)" }}
+                  >
+                    Cancel
+                  </button>
                   <button
                     type="submit"
                     disabled={editing}
-                    className="w-full flex items-center justify-center gap-2 rounded-2xl py-3 text-xs font-black uppercase tracking-wider text-white shadow-lg bg-[var(--accent-primary)] hover:bg-[var(--accent-secondary)] transition-all duration-300 hover:scale-[1.01] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="px-5 py-2.5 rounded-2xl bg-[var(--accent-primary)] hover:bg-[var(--accent-secondary)] text-white text-xs font-black uppercase transition-all shadow-lg hover:scale-[1.02] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                   >
                     {editing ? (
                       <>
                         <RefreshCw size={12} className="animate-spin" />
-                        <span>Saving Changes...</span>
+                        <span>Saving...</span>
                       </>
                     ) : (
-                      <span>Save Changes</span>
+                      "Save Changes"
                     )}
                   </button>
                 </div>

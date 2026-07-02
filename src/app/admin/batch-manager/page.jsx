@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Layers, Users, Award, GraduationCap, Plus, Trash2, X, Check,
-  AlertCircle, ChevronRight, Briefcase, Mail, ShieldAlert, ArrowLeft
+  AlertCircle, ChevronRight, Briefcase, Mail, ShieldAlert, ArrowLeft, RefreshCw
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 
@@ -220,18 +220,31 @@ export default function BatchManagerDashboard() {
       {activeView === "list" ? (
         <>
           {/* Header section */}
-          <div className="space-y-1.5 shrink-0">
-            <div className="flex items-center gap-2">
-              <span className="px-2.5 py-1 rounded-full bg-[var(--bg-badge)] text-[var(--text-accent)] text-[10px] font-extrabold uppercase tracking-wider">
-                Batch Manager Dashboard
-              </span>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 shrink-0">
+            <div className="space-y-1.5">
+              <div className="flex items-center gap-2">
+                <span className="px-2.5 py-1 rounded-full bg-[var(--bg-badge)] text-[var(--text-accent)] text-[10px] font-extrabold uppercase tracking-wider">
+                  Batch Manager Dashboard
+                </span>
+              </div>
+              <h1 className="text-2xl font-black tracking-tight">
+                My Assigned Batches
+              </h1>
+              <p className="text-xs" style={{ color: "var(--text-muted)" }}>
+                Oversee your dedicated student cohorts, monitor class rosters, and coordinate active mentors.
+              </p>
             </div>
-            <h1 className="text-2xl font-black tracking-tight">
-              My Assigned Batches
-            </h1>
-            <p className="text-xs" style={{ color: "var(--text-muted)" }}>
-              Oversee your dedicated student cohorts, monitor class rosters, and coordinate active mentors.
-            </p>
+
+            {/* Refresh Button */}
+            <button
+              onClick={loadData}
+              title="Refresh Batches"
+              className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-[var(--bg-card)] border hover:bg-[var(--bg-primary)] text-xs font-black uppercase tracking-wider transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer shadow-lg border-[var(--border-primary)] text-[var(--text-secondary)] shrink-0 disabled:opacity-50"
+              disabled={loading}
+            >
+              <RefreshCw size={14} className={loading ? "animate-spin text-[var(--text-accent)]" : ""} />
+              <span>Refresh</span>
+            </button>
           </div>
 
           {/* Grid view of batches */}
@@ -318,24 +331,37 @@ export default function BatchManagerDashboard() {
               </p>
             </div>
 
-            {/* Dynamic Button depending on Active Tab */}
-            {activeDetailTab === "mentors" ? (
+            {/* Dynamic Button depending on Active Tab & Refresh button */}
+            <div className="flex items-center gap-2 shrink-0">
+              {activeDetailTab === "mentors" ? (
+                <button
+                  onClick={() => setIsAssignModalOpen(true)}
+                  className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-[var(--accent-primary)] hover:bg-[var(--accent-secondary)] text-white text-xs font-black uppercase transition-all hover:scale-[1.02] cursor-pointer shadow-lg shadow-[var(--accent-glow)] border border-transparent shrink-0"
+                >
+                  <Plus size={16} />
+                  <span>Configure Mentors</span>
+                </button>
+              ) : (
+                <button
+                  onClick={() => setIsAssignStudentOpen(true)}
+                  className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-[var(--accent-primary)] hover:bg-[var(--accent-secondary)] text-white text-xs font-black uppercase transition-all hover:scale-[1.02] cursor-pointer shadow-lg shadow-[var(--accent-glow)] border border-transparent shrink-0"
+                >
+                  <Plus size={16} />
+                  <span>Configure Students</span>
+                </button>
+              )}
+
+              {/* Refresh Detailed Roster Button */}
               <button
-                onClick={() => setIsAssignModalOpen(true)}
-                className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-[var(--accent-primary)] hover:bg-[var(--accent-secondary)] text-white text-xs font-black uppercase transition-all hover:scale-[1.02] cursor-pointer shadow-lg shadow-[var(--accent-glow)] border border-transparent shrink-0"
+                onClick={loadData}
+                title="Refresh Roster"
+                className="p-2.5 rounded-2xl border bg-[var(--bg-card)] hover:bg-[var(--bg-primary)] transition-all flex items-center justify-center cursor-pointer hover:scale-105 active:scale-95 disabled:opacity-50"
+                style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}
+                disabled={loading}
               >
-                <Plus size={16} />
-                <span>Configure Mentors</span>
+                <RefreshCw size={14} className={loading ? "animate-spin text-[var(--text-accent)]" : ""} />
               </button>
-            ) : (
-              <button
-                onClick={() => setIsAssignStudentOpen(true)}
-                className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-[var(--accent-primary)] hover:bg-[var(--accent-secondary)] text-white text-xs font-black uppercase transition-all hover:scale-[1.02] cursor-pointer shadow-lg shadow-[var(--accent-glow)] border border-transparent shrink-0"
-              >
-                <Plus size={16} />
-                <span>Configure Students</span>
-              </button>
-            )}
+            </div>
           </div>
 
           {/* Info Banner alert box */}

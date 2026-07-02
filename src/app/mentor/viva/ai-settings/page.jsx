@@ -88,6 +88,18 @@ export default function AISettingsPage() {
     </div>
   );
 
+  if (user && user.role !== "ADMIN") {
+    return (
+      <div className="flex flex-col items-center justify-center p-12 text-center space-y-4 min-h-[50vh]">
+        <Info size={48} className="text-rose-500" />
+        <h2 className="text-lg font-bold" style={{ color: "var(--text-primary)" }}>Access Denied</h2>
+        <p className="text-xs max-w-md" style={{ color: "var(--text-secondary)" }}>
+          AI settings can only be managed globally by the Super Administrator.
+        </p>
+      </div>
+    );
+  }
+
   const isHealthy = health?.available && health?.modelAvailable;
 
   return (

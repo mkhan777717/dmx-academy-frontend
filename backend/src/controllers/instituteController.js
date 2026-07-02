@@ -92,17 +92,7 @@ const addMember = async (req, res, next) => {
 
     const parsedBatchIds = Array.isArray(batchIds) ? batchIds.map(id => parseInt(id, 10)).filter(id => !isNaN(id)) : [];
 
-    if (dbRole === 'BATCH_MANAGER' && parsedBatchIds.length > 0) {
-      const otherBatchWithManager = await prisma.batch.findUnique({
-        where: { managerId: parsedBatchIds[0] }
-      });
-      if (otherBatchWithManager) {
-        return res.status(400).json({
-          success: false,
-          message: "The selected batch is already assigned to another Batch Manager."
-        });
-      }
-    }
+
 
     // Hash password
     const salt = await bcrypt.genSalt(10);

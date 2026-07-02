@@ -27,6 +27,10 @@ export default function ManageBatchesPage() {
   const [selectedBatchId, setSelectedBatchId] = useState(null);
   const selectedBatchDetails = batches.find(b => b.id === selectedBatchId) || null;
   const [activeDetailTab, setActiveDetailTab] = useState("manager"); // 'manager' | 'mentors' | 'students'
+  const [batchSearchQuery, setBatchSearchQuery] = useState("");
+  const [mentorSearchQuery, setMentorSearchQuery] = useState("");
+  const [studentSearchQuery, setStudentSearchQuery] = useState("");
+  const [rosterSearchQuery, setRosterSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
 
   // Form States
@@ -454,6 +458,14 @@ export default function ManageBatchesPage() {
   };
 
   const detailsList = getActiveRoster();
+  const filteredDetailsList = detailsList.filter(member => {
+    const query = rosterSearchQuery.toLowerCase().trim();
+    if (!query) return true;
+    return (
+      (member.name || "").toLowerCase().includes(query) ||
+      (member.email || "").toLowerCase().includes(query)
+    );
+  });
 
   const availableMentors = selectedBatchDetails
     ? mentors.filter(m => !selectedBatchDetails.mentorIds.includes(m.id))
@@ -462,6 +474,33 @@ export default function ManageBatchesPage() {
   const availableStudents = selectedBatchDetails
     ? students.filter(s => !selectedBatchDetails.studentIds.includes(s.id))
     : [];
+
+  const filteredAvailableMentors = availableMentors.filter(m => {
+    const query = mentorSearchQuery.toLowerCase().trim();
+    if (!query) return true;
+    return (
+      (m.name || "").toLowerCase().includes(query) ||
+      (m.email || "").toLowerCase().includes(query)
+    );
+  });
+
+  const filteredAvailableStudents = availableStudents.filter(s => {
+    const query = studentSearchQuery.toLowerCase().trim();
+    if (!query) return true;
+    return (
+      (s.name || "").toLowerCase().includes(query) ||
+      (s.email || "").toLowerCase().includes(query)
+    );
+  });
+
+  const getBatchNamesManagedBy = (mgrId, excludeBatchId = null) => {
+    const managed = batches.filter(b => 
+      Number(b.managerId) === Number(mgrId) && 
+      (excludeBatchId === null || Number(b.id) !== Number(excludeBatchId))
+    );
+    if (managed.length === 0) return "";
+    return ` - Already managing: ${managed.map(b => b.name).join(", ")}`;
+  };
 
   return (
     <div className="space-y-6 p-6 min-h-0 flex flex-col flex-1" style={{ color: "var(--text-primary)" }}>
@@ -498,6 +537,32 @@ export default function ManageBatchesPage() {
           </div>
 
           {/* Grid of Batches */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 shrink-0 mb-4">
+            <div className="flex items-center gap-2 w-full sm:w-auto shrink-0">
+              <div className="relative w-full sm:w-64">
+                <input
+                  type="text"
+                  placeholder="Search batches by name or manager..."
+                  value={batchSearchQuery}
+                  onChange={(e) => setBatchSearchQuery(e.target.value)}
+                  className="w-full bg-[var(--bg-card)] border rounded-2xl px-4 py-2.5 text-xs font-semibold focus:outline-none focus:border-[var(--border-accent)] transition-all placeholder:text-[var(--text-muted)]"
+                  style={{ borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
+                />
+              </div>
+
+              {/* Refresh Batches Button */}
+              <button
+                onClick={loadData}
+                title="Refresh Batches"
+                className="p-2.5 rounded-2xl border bg-[var(--bg-card)] hover:bg-[var(--bg-primary)] transition-all flex items-center justify-center cursor-pointer hover:scale-105 active:scale-95 disabled:opacity-50"
+                style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}
+                disabled={loading}
+              >
+                <RefreshCw size={14} className={loading ? "animate-spin text-[var(--text-accent)]" : ""} />
+              </button>
+            </div>
+          </div>
+
           <div className="flex-1 min-h-0 overflow-y-auto">
             {loading ? (
               <div className="flex h-64 flex-col items-center justify-center space-y-4 rounded-3xl border bg-[var(--bg-card)]" style={{ borderColor: "var(--border-primary)" }}>
@@ -516,9 +581,37 @@ export default function ManageBatchesPage() {
                   </p>
                 </div>
               </div>
+            ) : batches.filter(batch => {
+              const query = batchSearchQuery.toLowerCase().trim();
+              if (!query) return true;
+              const mgrName = managers.find(m => m.id === batch.managerId)?.name || "Unassigned";
+              return (
+                batch.name.toLowerCase().includes(query) ||
+                mgrName.toLowerCase().includes(query)
+              );
+            }).length === 0 ? (
+              <div className="flex h-64 flex-col items-center justify-center space-y-4 rounded-3xl border bg-[var(--bg-card)]" style={{ borderColor: "var(--border-primary)" }}>
+                <div className="w-16 h-16 rounded-3xl bg-[var(--bg-badge)] flex items-center justify-center text-[var(--text-accent)]">
+                  <Layers size={28} />
+                </div>
+                <div className="text-center space-y-1">
+                  <h3 className="text-sm font-black" style={{ color: "var(--text-primary)" }}>No matching batches</h3>
+                  <p className="text-xs max-w-xs" style={{ color: "var(--text-muted)" }}>
+                    No cohorts matched your search criteria.
+                  </p>
+                </div>
+              </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {batches.map((batch) => {
+                {batches.filter(batch => {
+                  const query = batchSearchQuery.toLowerCase().trim();
+                  if (!query) return true;
+                  const mgrName = managers.find(m => m.id === batch.managerId)?.name || "Unassigned";
+                  return (
+                    batch.name.toLowerCase().includes(query) ||
+                    mgrName.toLowerCase().includes(query)
+                  );
+                }).map((batch) => {
                   const mgrName = managers.find(m => m.id === batch.managerId)?.name || "Unassigned";
                   return (
                     <motion.div
@@ -617,7 +710,10 @@ export default function ManageBatchesPage() {
             <div className="flex items-center gap-2 shrink-0">
               {activeDetailTab === "mentors" && (
                 <button
-                  onClick={() => setIsAssignMentorOpen(true)}
+                  onClick={() => {
+                    setMentorSearchQuery("");
+                    setIsAssignMentorOpen(true);
+                  }}
                   className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-[var(--accent-primary)] hover:bg-[var(--accent-secondary)] text-white text-xs font-black uppercase transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer shadow-lg border border-transparent shrink-0"
                 >
                   <Plus size={16} />
@@ -626,7 +722,10 @@ export default function ManageBatchesPage() {
               )}
               {activeDetailTab === "students" && (
                 <button
-                  onClick={() => setIsAssignStudentOpen(true)}
+                  onClick={() => {
+                    setStudentSearchQuery("");
+                    setIsAssignStudentOpen(true);
+                  }}
                   className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-[var(--accent-primary)] hover:bg-[var(--accent-secondary)] text-white text-xs font-black uppercase transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer shadow-lg border border-transparent shrink-0"
                 >
                   <Plus size={16} />
@@ -650,38 +749,77 @@ export default function ManageBatchesPage() {
             </div>
           </div>
 
-          {/* Roster Tabs List */}
-          <div className="flex gap-2 p-1.5 rounded-2xl w-fit border shrink-0 bg-[var(--bg-card)]" style={{ borderColor: "var(--border-primary)" }}>
-            <button
-              onClick={() => setActiveDetailTab("manager")}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${activeDetailTab === "manager"
-                ? "bg-[var(--accent-primary)] text-white shadow-md shadow-[var(--accent-glow)]"
-                : "hover:bg-[var(--bg-primary)] border border-transparent"
-                }`}
-            >
-              <Briefcase size={14} />
-              <span>Batch Manager</span>
-            </button>
-            <button
-              onClick={() => setActiveDetailTab("mentors")}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${activeDetailTab === "mentors"
-                ? "bg-[var(--accent-primary)] text-white shadow-md shadow-[var(--accent-glow)]"
-                : "hover:bg-[var(--bg-primary)] border border-transparent"
-                }`}
-            >
-              <Award size={14} />
-              <span>Mentors</span>
-            </button>
-            <button
-              onClick={() => setActiveDetailTab("students")}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${activeDetailTab === "students"
-                ? "bg-[var(--accent-primary)] text-white shadow-md shadow-[var(--accent-glow)]"
-                : "hover:bg-[var(--bg-primary)] border border-transparent"
-                }`}
-            >
-              <GraduationCap size={14} />
-              <span>Students</span>
-            </button>
+          {/* Roster Tabs & Search Row */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 shrink-0">
+            {/* Roster Tabs List */}
+            <div className="flex gap-2 p-1.5 rounded-2xl w-fit border shrink-0 bg-[var(--bg-card)]" style={{ borderColor: "var(--border-primary)" }}>
+              <button
+                onClick={() => {
+                  setActiveDetailTab("manager");
+                  setRosterSearchQuery("");
+                }}
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${activeDetailTab === "manager"
+                  ? "bg-[var(--accent-primary)] text-white shadow-md shadow-[var(--accent-glow)]"
+                  : "hover:bg-[var(--bg-primary)] border border-transparent"
+                  }`}
+              >
+                <Briefcase size={14} />
+                <span>Batch Manager</span>
+              </button>
+              <button
+                onClick={() => {
+                  setActiveDetailTab("mentors");
+                  setRosterSearchQuery("");
+                }}
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${activeDetailTab === "mentors"
+                  ? "bg-[var(--accent-primary)] text-white shadow-md shadow-[var(--accent-glow)]"
+                  : "hover:bg-[var(--bg-primary)] border border-transparent"
+                  }`}
+              >
+                <Award size={14} />
+                <span>Mentors</span>
+              </button>
+              <button
+                onClick={() => {
+                  setActiveDetailTab("students");
+                  setRosterSearchQuery("");
+                }}
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${activeDetailTab === "students"
+                  ? "bg-[var(--accent-primary)] text-white shadow-md shadow-[var(--accent-glow)]"
+                  : "hover:bg-[var(--bg-primary)] border border-transparent"
+                  }`}
+              >
+                <GraduationCap size={14} />
+                <span>Students</span>
+              </button>
+            </div>
+
+            {/* Roster Search & Refresh Actions */}
+            <div className="flex items-center gap-2 w-full sm:w-auto shrink-0">
+              {activeDetailTab !== "manager" && (
+                <div className="relative w-full sm:w-64">
+                  <input
+                    type="text"
+                    placeholder={`Search active ${activeDetailTab}...`}
+                    value={rosterSearchQuery}
+                    onChange={(e) => setRosterSearchQuery(e.target.value)}
+                    className="w-full bg-[var(--bg-card)] border rounded-2xl px-4 py-2.5 text-xs font-semibold focus:outline-none focus:border-[var(--border-accent)] transition-all placeholder:text-[var(--text-muted)]"
+                    style={{ borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
+                  />
+                </div>
+              )}
+
+              {/* Refresh Detailed Roster Button */}
+              <button
+                onClick={loadData}
+                title="Refresh Roster"
+                className="p-2.5 rounded-2xl border bg-[var(--bg-card)] hover:bg-[var(--bg-primary)] transition-all flex items-center justify-center cursor-pointer hover:scale-105 active:scale-95 disabled:opacity-50"
+                style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}
+                disabled={loading}
+              >
+                <RefreshCw size={14} className={loading ? "animate-spin text-[var(--text-accent)]" : ""} />
+              </button>
+            </div>
           </div>
 
           {/* Table Body (Styled identically to Manage People page) */}
@@ -695,6 +833,18 @@ export default function ManageBatchesPage() {
                   <h3 className="text-sm font-black" style={{ color: "var(--text-primary)" }}>No members found</h3>
                   <p className="text-xs max-w-xs" style={{ color: "var(--text-muted)" }}>
                     No assigned members matched this role category for this batch.
+                  </p>
+                </div>
+              </div>
+            ) : filteredDetailsList.length === 0 ? (
+              <div className="flex h-64 flex-col items-center justify-center space-y-4">
+                <div className="w-16 h-16 rounded-3xl bg-[var(--bg-badge)] flex items-center justify-center text-[var(--text-accent)]">
+                  <Users size={28} />
+                </div>
+                <div className="text-center space-y-1">
+                  <h3 className="text-sm font-black" style={{ color: "var(--text-primary)" }}>No matching members</h3>
+                  <p className="text-xs max-w-xs" style={{ color: "var(--text-muted)" }}>
+                    No members matched your search criteria.
                   </p>
                 </div>
               </div>
@@ -712,7 +862,7 @@ export default function ManageBatchesPage() {
                     </tr>
                   </thead>
                   <tbody className="divide-y text-xs font-semibold" style={{ borderColor: "var(--border-primary)", color: "var(--text-primary)" }}>
-                    {detailsList.map((member) => (
+                    {filteredDetailsList.map((member) => (
                       <tr key={member.id} className="hover:bg-[var(--bg-primary)]/50 transition-colors">
                         <td className="px-6 py-4 font-black">{member.name}</td>
                         <td className="px-6 py-4" style={{ color: "var(--text-secondary)" }}>{member.email}</td>
@@ -828,7 +978,7 @@ export default function ManageBatchesPage() {
                       <option value="">-- Select Manager --</option>
                       {managers.map((mgr) => (
                         <option key={mgr.id} value={mgr.id}>
-                          {mgr.name} ({mgr.email})
+                          {mgr.name} ({mgr.email}){getBatchNamesManagedBy(mgr.id)}
                         </option>
                       ))}
                     </select>
@@ -1035,7 +1185,7 @@ export default function ManageBatchesPage() {
                       <option value="">-- Select Manager --</option>
                       {managers.map((mgr) => (
                         <option key={mgr.id} value={mgr.id}>
-                          {mgr.name} ({mgr.email})
+                          {mgr.name} ({mgr.email}){getBatchNamesManagedBy(mgr.id, itemToEdit?.id)}
                         </option>
                       ))}
                     </select>
@@ -1154,16 +1304,34 @@ export default function ManageBatchesPage() {
 
               {/* Roster Selector List */}
               <div className="flex-1 overflow-y-auto p-6 space-y-3 min-h-0">
-                <span className="text-[10px] font-black uppercase text-[var(--text-muted)] tracking-wider">
-                  Available Institute Mentors
-                </span>
+                <div className="flex flex-col gap-2 shrink-0">
+                  <span className="text-[10px] font-black uppercase text-[var(--text-muted)] tracking-wider">
+                    Available Institute Mentors
+                  </span>
+                  {/* Modal Search Box */}
+                  <div className="relative w-full">
+                    <input
+                      type="text"
+                      placeholder="Search mentors by name or email..."
+                      value={mentorSearchQuery}
+                      onChange={(e) => setMentorSearchQuery(e.target.value)}
+                      className="w-full bg-[var(--bg-card)] border rounded-2xl px-4 py-2 text-xs font-semibold focus:outline-none focus:border-[var(--border-accent)] transition-all placeholder:text-[var(--text-muted)]"
+                      style={{ borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
+                    />
+                  </div>
+                </div>
+
                 {availableMentors.length === 0 ? (
                   <p className="text-xs text-[var(--text-muted)] text-center py-6">
                     All mentors have already been assigned to this batch teaching roster.
                   </p>
+                ) : filteredAvailableMentors.length === 0 ? (
+                  <p className="text-xs text-[var(--text-muted)] text-center py-6">
+                    No available mentors match your search query.
+                  </p>
                 ) : (
                   <div className="space-y-2">
-                    {availableMentors.map((men) => (
+                    {filteredAvailableMentors.map((men) => (
                       <div
                         key={men.id}
                         onClick={() => handleAddMentorToBatch(men.id)}
@@ -1228,22 +1396,39 @@ export default function ManageBatchesPage() {
 
               {/* Roster Selector List */}
               <div className="flex-1 overflow-y-auto p-6 space-y-3 min-h-0">
-                <div className="space-y-1">
-                  <span className="text-[10px] font-black uppercase text-[var(--text-muted)] tracking-wider">
-                    Add Students to Batch
-                  </span>
-                  <p className="text-[10px]" style={{ color: "var(--text-muted)" }}>
-                    Select students to enroll them in this cohort roster.
-                  </p>
+                <div className="flex flex-col gap-2 shrink-0">
+                  <div className="space-y-1">
+                    <span className="text-[10px] font-black uppercase text-[var(--text-muted)] tracking-wider">
+                      Add Students to Batch
+                    </span>
+                    <p className="text-[10px]" style={{ color: "var(--text-muted)" }}>
+                      Select students to enroll them in this cohort roster.
+                    </p>
+                  </div>
+                  {/* Modal Search Box */}
+                  <div className="relative w-full">
+                    <input
+                      type="text"
+                      placeholder="Search students by name or email..."
+                      value={studentSearchQuery}
+                      onChange={(e) => setStudentSearchQuery(e.target.value)}
+                      className="w-full bg-[var(--bg-card)] border rounded-2xl px-4 py-2 text-xs font-semibold focus:outline-none focus:border-[var(--border-accent)] transition-all placeholder:text-[var(--text-muted)]"
+                      style={{ borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
+                    />
+                  </div>
                 </div>
 
                 {availableStudents.length === 0 ? (
                   <p className="text-xs text-[var(--text-muted)] text-center py-6">
                     No unassigned students found. All registered students are already mapping to batches.
                   </p>
+                ) : filteredAvailableStudents.length === 0 ? (
+                  <p className="text-xs text-[var(--text-muted)] text-center py-6">
+                    No available students match your search query.
+                  </p>
                 ) : (
                   <div className="space-y-2">
-                    {availableStudents.map((std) => (
+                    {filteredAvailableStudents.map((std) => (
                       <div
                         key={std.id}
                         onClick={() => handleAddStudentToBatch(std.id)}
