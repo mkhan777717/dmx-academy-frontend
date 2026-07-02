@@ -4,7 +4,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Code, Plus, RefreshCw, Search, Trash2, Eye,
+  Code, Plus, RefreshCw, Search, Trash2, Eye, Edit3,
   Tag, BarChart2, ArrowUpRight, Filter, X, CheckCircle2,
   Clock, AlertCircle, ChevronRight
 } from "lucide-react";
@@ -226,11 +226,10 @@ export default function AdminProblemsPage() {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
-            className={`p-4 rounded-2xl border text-xs text-center font-bold ${
-              notification.type === "error"
+            className={`p-4 rounded-2xl border text-xs text-center font-bold ${notification.type === "error"
                 ? "bg-rose-500/10 border-rose-500/20 text-rose-400"
                 : "bg-emerald-500/10 border-emerald-500/20 text-emerald-400"
-            }`}
+              }`}
           >
             {notification.msg}
           </motion.div>
@@ -248,11 +247,10 @@ export default function AdminProblemsPage() {
           <button
             key={key}
             onClick={() => setFilterDiff(key)}
-            className={`p-4 rounded-2xl border text-left transition-all cursor-pointer ${
-              filterDiff === key
+            className={`p-4 rounded-2xl border text-left transition-all cursor-pointer ${filterDiff === key
                 ? "ring-1 ring-current"
                 : "hover:bg-slate-500/5"
-            } ${color}`}
+              } ${color}`}
             style={{
               backgroundColor: "var(--bg-card)",
               borderColor: "var(--border-card)",
