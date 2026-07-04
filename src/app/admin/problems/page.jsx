@@ -9,6 +9,7 @@ import {
   Clock, AlertCircle, ChevronRight
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
+import { buildAuthHeaders } from "@/utils/api";
 
 function getDifficultyStyle(difficulty) {
   const d = (difficulty || "").toUpperCase();
@@ -47,14 +48,7 @@ export default function AdminProblemsPage() {
     }
   }, [user]);
 
-  const hasRealToken =
-    token && !token.startsWith("demo-") && !token.startsWith("local-");
-  const adminHeaders = {
-    "Content-Type": "application/json",
-    ...(hasRealToken
-      ? { Authorization: `Bearer ${token}` }
-      : { "x-bypass-auth": "true", "x-bypass-role": "ADMIN" }),
-  };
+  const adminHeaders = buildAuthHeaders(token, user);
 
   const triggerNotification = (msg, type = "success") => {
     setNotification({ msg, type });

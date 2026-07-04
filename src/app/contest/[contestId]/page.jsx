@@ -87,16 +87,32 @@ function highlightCode(code, lang) {
 function getAuthHeaders() {
   if (typeof window === "undefined") return {};
   const token = localStorage.getItem("dmx_auth_token");
-  if (token && !token.startsWith("demo-") && !token.startsWith("local-")) {
+  const hasRealToken = token && !token.startsWith("demo-") && !token.startsWith("local-");
+  if (hasRealToken) {
     return { "Authorization": `Bearer ${token}` };
   }
-  if (localStorage.getItem("synapse_admin_session") === "true")
-    return { "x-bypass-auth": "true", "x-bypass-role": "ADMIN" };
-  if (localStorage.getItem("synapse_mentor_session") === "true")
-    return { "x-bypass-auth": "true", "x-bypass-role": "MENTOR" };
-  if (localStorage.getItem("synapse_student_session") === "true")
-    return { "x-bypass-auth": "true", "x-bypass-role": "USER" };
-  return {};
+
+  // Dev bypass
+  let bypassRole = "ADMIN";
+  if (localStorage.getItem("synapse_mentor_session") === "true") bypassRole = "MENTOR";
+  if (localStorage.getItem("synapse_student_session") === "true") bypassRole = "USER";
+
+  let bypassUserId = null;
+  const storedUser = localStorage.getItem("dmx_auth_user");
+  if (storedUser) {
+    try {
+      const u = JSON.parse(storedUser);
+      if (u && u.id && !String(u.id).startsWith("demo-") && !String(u.id).startsWith("local-")) {
+        bypassUserId = String(u.id);
+      }
+    } catch (e) {}
+  }
+
+  return {
+    "x-bypass-auth": "true",
+    "x-bypass-role": bypassRole,
+    ...(bypassUserId ? { "x-bypass-userid": bypassUserId } : {})
+  };
 }
 
 export default function ContestWorkspace() {
@@ -445,33 +461,81 @@ export default function ContestWorkspace() {
       }
     };
 
-    // Block DevTools + AI shortcut keys silently (capture phase)
+    // ── Block DevTools + Copy-Paste + AI shortcuts (Mac Option key etc.) ──
     const handleGlobalKeyDown = (e) => {
-      const ctrl = e.ctrlKey || e.metaKey;
+      const ctrl = e.ctrlKey || e.metaKey; // Cmd on Mac, Ctrl on Windows
+      const alt  = e.altKey;               // Option key on Mac
       const shift = e.shiftKey;
       const key = e.key;
 
-      const blocked =
-        // DevTools
+      // ── Copy / Paste / Cut / Select-All ── (only block outside the code editor)
+      const isCopyPaste =
+        (ctrl && (key === "c" || key === "C")) ||   // Ctrl/Cmd+C  – Copy
+        (ctrl && (key === "v" || key === "V")) ||   // Ctrl/Cmd+V  – Paste
+        (ctrl && (key === "x" || key === "X")) ||   // Ctrl/Cmd+X  – Cut
+        (ctrl && (key === "a" || key === "A"));     // Ctrl/Cmd+A  – Select All
+
+      // ── DevTools shortcuts ──
+      const isDevTools =
         key === "F12" ||
         (ctrl && shift && (key === "I" || key === "i")) ||
         (ctrl && shift && (key === "J" || key === "j")) ||
+        // Ctrl+Shift+C is DevTools element picker AND a copy-like shortcut – always block
         (ctrl && shift && (key === "C" || key === "c")) ||
-        (ctrl && (key === "U" || key === "u")) ||
-        // Tab switching shortcuts
+        (ctrl && (key === "U" || key === "u"));     // View Source
+
+      // ── Tab / Window management shortcuts ──
+      const isTabSwitch =
         (ctrl && key === "Tab") ||
         (ctrl && shift && key === "Tab") ||
-        (ctrl && (key === "T" || key === "t")) ||     // New tab
-        (ctrl && (key === "W" || key === "w")) ||     // Close tab
-        (ctrl && (key === "N" || key === "n")) ||     // New window
-        // AI tool shortcuts
+        (ctrl && (key === "T" || key === "t")) ||   // New tab
+        (ctrl && (key === "W" || key === "w")) ||   // Close tab
+        (ctrl && (key === "N" || key === "n"));     // New window
+
+      // ── AI-tool / Copilot / ChatGPT shortcuts ──
+      // Ctrl+K  = ChatGPT, Copilot chat, VS Code command palette
+      // Ctrl+Shift+A/L/P = Copilot/AI completions
+      // F1 = VS Code command palette / help
+      const isAIShortcut =
         (ctrl && (key === "K" || key === "k")) ||
         (ctrl && shift && (key === "A" || key === "a")) ||
         (ctrl && shift && (key === "L" || key === "l")) ||
         (ctrl && shift && (key === "P" || key === "p")) ||
         key === "F1";
 
-      if (blocked) {
+      // ── Mac Option-key combos (Alt key on Windows) ──
+      // Option+Space  = macOS Spotlight / ChatGPT desktop shortcut
+      // Option+Cmd+I  = Safari DevTools
+      // Alt+F4        = Close window (Windows)
+      // Alt+Tab       = App switch (Windows / Linux)
+      // Any Alt+letter combinations that open external AI tools
+      const isMacOptionCombo =
+        (alt && key === " ") ||                                      // Option/Alt + Space (ChatGPT desktop, Spotlight)
+        (alt && (key === "F4" || key === "F4")) ||                   // Alt+F4 – close window
+        (alt && key === "Tab") ||                                    // Alt+Tab – switch app
+        (alt && ctrl && (key === "I" || key === "i")) ||             // Option+Cmd+I – Safari DevTools
+        (alt && (key === "c" || key === "C")) ||                     // Alt+C – common AI chat shortcut
+        (alt && (key === "g" || key === "G")) ||                     // Alt+G – Gemini shortcut
+        (alt && (key === "p" || key === "P")) ||                     // Alt+P – GitHub Copilot panel
+        (alt && (key === "l" || key === "L")) ||                     // Alt+L – various AI sidebars
+        (alt && (key === "k" || key === "K")) ||                     // Alt+K – AI chat
+        (alt && (key === "z" || key === "Z"));                       // Alt+Z – Perplexity / wrap toggle
+
+      // ── Browser print (Ctrl+P) — can be used to screenshot/export ──
+      const isPrint = ctrl && (key === "p" || key === "P") && !shift;
+
+      const blocked = isDevTools || isTabSwitch || isAIShortcut || isMacOptionCombo || isPrint;
+
+      // Copy-paste gets a softer block: only block if focus is NOT in the code textarea
+      const focusedElement = document.activeElement;
+      const isInCodeEditor =
+        focusedElement &&
+        (focusedElement.tagName === "TEXTAREA" || focusedElement.tagName === "INPUT") &&
+        (focusedElement.dataset.role === "code-editor" || focusedElement.classList.contains("code-editor-textarea"));
+
+      const shouldBlockCopyPaste = isCopyPaste && !isInCodeEditor;
+
+      if (blocked || shouldBlockCopyPaste) {
         e.preventDefault();
         e.stopPropagation();
         setViolationCount(prev => {
@@ -481,12 +545,44 @@ export default function ContestWorkspace() {
           }
           return next;
         });
-        setViolationReason(`Forbidden keyboard shortcut/action detected (Key: ${key}).`);
+
+        let reason = `Forbidden keyboard shortcut/action detected (Key: ${key}).`;
+        if (isMacOptionCombo) {
+          reason = "Mac Option/Alt key shortcut blocked. External AI tools are not permitted during contests.";
+        } else if (shouldBlockCopyPaste) {
+          reason = "Copy/Paste outside the code editor is not allowed during the contest.";
+        } else if (isPrint) {
+          reason = "Printing/screenshot shortcuts are disabled during the contest.";
+        }
+        setViolationReason(reason);
         setShowViolationOverlay(true);
       }
     };
 
-    // Silently block right-click (prevents Inspect Element)
+    // ── Block paste events on the document (catches external clipboard paste) ──
+    const handlePaste = (e) => {
+      const focusedElement = document.activeElement;
+      const isInCodeEditor =
+        focusedElement &&
+        (focusedElement.tagName === "TEXTAREA" || focusedElement.tagName === "INPUT") &&
+        (focusedElement.dataset.role === "code-editor" || focusedElement.classList.contains("code-editor-textarea"));
+
+      if (!isInCodeEditor) {
+        e.preventDefault();
+        e.stopPropagation();
+        setViolationCount(prev => {
+          const next = prev + 1;
+          if (next >= 3) {
+            finishContest();
+          }
+          return next;
+        });
+        setViolationReason("Pasting content outside the code editor is not allowed during the contest.");
+        setShowViolationOverlay(true);
+      }
+    };
+
+    // ── Silently block right-click (prevents Inspect Element) ──
     const handleContextMenu = (e) => {
       e.preventDefault();
       setViolationCount(prev => {
@@ -504,6 +600,7 @@ export default function ContestWorkspace() {
     document.addEventListener("visibilitychange", handleVisibilityChange);
     window.addEventListener("blur", handleWindowBlur);
     document.addEventListener("keydown", handleGlobalKeyDown, true);
+    document.addEventListener("paste", handlePaste, true);
     document.addEventListener("contextmenu", handleContextMenu);
 
     return () => {
@@ -511,6 +608,7 @@ export default function ContestWorkspace() {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       window.removeEventListener("blur", handleWindowBlur);
       document.removeEventListener("keydown", handleGlobalKeyDown, true);
+      document.removeEventListener("paste", handlePaste, true);
       document.removeEventListener("contextmenu", handleContextMenu);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -1974,7 +2072,7 @@ export default function ContestWorkspace() {
                 </li>
                 <li className="flex items-start space-x-2 text-rose-500">
                   <span className="text-rose-500 mt-1 font-bold">!</span>
-                  <span><strong>Anti-Cheat Active:</strong> Fullscreen mode is enforced. Tab switching, AI shortcut keys (Ctrl+K, F12), and right-clicks are locked. 3 exits triggers auto-submission.</span>
+                  <span><strong>Anti-Cheat Active:</strong> Fullscreen mode is enforced. Tab switching, DevTools (F12), AI shortcuts (Ctrl+K, Option/Alt+Space, etc.), copy/paste outside the code editor, and right-clicks are all blocked. 3 violations triggers auto-submission.</span>
                 </li>
               </ul>
             </div>
@@ -2298,6 +2396,7 @@ export default function ContestWorkspace() {
                   <textarea
                     ref={editorRef}
                     value={currentCode}
+                    data-role="code-editor"
                     onChange={(e) => {
                       const val = e.target.value;
                       setEditorCodes(prev => ({
@@ -2309,7 +2408,7 @@ export default function ContestWorkspace() {
                     onKeyDown={handleEditorKeyDown}
                     onPaste={handleEditorPaste}
                     spellCheck="false"
-                    className="absolute top-0 left-0 w-full h-full bg-transparent text-transparent pt-4 px-4 pb-12 outline-none border-none resize-none font-mono whitespace-pre leading-6 overflow-y-auto overflow-x-auto"
+                    className="code-editor-textarea absolute top-0 left-0 w-full h-full bg-transparent text-transparent pt-4 px-4 pb-12 outline-none border-none resize-none font-mono whitespace-pre leading-6 overflow-y-auto overflow-x-auto"
                     style={{ fontSize: "13px", caretColor: "var(--text-primary)" }}
                   />
                 </div>

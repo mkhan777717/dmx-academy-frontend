@@ -1,28 +1,51 @@
-/**
+﻿/**
  * Resolves the backend API base URL dynamically.
- * Detects the client's network IP (e.g. 192.168.x.x) or falls back to 127.0.0.1 (preferred over localhost in Windows due to IPv6 loopback issues).
- * Handles production vs development environment variables.
  */
 export function getApiBase(fallbackPort = 5001) {
-  // Explicit production API URL wins first.
   if (process.env.NEXT_PUBLIC_API_URL) {
     return process.env.NEXT_PUBLIC_API_URL;
   }
-
   if (typeof window !== "undefined") {
     const hostname = window.location.hostname;
-    // In deployed environments without a configured API URL, use same-origin.
-    if (
-      hostname &&
-      hostname !== "localhost" &&
-      hostname !== "127.0.0.1" &&
-      hostname !== "::1"
-    ) {
+    if (hostname && hostname !== "localhost" && hostname !== "127.0.0.1" && hostname !== "::1") {
       return window.location.origin;
     }
   }
+  return "http://127.0.0.1:" + fallbackPort;
+}
 
-  // Preferred local network fallback is 127.0.0.1 to avoid Windows IPv6 resolution issues.
-  const defaultLocal = `http://127.0.0.1:${fallbackPort}`;
-  return defaultLocal;
+/**
+ * Builds Authorization headers for API requests.
+ * Passes x-bypass-userid so the backend resolves the actual institute-scoped user.
+ *
+ * @param {string|null} token - JWT token from useAuth()
+ * @param {object|null} user  - User object from useAuth() (needs .id and .role)
+ * @param {object}      extra - Any extra headers to merge in
+ */
+export function buildAuthHeaders(token, user, extra = {}) {
+  const hasRealToken = token && !token.startsWith("demo-") && !token.startsWith("local-");
+  const base = { "Content-Type": "application/json" };
+
+  if (hasRealToken) {
+    return { ...base, Authorization: "Bearer " + token, ...extra };
+  }
+
+  // Dev / demo bypass -- send userid so backend finds the actual institute-scoped user
+  const bypassRole =
+    user?.role === "MENTOR" ? "MENTOR" :
+    user?.role === "USER"   ? "USER"   : "ADMIN";
+
+  const userId = user?.id;
+  const isRealDbId =
+    userId &&
+    !String(userId).startsWith("demo-") &&
+    !String(userId).startsWith("local-");
+
+  const bypass = {
+    "x-bypass-auth": "true",
+    "x-bypass-role": bypassRole,
+    ...(isRealDbId ? { "x-bypass-userid": String(userId) } : {}),
+  };
+
+  return { ...base, ...bypass, ...extra };
 }

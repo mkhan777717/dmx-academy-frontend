@@ -9,6 +9,7 @@ import {
   ArrowUpRight, Edit3, Filter, X
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
+import { buildAuthHeaders } from "@/utils/api";
 
 function timeAgo(dateStr) {
   const diff = Date.now() - new Date(dateStr).getTime();
@@ -43,7 +44,7 @@ function formatDate(dateStr) {
 
 export default function AdminContestsPage() {
   const router = useRouter();
-  const { token, API_BASE } = useAuth();
+  const { token, API_BASE, user } = useAuth();
 
   const [allContests, setAllContests] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -53,14 +54,7 @@ export default function AdminContestsPage() {
   const [deletingId, setDeletingId] = useState(null);
   const [notification, setNotification] = useState(null);
 
-  const hasRealToken =
-    token && !token.startsWith("demo-") && !token.startsWith("local-");
-  const adminHeaders = {
-    "Content-Type": "application/json",
-    ...(hasRealToken
-      ? { Authorization: `Bearer ${token}` }
-      : { "x-bypass-auth": "true", "x-bypass-role": "ADMIN" }),
-  };
+  const adminHeaders = buildAuthHeaders(token, user);
 
   const triggerNotification = (msg, type = "success") => {
     setNotification({ msg, type });

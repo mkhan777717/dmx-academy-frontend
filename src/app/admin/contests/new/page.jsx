@@ -8,6 +8,7 @@ import {
   Plus, Trash2, Calendar, HelpCircle, ArrowLeft, X, RefreshCw
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
+import { buildAuthHeaders } from "@/utils/api";
 
 export default function CreateContest() {
   const router = useRouter();
@@ -65,23 +66,15 @@ export default function CreateContest() {
   const refreshProblemsList = async () => {
     let merged = [];
     try {
-      const hasRealToken = token && !token.startsWith("demo-") && !token.startsWith("local-");
-      const headers = {
-        "Content-Type": "application/json",
-        ...(hasRealToken
-          ? { Authorization: `Bearer ${token}` }
-          : { "x-bypass-auth": "true", "x-bypass-role": user?.role === "MENTOR" ? "MENTOR" : "ADMIN" }),
-      };
+      const headers = buildAuthHeaders(token, user);
 
       const res = await fetch(`${API_BASE}/api/problems`, { headers });
       const data = await res.json();
       if (data.success && data.problems) {
-        // Map database problems to match the UI format
         merged = data.problems.map(prob => {
-          // Capitalize difficulty: EASY -> Easy, MEDIUM -> Medium, HARD -> Hard
           const formattedDiff = prob.difficulty.charAt(0) + prob.difficulty.slice(1).toLowerCase();
           return {
-            id: prob.id, // Database integer ID
+            id: prob.id,
             slug: prob.slug,
             title: prob.title,
             difficulty: formattedDiff,
@@ -172,13 +165,7 @@ export default function CreateContest() {
       leaderboard: []
     };
 
-    const hasRealToken = token && !token.startsWith("demo-") && !token.startsWith("local-");
-    const headers = {
-      "Content-Type": "application/json",
-      ...(hasRealToken
-        ? { Authorization: `Bearer ${token}` }
-        : { "x-bypass-auth": "true", "x-bypass-role": "ADMIN" }),
-    };
+    const headers = buildAuthHeaders(token, user);
 
     try {
       const res = await fetch(`${API_BASE}/api/contests`, {

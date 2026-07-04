@@ -11,6 +11,7 @@ import {
   UserCheck, AlertCircle, RefreshCw, Lock
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
+import { buildAuthHeaders } from "@/utils/api";
 
 // ─── Live timing helpers ───────────────────────────────────────────────────
 function computeContestTiming(c) {
@@ -79,7 +80,7 @@ function computeContestTiming(c) {
 }
 
 export default function ContestLobby() {
-  const { API_BASE } = useAuth();
+  const { API_BASE, token, user } = useAuth();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState("all"); // all, active, upcoming, past, leaderboard
   const [searchQuery, setSearchQuery] = useState("");
@@ -130,16 +131,7 @@ export default function ContestLobby() {
   const fetchContests = async () => {
     setLoading(true);
     try {
-      let headersObj = {};
-      if (typeof window !== "undefined") {
-        if (localStorage.getItem("synapse_admin_session") === "true") {
-          headersObj = { "x-bypass-auth": "true", "x-bypass-role": "ADMIN" };
-        } else if (localStorage.getItem("synapse_mentor_session") === "true") {
-          headersObj = { "x-bypass-auth": "true", "x-bypass-role": "MENTOR" };
-        } else if (localStorage.getItem("synapse_student_session") === "true") {
-          headersObj = { "x-bypass-auth": "true", "x-bypass-role": "USER" };
-        }
-      }
+      const headersObj = buildAuthHeaders(token, user);
 
       const res = await fetch(`${API_BASE}/api/contests`, { headers: headersObj });
       const data = await res.json();
@@ -290,16 +282,7 @@ export default function ContestLobby() {
     const isNumeric = /^\d+$/.test(contest.id);
     if (isNumeric) {
       try {
-        let headersObj = {};
-        if (typeof window !== "undefined") {
-          if (localStorage.getItem("synapse_admin_session") === "true") {
-            headersObj = { "x-bypass-auth": "true", "x-bypass-role": "ADMIN" };
-          } else if (localStorage.getItem("synapse_mentor_session") === "true") {
-            headersObj = { "x-bypass-auth": "true", "x-bypass-role": "MENTOR" };
-          } else if (localStorage.getItem("synapse_student_session") === "true") {
-            headersObj = { "x-bypass-auth": "true", "x-bypass-role": "USER" };
-          }
-        }
+        const headersObj = buildAuthHeaders(token, user);
         const res = await fetch(`${API_BASE}/api/contests/${contest.id}/leaderboard`, { headers: headersObj });
         const data = await res.json();
         if (data.success) {
@@ -310,16 +293,7 @@ export default function ContestLobby() {
             time: `${Math.round(item.totalExecutionTime / 1000)}s`
           }));
 
-          let currentUsername = "You";
-          if (typeof window !== "undefined") {
-            if (localStorage.getItem("synapse_student_session") === "true") {
-              currentUsername = "Student";
-            } else if (localStorage.getItem("synapse_admin_session") === "true") {
-              currentUsername = "Admin";
-            } else if (localStorage.getItem("synapse_mentor_session") === "true") {
-              currentUsername = "Mentor";
-            }
-          }
+          const currentUsername = user?.username || "You";
 
           if (!formattedLeaderboard.some(p => p.username === currentUsername)) {
             const localSolved = localStorage.getItem("contest_solved_data");

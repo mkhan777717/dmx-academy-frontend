@@ -27,6 +27,8 @@ const createContest = async (req, res, next) => {
       }
     }
 
+    const instituteId = req.user.role !== 'ADMIN' ? req.user.instituteId : null;
+
     const contest = await prisma.contest.create({
       data: {
         title,
@@ -35,6 +37,7 @@ const createContest = async (req, res, next) => {
         startTime: new Date(startTime),
         endTime: new Date(endTime),
         creatorId,
+        instituteId,
         batches: batchIds && batchIds.length > 0 ? {
           connect: batchIds.map(id => ({ id }))
         } : undefined
@@ -118,7 +121,10 @@ const getAllContests = async (req, res, next) => {
 
     let whereClause = {};
 
-    if (req.user.role === 'USER') {
+    if (req.user.role === 'ADMIN' && !req.user.instituteId) {
+      // Super-admin (no institute): see every contest
+      whereClause = {};
+    } else if (req.user.role === 'USER') {
       // Student: fetch their institute and enrolled batches
       const student = await prisma.user.findUnique({
         where: { id: req.user.id },
@@ -130,21 +136,32 @@ const getAllContests = async (req, res, next) => {
       const studentInstituteId = student?.instituteId || null;
       const batchIds = student ? student.batchesStudied.map(b => b.id) : [];
 
-      // Only show contests from the student's own institute
+      // Only show contests that belong to the student's institute
       // AND (no batch restriction OR student is enrolled in that batch)
       whereClause = {
-        creator: { instituteId: studentInstituteId },
         OR: [
-          { batches: { none: {} } },
-          ...(batchIds.length > 0 ? [{
-            batches: { some: { id: { in: batchIds } } }
-          }] : [])
+          { instituteId: studentInstituteId },
+          { creator: { instituteId: studentInstituteId } }
+        ],
+        AND: [
+          {
+            OR: [
+              { batches: { none: {} } },
+              ...(batchIds.length > 0 ? [{
+                batches: { some: { id: { in: batchIds } } }
+              }] : [])
+            ]
+          }
         ]
       };
     } else {
-      // Admin / Mentor / Institute Admin: see only their own institute's contests
+      // Institute admin / Mentor / scoped Admin: only their own institute's contests
+      const myInstituteId = req.user.instituteId;
       whereClause = {
-        creator: { instituteId: req.user.instituteId }
+        OR: [
+          { instituteId: myInstituteId },
+          { creator: { instituteId: myInstituteId } }
+        ]
       };
     }
 
@@ -205,7 +222,7 @@ const getContestDetails = async (req, res, next) => {
       where: { id: contestId },
       include: {
         creator: {
-          select: { id: true, username: true },
+          select: { id: true, username: true, instituteId: true },
         },
         contestProblems: {
           include: {
@@ -223,8 +240,31 @@ const getContestDetails = async (req, res, next) => {
       return res.status(404).json({ success: false, message: 'Contest not found.' });
     }
 
-    // Filter test cases based on user permission (if admin, show all, otherwise only samples)
-    const isAdmin = req.user && req.user.role === 'ADMIN';
+    // ── Institute isolation ─────────────────────────────────────────────────────
+    // Super-admin (ADMIN with no institute) can access any contest.
+    // Everyone else can only access contests belonging to their own institute.
+    if (req.user) {
+      const isSuperAdmin = req.user.role === 'ADMIN' && !req.user.instituteId;
+      if (!isSuperAdmin) {
+        // For students: check their own instituteId (fetched fresh to be safe)
+        let viewerInstituteId = req.user.instituteId;
+        if (!viewerInstituteId && req.user.role === 'USER') {
+          const freshUser = await prisma.user.findUnique({
+            where: { id: req.user.id },
+            select: { instituteId: true }
+          });
+          viewerInstituteId = freshUser?.instituteId || null;
+        }
+
+        const contestInstituteId = contest.instituteId || contest.creator?.instituteId;
+        if (viewerInstituteId && contestInstituteId && contestInstituteId !== viewerInstituteId) {
+          return res.status(403).json({ success: false, message: 'You do not have access to this contest.' });
+        }
+      }
+    }
+
+    // Filter test cases based on user permission (admins / institute admins see all, students see samples only)
+    const isAdmin = req.user && (req.user.role === 'ADMIN' || req.user.role === 'INSTITUTE_ADMIN' || req.user.role === 'MENTOR' || req.user.role === 'BATCH_MANAGER');
     if (contest.contestProblems) {
       contest.contestProblems.forEach(cp => {
         if (cp.problem && cp.problem.testCases) {
@@ -555,7 +595,19 @@ const getContestParticipants = async (req, res, next) => {
 
 const getAllParticipationReports = async (req, res, next) => {
   try {
+    // Super-admin sees everything; institute admins are scoped to their own institute
+    const isSuperAdmin = req.user.role === 'ADMIN' && !req.user.instituteId;
+    const myInstituteId = req.user.instituteId || null;
+
     const participations = await prisma.contestParticipation.findMany({
+      where: isSuperAdmin ? {} : {
+        contest: {
+          OR: [
+            { instituteId: myInstituteId },
+            { creator: { instituteId: myInstituteId } }
+          ]
+        }
+      },
       include: {
         user: {
           select: { id: true, username: true, email: true, role: true }
@@ -599,9 +651,13 @@ const updateContest = async (req, res, next) => {
       return res.status(404).json({ success: false, message: 'Contest not found.' });
     }
 
-    // Permission check: Non-super admins can only update contests created within their own institute
-    if (req.user.role !== 'ADMIN') {
-      if (!contest.creator || contest.creator.instituteId !== req.user.instituteId) {
+    // Permission check:
+    // - Super-admin (role=ADMIN, no instituteId) can update anything
+    // - Institute admins/mentors can only update contests belonging to their own institute
+    const isSuperAdmin = req.user.role === 'ADMIN' && !req.user.instituteId;
+    if (!isSuperAdmin) {
+      const contestInstituteId = contest.instituteId || contest.creator?.instituteId;
+      if (contestInstituteId !== req.user.instituteId) {
         return res.status(403).json({
           success: false,
           message: 'You are not authorized to update this contest.'
@@ -677,9 +733,13 @@ const deleteContest = async (req, res, next) => {
       return res.status(404).json({ success: false, message: 'Contest not found.' });
     }
 
-    // Permission check: Non-super admins can only delete contests created within their own institute
-    if (req.user.role !== 'ADMIN') {
-      if (!contest.creator || contest.creator.instituteId !== req.user.instituteId) {
+    // Permission check:
+    // - Super-admin (role=ADMIN, no instituteId) can delete anything
+    // - Institute admins/mentors can only delete contests belonging to their own institute
+    const isSuperAdminDel = req.user.role === 'ADMIN' && !req.user.instituteId;
+    if (!isSuperAdminDel) {
+      const contestInstituteId = contest.instituteId || contest.creator?.instituteId;
+      if (contestInstituteId !== req.user.instituteId) {
         return res.status(403).json({
           success: false,
           message: 'You are not authorized to delete this contest.'

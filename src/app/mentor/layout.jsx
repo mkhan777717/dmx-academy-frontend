@@ -151,11 +151,7 @@ export default function MentorLayout({ children }) {
       href: "/mentor/viva/materials",
       icon: FileText
     },
-    (user?.role === "ADMIN") && {
-      label: "AI Settings",
-      href: "/mentor/viva/ai-settings",
-      icon: Settings
-    },
+
     {
       label: "Go Live",
       href: "/admin/live",

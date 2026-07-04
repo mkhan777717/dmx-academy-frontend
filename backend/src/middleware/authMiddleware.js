@@ -10,22 +10,37 @@ const protect = async (req, res, next) => {
     const isBypass = req.headers['x-bypass-auth'] === 'true' || req.query['x-bypass-auth'] === 'true';
     if (process.env.NODE_ENV === 'development' && isBypass) {
       const bypassRole = req.headers['x-bypass-role'] || req.query['x-bypass-role'] || 'ADMIN';
-      const bypassUsername = bypassRole === 'ADMIN' ? 'admin' : bypassRole === 'MENTOR' ? 'mentor' : 'student';
-      const bypassEmail = bypassRole === 'ADMIN' ? 'admin@example.com' : bypassRole === 'MENTOR' ? 'mentor@synapse.com' : 'student@example.com';
-      
-      let dbUser = await prisma.user.findFirst({ 
-        where: bypassRole === 'MENTOR' ? { email: 'mentor@synapse.com' } : { role: bypassRole } 
-      });
-      if (!dbUser) {
-        dbUser = await prisma.user.create({
-          data: {
-            username: bypassUsername,
-            email: bypassEmail,
-            password: 'devbypasshashedpassword',
-            role: bypassRole === 'MENTOR' ? 'USER' : bypassRole,
-          }
-        });
+      const bypassUserId = req.headers['x-bypass-userid'] || req.query['x-bypass-userid'];
+
+      let dbUser = null;
+
+      // Prefer looking up by explicit user ID (preserves instituteId correctly)
+      if (bypassUserId) {
+        const userId = parseInt(bypassUserId, 10);
+        if (!isNaN(userId)) {
+          dbUser = await prisma.user.findUnique({ where: { id: userId } });
+        }
       }
+
+      // Fallback: find or create a generic bypass user by role
+      if (!dbUser) {
+        const bypassUsername = bypassRole === 'ADMIN' ? 'admin' : bypassRole === 'MENTOR' ? 'mentor' : 'student';
+        const bypassEmail = bypassRole === 'ADMIN' ? 'admin@example.com' : bypassRole === 'MENTOR' ? 'mentor@synapse.com' : 'student@example.com';
+        dbUser = await prisma.user.findFirst({
+          where: bypassRole === 'MENTOR' ? { email: 'mentor@synapse.com' } : { role: bypassRole }
+        });
+        if (!dbUser) {
+          dbUser = await prisma.user.create({
+            data: {
+              username: bypassUsername,
+              email: bypassEmail,
+              password: 'devbypasshashedpassword',
+              role: bypassRole === 'MENTOR' ? 'USER' : bypassRole,
+            }
+          });
+        }
+      }
+
       req.user = dbUser;
       return next();
     }
@@ -117,6 +132,7 @@ const protect = async (req, res, next) => {
         username: true,
         email: true,
         role: true,
+        currentSessionId: true,
         createdAt: true,
         instituteId: true,
       },
@@ -127,6 +143,30 @@ const protect = async (req, res, next) => {
         success: false,
         message: 'The user belonging to this token no longer exists.',
       });
+    }
+
+    // Verify session ID matches DB (prevent multi-device concurrent logins)
+    if (decoded.sessionId && user.currentSessionId && decoded.sessionId !== user.currentSessionId) {
+      return res.status(401).json({
+        success: false,
+        code: 'SESSION_EXPIRED',
+        message: 'Your session has expired because you logged in on another device.',
+      });
+    }
+
+    // Check if the user's institute is blocked (not applicable to super admins)
+    if (user.instituteId && user.role !== 'ADMIN') {
+      const institute = await prisma.institute.findUnique({
+        where: { id: user.instituteId },
+        select: { isBlocked: true }
+      });
+      if (institute?.isBlocked) {
+        return res.status(403).json({
+          success: false,
+          code: 'INSTITUTE_BLOCKED',
+          message: 'Your institute has been blocked. Please contact the Super Administrator.',
+        });
+      }
     }
 
     // Grant access and store user info in request object
@@ -206,22 +246,37 @@ const fetchUserIfExists = async (req, res, next) => {
     const isBypass = req.headers['x-bypass-auth'] === 'true' || req.query['x-bypass-auth'] === 'true';
     if (process.env.NODE_ENV === 'development' && isBypass) {
       const bypassRole = req.headers['x-bypass-role'] || req.query['x-bypass-role'] || 'USER';
-      const bypassUsername = bypassRole === 'ADMIN' ? 'admin' : bypassRole === 'MENTOR' ? 'mentor' : 'student';
-      const bypassEmail = bypassRole === 'ADMIN' ? 'admin@example.com' : bypassRole === 'MENTOR' ? 'mentor@synapse.com' : 'student@example.com';
+      const bypassUserId = req.headers['x-bypass-userid'] || req.query['x-bypass-userid'];
 
-      let dbUser = await prisma.user.findFirst({ 
-        where: bypassRole === 'MENTOR' ? { email: 'mentor@synapse.com' } : { role: bypassRole } 
-      });
-      if (!dbUser) {
-        dbUser = await prisma.user.create({
-          data: {
-            username: bypassUsername,
-            email: bypassEmail,
-            password: 'devbypasshashedpassword',
-            role: bypassRole,
-          }
-        });
+      let dbUser = null;
+
+      // Prefer looking up by explicit user ID (preserves instituteId correctly)
+      if (bypassUserId) {
+        const userId = parseInt(bypassUserId, 10);
+        if (!isNaN(userId)) {
+          dbUser = await prisma.user.findUnique({ where: { id: userId } });
+        }
       }
+
+      // Fallback: find or create a generic bypass user by role
+      if (!dbUser) {
+        const bypassUsername = bypassRole === 'ADMIN' ? 'admin' : bypassRole === 'MENTOR' ? 'mentor' : 'student';
+        const bypassEmail = bypassRole === 'ADMIN' ? 'admin@example.com' : bypassRole === 'MENTOR' ? 'mentor@synapse.com' : 'student@example.com';
+        dbUser = await prisma.user.findFirst({
+          where: bypassRole === 'MENTOR' ? { email: 'mentor@synapse.com' } : { role: bypassRole }
+        });
+        if (!dbUser) {
+          dbUser = await prisma.user.create({
+            data: {
+              username: bypassUsername,
+              email: bypassEmail,
+              password: 'devbypasshashedpassword',
+              role: bypassRole,
+            }
+          });
+        }
+      }
+
       req.user = dbUser;
       return next();
     }
@@ -243,6 +298,7 @@ const fetchUserIfExists = async (req, res, next) => {
           username: true,
           email: true,
           role: true,
+          instituteId: true,
         },
       });
       if (user) {
