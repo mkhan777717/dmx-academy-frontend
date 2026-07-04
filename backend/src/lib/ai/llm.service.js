@@ -109,6 +109,8 @@ CRITICAL: Respond with ONLY a valid JSON object. No markdown, no code fences, no
       .trim();
     const s = t.indexOf('{'), e = t.lastIndexOf('}');
     if (s !== -1 && e > s) t = t.slice(s, e + 1);
+    // Remove trailing commas before closing braces/brackets
+    t = t.replace(/,\s*([\]}])/g, '$1');
     return t;
   }
 

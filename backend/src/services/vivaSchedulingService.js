@@ -4,6 +4,7 @@ const createViva = async ({ title, subject, description, startTime, endTime, que
   if (!title?.trim()) throw new Error('Title is required.');
   if (!subject?.trim()) throw new Error('Subject is required.');
   if (!startTime) throw new Error('Start time is required.');
+  if (!endTime) throw new Error('End time is required.');
   if (!questionIds || !Array.isArray(questionIds) || questionIds.length === 0) {
     throw new Error('At least one question must be selected.');
   }
@@ -14,7 +15,7 @@ const createViva = async ({ title, subject, description, startTime, endTime, que
       subject: subject.trim(),
       description: description?.trim() || null,
       startTime: new Date(startTime),
-      endTime: endTime ? new Date(endTime) : null,
+      endTime: new Date(endTime),
       creatorId,
       instituteId,
       questions: {
@@ -58,8 +59,44 @@ const getVivaDetails = async (id, instituteId) => {
   return viva;
 };
 
+const updateViva = async (id, { title, subject, description, startTime, endTime, questionIds, instituteId }) => {
+  if (!title?.trim()) throw new Error('Title is required.');
+  if (!subject?.trim()) throw new Error('Subject is required.');
+  if (!startTime) throw new Error('Start time is required.');
+  if (!endTime) throw new Error('End time is required.');
+  if (!questionIds || !Array.isArray(questionIds) || questionIds.length === 0) {
+    throw new Error('At least one question must be selected.');
+  }
+
+  const existing = await prisma.viva.findUnique({
+    where: { id },
+    include: { questions: { select: { id: true } } }
+  });
+  if (!existing) throw new Error('Viva not found.');
+  if (existing.instituteId !== instituteId) throw new Error('Unauthorized to modify this Viva.');
+
+  return prisma.viva.update({
+    where: { id },
+    data: {
+      title: title.trim(),
+      subject: subject.trim(),
+      description: description?.trim() || null,
+      startTime: new Date(startTime),
+      endTime: new Date(endTime),
+      questions: {
+        disconnect: existing.questions.map(q => ({ id: q.id })),
+        connect: questionIds.map(qid => ({ id: parseInt(qid) }))
+      }
+    },
+    include: {
+      questions: true
+    }
+  });
+};
+
 module.exports = {
   createViva,
   getScheduledVivas,
-  getVivaDetails
+  getVivaDetails,
+  updateViva
 };

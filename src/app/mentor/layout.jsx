@@ -125,21 +125,37 @@ export default function MentorLayout({ children }) {
     return <>{children}</>;
   }
 
+  const effectiveRole = user?.role || (typeof window !== "undefined" ? JSON.parse(localStorage.getItem("dmx_auth_user") || "{}")?.role : null);
+  const isSuperAdmin = effectiveRole === "ADMIN";
+  const isInstAdmin = effectiveRole === "INSTITUTE_ADMIN";
+  const isBatchMgr = effectiveRole === "BATCH_MANAGER";
+  const isMentor = effectiveRole === "MENTOR";
+
   const sidebarLinks = [
     {
       label: "Dashboard",
-      href: "/mentor/dashboard",
+      href: isMentor ? "/mentor/dashboard" : "/admin/dashboard",
       icon: LayoutDashboard
     },
-    {
-      label: "Create Contest",
-      href: "/admin/contests/new",
-      icon: PlusCircle
+    isSuperAdmin && {
+      label: "Institutes & Admins",
+      href: "/admin/institutes",
+      icon: Settings
     },
-    {
-      label: "Create Problem",
-      href: "/admin/problems/new",
-      icon: Code
+    isInstAdmin && {
+      label: "Manage Batches",
+      href: "/admin/batches",
+      icon: ArrowLeftRight
+    },
+    isInstAdmin && {
+      label: "Manage People",
+      href: "/admin/people",
+      icon: ArrowLeftRight
+    },
+    isBatchMgr && {
+      label: "My Batches",
+      href: "/admin/batch-manager",
+      icon: ArrowLeftRight
     },
     {
       label: "AI Viva",
@@ -151,8 +167,17 @@ export default function MentorLayout({ children }) {
       href: "/mentor/viva/materials",
       icon: FileText
     },
-
-    {
+    (isSuperAdmin || isInstAdmin || isBatchMgr || isMentor) && {
+      label: "Create Contest",
+      href: "/admin/contests/new",
+      icon: PlusCircle
+    },
+    (isSuperAdmin || isInstAdmin || isBatchMgr || isMentor) && {
+      label: "Create Problem",
+      href: "/admin/problems/new",
+      icon: Code
+    },
+    (isSuperAdmin || isInstAdmin || isBatchMgr || isMentor) && {
       label: "Go Live",
       href: "/admin/live",
       icon: Radio

@@ -686,6 +686,7 @@ const disqualifySession = async () => {
     });
     
     // Redirect to results with disqualified flag
+    alert("Viva terminated: 3 proctoring warnings exceeded (tab switching, window focus loss, or exiting fullscreen). Your attempt has been submitted.");
     window.location.assign(`/student/viva/result/${activeSession.id}?disqualified=true`);
   } catch (err) {
     console.error("Disqualification error:", err);
@@ -863,8 +864,8 @@ return (
                 const start = new Date(viva.startTime);
                 const end = viva.endTime ? new Date(viva.endTime) : null;
                 const isActive = now >= start && (!end || now <= end);
-                const isUpcoming = now < start;
                 const isEnded = end && now > end;
+                const hasAttempted = history.some(h => h.vivaId === viva.id);
 
                 if (isEnded) return null; // Don't show ended ones in active/upcoming
 
@@ -880,11 +881,13 @@ return (
                           {viva.subject}
                         </span>
                         <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border ${
-                          isActive
+                          hasAttempted
+                            ? "bg-indigo-500/10 text-indigo-400 border-indigo-500/20"
+                            : isActive
                             ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20 animate-pulse"
                             : "bg-blue-500/10 text-blue-400 border-blue-500/20"
                         }`}>
-                          {isActive ? "Active" : "Upcoming"}
+                          {hasAttempted ? "Attempted" : isActive ? "Active" : "Upcoming"}
                         </span>
                       </div>
 
@@ -918,7 +921,14 @@ return (
                     </div>
 
                     <div className="pt-2">
-                      {isActive ? (
+                      {hasAttempted ? (
+                        <button
+                          disabled
+                          className="w-full py-2.5 rounded-xl font-bold text-xs bg-slate-800 text-slate-500 border border-slate-700/50 cursor-not-allowed text-center"
+                        >
+                          Already Attempted
+                        </button>
+                      ) : isActive ? (
                         <button
                           onClick={() => startSession(viva.id)}
                           className="w-full py-2.5 rounded-xl font-bold text-xs text-white shadow-md transition-all flex items-center justify-center gap-2 hover:scale-[1.02]"

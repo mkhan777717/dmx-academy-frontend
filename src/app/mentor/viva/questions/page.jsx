@@ -134,6 +134,7 @@ export default function AIAllInOneVivaPage() {
   const [scheduleSelectedQuestions, setScheduleSelectedQuestions] = useState([]);
   const [scheduleError, setScheduleError] = useState("");
   const [scheduleSuccess, setScheduleSuccess] = useState("");
+  const [editingVivaId, setEditingVivaId] = useState(null);
 
   // ==========================================
   // DATA FETCHING FUNCTIONS
@@ -222,6 +223,13 @@ export default function AIAllInOneVivaPage() {
     const combined = [...new Set([...fromDB, ...customSubjects])];
     return combined.sort();
   }, [filteredQuestions, customSubjects]);
+
+  const instituteSubjectNames = useMemo(() => {
+    const instQuestions = questions.filter(q => q.instituteId !== null);
+    const fromDB = [...new Set(instQuestions.map(q => q.subject))];
+    const combined = [...new Set([...fromDB, ...customSubjects])];
+    return combined.sort();
+  }, [questions, customSubjects]);
 
   const selectedQuestions = useMemo(() => {
     if (!selectedSubject) return [];
@@ -435,7 +443,7 @@ export default function AIAllInOneVivaPage() {
   // ==========================================
   const handleScheduleSubmit = async (e) => {
     e.preventDefault();
-    if (!scheduleTitle.trim() || !scheduleSubject.trim() || !scheduleStartTime || scheduleSelectedQuestions.length === 0) {
+    if (!scheduleTitle.trim() || !scheduleSubject.trim() || !scheduleStartTime || !scheduleEndTime || scheduleSelectedQuestions.length === 0) {
       setScheduleError("Please fill in all required fields and select at least one question.");
       return;
     }
@@ -444,39 +452,66 @@ export default function AIAllInOneVivaPage() {
     setScheduleError("");
     setScheduleSuccess("");
     try {
-      const res = await fetch(`${API_BASE}/api/viva/schedule`, {
-        method: "POST",
+      const url = editingVivaId 
+        ? `${API_BASE}/api/viva/scheduled/${editingVivaId}`
+        : `${API_BASE}/api/viva/schedule`;
+      const method = editingVivaId ? "PUT" : "POST";
+
+      const res = await fetch(url, {
+        method,
         headers: getHeaders(),
         body: JSON.stringify({
           title: scheduleTitle,
           subject: scheduleSubject,
           description: scheduleDescription,
           startTime: scheduleStartTime,
-          endTime: scheduleEndTime || null,
+          endTime: scheduleEndTime,
           questionIds: scheduleSelectedQuestions
         })
       });
       const data = await res.json();
       if (res.ok && data.success) {
-        setScheduleSuccess("Viva scheduled successfully!");
+        setScheduleSuccess(editingVivaId ? "Viva updated successfully!" : "Viva scheduled successfully!");
         setScheduleTitle("");
         setScheduleDescription("");
         setScheduleStartTime("");
         setScheduleEndTime("");
         setScheduleSelectedQuestions([]);
+        setEditingVivaId(null);
         fetchVivas();
         setTimeout(() => {
           setScheduleOpen(false);
           setScheduleSuccess("");
         }, 1500);
       } else {
-        setScheduleError(data.message || "Failed to schedule Viva.");
+        setScheduleError(data.message || "Failed to submit Viva session.");
       }
     } catch {
-      setScheduleError("Network error scheduling Viva.");
+      setScheduleError("Network error submitting Viva session.");
     } finally {
       setScheduleSubmitting(false);
     }
+  };
+
+  const openEditViva = (viva) => {
+    setEditingVivaId(viva.id);
+    setScheduleTitle(viva.title);
+    setScheduleSubject(viva.subject);
+    setScheduleDescription(viva.description || "");
+    
+    const formatDateTime = (dateStr) => {
+      if (!dateStr) return "";
+      const date = new Date(dateStr);
+      const tzOffset = date.getTimezoneOffset() * 60000;
+      return new Date(date.getTime() - tzOffset).toISOString().slice(0, 16);
+    };
+    
+    setScheduleStartTime(formatDateTime(viva.startTime));
+    setScheduleEndTime(formatDateTime(viva.endTime));
+    setScheduleSelectedQuestions(viva.questions?.map(q => q.id) || []);
+    setScheduleError("");
+    setScheduleSuccess("");
+    setScheduleOpen(true);
   };
 
   const getVivaStatus = (viva) => {
@@ -603,7 +638,7 @@ export default function AIAllInOneVivaPage() {
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm overflow-y-auto">
             <form onSubmit={handleScheduleSubmit} className="bg-[#111625] border border-slate-800 w-full max-w-3xl rounded-2xl p-6 space-y-4 my-8">
               <div className="flex justify-between items-center">
-                <h3 className="text-lg font-bold text-slate-200 flex items-center gap-2"><Calendar className="w-5 h-5 text-pink-400" />Schedule Viva Session</h3>
+                <h3 className="text-lg font-bold text-slate-200 flex items-center gap-2"><Calendar className="w-5 h-5 text-pink-400" />{editingVivaId ? "Edit Viva Session" : "Schedule Viva Session"}</h3>
                 <button type="button" onClick={() => setScheduleOpen(false)} className="p-1 hover:bg-slate-800 rounded"><X size={18} /></button>
               </div>
               {scheduleError && <div className="p-3 bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs rounded-xl">{scheduleError}</div>}
@@ -616,19 +651,13 @@ export default function AIAllInOneVivaPage() {
                     <label className="block text-xs font-bold text-slate-400 mb-1">Viva Title *</label>
                     <input type="text" required value={scheduleTitle} onChange={e => setScheduleTitle(e.target.value)} className="w-full bg-[#161B2B] border border-slate-800 rounded-xl p-3 text-sm outline-none" placeholder="e.g. JS Closures Final Exam" />
                   </div>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-xs font-bold text-slate-400 mb-1">Subject Folder *</label>
-                      <select required value={scheduleSubject} onChange={e => setScheduleSubject(e.target.value)} className="w-full bg-[#161B2B] border border-slate-800 rounded-xl p-3 text-sm outline-none">
-                        <option value="">Select Folder</option>
-                        {subjectNames.map(s => <option key={s} value={s}>{s}</option>)}
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-xs font-bold text-slate-400 mb-1">Custom Subject (Optional)</label>
-                      <input type="text" value={scheduleSubject} onChange={e => setScheduleSubject(e.target.value)} className="w-full bg-[#161B2B] border border-slate-800 rounded-xl p-3 text-sm outline-none" placeholder="Type new subject" />
-                    </div>
-                  </div>
+                   <div>
+                     <label className="block text-xs font-bold text-slate-400 mb-1">Select Subject *</label>
+                     <select required value={scheduleSubject} onChange={e => setScheduleSubject(e.target.value)} className="w-full bg-[#161B2B] border border-slate-800 rounded-xl p-3 text-sm outline-none">
+                       <option value="">Select Folder</option>
+                       {instituteSubjectNames.map(s => <option key={s} value={s}>{s}</option>)}
+                     </select>
+                   </div>
                   <div>
                     <label className="block text-xs font-bold text-slate-400 mb-1">Description (Optional)</label>
                     <textarea rows={2} value={scheduleDescription} onChange={e => setScheduleDescription(e.target.value)} className="w-full bg-[#161B2B] border border-slate-800 rounded-xl p-3 text-sm outline-none resize-none" placeholder="Instructions..." />
@@ -639,21 +668,21 @@ export default function AIAllInOneVivaPage() {
                       <input type="datetime-local" required value={scheduleStartTime} onChange={e => setScheduleStartTime(e.target.value)} className="w-full bg-[#161B2B] border border-slate-800 rounded-xl p-3 text-xs outline-none" />
                     </div>
                     <div>
-                      <label className="block text-xs font-bold text-slate-400 mb-1">End Time (Optional)</label>
-                      <input type="datetime-local" value={scheduleEndTime} onChange={e => setScheduleEndTime(e.target.value)} className="w-full bg-[#161B2B] border border-slate-800 rounded-xl p-3 text-xs outline-none" />
+                      <label className="block text-xs font-bold text-slate-400 mb-1">End Time *</label>
+                      <input type="datetime-local" required value={scheduleEndTime} onChange={e => setScheduleEndTime(e.target.value)} className="w-full bg-[#161B2B] border border-slate-800 rounded-xl p-3 text-xs outline-none" />
                     </div>
                   </div>
                 </div>
 
                 {/* Questions Picker */}
-                <div className="flex flex-col h-[320px] lg:h-auto border border-slate-800 rounded-xl p-4 bg-[#0E1322]">
+                <div className="flex flex-col h-[320px] lg:h-[350px] border border-slate-800 rounded-xl p-4 bg-[#0E1322]">
                   <p className="text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">Select Questions ({scheduleSelectedQuestions.length})</p>
                   <div className="flex-1 overflow-y-auto space-y-2 pr-1">
                     {questions.length === 0 ? (
                       <p className="text-slate-500 text-xs text-center py-10">No questions in bank.</p>
                     ) : (
                       questions
-                        .filter(q => !scheduleSubject || q.subject.toLowerCase() === scheduleSubject.toLowerCase())
+                        .filter(q => q.instituteId !== null && (!scheduleSubject || q.subject.toLowerCase() === scheduleSubject.toLowerCase()))
                         .map(q => {
                           const isSel = scheduleSelectedQuestions.includes(q.id);
                           return (
@@ -665,7 +694,7 @@ export default function AIAllInOneVivaPage() {
                                 );
                               }}
                               className={`p-2.5 rounded border text-left cursor-pointer transition-all select-none ${
-                                isSel ? "bg-pink-500/10 border-pink-500/40" : "bg-[#111625] border-slate-800/80 hover:border-slate-700"
+                                isSel ? "bg-emerald-500/10 border-emerald-500/50 outline outline-2 outline-emerald-500/30" : "bg-[#111625] border-slate-800/80 hover:border-slate-700"
                               }`}
                             >
                               <span className="text-[9px] uppercase font-bold text-indigo-400">{q.difficulty}</span>
@@ -962,20 +991,22 @@ export default function AIAllInOneVivaPage() {
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => {
-                setForm({ ...emptyForm, subject: selectedSubject });
-                setEditingId(null);
-                setFormError("");
-                setModalOpen(true);
-              }}
-              className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 font-semibold text-xs text-white shadow-lg transition-all cursor-pointer"
-            >
-              <Plus className="w-4 h-4" />
-              <span>Add Question</span>
-            </button>
-          </div>
+          {activeTab !== "global" && (
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => {
+                  setForm({ ...emptyForm, subject: selectedSubject });
+                  setEditingId(null);
+                  setFormError("");
+                  setModalOpen(true);
+                }}
+                className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 font-semibold text-xs text-white shadow-lg transition-all cursor-pointer"
+              >
+                <Plus className="w-4 h-4" />
+                <span>Add Question</span>
+              </button>
+            </div>
+          )}
         </div>
 
         {/* List of questions for the selected subject */}
@@ -1071,32 +1102,45 @@ export default function AIAllInOneVivaPage() {
           
           <div className="flex items-center gap-3">
             {subSectionTab === "bank" ? (
-              <>
-                <button
-                  onClick={() => { setSubjectModalError(""); setNewFolderSubjectName(""); setSubjectModalOpen(true); }}
-                  className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 hover:bg-slate-800 font-medium text-xs text-slate-300 transition-all cursor-pointer"
-                >
-                  <Plus className="w-4 h-4 text-indigo-400" />
-                  <span>Add Folder</span>
-                </button>
-                <button
-                  onClick={() => { setExtractModalOpen(true); fetchMaterials(); }}
-                  className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 hover:bg-slate-800 font-medium text-xs text-slate-300 transition-all cursor-pointer"
-                >
-                  <Sparkles className="w-4 h-4 text-indigo-400" />
-                  <span>Extract from PDF</span>
-                </button>
-                <button
-                  onClick={openCreate}
-                  className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 font-semibold text-xs text-white shadow-lg transition-all cursor-pointer"
-                >
-                  <Plus className="w-4 h-4" />
-                  <span>Add Question</span>
-                </button>
-              </>
+              activeTab !== "global" && (
+                <>
+                  <button
+                    onClick={() => { setSubjectModalError(""); setNewFolderSubjectName(""); setSubjectModalOpen(true); }}
+                    className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 hover:bg-slate-800 font-medium text-xs text-slate-300 transition-all cursor-pointer"
+                  >
+                    <Plus className="w-4 h-4 text-indigo-400" />
+                    <span>Add Folder</span>
+                  </button>
+                  <button
+                    onClick={() => { setExtractModalOpen(true); fetchMaterials(); }}
+                    className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 hover:bg-slate-800 font-medium text-xs text-slate-300 transition-all cursor-pointer"
+                  >
+                    <Sparkles className="w-4 h-4 text-indigo-400" />
+                    <span>Extract from PDF</span>
+                  </button>
+                  <button
+                    onClick={openCreate}
+                    className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 font-semibold text-xs text-white shadow-lg transition-all cursor-pointer"
+                  >
+                    <Plus className="w-4 h-4" />
+                    <span>Add Question</span>
+                  </button>
+                </>
+              )
             ) : (
               <button
-                onClick={() => { setScheduleError(""); setScheduleSuccess(""); setScheduleOpen(true); }}
+                onClick={() => {
+                  setEditingVivaId(null);
+                  setScheduleTitle("");
+                  setScheduleSubject("");
+                  setScheduleDescription("");
+                  setScheduleStartTime("");
+                  setScheduleEndTime("");
+                  setScheduleSelectedQuestions([]);
+                  setScheduleError("");
+                  setScheduleSuccess("");
+                  setScheduleOpen(true);
+                }}
                 className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 font-bold text-xs text-white shadow transition-all cursor-pointer"
               >
                 <Plus className="w-4 h-4" />
@@ -1258,6 +1302,16 @@ export default function AIAllInOneVivaPage() {
                           <div className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5 text-slate-500" /><span>Start: {new Date(viva.startTime).toLocaleString()}</span></div>
                           {viva.endTime && <div className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5 text-slate-500" /><span>End: {new Date(viva.endTime).toLocaleString()}</span></div>}
                           <div className="flex items-center gap-1.5"><BookOpen className="w-3.5 h-3.5 text-slate-500" /><span>Questions: {viva.questions?.length || 0}</span></div>
+                        </div>
+                        <div className="flex justify-between items-center pt-2 border-t border-slate-850">
+                          <button
+                            type="button"
+                            onClick={() => openEditViva(viva)}
+                            className="inline-flex items-center gap-1 text-[11px] text-indigo-400 hover:text-indigo-300 font-semibold cursor-pointer transition-colors"
+                          >
+                            <Edit2 className="w-3.5 h-3.5" />
+                            <span>Edit Viva Details</span>
+                          </button>
                         </div>
                       </div>
                     </div>

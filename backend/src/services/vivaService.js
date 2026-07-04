@@ -131,6 +131,13 @@ const startVivaSession = async (userId, vivaId) => {
     throw new Error("Unauthorized: This Viva belongs to a different institute.");
   }
 
+  const existingSession = await prisma.vivaSession.findFirst({
+    where: { userId, vivaId }
+  });
+  if (existingSession) {
+    throw new Error("You have already attempted this Viva session.");
+  }
+
   const now = new Date();
   if (now < viva.startTime) {
     throw new Error("This Viva has not started yet.");
