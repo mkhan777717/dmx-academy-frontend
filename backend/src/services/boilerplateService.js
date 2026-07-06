@@ -123,7 +123,8 @@ const generateDriverCode = (language, functionName, parameters, returnType, user
         return `${p.name} = lines[${idx}].strip()`;
       }).join('\n            ');
 
-      return `${userCode}\n\n# --- DRIVER CODE (AUTO-GENERATED) ---\nimport sys\nimport json\n\ndef main():\n    raw_input = sys.stdin.read().strip()\n    if raw_input:\n        lines = raw_input.splitlines()\n        if len(lines) < ${parameters.length}:\n            lines = raw_input.split()\n        if len(lines) >= ${parameters.length}:\n            ${parsingLines}\n            result = ${functionName}(${paramNames})\n            if isinstance(result, (list, dict)):\n                print(json.dumps(result))\n            else:\n                print(result)\n\nif __name__ == '__main__':\n    main()`;
+      const sanitizedUserCode = userCode.replace(/\t/g, '    ');
+      return `${sanitizedUserCode}\n\n# --- DRIVER CODE (AUTO-GENERATED) ---\nimport sys\nimport json\n\ndef main():\n    raw_input = sys.stdin.read().strip()\n    if raw_input:\n        lines = raw_input.splitlines()\n        if len(lines) < ${parameters.length}:\n            lines = raw_input.split()\n        if len(lines) >= ${parameters.length}:\n            ${parsingLines}\n            result = ${functionName}(${paramNames})\n            if isinstance(result, (list, dict)):\n                print(json.dumps(result))\n            else:\n                print(result)\n\nif __name__ == '__main__':\n    main()`;
     }
 
     case 'CPP': {
