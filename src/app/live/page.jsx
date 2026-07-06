@@ -1162,7 +1162,7 @@ export default function LiveViewerPage() {
       });
       const data = await res.json();
       if (data.success) {
-        setToken(data.token);
+        setLivekitToken(data.token);
       } else {
         setError("Failed to get session access token.");
       }
@@ -1225,24 +1225,7 @@ export default function LiveViewerPage() {
     return () => clearInterval(interval);
   }, [session, API_BASE]);
 
-  const fetchViewerToken = async (roomName) => {
-    try {
-      const res = await fetch(`${API_BASE}/api/livekit/token`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${authToken}`,
-        },
-        body: JSON.stringify({ roomName }),
-      });
-      const data = await res.json();
-      if (data.success) {
-        setLivekitToken(data.token);
-      }
-    } catch (e) {
-      console.error("Failed to get viewer token:", e);
-    }
-  };
+
 
   // ─── Session Ended State ───────────────────────────────────────────
   if (sessionEnded) {
