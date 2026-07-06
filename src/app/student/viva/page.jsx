@@ -834,10 +834,10 @@ return (
                   className={`relative grid h-8 w-[74px] shrink-0 grid-cols-2 items-center rounded-full p-1 text-[10px] font-black uppercase tracking-wide transition-all duration-300 ${showFeedbackAfterEach ? "bg-indigo-500/95 text-white shadow-inner" : "bg-slate-500/20 text-slate-400"
                     }`}
                 >
-                  <span className="relative z-10 text-center">End</span>
-                  <span className="relative z-10 text-center">Each</span>
+                  <span className={`relative z-10 text-center transition-colors duration-300 ${!showFeedbackAfterEach ? "text-slate-800" : ""}`}>End</span>
+                  <span className={`relative z-10 text-center transition-colors duration-300 ${showFeedbackAfterEach ? "text-indigo-600" : ""}`}>Each</span>
                   <span
-                    className={`absolute top-1 h-6 w-[31px] rounded-full bg-white shadow-lg ring-1 ring-black/5 transition-transform duration-300 ease-out ${showFeedbackAfterEach ? "translate-x-[35px]" : "translate-x-0"
+                    className={`absolute left-1 top-1 h-6 w-[33px] rounded-full bg-white shadow-lg ring-1 ring-black/5 transition-transform duration-300 ease-out ${showFeedbackAfterEach ? "translate-x-[33px]" : "translate-x-0"
                       }`}
                   />
                 </span>
