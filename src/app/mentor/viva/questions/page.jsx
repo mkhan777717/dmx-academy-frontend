@@ -464,8 +464,8 @@ export default function AIAllInOneVivaPage() {
           title: scheduleTitle,
           subject: scheduleSubject,
           description: scheduleDescription,
-          startTime: scheduleStartTime,
-          endTime: scheduleEndTime,
+          startTime: new Date(scheduleStartTime).toISOString(),
+          endTime: new Date(scheduleEndTime).toISOString(),
           questionIds: scheduleSelectedQuestions
         })
       });
@@ -490,6 +490,24 @@ export default function AIAllInOneVivaPage() {
       setScheduleError("Network error submitting Viva session.");
     } finally {
       setScheduleSubmitting(false);
+    }
+  };
+
+  const handleDeleteViva = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this scheduled viva?")) return;
+    try {
+      const res = await fetch(`${API_BASE}/api/viva/scheduled/${id}`, {
+        method: "DELETE",
+        headers: getHeaders()
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        fetchVivas();
+      } else {
+        alert(data.message || "Failed to delete viva.");
+      }
+    } catch {
+      alert("Network error deleting viva.");
     }
   };
 
@@ -1134,8 +1152,12 @@ export default function AIAllInOneVivaPage() {
                   setScheduleTitle("");
                   setScheduleSubject("");
                   setScheduleDescription("");
-                  setScheduleStartTime("");
-                  setScheduleEndTime("");
+                  const now = new Date();
+                  const tzOffset = now.getTimezoneOffset() * 60000;
+                  const startStr = new Date(now.getTime() - tzOffset).toISOString().slice(0, 16);
+                  const endStr = new Date(now.getTime() + 3600000 - tzOffset).toISOString().slice(0, 16);
+                  setScheduleStartTime(startStr);
+                  setScheduleEndTime(endStr);
                   setScheduleSelectedQuestions([]);
                   setScheduleError("");
                   setScheduleSuccess("");
@@ -1303,14 +1325,23 @@ export default function AIAllInOneVivaPage() {
                           {viva.endTime && <div className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5 text-slate-500" /><span>End: {new Date(viva.endTime).toLocaleString()}</span></div>}
                           <div className="flex items-center gap-1.5"><BookOpen className="w-3.5 h-3.5 text-slate-500" /><span>Questions: {viva.questions?.length || 0}</span></div>
                         </div>
-                        <div className="flex justify-between items-center pt-2 border-t border-slate-850">
+                        <div className="flex gap-2 items-center pt-2 border-t border-slate-850">
                           <button
                             type="button"
                             onClick={() => openEditViva(viva)}
-                            className="inline-flex items-center gap-1 text-[11px] text-indigo-400 hover:text-indigo-300 font-semibold cursor-pointer transition-colors"
+                            className="inline-flex items-center justify-center p-1.5 rounded-lg text-indigo-400 hover:text-indigo-300 hover:bg-indigo-500/10 cursor-pointer transition-colors"
+                            title="Edit Viva Details"
                           >
-                            <Edit2 className="w-3.5 h-3.5" />
-                            <span>Edit Viva Details</span>
+                            <Edit2 className="w-4 h-4" />
+                          </button>
+                          
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteViva(viva.id)}
+                            className="inline-flex items-center justify-center p-1.5 rounded-lg text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 cursor-pointer transition-colors"
+                            title="Delete Schedule"
+                          >
+                            <Trash2 className="w-4 h-4" />
                           </button>
                         </div>
                       </div>

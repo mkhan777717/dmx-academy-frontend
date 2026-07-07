@@ -94,9 +94,18 @@ const updateViva = async (id, { title, subject, description, startTime, endTime,
   });
 };
 
+const deleteViva = async (id, instituteId) => {
+  const existing = await prisma.viva.findUnique({ where: { id } });
+  if (!existing) throw new Error('Viva not found.');
+  if (existing.instituteId !== instituteId) throw new Error('Unauthorized to delete this Viva.');
+
+  return prisma.viva.delete({ where: { id } });
+};
+
 module.exports = {
   createViva,
   getScheduledVivas,
   getVivaDetails,
-  updateViva
+  updateViva,
+  deleteViva
 };

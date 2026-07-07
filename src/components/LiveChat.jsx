@@ -208,7 +208,7 @@ export default function LiveChat({
     if (!sessionId || !resolvedToken) return;
     const fetchChatHistory = async () => {
       try {
-        const apiBase = process.env.NEXT_PUBLIC_API_URL || getApiBase();
+        const apiBase = getApiBase();
         const res = await fetch(`${apiBase}/api/livekit/session/${sessionId}/chat`, {
           headers: {
             Authorization: `Bearer ${resolvedToken}`,
@@ -287,7 +287,7 @@ export default function LiveChat({
     if (sessionId) {
       try {
         const token = authToken || localStorage.getItem("academy_auth_token");
-        const apiBase = process.env.NEXT_PUBLIC_API_URL || getApiBase();
+        const apiBase = getApiBase();
         await fetch(`${apiBase}/api/livekit/session/${sessionId}/chat`, {
           method: "POST",
           headers: {

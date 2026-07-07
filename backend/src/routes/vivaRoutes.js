@@ -22,7 +22,7 @@ const {
 const { protect, restrictTo } = require('../middleware/authMiddleware');
 const { UPLOADS_DIR } = require('../services/studyMaterialService');
 const {
-  scheduleViva, listScheduledVivas, getScheduledVivaDetails, updateScheduledViva
+  scheduleViva, listScheduledVivas, getScheduledVivaDetails, updateScheduledViva, deleteScheduledViva
 } = require('../controllers/vivaSchedulingController');
 
 // ── Multer: PDF uploads ──────────────────────────────────────────────
@@ -77,6 +77,7 @@ router.post('/schedule',      protect, restrictTo('INSTITUTE_ADMIN', 'BATCH_MANA
 router.get( '/scheduled',     protect, listScheduledVivas);
 router.get( '/scheduled/:id', protect, getScheduledVivaDetails);
 router.put( '/scheduled/:id', protect, restrictTo('INSTITUTE_ADMIN', 'BATCH_MANAGER', 'MENTOR'), updateScheduledViva);
+router.delete('/scheduled/:id', protect, restrictTo('INSTITUTE_ADMIN', 'BATCH_MANAGER', 'MENTOR'), deleteScheduledViva);
 
 // ── Session routes (all protected) ───────────────────────────────────
 router.use(protect);

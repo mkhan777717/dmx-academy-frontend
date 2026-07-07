@@ -97,10 +97,31 @@ const updateScheduledViva = async (req, res, next) => {
     next(err);
   }
 };
+/** DELETE /api/viva/scheduled/:id */
+const deleteScheduledViva = async (req, res, next) => {
+  try {
+    const id = parseInt(req.params.id);
+    const instituteId = req.user ? req.user.instituteId : null;
+
+    if (isNaN(id)) {
+      return res.status(400).json({ success: false, message: 'Invalid Viva ID.' });
+    }
+    if (!instituteId) {
+      return res.status(403).json({ success: false, message: 'You must belong to an institute to delete a Viva.' });
+    }
+
+    await svc.deleteViva(id, instituteId);
+    res.json({ success: true, message: 'Viva deleted successfully.' });
+  } catch (err) {
+    if (err.message) return res.status(400).json({ success: false, message: err.message });
+    next(err);
+  }
+};
 
 module.exports = {
   scheduleViva,
   listScheduledVivas,
   getScheduledVivaDetails,
-  updateScheduledViva
+  updateScheduledViva,
+  deleteScheduledViva
 };

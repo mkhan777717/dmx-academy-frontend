@@ -23,75 +23,69 @@ async function llmGenerator(text, subject, count) {
 
   const generatedQuestions = [];
   const seenTexts = new Set();
+  const maxCount = Math.min(count, 30);
 
-  // Cycle difficulties: EASY, MEDIUM, HARD
-  const difficulties = ['EASY', 'MEDIUM', 'HARD'];
+  console.log(`[LLMGenerator] Starting batched generation for ${maxCount} questions...`);
 
-  console.log(`[LLMGenerator] Starting sequential generation for ${count} questions...`);
-
-  for (let i = 0; i < count; i++) {
-    const type = QUESTION_TYPES[i % QUESTION_TYPES.length];
-    const difficulty = difficulties[i % difficulties.length];
-    const avoidList = generatedQuestions.map(q => q.questionText);
-
-    const prompt = `You are an expert technical examiner creating a viva question for "${subject}".
+  const prompt = `You are an expert technical examiner creating viva questions for "${subject}".
 
 ## Study Material
 ${contextText}
 
 ## Task
-Generate exactly ONE "${type.type}" viva question based on the material above.
-Type description: ${type.description}
-Difficulty level: ${difficulty}
+Generate exactly ${maxCount} viva questions based on the material above.
 
-${avoidList.length > 0 ? `Avoid generating questions similar or duplicate to these existing questions:\n${avoidList.map(q => `- ${q}`).join('\n')}` : ''}
-
-Requirements:
+Requirements for each question:
 - The question must be derived from the material above, not from general knowledge.
-- EASY = straightforward recall, MEDIUM = understanding/application, HARD = analysis/synthesis.
+- Vary the difficulty across questions: EASY, MEDIUM, and HARD.
 - expectedAnswer must be 2-3 sentences drawn from the material.
 - keywords = 5-8 essential terms a correct answer MUST include (comma-separated).
+- Use a mix of types: Definition, Conceptual, Comparison, Scenario-Based, Application, Coding-Oriented.
 
-Return ONLY a JSON object:
+Return ONLY a JSON object with a single key "questions" containing an array of objects. Format:
 {
-  "questionText": "...",
-  "type": "${type.type}",
-  "subject": "${subject}",
-  "topic": "<specific sub-topic, 1-3 words>",
-  "difficulty": "${difficulty}",
-  "expectedAnswer": "...",
-  "keywords": "..."
+  "questions": [
+    {
+      "questionText": "...",
+      "type": "...",
+      "subject": "${subject}",
+      "topic": "<specific sub-topic, 1-3 words>",
+      "difficulty": "<EASY, MEDIUM, or HARD>",
+      "expectedAnswer": "...",
+      "keywords": "..."
+    }
+  ]
 }`;
 
-    try {
-      console.log(`[LLMGenerator] Generating question ${i + 1}/${count} (${type.type}, ${difficulty})...`);
-      // Since it's a single question, we can restrict maxTokens to 512, which makes it even faster!
-      const { data } = await generateJSON(prompt, { temperature: 0.3, maxTokens: 512 });
+  try {
+    console.log(`[LLMGenerator] Generating batch of ${maxCount} questions...`);
+    // Adjust maxTokens to allow for a larger response since we generate multiple questions
+    const { data } = await generateJSON(prompt, { temperature: 0.3, maxTokens: 2048 });
 
-      if (data && data.questionText) {
-        const questionText = String(data.questionText).trim();
+    if (data && Array.isArray(data.questions)) {
+      for (const q of data.questions) {
+        if (!q || !q.questionText) continue;
+        
+        const questionText = String(q.questionText).trim();
         const key = questionText.toLowerCase().slice(0, 60);
 
         if (!seenTexts.has(key) && questionText.length > 10) {
           seenTexts.add(key);
           generatedQuestions.push({
             questionText,
-            subject:        String(data.subject || subject).trim(),
-            topic:          String(data.topic || 'General').trim(),
-            difficulty:     ['EASY','MEDIUM','HARD'].includes(String(data.difficulty).toUpperCase())
-                              ? String(data.difficulty).toUpperCase() : difficulty,
-            expectedAnswer: String(data.expectedAnswer || '').trim(),
-            keywords:       String(data.keywords || '').trim(),
+            subject:        String(q.subject || subject).trim(),
+            topic:          String(q.topic || 'General').trim(),
+            difficulty:     ['EASY','MEDIUM','HARD'].includes(String(q.difficulty).toUpperCase())
+                              ? String(q.difficulty).toUpperCase() : 'MEDIUM',
+            expectedAnswer: String(q.expectedAnswer || '').trim(),
+            keywords:       String(q.keywords || '').trim(),
           });
-        } else {
-          console.warn(`[LLMGenerator] Skipped duplicate/empty question for index ${i}`);
         }
       }
-    } catch (err) {
-      if (err instanceof OllamaUnavailableError) throw err;
-      console.error(`[LLMGenerator] Failed generating question index ${i}:`, err.message);
-      // Continue to try generating other questions
     }
+  } catch (err) {
+    if (err.isAiUnavailable || err.name === 'OllamaUnavailableError') throw err;
+    console.error(`[LLMGenerator] Failed batched generation:`, err.message);
   }
 
   if (generatedQuestions.length === 0) {

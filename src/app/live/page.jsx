@@ -1048,7 +1048,7 @@ console.log(session)
 // ─── Main Live Viewer Page ───────────────────────────────────────────
 export default function LiveViewerPage() {
   const { user, token: authToken } = useAuth();
-  const API_BASE = process.env.NEXT_PUBLIC_API_URL || API_BASE_FALLBACK;
+  const API_BASE = getApiBase();
   const [session, setSession] = useState(null);
   const [livekitToken, setLivekitToken] = useState(null);
   const [loading, setLoading] = useState(true);
