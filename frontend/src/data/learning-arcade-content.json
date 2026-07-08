@@ -27,6 +27,84 @@
       "time_limit": 25
     },
     {
+      "id": "quiz_js_03",
+      "track": "JavaScript",
+      "question": "Which of the following is NOT a falsy value in JavaScript?",
+      "code": "",
+      "option_a": "0",
+      "option_b": "\"\"",
+      "option_c": "[]",
+      "option_d": "undefined",
+      "correct_option": "C",
+      "explanation": "In JavaScript, empty arrays [] and empty objects {} are truthy. Numbers like 0, empty strings '', undefined, null, and NaN are falsy.",
+      "time_limit": 15
+    },
+    {
+      "id": "quiz_js_04",
+      "track": "JavaScript",
+      "question": "What is the return value of typeof null in JavaScript?",
+      "code": "",
+      "option_a": "\"null\"",
+      "option_b": "\"object\"",
+      "option_c": "\"undefined\"",
+      "option_d": "\"string\"",
+      "correct_option": "B",
+      "explanation": "Historically in JavaScript, typeof null returns 'object'. This is a well-known legacy behavior in the language specifications.",
+      "time_limit": 15
+    },
+    {
+      "id": "quiz_js_05",
+      "track": "JavaScript",
+      "question": "Which method is used to add one or more elements to the end of an array and return its new length?",
+      "code": "",
+      "option_a": "pop()",
+      "option_b": "push()",
+      "option_c": "shift()",
+      "option_d": "unshift()",
+      "correct_option": "B",
+      "explanation": "push() adds elements to the end of an array, while unshift() adds them to the beginning. pop() and shift() remove elements.",
+      "time_limit": 15
+    },
+    {
+      "id": "quiz_js_06",
+      "track": "JavaScript",
+      "question": "What is the output of console.log(typeof NaN) in JavaScript?",
+      "code": "",
+      "option_a": "\"number\"",
+      "option_b": "\"NaN\"",
+      "option_c": "\"undefined\"",
+      "option_d": "\"object\"",
+      "correct_option": "A",
+      "explanation": "NaN stands for Not-a-Number, but its programmatic data type in JavaScript is actually 'number'.",
+      "time_limit": 15
+    },
+    {
+      "id": "quiz_js_07",
+      "track": "JavaScript",
+      "question": "Which of the following statements about const is true?",
+      "code": "",
+      "option_a": "It cannot be declared without initialization.",
+      "option_b": "It is function-scoped.",
+      "option_c": "The properties of a const object cannot be modified.",
+      "option_d": "It can be redeclared in the same scope.",
+      "correct_option": "A",
+      "explanation": "A const variable must be initialized during declaration. It is block-scoped, and while the binding cannot be changed, the properties of objects declared with const can still be mutated.",
+      "time_limit": 20
+    },
+    {
+      "id": "quiz_js_08",
+      "track": "JavaScript",
+      "question": "Which array method creates a new array with the results of calling a provided function on every element?",
+      "code": "",
+      "option_a": "forEach()",
+      "option_b": "map()",
+      "option_c": "filter()",
+      "option_d": "some()",
+      "correct_option": "B",
+      "explanation": "map() executes a callback function on each element and returns a new array. forEach() simply iterates without returning a new array.",
+      "time_limit": 15
+    },
+    {
       "id": "quiz_react_01",
       "track": "React.js",
       "question": "Why should you avoid updating React state directly (e.g., state.val = 10) inside a component?",
@@ -51,6 +129,84 @@
       "correct_option": "B",
       "explanation": "React compares current values of dependency array elements with their previous values. The effect runs on mount and whenever any dependency changes.",
       "time_limit": 20
+    },
+    {
+      "id": "quiz_react_03",
+      "track": "React.js",
+      "question": "Which hook should be used to memoize a function definition to prevent unnecessary re-creations on re-render?",
+      "code": "",
+      "option_a": "useMemo",
+      "option_b": "useCallback",
+      "option_c": "useRef",
+      "option_d": "useReducer",
+      "correct_option": "B",
+      "explanation": "useCallback memoizes the function definition itself, while useMemo memoizes the resolved value/result of calling a function.",
+      "time_limit": 20
+    },
+    {
+      "id": "quiz_react_04",
+      "track": "React.js",
+      "question": "What is the correct way to pass a ref to a child component when using functional components?",
+      "code": "",
+      "option_a": "Just pass it as a regular prop named ref.",
+      "option_b": "Wrap the child component in forwardRef API.",
+      "option_c": "Use components ref inheritance context.",
+      "option_d": "Assign it to the browser DOM nodes directly.",
+      "correct_option": "B",
+      "explanation": "In React functional components, ref cannot be passed directly as a prop. You must wrap the child component with React.forwardRef.",
+      "time_limit": 20
+    },
+    {
+      "id": "quiz_react_05",
+      "track": "React.js",
+      "question": "What does StrictMode in React do in development mode?",
+      "code": "",
+      "option_a": "Throws error exceptions for all runtime warnings.",
+      "option_b": "Double-invokes render phase lifecycles to detect side-effects.",
+      "option_c": "Minifies the production bundle automatically.",
+      "option_d": "Disables state updates completely.",
+      "correct_option": "B",
+      "explanation": "React StrictMode renders components twice in development to help identify unsafe lifecycles, legacy API usages, and unexpected side effects.",
+      "time_limit": 20
+    },
+    {
+      "id": "quiz_react_06",
+      "track": "React.js",
+      "question": "Which React hook is designed to manage complex state transitions using a reducer pattern?",
+      "code": "",
+      "option_a": "useState",
+      "option_b": "useContext",
+      "option_c": "useReducer",
+      "option_d": "useMemo",
+      "correct_option": "C",
+      "explanation": "useReducer is preferred over useState when you have complex state logic that involves multiple sub-values or when the next state depends on the previous one.",
+      "time_limit": 15
+    },
+    {
+      "id": "quiz_react_07",
+      "track": "React.js",
+      "question": "What is the main benefit of keys in React lists?",
+      "code": "",
+      "option_a": "They uniquely identify elements to improve DOM reconciliation.",
+      "option_b": "They apply CSS layout styles automatically.",
+      "option_c": "They bind click event handlers.",
+      "option_d": "They define type safety schemas.",
+      "correct_option": "A",
+      "explanation": "Keys help React identify which items have changed, are added, or are removed. They are essential for list item reconciliation.",
+      "time_limit": 20
+    },
+    {
+      "id": "quiz_react_08",
+      "track": "React.js",
+      "question": "When does a functional component re-render in React?",
+      "code": "",
+      "option_a": "Only when its props change.",
+      "option_b": "When its state updates or its parent component re-renders.",
+      "option_c": "Every 1 second by default.",
+      "option_d": "Only when the page is reloaded in browser.",
+      "correct_option": "B",
+      "explanation": "A component re-renders if its internal state updates, context values change, or its parent component initiates a re-render.",
+      "time_limit": 15
     },
     {
       "id": "quiz_node_01",
@@ -79,6 +235,84 @@
       "time_limit": 20
     },
     {
+      "id": "quiz_node_03",
+      "track": "Node.js",
+      "question": "Which core module in Node.js is used to handle file path operations?",
+      "code": "",
+      "option_a": "fs",
+      "option_b": "path",
+      "option_c": "os",
+      "option_d": "http",
+      "correct_option": "B",
+      "explanation": "The 'path' module provides utilities for working with file and directory paths, handling cross-platform separator differences.",
+      "time_limit": 15
+    },
+    {
+      "id": "quiz_node_04",
+      "track": "Node.js",
+      "question": "How do you read environment variables in a Node.js script?",
+      "code": "",
+      "option_a": "process.env.VAR_NAME",
+      "option_b": "process.variables.VAR_NAME",
+      "option_c": "env.VAR_NAME",
+      "option_d": "global.env.VAR_NAME",
+      "correct_option": "A",
+      "explanation": "Node.js stores environment variables inside the process.env object.",
+      "time_limit": 15
+    },
+    {
+      "id": "quiz_node_05",
+      "track": "Node.js",
+      "question": "Which method of the fs module reads a file completely in a synchronous, blocking manner?",
+      "code": "",
+      "option_a": "fs.readFile",
+      "option_b": "fs.readFileSync",
+      "option_c": "fs.readSync",
+      "option_d": "fs.readFilesSync",
+      "correct_option": "B",
+      "explanation": "readFileSync stops execution until the file content is completely loaded into memory.",
+      "time_limit": 15
+    },
+    {
+      "id": "quiz_node_06",
+      "track": "Node.js",
+      "question": "What is the purpose of module.exports in Node.js?",
+      "code": "",
+      "option_a": "To download online NPM packages.",
+      "option_b": "To expose variables or functions from a module to be required elsewhere.",
+      "option_c": "To run bash commands in child processes.",
+      "option_d": "To optimize V8 garbage collection.",
+      "correct_option": "B",
+      "explanation": "module.exports allows modules to export objects, functions, or variables so that other files can import them using require().",
+      "time_limit": 15
+    },
+    {
+      "id": "quiz_node_07",
+      "track": "Node.js",
+      "question": "Which Node.js core module is used to create an HTTP server?",
+      "code": "",
+      "option_a": "net",
+      "option_b": "http",
+      "option_c": "https",
+      "option_d": "url",
+      "correct_option": "B",
+      "explanation": "The http module allows Node.js to transfer data over the Hyper Text Transfer Protocol (HTTP) and create web servers.",
+      "time_limit": 15
+    },
+    {
+      "id": "quiz_node_08",
+      "track": "Node.js",
+      "question": "Which command is used to initialize a new Node.js project and create a package.json file?",
+      "code": "",
+      "option_a": "npm install",
+      "option_b": "npm init",
+      "option_c": "npm start",
+      "option_d": "npm create",
+      "correct_option": "B",
+      "explanation": "npm init prompts you for project details and generates a standard configuration package.json.",
+      "time_limit": 15
+    },
+    {
       "id": "quiz_mongo_01",
       "track": "MongoDB",
       "question": "What does the $lookup stage do in a MongoDB aggregation pipeline?",
@@ -103,6 +337,84 @@
       "correct_option": "B",
       "explanation": "MongoDB uses multikey indexes to index content stored in arrays. It creates index entries for each element of the array.",
       "time_limit": 20
+    },
+    {
+      "id": "quiz_mongo_03",
+      "track": "MongoDB",
+      "question": "Which command in MongoDB is used to insert a single document into a collection?",
+      "code": "",
+      "option_a": "db.collection.insert()",
+      "option_b": "db.collection.insertOne()",
+      "option_c": "db.collection.add()",
+      "option_d": "db.collection.create()",
+      "correct_option": "B",
+      "explanation": "insertOne() is the modern MongoDB command for inserting exactly one document into a collection.",
+      "time_limit": 15
+    },
+    {
+      "id": "quiz_mongo_04",
+      "track": "MongoDB",
+      "question": "What is the default unique identifier field generated for every document in MongoDB?",
+      "code": "",
+      "option_a": "id",
+      "option_b": "_id",
+      "option_c": "uid",
+      "option_d": "uuid",
+      "correct_option": "B",
+      "explanation": "Every document in MongoDB requires a unique '_id' field. If omitted, MongoDB automatically generates a 12-byte ObjectId.",
+      "time_limit": 15
+    },
+    {
+      "id": "quiz_mongo_05",
+      "track": "MongoDB",
+      "question": "How do you sort documents in ascending order of age in MongoDB?",
+      "code": "",
+      "option_a": ".sort({ age: -1 })",
+      "option_b": ".sort({ age: 1 })",
+      "option_c": ".sort({ age: \"asc\" })",
+      "option_d": ".sort({ age: \"up\" })",
+      "correct_option": "B",
+      "explanation": "MongoDB uses 1 for ascending sort order and -1 for descending sort order.",
+      "time_limit": 15
+    },
+    {
+      "id": "quiz_mongo_06",
+      "track": "MongoDB",
+      "question": "Which MongoDB operator is used to check if a field value is greater than a specified value?",
+      "code": "",
+      "option_a": "$gt",
+      "option_b": "$gte",
+      "option_c": "$lt",
+      "option_d": "$ne",
+      "correct_option": "A",
+      "explanation": "$gt stands for 'greater than', $gte is 'greater than or equal', $lt is 'less than', and $ne is 'not equal'.",
+      "time_limit": 15
+    },
+    {
+      "id": "quiz_mongo_07",
+      "track": "MongoDB",
+      "question": "What is the primary format MongoDB uses to store documents internally?",
+      "code": "",
+      "option_a": "XML",
+      "option_b": "JSON",
+      "option_c": "BSON",
+      "option_d": "CSV",
+      "correct_option": "C",
+      "explanation": "MongoDB stores documents as BSON (Binary JSON), which extends JSON with additional data types (like Date and Binary).",
+      "time_limit": 15
+    },
+    {
+      "id": "quiz_mongo_08",
+      "track": "MongoDB",
+      "question": "Which operator is used to modify or update specific fields in a MongoDB document without replacing it?",
+      "code": "",
+      "option_a": "$set",
+      "option_b": "$update",
+      "option_c": "$put",
+      "option_d": "$modify",
+      "correct_option": "A",
+      "explanation": "The $set operator replaces the value of a field with the specified value, leaving other fields intact.",
+      "time_limit": 15
     }
   ],
   "match": [
@@ -143,6 +455,30 @@
       "definition": "A function passed as an argument to another function to be executed later."
     },
     {
+      "id": "match_js_07",
+      "track": "JavaScript",
+      "term": "Destructuring",
+      "definition": "A syntax that allows unpacking values from arrays or properties from objects into distinct variables."
+    },
+    {
+      "id": "match_js_08",
+      "track": "JavaScript",
+      "term": "Arrow Function",
+      "definition": "A compact syntax for writing functions that lexically binds the 'this' value."
+    },
+    {
+      "id": "match_js_09",
+      "track": "JavaScript",
+      "term": "Type Coercion",
+      "definition": "The automatic or implicit conversion of values from one data type to another."
+    },
+    {
+      "id": "match_js_10",
+      "track": "JavaScript",
+      "term": "Strict Mode",
+      "definition": "A feature that opts code into a restricted variant of JavaScript, helping catch common errors."
+    },
+    {
       "id": "match_react_01",
       "track": "React.js",
       "term": "useState",
@@ -177,6 +513,30 @@
       "track": "React.js",
       "term": "Context",
       "definition": "A way to pass data through the component tree without manually passing props at every level."
+    },
+    {
+      "id": "match_react_07",
+      "track": "React.js",
+      "term": "useRef",
+      "definition": "A hook that returns a mutable object whose '.current' property persists across renders without causing re-renders."
+    },
+    {
+      "id": "match_react_08",
+      "track": "React.js",
+      "term": "useCallback",
+      "definition": "A hook that returns a memoized version of a callback function to prevent unnecessary child renders."
+    },
+    {
+      "id": "match_react_09",
+      "track": "React.js",
+      "term": "HOC",
+      "definition": "A higher-order component that takes a component and returns a new enhanced component."
+    },
+    {
+      "id": "match_react_10",
+      "track": "React.js",
+      "term": "Fragments",
+      "definition": "A feature to group a list of children without adding extra nodes to the DOM."
     },
     {
       "id": "match_node_01",
@@ -215,6 +575,30 @@
       "definition": "Functions that have access to the request, response, and the next function in the cycle."
     },
     {
+      "id": "match_node_07",
+      "track": "Node.js",
+      "term": "Cluster",
+      "definition": "A module that allows easy creation of child processes that share server ports to handle load."
+    },
+    {
+      "id": "match_node_08",
+      "track": "Node.js",
+      "term": "Package.json",
+      "definition": "A metadata file that manages project dependencies, scripts, and version info."
+    },
+    {
+      "id": "match_node_09",
+      "track": "Node.js",
+      "term": "REPL",
+      "definition": "An interactive computer environment that takes single user inputs, evaluates them, and returns results."
+    },
+    {
+      "id": "match_node_10",
+      "track": "Node.js",
+      "term": "Event-Driven",
+      "definition": "An architecture pattern where flow is determined by events such as user actions or sensor outputs."
+    },
+    {
       "id": "match_mongo_01",
       "track": "MongoDB",
       "term": "BSON",
@@ -249,6 +633,30 @@
       "track": "MongoDB",
       "term": "Mongoose",
       "definition": "An Object Data Modeling (ODM) library for MongoDB that provides a schema-based solution."
+    },
+    {
+      "id": "match_mongo_07",
+      "track": "MongoDB",
+      "term": "Replica Set",
+      "definition": "A group of MongoDB processes that maintain the same data set, providing redundancy and high availability."
+    },
+    {
+      "id": "match_mongo_08",
+      "track": "MongoDB",
+      "term": "Sharding",
+      "definition": "A method for distributing data across multiple machines to support very large datasets."
+    },
+    {
+      "id": "match_mongo_09",
+      "track": "MongoDB",
+      "term": "GridFS",
+      "definition": "A specification for storing and retrieving large files that exceed the BSON-document size limit of 16MB."
+    },
+    {
+      "id": "match_mongo_10",
+      "track": "MongoDB",
+      "term": "ObjectId",
+      "definition": "A 12-byte identifier used by MongoDB to uniquely identify documents within a collection."
     }
   ],
   "debug": [

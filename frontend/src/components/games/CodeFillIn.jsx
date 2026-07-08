@@ -149,6 +149,144 @@ const QUESTIONS = [
     answer: "INNER",
     hint: "`INNER JOIN` returns rows where there is a match in both tables. Other joins (LEFT, RIGHT) include unmatched rows.",
   },
+  // ── Python Continued ────────────────────────────────────────────────────────
+  {
+    id: "py6", lang: "Python",
+    title: "List Appending",
+    code: `nums = [1, 2]\nnums.____(3)\nprint(nums)`,
+    blank: "____",
+    options: ["append", "push", "add", "insert"],
+    answer: "append",
+    hint: "In Python, lists use the `.append()` method to add an item to the end of the list.",
+  },
+  {
+    id: "py7", lang: "Python",
+    title: "Key Check in Dict",
+    code: `user = {"name": "Bob"}\nif "name" ____ user:\n    print("exists")`,
+    blank: "____",
+    options: ["in", "is", "has", "inside"],
+    answer: "in",
+    hint: "Use the `in` operator to check if a key exists in a dictionary.",
+  },
+  {
+    id: "py8", lang: "Python",
+    title: "Class Definition",
+    code: `____ Animal:\n    def __init__(self, name):\n        self.name = name`,
+    blank: "____",
+    options: ["class", "def", "struct", "object"],
+    answer: "class",
+    hint: "Classes in Python are declared using the `class` keyword.",
+  },
+  {
+    id: "py9", lang: "Python",
+    title: "String to Integer",
+    code: `num_str = "42"\nnum = ____(num_str)`,
+    blank: "____",
+    options: ["int", "str", "float", "integer"],
+    answer: "int",
+    hint: "Use `int()` to convert a string representing a number into a Python integer.",
+  },
+  {
+    id: "py10", lang: "Python",
+    title: "List Comprehension Filter",
+    code: `evens = [x for x in range(10) ____ x % 2 == 0]`,
+    blank: "____",
+    options: ["if", "for", "in", "while"],
+    answer: "if",
+    hint: "List comprehensions in Python can filter elements by appending an `if` condition at the end.",
+  },
+  // ── JavaScript Continued ────────────────────────────────────────────────────
+  {
+    id: "js6", lang: "JavaScript",
+    title: "Object Keys",
+    code: `const user = { name: "Alice" };\nconst keys = Object.____(user);`,
+    blank: "____",
+    options: ["keys", "values", "entries", "names"],
+    answer: "keys",
+    hint: "`Object.keys(obj)` returns an array of a given object's own enumerable property names.",
+  },
+  {
+    id: "js7", lang: "JavaScript",
+    title: "Promise Resolution",
+    code: `const promise = new Promise((____, reject) => {\n  resolve("done");\n});`,
+    blank: "____",
+    options: ["resolve", "then", "catch", "success"],
+    answer: "resolve",
+    hint: "The Promise executor function receives two arguments: `resolve` and `reject`.",
+  },
+  {
+    id: "js8", lang: "JavaScript",
+    title: "Class Inheritance",
+    code: `class Dog ____ Animal {\n  constructor(name) {\n    super(name);\n  }\n}`,
+    blank: "____",
+    options: ["extends", "implements", "inherits", "extends Class"],
+    answer: "extends",
+    hint: "JavaScript classes use the `extends` keyword to establish inheritance from a parent class.",
+  },
+  {
+    id: "js9", lang: "JavaScript",
+    title: "JSON Parsing",
+    code: `const data = JSON.____('{"id": 1}');\nconsole.log(data.id);`,
+    blank: "____",
+    options: ["parse", "stringify", "load", "read"],
+    answer: "parse",
+    hint: "`JSON.parse()` deserializes a JSON string into a JavaScript object.",
+  },
+  {
+    id: "js10", lang: "JavaScript",
+    title: "Ternary Operator",
+    code: `const status = age >= 18 ____ "adult" : "minor";`,
+    blank: "____",
+    options: ["?", ":", "if", "&&"],
+    answer: "?",
+    hint: "The conditional (ternary) operator starts with a `?` followed by the truthy expression, then a `:`.",
+  },
+  // ── SQL Continued ───────────────────────────────────────────────────────────
+  {
+    id: "sql6", lang: "SQL",
+    title: "Distinct Values",
+    code: `SELECT ____ country FROM customers;`,
+    blank: "____",
+    options: ["DISTINCT", "UNIQUE", "DIFFERENT", "SINGLE"],
+    answer: "DISTINCT",
+    hint: "`DISTINCT` is used to return only unique (different) values from a column.",
+  },
+  {
+    id: "sql7", lang: "SQL",
+    title: "Substring Match",
+    code: `SELECT * FROM users\nWHERE email ____ "%@gmail.com";`,
+    blank: "____",
+    options: ["LIKE", "IN", "CONTAINS", "MATCH"],
+    answer: "LIKE",
+    hint: "The `LIKE` operator is used in a `WHERE` clause to search for a specified pattern in a column.",
+  },
+  {
+    id: "sql8", lang: "SQL",
+    title: "Average Calculation",
+    code: `SELECT ____(price) FROM products;`,
+    blank: "____",
+    options: ["AVG", "AVERAGE", "MEAN", "SUM"],
+    answer: "AVG",
+    hint: "The `AVG()` function returns the average value of a numeric column.",
+  },
+  {
+    id: "sql9", lang: "SQL",
+    title: "Grouping Results",
+    code: `SELECT country, COUNT(*)\nFROM customers\n____ BY country;`,
+    blank: "____",
+    options: ["GROUP", "ORDER", "SORT", "CLASS"],
+    answer: "GROUP",
+    hint: "Use `GROUP BY` to group rows that have the same values in specified columns into summary rows.",
+  },
+  {
+    id: "sql10", lang: "SQL",
+    title: "Adding a New Record",
+    code: `____ INTO users (name, email)\nVALUES ("Alice", "alice@gmail.com");`,
+    blank: "____",
+    options: ["INSERT", "ADD", "CREATE", "UPDATE"],
+    answer: "INSERT",
+    hint: "The `INSERT INTO` statement is used to insert new records/rows into a database table.",
+  },
 ];
 
 const STORAGE_KEY = "game_progress_code-fill-in";
@@ -175,8 +313,29 @@ function shuffleOptions(q) {
   return { ...q, options: opts };
 }
 
+// Helper to select 5 random unseen questions
+function selectGameQuestions() {
+  const progress = loadProgress();
+  const completedIds = progress.completedLevels || [];
+  
+  // Filter unseen questions
+  let unseen = QUESTIONS.filter(q => !completedIds.includes(q.id));
+  
+  // If unseen is too small, reset tracker
+  if (unseen.length < 5) {
+    unseen = [...QUESTIONS];
+    // Reset completedLevels in localStorage but keep score
+    const newProg = { ...progress, completedLevels: [] };
+    saveProgress(newProg);
+  }
+  
+  // Shuffle and slice 5
+  const shuffled = [...unseen].sort(() => 0.5 - Math.random());
+  return shuffled.slice(0, 5).map(shuffleOptions);
+}
+
 export default function CodeFillIn({ onBack }) {
-  const [questions] = useState(() => QUESTIONS.map(shuffleOptions));
+  const [questions, setQuestions] = useState(() => selectGameQuestions());
   const [qIdx, setQIdx] = useState(0);
   const [phase, setPhase] = useState("playing"); // playing | correct | wrong | finished
   const [selected, setSelected] = useState(null);
@@ -230,8 +389,10 @@ export default function CodeFillIn({ onBack }) {
   function next() {
     if (qIdx + 1 >= total) {
       // Save progress
-      const completedIds = [...(progress.completedLevels || []), q.id];
-      const newProg = { ...progress, completedLevels: completedIds, score, completedAll: true };
+      const sessionIds = questions.map(qi => qi.id);
+      const currentCompleted = progress.completedLevels || [];
+      const updatedCompleted = Array.from(new Set([...currentCompleted, ...sessionIds]));
+      const newProg = { ...progress, completedLevels: updatedCompleted, score, completedAll: true };
       saveProgress(newProg);
       setPhase("finished");
     } else {

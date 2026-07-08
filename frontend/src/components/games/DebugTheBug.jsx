@@ -253,6 +253,7 @@ export function useAutoIncrement() {
 
 export default function DebugTheBug({ onProgressChange, savedProgress }) {
   const [currentLevelIdx, setCurrentLevelIdx] = useState(0);
+  const [userCodes, setUserCodes] = useState({});
   const [userCode, setUserCode] = useState(LEVELS[0].defaultCode);
   const [completedLevels, setCompletedLevels] = useState([]);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -353,15 +354,27 @@ export default function DebugTheBug({ onProgressChange, savedProgress }) {
     if (savedProgress) {
       setCompletedLevels(savedProgress.completedLevels || []);
       setStreak(savedProgress.streak || 0);
+      
+      let loadedCodes = {};
+      try {
+        const storedCodes = localStorage.getItem("arcade_debug_bug_codes");
+        if (storedCodes) {
+          loadedCodes = JSON.parse(storedCodes);
+          setUserCodes(loadedCodes);
+        }
+      } catch (e) {
+        console.error(e);
+      }
+
       const lastCompleted = savedProgress.completedLevels || [];
       if (lastCompleted.length > 0) {
         const nextLevel = LEVELS.findIndex(l => !lastCompleted.includes(l.level));
         if (nextLevel !== -1) {
           setCurrentLevelIdx(nextLevel);
-          setUserCode(LEVELS[nextLevel].defaultCode);
+          setUserCode(loadedCodes[nextLevel] !== undefined ? loadedCodes[nextLevel] : LEVELS[nextLevel].defaultCode);
         } else {
           setCurrentLevelIdx(LEVELS.length - 1);
-          setUserCode(LEVELS[LEVELS.length - 1].defaultCode);
+          setUserCode(loadedCodes[LEVELS.length - 1] !== undefined ? loadedCodes[LEVELS.length - 1] : LEVELS[LEVELS.length - 1].defaultCode);
         }
       }
     }
@@ -369,12 +382,14 @@ export default function DebugTheBug({ onProgressChange, savedProgress }) {
 
   // Sync editor initial code on level changes
   useEffect(() => {
-    setUserCode(LEVELS[currentLevelIdx].defaultCode);
+    const savedCode = userCodes[currentLevelIdx];
+    setUserCode(savedCode !== undefined ? savedCode : LEVELS[currentLevelIdx].defaultCode);
     setShowHint(false);
     setTerminalLogs([
       { text: `[SYSTEM] Loaded workspace: '${LEVELS[currentLevelIdx].file}' (${LEVELS[currentLevelIdx].language})`, type: "system" },
       { text: `[SANDBOX] Compilation mode set to ${LEVELS[currentLevelIdx].language}. Ready for testing.`, type: "info" }
     ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentLevelIdx]);
 
   // Sync success status on level or completedLevels changes
@@ -467,6 +482,14 @@ export default function DebugTheBug({ onProgressChange, savedProgress }) {
     playRetroSound("click");
     setUserCode(currentLevel.defaultCode);
     setIsSuccess(completedLevels.includes(currentLevel.level));
+    const updated = { ...userCodes };
+    delete updated[currentLevelIdx];
+    setUserCodes(updated);
+    try {
+      localStorage.setItem("arcade_debug_bug_codes", JSON.stringify(updated));
+    } catch (err) {
+      console.error(err);
+    }
     addTerminalLog(`[SYSTEM] Code reverted to baseline initial commit.`, "system");
   };
 
@@ -475,6 +498,14 @@ export default function DebugTheBug({ onProgressChange, savedProgress }) {
     setLives(3);
     setIsDead(false);
     setUserCode(currentLevel.defaultCode);
+    const updated = { ...userCodes };
+    delete updated[currentLevelIdx];
+    setUserCodes(updated);
+    try {
+      localStorage.setItem("arcade_debug_bug_codes", JSON.stringify(updated));
+    } catch (err) {
+      console.error(err);
+    }
     addTerminalLog(`[SYSTEM] Hearts restored. Diagnostic engines rebooted.`, "system");
   };
 
@@ -719,7 +750,15 @@ export default function DebugTheBug({ onProgressChange, savedProgress }) {
                 value={userCode}
                 onChange={(e) => {
                   if (!isDead && !isSuccess) {
-                    setUserCode(e.target.value);
+                    const val = e.target.value;
+                    setUserCode(val);
+                    const updated = { ...userCodes, [currentLevelIdx]: val };
+                    setUserCodes(updated);
+                    try {
+                      localStorage.setItem("arcade_debug_bug_codes", JSON.stringify(updated));
+                    } catch (err) {
+                      console.error(err);
+                    }
                   }
                 }}
                 onKeyDown={handleKeyDown}
