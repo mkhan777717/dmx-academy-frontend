@@ -7,7 +7,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 async function sync() {
-  const targetDir = path.resolve(__dirname, "../backend/src/data");
+  const targetDir = path.resolve(__dirname, "../../backend/src/data");
   if (!fs.existsSync(targetDir)) {
     fs.mkdirSync(targetDir, { recursive: true });
   }

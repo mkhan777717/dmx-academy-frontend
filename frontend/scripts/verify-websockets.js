@@ -1,9 +1,9 @@
 const path = require('path');
-require('dotenv').config({ path: path.join(__dirname, '..', 'backend', '.env') });
+require('dotenv').config({ path: path.join(__dirname, '..', '..', 'backend', '.env') });
 const { io } = require('socket.io-client');
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
-const { submitUserCode } = require('../backend/src/services/submissionService');
+const { submitUserCode } = require('../../backend/src/services/submissionService');
 
 async function test() {
   console.log('Starting end-to-end WebSocket integration test...');
