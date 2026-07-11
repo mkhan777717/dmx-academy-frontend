@@ -5,7 +5,7 @@ let socket = null;
 
 export function getSocket() {
   if (!socket && typeof window !== "undefined") {
-    const apiBase = getApiBase(5001);
+    const apiBase = getApiBase();
     socket = io(apiBase, {
       autoConnect: true,
       transports: ["websocket", "polling"],

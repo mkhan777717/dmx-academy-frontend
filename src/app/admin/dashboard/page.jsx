@@ -3,10 +3,10 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { 
   Trophy, Clock, Users, Terminal, Plus, 
-  ArrowUpRight, Activity, Calendar
+  ArrowUpRight, Activity, Calendar, X
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { getSocket } from "@/utils/socket";
@@ -35,6 +35,7 @@ export default function AdminDashboard() {
   const [systemStats, setSystemStats] = useState(null);
   const [participationReports, setParticipationReports] = useState([]);
   const [activeLeftTab, setActiveLeftTab] = useState("submissions");
+  const [selectedSurveyReport, setSelectedSurveyReport] = useState(null);
   
 
 
@@ -431,13 +432,14 @@ export default function AdminDashboard() {
                       <th className="px-6 py-4 text-center">Status</th>
                       <th className="px-6 py-4 text-center">Score</th>
                       <th className="px-6 py-4 text-center">Time Spent</th>
+                      <th className="px-6 py-4 text-center">Survey</th>
                       <th className="px-6 py-4 text-right">Completion Date</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y" style={{ divideColor: "var(--border-primary)", color: "var(--text-secondary)" }}>
                     {participationReports.length === 0 ? (
                       <tr>
-                        <td colSpan="6" className="px-6 py-8 text-center" style={{ color: "var(--text-muted)" }}>
+                        <td colSpan="7" className="px-6 py-8 text-center" style={{ color: "var(--text-muted)" }}>
                           No participation reports found.
                         </td>
                       </tr>
@@ -462,6 +464,18 @@ export default function AdminDashboard() {
                           </td>
                           <td className="px-6 py-4 text-center" style={{ color: "var(--text-muted)" }}>
                             {report.timeSpent || "—"}
+                          </td>
+                          <td className="px-6 py-4 text-center">
+                            {report.employmentStatus ? (
+                              <button
+                                onClick={() => setSelectedSurveyReport(report)}
+                                className="px-2 py-1 text-[10px] font-bold rounded-lg border border-indigo-500/20 hover:border-indigo-500/40 bg-indigo-500/5 hover:bg-indigo-500/10 text-indigo-400 hover:text-indigo-300 transition-all cursor-pointer outline-none focus:outline-none"
+                              >
+                                View Survey
+                              </button>
+                            ) : (
+                              <span className="text-slate-500 text-[10px] font-semibold">—</span>
+                            )}
                           </td>
                           <td className="px-6 py-4 text-right" style={{ color: "var(--text-muted)" }}>
                             {report.createdAt ? new Date(report.createdAt).toLocaleDateString() : "—"}
@@ -547,6 +561,76 @@ export default function AdminDashboard() {
             })}
           </div>
         </div>
+
+        {/* Contest Survey Detail Modal Popup */}
+        <AnimatePresence>
+          {selectedSurveyReport && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4">
+              <motion.div
+                initial={{ scale: 0.95, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.95, opacity: 0 }}
+                className="max-w-md w-full rounded-3xl border p-6 shadow-2xl space-y-4"
+                style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-accent)" }}
+              >
+                <div className="flex justify-between items-start">
+                  <div className="space-y-1">
+                    <h3 className="text-lg font-black font-display text-[var(--text-primary)]">Post-Contest Survey</h3>
+                    <p className="text-[10px] text-[var(--text-muted)] font-mono uppercase font-bold">
+                      User: {selectedSurveyReport.user?.username} ({selectedSurveyReport.user?.email})
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => setSelectedSurveyReport(null)}
+                    className="p-1.5 rounded-xl bg-slate-500/10 hover:bg-slate-500/20 text-slate-400 hover:text-slate-200 transition-all cursor-pointer outline-none focus:outline-none"
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+
+                <div className="space-y-3.5 pt-2 text-xs leading-relaxed" style={{ color: "var(--text-secondary)" }}>
+                  <div className="space-y-1">
+                    <div className="text-[9px] uppercase tracking-wider font-extrabold text-[var(--text-muted)]">Employment Status</div>
+                    <div className="p-2.5 rounded-xl border bg-slate-500/5 font-semibold text-[var(--text-primary)]" style={{ borderColor: "var(--border-primary)" }}>
+                      {selectedSurveyReport.employmentStatus}
+                    </div>
+                  </div>
+
+                  <div className="space-y-1">
+                    <div className="text-[9px] uppercase tracking-wider font-extrabold text-[var(--text-muted)]">College / Institution</div>
+                    <div className="p-2.5 rounded-xl border bg-slate-500/5 font-semibold text-[var(--text-primary)]" style={{ borderColor: "var(--border-primary)" }}>
+                      {selectedSurveyReport.collegeName || "(Not specified)"}
+                    </div>
+                  </div>
+
+                  <div className="space-y-1">
+                    <div className="text-[9px] uppercase tracking-wider font-extrabold text-[var(--text-muted)]">Target Companies</div>
+                    <div className="p-2.5 rounded-xl border bg-slate-500/5 font-semibold text-[var(--text-primary)]" style={{ borderColor: "var(--border-primary)" }}>
+                      {selectedSurveyReport.companies || "(Not specified)"}
+                    </div>
+                  </div>
+
+                  <div className="space-y-1">
+                    <div className="text-[9px] uppercase tracking-wider font-extrabold text-[var(--text-muted)]">Current Interview Stage</div>
+                    <div className="p-2.5 rounded-xl border bg-slate-500/5 font-semibold text-[var(--text-primary)]" style={{ borderColor: "var(--border-primary)" }}>
+                      {selectedSurveyReport.interviewStage || "(Not specified)"}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-2">
+                  <button
+                    onClick={() => setSelectedSurveyReport(null)}
+                    className="w-full py-2.5 text-xs font-bold text-white rounded-xl shadow-md cursor-pointer outline-none focus:outline-none"
+                    style={{ background: "var(--accent-gradient)" }}
+                  >
+                    Close Report
+                  </button>
+                </div>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>
 
       </div>
     </div>

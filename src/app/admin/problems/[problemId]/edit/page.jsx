@@ -11,6 +11,7 @@ import {
   Terminal, Cpu, Hash, Tag,
   AlertCircle, CheckCircle2, Info, X, RefreshCw
 } from "lucide-react";
+import { convertHtmlToMarkdown } from "@/utils/htmlToMarkdown";
 
 function renderMarkdown(md) {
   if (!md) return "";
@@ -110,8 +111,43 @@ function DarkInput({ style, ...props }) {
 function DarkSelect({ children, ...props }) {
   return <select {...props} className="w-full rounded-xl px-4 py-3 text-sm bg-[#111827] border border-white/10 text-white outline-none focus:border-indigo-500/60 focus:ring-1 focus:ring-indigo-500/30 transition-all font-medium cursor-pointer">{children}</select>;
 }
-function DarkTextarea({ style, ...props }) {
-  return <textarea {...props} style={style} className="w-full rounded-xl px-4 py-3 text-sm bg-[#111827] border border-white/10 text-white placeholder:text-slate-600 outline-none focus:border-indigo-500/60 focus:ring-1 focus:ring-indigo-500/30 transition-all font-mono resize-none leading-relaxed" />;
+function DarkTextarea({ style, onPaste, ...props }) {
+  const handlePaste = (e) => {
+    const html = e.clipboardData.getData("text/html");
+    if (html) {
+      e.preventDefault();
+      const markdown = convertHtmlToMarkdown(html);
+
+      const ta = e.currentTarget;
+      const start = ta.selectionStart;
+      const end = ta.selectionEnd;
+      const text = ta.value;
+      const before = text.substring(0, start);
+      const after = text.substring(end);
+
+      const newValue = before + markdown + after;
+      if (props.onChange) {
+        props.onChange({ target: { value: newValue } });
+      }
+
+      setTimeout(() => {
+        ta.focus();
+        const newCursorPos = start + markdown.length;
+        ta.setSelectionRange(newCursorPos, newCursorPos);
+      }, 0);
+    } else if (onPaste) {
+      onPaste(e);
+    }
+  };
+
+  return (
+    <textarea
+      {...props}
+      onPaste={handlePaste}
+      style={style}
+      className="w-full rounded-xl px-4 py-3 text-sm bg-[#111827] border border-white/10 text-white placeholder:text-slate-600 outline-none focus:border-indigo-500/60 focus:ring-1 focus:ring-indigo-500/30 transition-all font-mono resize-none leading-relaxed"
+    />
+  );
 }
 
 const STEPS = [

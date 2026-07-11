@@ -8,7 +8,7 @@ import {
   Play, Send, BookOpen, Terminal,
   CheckCircle2, ChevronRight, Mic, RefreshCw,
   FileText, MessageCircle, ClipboardCheck, Palette, Trash2,
-  Trophy, Clock, Lock, Flag, Volume2, XCircle
+  Trophy, Clock, Lock, Flag, Volume2, XCircle, Bug
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { wrapCodeForBackend } from "@/utils/codeWrapper";
@@ -139,6 +139,9 @@ export default function ContestWorkspace() {
   const fullscreenRequestedRef = useRef(false);
   const [showSubmitConfirm, setShowSubmitConfirm] = useState(false);
 
+  // Mock Assessment Survey States
+  const [showSurvey, setShowSurvey] = useState(false);
+
   // Layout resize state
   const [leftWidth, setLeftWidth] = useState(50); // percentage
   const containerRef = useRef(null);
@@ -159,10 +162,13 @@ export default function ContestWorkspace() {
   const drawingPaths = useRef([]); // To restore paths on resize
 
   // Console states
-  const [activeConsoleTab, setActiveConsoleTab] = useState("testcase"); // testcase, result
+  const [activeConsoleTab, setActiveConsoleTab] = useState("testcase"); // testcase, result, debugger
   const [testcaseInputs, setTestcaseInputs] = useState([]); // Mapped by active question index
   const [testResults, setTestResults] = useState(null);
   const [isRunning, setIsRunning] = useState(false);
+  const [customInput, setCustomInput] = useState("");
+  const [debugResult, setDebugResult] = useState(null);
+  const [debugRunning, setDebugRunning] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submissionVerdict, setSubmissionVerdict] = useState(null); // null | { verdict, passed, executionTimeMs, passedTestCases, totalTestCases }
   const [finalScoreboard, setFinalScoreboard] = useState([]);
@@ -186,6 +192,11 @@ export default function ContestWorkspace() {
   const finishContest = useCallback(async () => {
     if (!contest) return;
     setContestEnded(true);
+
+    const isGlobalUser = !user?.instituteId;
+    if (isGlobalUser) {
+      setShowSurvey(true);
+    }
 
     // Exit fullscreen when contest ends
     if (document.fullscreenElement) {
@@ -256,7 +267,35 @@ export default function ContestWorkspace() {
         console.error("Failed to persist contest finish to backend:", err);
       }
     }
-  }, [contest, contestId, startTimeStamp, userScore]);
+  }, [contest, contestId, startTimeStamp, userScore, user]);
+
+  const handleSurveySubmit = useCallback(async (surveyData) => {
+    try {
+      if (typeof window !== "undefined") {
+        localStorage.setItem(`contest_survey_${contestId}`, JSON.stringify(surveyData));
+      }
+
+      const isNumeric = /^\d+$/.test(contestId);
+      if (isNumeric) {
+        await fetch(`${API_BASE}/api/contests/${contestId}/survey`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...getAuthHeaders()
+          },
+          body: JSON.stringify(surveyData)
+        });
+      }
+    } catch (err) {
+      console.warn("Survey API failed or is unimplemented on backend:", err);
+    } finally {
+      setShowSurvey(false);
+    }
+  }, [contestId, API_BASE]);
+
+  const handleSurveySkip = useCallback(() => {
+    setShowSurvey(false);
+  }, []);
 
   // Fetch contest metadata and linked problem definitions on mount / id change
   useEffect(() => {
@@ -299,8 +338,8 @@ export default function ContestWorkspace() {
                   javascript: dbProb.templateJS || `// Solve: ${dbProb.title}\nfunction solution() {\n    // Write your code here\n}`,
                   python: dbProb.templatePython || `# Solve: ${dbProb.title}\ndef solution():\n    # Write your code here\n    pass`,
                   go: dbProb.templateGo || `package main\n\nimport "fmt"\n\n// Solve: ${dbProb.title}\nfunc solution() {\n    // Write your code here\n    fmt.Println(0)\n}\n\nfunc main() {\n    solution()\n}`,
-                  cpp: `// Solve: ${dbProb.title}\n#include <iostream>\n#include <vector>\n#include <string>\n\nusing namespace std;\n\nint main() {\n    // Write your code here\n    return 0;\n}`,
-                  java: `// Solve: ${dbProb.title}\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        // Write your code here\n    }\n}`
+                  cpp: dbProb.templateCPP || `// Solve: ${dbProb.title}\n#include <iostream>\n#include <vector>\n#include <string>\n\nusing namespace std;\n\nint main() {\n    // Write your code here\n    return 0;\n}`,
+                  java: dbProb.templateJava || `// Solve: ${dbProb.title}\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        // Write your code here\n    }\n}`
                 },
                 defaultLanguage: "python"
               };
@@ -768,6 +807,16 @@ export default function ContestWorkspace() {
     };
   }, []);
 
+  useEffect(() => {
+    if (activeQuestion) {
+      const initialInput = activeQuestion.testcases && activeQuestion.testcases[0] 
+        ? activeQuestion.testcases[0].input 
+        : "";
+      setCustomInput(initialInput);
+      setDebugResult(null);
+    }
+  }, [activeQuestionIdx, activeQuestion]);
+
   // EARLY CONDITIONAL RETURNS
   if (loadingContest) {
     return (
@@ -988,6 +1037,68 @@ export default function ContestWorkspace() {
     if (highlightRef.current) {
       highlightRef.current.scrollTop = e.target.scrollTop;
       highlightRef.current.scrollLeft = e.target.scrollLeft;
+    }
+  };
+
+  const handleResetCode = () => {
+    if (window.confirm("Are you sure you want to reset your code to the default template? This will erase your current code for this language.")) {
+      if (activeQuestion && activeQuestion.editorTemplates && activeQuestion.editorTemplates[selectedLanguage]) {
+        const defaultTemplate = activeQuestion.editorTemplates[selectedLanguage];
+        setEditorCodes(prev => ({
+          ...prev,
+          [currentCodeKey]: defaultTemplate
+        }));
+      }
+    }
+  };
+
+  const handleRunDebug = async () => {
+    if (!activeQuestion) return;
+    setDebugRunning(true);
+    setDebugResult(null);
+    try {
+      const hasRealToken = token && !token.startsWith("demo-") && !token.startsWith("local-");
+      const headers = {
+        "Content-Type": "application/json",
+        ...(hasRealToken
+          ? { Authorization: `Bearer ${token}` }
+          : { "x-bypass-auth": "true", "x-bypass-role": user?.role === "ADMIN" ? "ADMIN" : "USER" }),
+      };
+
+      const mappedLang = selectedLanguage.toUpperCase();
+      const isSchemaDriven = activeQuestion.parameters && Array.isArray(activeQuestion.parameters) && activeQuestion.parameters.length > 0;
+      const wrappedCode = isSchemaDriven ? currentCode : wrapCodeForBackend(activeQuestion.slug || activeQuestion.id, selectedLanguage, currentCode);
+
+      const res = await fetch(`${API_BASE}/api/submissions/run`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify({
+          language: mappedLang,
+          code: wrappedCode,
+          input: customInput,
+          problemId: activeQuestion.id,
+        }),
+        signal: AbortSignal.timeout(30000),
+      });
+
+      if (!res.ok) {
+        throw new Error(`Debugger run failed with status ${res.status}`);
+      }
+
+      const data = await res.json();
+      if (data.success && data.result) {
+        setDebugResult(data.result);
+      } else {
+        throw new Error(data.message || "Failed to run debugger");
+      }
+    } catch (err) {
+      setDebugResult({
+        status: "RUNTIME_ERROR",
+        error: err.message,
+        executionTime: 0
+      });
+    } finally {
+      setDebugRunning(false);
     }
   };
 
@@ -2338,6 +2449,15 @@ export default function ContestWorkspace() {
                     {activeQuestion && activeQuestion.editorTemplates.cpp && <option value="cpp">C++</option>}
                     {activeQuestion && activeQuestion.editorTemplates.java && <option value="java">Java</option>}
                   </select>
+
+                  <button
+                    onClick={handleResetCode}
+                    title="Reset code to default template"
+                    className="flex items-center space-x-1 px-2 py-0.5 text-[10px] font-extrabold uppercase rounded border border-red-500/20 hover:border-red-500/40 text-red-400 hover:text-red-300 bg-red-500/5 hover:bg-red-500/10 cursor-pointer transition-all outline-none focus:outline-none ml-2"
+                  >
+                    <RefreshCw size={10} />
+                    <span>Reset Code</span>
+                  </button>
                 </div>
 
                 <div className="text-[10px] text-[var(--text-muted)] font-mono font-semibold">
@@ -2482,7 +2602,8 @@ export default function ContestWorkspace() {
                   <div className="flex space-x-1.5">
                     {[
                       { id: "testcase", label: "Testcase", icon: <Terminal size={12} /> },
-                      { id: "result", label: "Test Result", icon: <CheckCircle2 size={12} /> }
+                      { id: "result", label: "Test Result", icon: <CheckCircle2 size={12} /> },
+                      { id: "debugger", label: "Debug Console", icon: <Bug size={12} /> }
                     ].map(ctab => (
                       <button
                         key={ctab.id}
@@ -2629,9 +2750,100 @@ export default function ContestWorkspace() {
                       ) : (
                         <div className="text-center py-8 text-xs font-semibold" style={{ color: "var(--text-muted)" }}>
                           <Terminal size={24} className="mx-auto mb-2 text-indigo-500/40" />
-                          <span>No tests executed yet. Click "Run Testcases" above.</span>
+                          <span>No tests executed yet. Click &quot;Run Testcases&quot; above.</span>
                         </div>
                       )}
+                    </div>
+                  )}
+
+                  {activeConsoleTab === "debugger" && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 h-full">
+                      {/* Left: Input Textarea */}
+                      <div className="flex flex-col space-y-2 h-full min-h-[140px]">
+                        <div className="flex justify-between items-center">
+                          <span className="font-bold text-[10px] text-slate-500 uppercase tracking-wide">Custom Input:</span>
+                          <button
+                            onClick={handleRunDebug}
+                            disabled={debugRunning}
+                            className="flex items-center space-x-1.5 px-3 py-1 text-xs font-bold rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 transition-all cursor-pointer select-none outline-none focus:outline-none disabled:bg-indigo-600/50"
+                          >
+                            {debugRunning ? (
+                              <>
+                                <RefreshCw size={12} className="animate-spin" />
+                                <span>Running...</span>
+                              </>
+                            ) : (
+                              <>
+                                <Play size={11} fill="white" />
+                                <span>Run Debugger</span>
+                              </>
+                            )}
+                          </button>
+                        </div>
+                        <textarea
+                          value={customInput}
+                          onChange={(e) => setCustomInput(e.target.value)}
+                          placeholder="Type custom testcase inputs here..."
+                          rows={6}
+                          className="w-full flex-1 border rounded px-4 py-3 outline-none focus:border-indigo-500 font-mono text-xs leading-relaxed resize-none"
+                          style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
+                        />
+                      </div>
+
+                      {/* Right: Debug Results */}
+                      <div className="flex flex-col space-y-2 overflow-y-auto">
+                        <span className="font-bold text-[10px] text-slate-500 uppercase tracking-wide">Debug Output:</span>
+                        {debugRunning ? (
+                          <div className="flex items-center space-x-2 text-indigo-400 py-3 font-mono">
+                            <RefreshCw size={14} className="animate-spin" />
+                            <span>Executing debugger run...</span>
+                          </div>
+                        ) : debugResult ? (
+                          <div className="space-y-3 font-mono text-[11px]">
+                            {/* Meta information */}
+                            <div className="flex items-center gap-2">
+                              <span className={`font-extrabold text-[10px] px-2 py-0.5 rounded border uppercase ${
+                                debugResult.status === "SUCCESS" 
+                                  ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400" 
+                                  : "bg-rose-500/10 border-rose-500/30 text-rose-400"
+                              }`}>
+                                {debugResult.status}
+                              </span>
+                              <span className="text-slate-400 text-[10px]">
+                                Time: {debugResult.executionTime} ms
+                              </span>
+                            </div>
+
+                            {/* Returned Value (Actual Output) */}
+                            {debugResult.status === "SUCCESS" && (
+                              <div className="p-3 rounded-lg border" style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)" }}>
+                                <div className="font-bold uppercase text-[9px] text-slate-500 mb-1">Return Value (Actual Output):</div>
+                                <pre className="text-emerald-400 whitespace-pre-wrap">{debugResult.output || "(no value returned)"}</pre>
+                              </div>
+                            )}
+
+                            {/* Compiler / Execution Tracebacks */}
+                            {debugResult.error && (
+                              <div className="p-3 rounded-lg border border-rose-500/20 bg-rose-500/5">
+                                <div className="font-bold uppercase text-[9px] text-rose-400 mb-1">Runtime / Compile Error:</div>
+                                <pre className="text-rose-400 whitespace-pre-wrap">{debugResult.error}</pre>
+                              </div>
+                            )}
+
+                            {/* Console logs */}
+                            {debugResult.output && (
+                              <div className="p-3 rounded-lg border" style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)" }}>
+                                <div className="font-bold uppercase text-[9px] text-slate-500 mb-1">Standard Console Output:</div>
+                                <pre className="text-slate-300 whitespace-pre-wrap">{debugResult.output}</pre>
+                              </div>
+                            )}
+                          </div>
+                        ) : (
+                          <div className="text-slate-500 font-mono text-xs py-2">
+                            {"No debugger execution run yet. Enter custom inputs on the left and click \"Run Debugger\" to inspect values."}
+                          </div>
+                        )}
+                      </div>
                     </div>
                   )}
                 </div>
@@ -2648,7 +2860,7 @@ export default function ContestWorkspace() {
 
       {/* Scoreboard Result Dialog modal popup */}
       <AnimatePresence>
-        {contestEnded && (
+        {contestEnded && !showSurvey && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4">
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }}
@@ -2721,6 +2933,18 @@ export default function ContestWorkspace() {
                 </Link>
               </div>
             </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Mock Assessment Survey Dialog modal popup */}
+      <AnimatePresence>
+        {contestEnded && showSurvey && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4">
+            <MockAssessmentSurvey
+              onSubmit={handleSurveySubmit}
+              onSkip={handleSurveySkip}
+            />
           </div>
         )}
       </AnimatePresence>
@@ -2986,6 +3210,319 @@ function JudgingOverlayContent({ selectedLanguage, currentCode, user }) {
             </pre>
           </div>
         </div>
+      </div>
+    </motion.div>
+  );
+}
+
+function MockAssessmentSurvey({ onSubmit, onSkip }) {
+  const [status, setStatus] = useState("Student"); // "Student" | "Employed" | "Unemployed"
+  const [school, setSchool] = useState("");
+  const [schoolSearch, setSchoolSearch] = useState("");
+  const [showSchoolDropdown, setShowSchoolDropdown] = useState(false);
+  const [interviews, setInterviews] = useState([{ id: 1, company: "", stages: [] }]);
+
+  // Lists of universities and companies
+  const popularSchools = [
+    "Stanford University",
+    "Massachusetts Institute of Technology (MIT)",
+    "Harvard University",
+    "University of California, Berkeley",
+    "Indian Institute of Technology (IIT) Delhi",
+    "Indian Institute of Technology (IIT) Bombay",
+    "Indian Institute of Technology (IIT) Madras",
+    "BITS Pilani",
+    "University of Waterloo",
+    "University of Toronto",
+    "Carnegie Mellon University",
+    "California Institute of Technology (Caltech)",
+    "Georgia Institute of Technology",
+    "University of Washington",
+    "Cornell University",
+    "Princeton University"
+  ];
+
+  const popularCompanies = [
+    "Google",
+    "Meta",
+    "Amazon",
+    "Microsoft",
+    "Apple",
+    "Netflix",
+    "Stripe",
+    "Uber",
+    "Airbnb",
+    "Nvidia",
+    "OpenAI",
+    "Coinbase",
+    "ByteDance"
+  ];
+
+  const stageOptions = [
+    "Resume Sent",
+    "Online Assessment",
+    "Phone Interview",
+    "Onsite",
+    "Offer"
+  ];
+
+  const filteredSchools = schoolSearch
+    ? popularSchools.filter(s => s.toLowerCase().includes(schoolSearch.toLowerCase()))
+    : popularSchools;
+
+  const handleSelectSchool = (s) => {
+    setSchool(s);
+    setSchoolSearch(s);
+    setShowSchoolDropdown(false);
+  };
+
+  const handleAddInterview = () => {
+    setInterviews(prev => [...prev, { id: Date.now() + Math.random(), company: "", stages: [] }]);
+  };
+
+  const handleRemoveInterview = (id) => {
+    setInterviews(prev => prev.filter(item => item.id !== id));
+  };
+
+  const handleUpdateCompany = (id, company) => {
+    setInterviews(prev => prev.map(item => item.id === id ? { ...item, company } : item));
+  };
+
+  const handleToggleStage = (id, stage) => {
+    setInterviews(prev => prev.map(item => {
+      if (item.id !== id) return item;
+      const alreadySelected = item.stages.includes(stage);
+      const nextStages = alreadySelected
+        ? item.stages.filter(s => s !== stage)
+        : [...item.stages, stage];
+      return { ...item, stages: nextStages };
+    }));
+  };
+
+  const handleSubmit = () => {
+    const data = {
+      status,
+      school: status === "Student" ? school : null,
+      interviews: (status === "Employed" || status === "Unemployed")
+        ? interviews.filter(item => item.company || item.stages.length > 0).map(item => ({
+            company: item.company,
+            stages: item.stages
+          }))
+        : null
+    };
+    onSubmit(data);
+  };
+
+  return (
+    <motion.div
+      initial={{ scale: 0.95, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      className="max-w-xl w-full rounded-3xl border p-8 shadow-2xl space-y-6 text-left relative overflow-hidden"
+      style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-accent)" }}
+    >
+      {/* Top Gold coin accent */}
+      <div className="text-center space-y-4">
+        <div className="relative w-16 h-16 mx-auto group">
+          {/* Outer glowing ring */}
+          <div className="absolute inset-0 rounded-full bg-amber-400/20 blur-md group-hover:bg-amber-400/30 transition-all duration-300" />
+          {/* Spinning / Bouncing Gold Coin */}
+          <div className="relative w-16 h-16 rounded-full bg-gradient-to-br from-yellow-300 via-amber-400 to-yellow-600 border-2 border-amber-200 flex items-center justify-center shadow-lg transform group-hover:rotate-[360deg] transition-transform duration-1000 ease-in-out">
+            {/* Inner texture lines */}
+            <div className="absolute inset-1.5 rounded-full border border-dashed border-amber-100/50 flex items-center justify-center">
+              <span className="text-white font-black text-2xl font-display select-none">¢</span>
+            </div>
+            {/* Gloss reflection shimmer effect */}
+            <div className="absolute top-0 left-0 right-0 h-1/2 bg-white/20 rounded-t-full pointer-events-none" />
+          </div>
+        </div>
+
+        <h3 className="text-2xl font-black font-display text-[var(--text-primary)]">
+          Thanks for trying mock assessment!
+        </h3>
+        <p className="text-xs text-[var(--text-secondary)] leading-relaxed max-w-sm mx-auto">
+          Earn 100 LeetCoins by completing a quick 2-minute survey
+        </p>
+      </div>
+
+      <div className="space-y-5">
+        {/* Employment Status */}
+        <div className="space-y-2">
+          <label className="text-xs font-bold text-[var(--text-primary)] block">
+            What is your current employment status?
+          </label>
+          <div className="flex flex-wrap gap-2.5">
+            {["Student", "Employed", "Unemployed"].map(opt => {
+              const isSelected = status === opt;
+              return (
+                <button
+                  key={opt}
+                  type="button"
+                  onClick={() => setStatus(opt)}
+                  className={`px-5 py-2.5 rounded-full text-xs font-bold border transition-all cursor-pointer select-none active:scale-[0.98] ${
+                    isSelected
+                      ? "bg-slate-800 text-white border-slate-800"
+                      : "bg-transparent text-[var(--text-secondary)] border-[var(--border-primary)] hover:bg-slate-500/5"
+                  }`}
+                >
+                  {opt}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Student conditional question */}
+        {status === "Student" && (
+          <div className="space-y-2 relative">
+            <label className="text-xs font-bold text-[var(--text-primary)] block">
+              Where do you currently go to school?
+            </label>
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Type to search.."
+                value={schoolSearch}
+                onChange={(e) => {
+                  setSchoolSearch(e.target.value);
+                  setSchool(e.target.value);
+                  setShowSchoolDropdown(true);
+                }}
+                onFocus={() => setShowSchoolDropdown(true)}
+                onBlur={() => {
+                  // Small timeout to let selectSchool click handle before closing dropdown
+                  setTimeout(() => setShowSchoolDropdown(false), 200);
+                }}
+                className="w-full rounded-2xl py-3 px-4 text-xs outline-none border transition-all"
+                style={{
+                  backgroundColor: "var(--bg-input)",
+                  borderColor: "var(--border-primary)",
+                  color: "var(--text-primary)"
+                }}
+              />
+              {showSchoolDropdown && (
+                <div
+                  className="absolute left-0 right-0 mt-1.5 max-h-48 overflow-y-auto rounded-2xl border shadow-xl z-10 p-1.5 scrollbar-thin"
+                  style={{
+                    backgroundColor: "var(--bg-card)",
+                    borderColor: "var(--border-primary)"
+                  }}
+                >
+                  {filteredSchools.length > 0 ? (
+                    filteredSchools.map((s, idx) => (
+                      <button
+                        key={idx}
+                        type="button"
+                        onClick={() => handleSelectSchool(s)}
+                        className="w-full text-left px-3 py-2 text-xs rounded-xl hover:bg-slate-500/10 transition-colors text-[var(--text-primary)]"
+                      >
+                        {s}
+                      </button>
+                    ))
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => setShowSchoolDropdown(false)}
+                      className="w-full text-left px-3 py-2 text-xs rounded-xl hover:bg-slate-500/10 transition-colors text-[var(--text-secondary)] italic"
+                    >
+                      Use &quot;{schoolSearch}&quot;
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Employed/Unemployed conditional question */}
+        {(status === "Employed" || status === "Unemployed") && (
+          <div className="space-y-3">
+            <label className="text-xs font-bold text-[var(--text-primary)] block">
+              What companies are you interviewing with, and what stages are you at with them?
+            </label>
+
+            <div className="space-y-3 max-h-56 overflow-y-auto pr-1">
+              {interviews.map((item) => (
+                <div key={item.id} className="flex flex-col sm:flex-row gap-2.5 items-stretch sm:items-center p-3 rounded-2xl border" style={{ borderColor: "var(--border-primary)" }}>
+                  {/* Company Select */}
+                  <div className="w-full sm:w-40 relative">
+                    <select
+                      value={item.company}
+                      onChange={(e) => handleUpdateCompany(item.id, e.target.value)}
+                      className="w-full rounded-xl py-2 px-3 text-xs outline-none border bg-transparent text-[var(--text-primary)]"
+                      style={{
+                        borderColor: "var(--border-primary)",
+                        backgroundColor: "var(--bg-input)"
+                      }}
+                    >
+                      <option value="" disabled>Select Company...</option>
+                      {popularCompanies.map(c => (
+                        <option key={c} value={c} className="text-slate-800">{c}</option>
+                      ))}
+                      <option value="Other" className="text-slate-800">Other</option>
+                    </select>
+                  </div>
+
+                  {/* Stages Row */}
+                  <div className="flex flex-wrap gap-1.5 flex-1 items-center">
+                    {stageOptions.map(stage => {
+                      const isStageSelected = item.stages.includes(stage);
+                      return (
+                        <button
+                          key={stage}
+                          type="button"
+                          onClick={() => handleToggleStage(item.id, stage)}
+                          className={`px-2.5 py-1.5 rounded-lg text-[10px] font-bold border transition-all cursor-pointer active:scale-[0.98] ${
+                            isStageSelected
+                              ? "bg-slate-800 text-white border-slate-800"
+                              : "bg-transparent text-[var(--text-secondary)] border-[var(--border-primary)] hover:bg-slate-500/5"
+                          }`}
+                        >
+                          {stage}
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {/* Remove Button */}
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveInterview(item.id)}
+                    className="p-2 rounded-xl text-[var(--text-muted)] hover:text-rose-500 hover:bg-rose-500/5 active:scale-[0.95] transition-all cursor-pointer flex items-center justify-center self-end sm:self-auto"
+                  >
+                    <XCircle size={16} />
+                  </button>
+                </div>
+              ))}
+            </div>
+
+            <button
+              type="button"
+              onClick={handleAddInterview}
+              className="text-xs font-bold text-indigo-500 hover:text-indigo-600 transition-colors flex items-center gap-1 cursor-pointer"
+            >
+              + Add another company
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Footer Buttons */}
+      <div className="flex justify-end items-center gap-4 pt-4 border-t" style={{ borderColor: "var(--border-primary)" }}>
+        <button
+          type="button"
+          onClick={onSkip}
+          className="text-xs font-bold text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors cursor-pointer select-none"
+        >
+          Skip
+        </button>
+        <button
+          type="button"
+          onClick={handleSubmit}
+          className="px-6 py-2.5 text-white font-bold rounded-xl text-xs shadow-md transition-all cursor-pointer hover:scale-[1.02] active:scale-[0.98]"
+          style={{ background: "var(--accent-gradient)" }}
+        >
+          Submit
+        </button>
       </div>
     </motion.div>
   );

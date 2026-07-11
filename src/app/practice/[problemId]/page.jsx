@@ -8,7 +8,7 @@ import {
   ArrowLeft, Play, Send, BookOpen, Terminal, 
   CheckCircle2, ChevronRight, Mic, MicOff, RefreshCw,
   FileText, MessageCircle, ClipboardCheck, Palette, Trash2, CheckCircle, XCircle,
-  Volume2
+  Volume2, Bug
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { wrapCodeForBackend } from "@/utils/codeWrapper";
@@ -80,8 +80,8 @@ export default function PracticeWorkspace() {
                 javascript: dbp.templateJS || `// JavaScript Starter Code\nfunction solve(input) {\n  // Write your code here\n}`,
                 python: dbp.templatePython || `# Python Starter Code\ndef solve(input):\n    pass`,
                 go: dbp.templateGo || `// Go Starter Code\npackage main\n\nimport "fmt"\n\nfunc solve(input string) {\n  // Write your Go code here\n}`,
-                cpp: `// C++ Starter Code\n#include <iostream>\n#include <vector>\n#include <string>\n\nusing namespace std;\n\nint main() {\n  // Write your code here\n  return 0;\n}`,
-                java: `// Java Starter Code\nimport java.util.*;\n\npublic class Main {\n  public static void main(String[] args) {\n    // Write your code here\n  }\n}`
+                cpp: dbp.templateCPP || `// C++ Starter Code\n#include <iostream>\n#include <vector>\n#include <string>\n\nusing namespace std;\n\nint main() {\n  // Write your code here\n  return 0;\n}`,
+                java: dbp.templateJava || `// Java Starter Code\nimport java.util.*;\n\npublic class Main {\n  public static void main(String[] args) {\n    // Write your code here\n  }\n}`
               },
               testcases: dynamicTC,
               followup: dbp.followup,
@@ -134,10 +134,13 @@ export default function PracticeWorkspace() {
   const drawingPaths = useRef([]); // To restore paths on resize
 
   // Console states
-  const [activeConsoleTab, setActiveConsoleTab] = useState("testcase"); // testcase, result
+  const [activeConsoleTab, setActiveConsoleTab] = useState("testcase"); // testcase, result, debugger
   const [testcaseInputs, setTestcaseInputs] = useState([]);
   const [testResults, setTestResults] = useState(null);
   const [isRunning, setIsRunning] = useState(false);
+  const [customInput, setCustomInput] = useState("");
+  const [debugResult, setDebugResult] = useState(null);
+  const [debugRunning, setDebugRunning] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSubmissionSuccess, setShowSubmissionSuccess] = useState(false);
   const [submissionReport, setSubmissionReport] = useState(null); // null | { verdict, passedCount, totalCount, results: [...], stderr: "" }
@@ -172,9 +175,59 @@ export default function PracticeWorkspace() {
         setSelectedLanguage(defaultLang);
         setEditorCodes(codes);
         setTestcaseInputs(testInputs);
+        setCustomInput(testInputs[0] || "");
       }, 0);
     }
   }, [problem]);
+
+  const handleRunDebug = async () => {
+    setDebugRunning(true);
+    setDebugResult(null);
+    try {
+      const hasRealToken = token && !token.startsWith("demo-") && !token.startsWith("local-");
+      const headers = {
+        "Content-Type": "application/json",
+        ...(hasRealToken
+          ? { Authorization: `Bearer ${token}` }
+          : { "x-bypass-auth": "true", "x-bypass-role": user?.role === "ADMIN" ? "ADMIN" : "USER" }),
+      };
+
+      const mappedLang = selectedLanguage.toUpperCase();
+      const isSchemaDriven = dbProblem && dbProblem.parameters && Array.isArray(dbProblem.parameters) && dbProblem.parameters.length > 0;
+      const wrappedCode = isSchemaDriven ? code : wrapCodeForBackend(problemId, selectedLanguage, code);
+
+      const res = await fetch(`${API_BASE}/api/submissions/run`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify({
+          language: mappedLang,
+          code: wrappedCode,
+          input: customInput,
+          problemId: dbProblem?.id || problemId,
+        }),
+        signal: AbortSignal.timeout(30000),
+      });
+
+      if (!res.ok) {
+        throw new Error(`Debugger run failed with status ${res.status}`);
+      }
+
+      const data = await res.json();
+      if (data.success && data.result) {
+        setDebugResult(data.result);
+      } else {
+        throw new Error(data.message || "Failed to run debugger");
+      }
+    } catch (err) {
+      setDebugResult({
+        status: "RUNTIME_ERROR",
+        error: err.message,
+        executionTime: 0
+      });
+    } finally {
+      setDebugRunning(false);
+    }
+  };
 
   // Sync lines count for editor line numbers
   const currentCode = problem ? (editorCodes[selectedLanguage] || "") : "";
@@ -212,6 +265,18 @@ export default function PracticeWorkspace() {
           editorRef.current.selectionStart = editorRef.current.selectionEnd = start + 2;
         }
       }, 0);
+    }
+  };
+
+  const handleResetCode = () => {
+    if (window.confirm("Are you sure you want to reset your code to the default template? This will erase your current code for this language.")) {
+      if (problem && problem.editorTemplates && problem.editorTemplates[selectedLanguage]) {
+        const defaultTemplate = problem.editorTemplates[selectedLanguage];
+        setEditorCodes(prev => ({
+          ...prev,
+          [selectedLanguage]: defaultTemplate
+        }));
+      }
     }
   };
 
@@ -1097,6 +1162,15 @@ export default function PracticeWorkspace() {
                 {problem.editorTemplates.cpp && <option value="cpp">C++</option>}
                 {problem.editorTemplates.java && <option value="java">Java</option>}
               </select>
+
+              <button
+                onClick={handleResetCode}
+                title="Reset code to default template"
+                className="flex items-center space-x-1 px-2 py-0.5 text-[10px] font-extrabold uppercase rounded border border-red-500/20 hover:border-red-500/40 text-red-400 hover:text-red-300 bg-red-500/5 hover:bg-red-500/10 cursor-pointer transition-all outline-none focus:outline-none ml-2"
+              >
+                <RefreshCw size={10} />
+                <span>Reset Code</span>
+              </button>
             </div>
 
             <div className="text-[10px] text-[var(--text-muted)] font-mono font-semibold">
@@ -1212,7 +1286,8 @@ export default function PracticeWorkspace() {
               <div className="flex space-x-1.5">
                 {[
                   { id: "testcase", label: "Testcase", icon: <Terminal size={12} /> },
-                  { id: "result", label: "Test Result", icon: <CheckCircle2 size={12} /> }
+                  { id: "result", label: "Test Result", icon: <CheckCircle2 size={12} /> },
+                  { id: "debugger", label: "Debug Console", icon: <Bug size={12} /> }
                 ].map(ctab => (
                   <button
                     key={ctab.id}
@@ -1329,6 +1404,97 @@ export default function PracticeWorkspace() {
                       {"No tests executed yet. Click \"Run Code\" above."}
                     </div>
                   )}
+                </div>
+              )}
+
+              {activeConsoleTab === "debugger" && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 h-full">
+                  {/* Left: Input Textarea */}
+                  <div className="flex flex-col space-y-2 h-full min-h-[140px]">
+                    <div className="flex justify-between items-center">
+                      <span className="font-bold text-[10px] text-slate-500 uppercase tracking-wide">Custom Input:</span>
+                      <button
+                        onClick={handleRunDebug}
+                        disabled={debugRunning}
+                        className="flex items-center space-x-1.5 px-3 py-1 text-xs font-bold rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 transition-all cursor-pointer select-none outline-none focus:outline-none disabled:bg-indigo-600/50"
+                      >
+                        {debugRunning ? (
+                          <>
+                            <RefreshCw size={12} className="animate-spin" />
+                            <span>Running...</span>
+                          </>
+                        ) : (
+                          <>
+                            <Play size={11} fill="white" />
+                            <span>Run Debugger</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                    <textarea
+                      value={customInput}
+                      onChange={(e) => setCustomInput(e.target.value)}
+                      placeholder="Type custom testcase inputs here..."
+                      rows={6}
+                      className="w-full flex-1 border rounded px-4 py-3 outline-none focus:border-indigo-500 font-mono text-xs leading-relaxed resize-none"
+                      style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
+                    />
+                  </div>
+
+                  {/* Right: Debug Results */}
+                  <div className="flex flex-col space-y-2 overflow-y-auto">
+                    <span className="font-bold text-[10px] text-slate-500 uppercase tracking-wide">Debug Output:</span>
+                    {debugRunning ? (
+                      <div className="flex items-center space-x-2 text-indigo-400 py-3 font-mono">
+                        <RefreshCw size={14} className="animate-spin" />
+                        <span>Executing debugger run...</span>
+                      </div>
+                    ) : debugResult ? (
+                      <div className="space-y-3 font-mono text-[11px]">
+                        {/* Meta information */}
+                        <div className="flex items-center gap-2">
+                          <span className={`font-extrabold text-[10px] px-2 py-0.5 rounded border uppercase ${
+                            debugResult.status === "SUCCESS" 
+                              ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400" 
+                              : "bg-rose-500/10 border-rose-500/30 text-rose-400"
+                          }`}>
+                            {debugResult.status}
+                          </span>
+                          <span className="text-slate-400 text-[10px]">
+                            Time: {debugResult.executionTime} ms
+                          </span>
+                        </div>
+
+                        {/* Returned Value (Actual Output) */}
+                        {debugResult.status === "SUCCESS" && (
+                          <div className="p-3 rounded-lg border" style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)" }}>
+                            <div className="font-bold uppercase text-[9px] text-slate-500 mb-1">Return Value (Actual Output):</div>
+                            <pre className="text-emerald-400 whitespace-pre-wrap">{debugResult.output || "(no value returned)"}</pre>
+                          </div>
+                        )}
+
+                        {/* Compiler / Execution Tracebacks */}
+                        {debugResult.error && (
+                          <div className="p-3 rounded-lg border border-rose-500/20 bg-rose-500/5">
+                            <div className="font-bold uppercase text-[9px] text-rose-400 mb-1">Runtime / Compile Error:</div>
+                            <pre className="text-rose-400 whitespace-pre-wrap">{debugResult.error}</pre>
+                          </div>
+                        )}
+
+                        {/* Console logs */}
+                        {debugResult.output && (
+                          <div className="p-3 rounded-lg border" style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)" }}>
+                            <div className="font-bold uppercase text-[9px] text-slate-500 mb-1">Standard Console Output:</div>
+                            <pre className="text-slate-300 whitespace-pre-wrap">{debugResult.output}</pre>
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="text-slate-500 font-mono text-xs py-2">
+                        {"No debugger execution run yet. Enter custom inputs on the left and click \"Run Debugger\" to inspect values."}
+                      </div>
+                    )}
+                  </div>
                 </div>
               )}
             </div>

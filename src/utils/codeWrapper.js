@@ -887,6 +887,19 @@ if _fn is None:
     import builtins as _builtins
     _builtin_names = set(dir(_builtins))
     _fn = next((v for v in globals().values() if callable(v) and not isinstance(v, type) and getattr(v, '__name__', '') not in _builtin_names and not getattr(v, '__name__', '').startswith('_')), None)
+if _fn is None:
+    _clazz = next((v for v in globals().values() if isinstance(v, type) and v.__name__ not in ('type', 'object') and not v.__name__.startswith('_')), None)
+    if _clazz is not None:
+        try:
+            _inst = _clazz()
+            for _m_name in dir(_inst):
+                if not _m_name.startswith('_'):
+                    _m = getattr(_inst, _m_name)
+                    if callable(_m):
+                        _fn = _m
+                        break
+        except Exception:
+            pass
 if _fn is not None:
     _parsed = None
     _parsed_success = False
@@ -935,7 +948,8 @@ if _fn is not None:
             _res = _fn(_raw)
 
     if _res is not None:
-        if isinstance(_res, (list, tuple)): print(json.dumps(list(_res)))
+        if isinstance(_res, bool): print(str(_res).lower())
+        elif isinstance(_res, (list, tuple)): print(json.dumps(list(_res)))
         elif isinstance(_res, dict): print(json.dumps(_res))
         elif isinstance(_res, str): print(json.dumps(_res))
         else: print(str(_res))`;
