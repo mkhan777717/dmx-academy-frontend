@@ -106,7 +106,7 @@ export default function ResumeBuilderPage() {
   return (
     <div className="min-h-[calc(100vh-4rem)] relative">
       {/* Header - Hidden when printing */}
-      <div className="sticky top-0 z-40 -mt-6 md:-mt-8 px-6 py-2.5 mb-6 border border-t-0 border-[var(--glass-border)] rounded-b-2xl bg-[var(--glass-bg)] backdrop-blur-xl shadow-md print:hidden flex flex-col sm:flex-row items-center justify-between gap-4 transition-all">
+      <div className="sticky top-0 z-40 -mt-6 md:-mt-8 px-6 py-2.5 mb-6 border border-[var(--glass-border)] rounded-2xl bg-[var(--glass-bg)] backdrop-blur-xl shadow-md print:hidden flex flex-col sm:flex-row items-center justify-between gap-4 transition-all">
         <div className="flex flex-col justify-center">
           <h1 className="text-xl font-bold text-[var(--text-primary)]">Resume Builder</h1>
           <p className="text-sm text-[var(--text-secondary)]">Create an ATS-friendly resume</p>
