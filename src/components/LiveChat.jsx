@@ -607,7 +607,7 @@ export default function LiveChat({
               id="tab-participants-btn"
             >
               <Users size={13} />
-              <span>Students</span>
+              <span>{isHost ? "Stud" : "Students"}</span>
               <span
                 className="text-[9px] font-bold px-1.5 py-0.2 rounded-full"
                 style={{ backgroundColor: "var(--bg-badge)", color: "var(--text-accent)" }}

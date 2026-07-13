@@ -956,6 +956,11 @@ console.log(session)
             onClose={() => setShowPollResult(false)}
           />
         )}
+
+        {/* Moving Watermark: constrained to the video player container */}
+        {user && (
+          <MovingWatermark username={user.username} email={user.email} />
+        )}
       </div>
 
       {/* Controls displayed below the shared screen in normal mode, or overlayed on hover in fullscreen */}
@@ -1051,6 +1056,40 @@ console.log(session)
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+// ─── Moving Watermark Overlay ───────────────────────────────────────
+function MovingWatermark({ username, email }) {
+  const [position, setPosition] = useState({ top: "25%", left: "25%" });
+
+  useEffect(() => {
+    const updatePosition = () => {
+      // Keep it within 15% and 80% to ensure it stays inside the broadcasting window container
+      const randomTop = Math.floor(Math.random() * 65) + 15;
+      const randomLeft = Math.floor(Math.random() * 65) + 15;
+      setPosition({ top: `${randomTop}%`, left: `${randomLeft}%` });
+    };
+
+    // Change position every 20 seconds
+    const interval = setInterval(updatePosition, 20000);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div
+      className="absolute pointer-events-none select-none text-xs md:text-sm font-extrabold transition-all duration-[2000ms] ease-in-out tracking-wide z-[80]"
+      style={{
+        top: position.top,
+        left: position.left,
+        color: "rgba(226, 232, 240, 0.07)", // extremely low opacity
+        textShadow: "1px 1px 0px rgba(0,0,0,0.06)",
+        whiteSpace: "nowrap",
+      }}
+    >
+      <div>{username}</div>
+      <div className="text-[10px] md:text-xs font-semibold opacity-75">{email}</div>
     </div>
   );
 }
