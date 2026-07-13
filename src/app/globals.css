@@ -296,3 +296,28 @@ html.theme-violet .live-chat-sidebar-fullscreen {
   100% { transform: scale(1); opacity: 1; }
 }
 
+/* =============================================
+   PRINT STYLES FOR RESUME BUILDER
+   ============================================= */
+@media print {
+  /* Hide the entire sidebar and top header natively */
+  aside, header {
+    display: none !important;
+  }
+  
+  /* Reset layout margins for printing */
+  body, main {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: white !important;
+    overflow: visible !important;
+  }
+  
+  /* The layout wrapper often has flex/h-screen which breaks multipage printing */
+  .h-screen {
+    height: auto !important;
+    overflow: visible !important;
+  }
+}
+
+
