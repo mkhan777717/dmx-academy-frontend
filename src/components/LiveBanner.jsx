@@ -157,6 +157,10 @@ function PastSessionCard({ session, onWatchRecording }) {
               <Play size={10} />
               <span>Watch Recording</span>
             </button>
+          ) : (session.egressSegments || (session.endedAt && (new Date() - new Date(session.endedAt)) < 180000)) ? (
+            <div className="w-full text-center text-[9px] font-extrabold text-blue-500 bg-blue-500/10 py-2 rounded-lg border border-blue-500/20 animate-pulse">
+              Processing Recording...
+            </div>
           ) : (
             <div className="w-full text-center text-[9px] font-bold text-slate-500 bg-slate-500/5 py-2 rounded-lg border border-dashed border-slate-500/10">
               No recordings for this session
@@ -194,6 +198,21 @@ export default function LiveBanner() {
     const interval = setInterval(fetchSessions, 30000);
     return () => clearInterval(interval);
   }, []);
+
+  // Auto-poll recently ended sessions to fetch compilation status in real-time
+  useEffect(() => {
+    const hasProcessing = pastSessions.some(
+      (s) => !s.recordingUrl && (s.egressSegments || (s.endedAt && (new Date() - new Date(s.endedAt)) < 180000))
+    );
+
+    if (!hasProcessing) return;
+
+    const interval = setInterval(() => {
+      fetchSessions();
+    }, 6000); // Check every 6 seconds
+
+    return () => clearInterval(interval);
+  }, [pastSessions]);
 
   const fetchSessions = async () => {
     try {

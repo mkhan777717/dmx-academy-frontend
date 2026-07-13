@@ -1018,6 +1018,18 @@ export default function AdminLivePage() {
   const [pastSessions, setPastSessions] = useState([]);
   const [loadingPast, setLoadingPast] = useState(false);
   const [checkingSession, setCheckingSession] = useState(true); // true until we've checked for active session
+  const [selectedVideoUrl, setSelectedVideoUrl] = useState(null);
+  const [watermarkPos, setWatermarkPos] = useState({ top: "15%", left: "15%" });
+
+  useEffect(() => {
+    if (!selectedVideoUrl) return;
+    const interval = setInterval(() => {
+      const top = Math.floor(Math.random() * 65) + 15;
+      const left = Math.floor(Math.random() * 65) + 15;
+      setWatermarkPos({ top: `${top}%`, left: `${left}%` });
+    }, 10000);
+    return () => clearInterval(interval);
+  }, [selectedVideoUrl]);
 
   const fetchPastSessions = async () => {
     try {
@@ -1064,6 +1076,21 @@ export default function AdminLivePage() {
       fetchPastSessions();
     }
   }, [session]);
+
+  // Auto-poll recently ended sessions to fetch compilation status in real-time
+  useEffect(() => {
+    const hasProcessing = pastSessions.some(
+      (s) => !s.recordingUrl && (s.egressSegments || (s.endedAt && (new Date() - new Date(s.endedAt)) < 180000))
+    );
+
+    if (!hasProcessing) return;
+
+    const interval = setInterval(() => {
+      fetchPastSessions();
+    }, 6000); // Check every 6 seconds
+
+    return () => clearInterval(interval);
+  }, [pastSessions]);
 
   // Check for existing live session on mount — works for any admin/mentor (no hostId restriction)
   useEffect(() => {
@@ -1525,14 +1552,19 @@ export default function AdminLivePage() {
 
                   <div className="flex items-center gap-2 shrink-0">
                     {past.recordingUrl ? (
-                      <a
-                        href={past.recordingUrl.startsWith('/') ? `${API_BASE}${past.recordingUrl}` : past.recordingUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      <button
+                        onClick={() => {
+                          const url = past.recordingUrl.startsWith('/') ? `${API_BASE}${past.recordingUrl}` : past.recordingUrl;
+                          setSelectedVideoUrl(url);
+                        }}
                         className="px-3 py-1.5 rounded-xl bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-500 text-[10px] font-extrabold uppercase tracking-wider transition-all border border-indigo-500/10 hover:scale-[1.02] cursor-pointer text-center shrink-0"
                       >
                         Watch
-                      </a>
+                      </button>
+                    ) : (past.egressSegments || (past.endedAt && (new Date() - new Date(past.endedAt)) < 180000)) ? (
+                      <span className="text-[9px] font-extrabold text-blue-500 bg-blue-500/10 px-2 py-1.5 rounded border border-blue-500/20 animate-pulse shrink-0">
+                        Processing...
+                      </span>
                     ) : (
                       <span className="text-[9px] font-bold text-slate-500 bg-slate-500/5 px-2 py-1.5 rounded border border-dashed border-slate-500/10 shrink-0">
                         No Recording
@@ -1601,6 +1633,57 @@ export default function AdminLivePage() {
                 </button>
               </div>
             </motion.div>
+          </div>
+        )}
+        {/* Custom Secure Video Modal Player */}
+        {selectedVideoUrl && (
+          <div 
+            className="fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm"
+            onClick={() => setSelectedVideoUrl(null)}
+          >
+            <div 
+              className="relative w-full max-w-4xl rounded-2xl border border-slate-800 bg-slate-900/95 shadow-2xl overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Modal Header */}
+              <div className="flex items-center justify-between px-4 py-3 border-b border-slate-800 bg-slate-900/50">
+                <span className="text-xs font-bold text-slate-300">Session Playback</span>
+                <button 
+                  onClick={() => setSelectedVideoUrl(null)}
+                  className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer text-xs"
+                >
+                  ✕
+                </button>
+              </div>
+
+              {/* Video Container */}
+              <div className="relative aspect-video bg-black flex items-center justify-center">
+                <video
+                  src={selectedVideoUrl}
+                  controls
+                  autoPlay
+                  crossOrigin="anonymous"
+                  controlsList="nodownload"
+                  onContextMenu={(e) => e.preventDefault()}
+                  className="w-full h-full object-contain"
+                />
+
+                {/* Dynamic Watermark Overlay */}
+                {user && (
+                  <div 
+                    className="absolute z-10 pointer-events-none select-none text-slate-100 font-mono text-[9px] sm:text-xs bg-slate-950/20 backdrop-blur-[1px] px-2.5 py-1.5 rounded-lg border border-white/5 opacity-[0.16] shadow-sm"
+                    style={{
+                      top: watermarkPos.top,
+                      left: watermarkPos.left,
+                      transition: "top 2s ease-in-out, left 2s ease-in-out"
+                    }}
+                  >
+                    <div className="font-black uppercase tracking-wider">{user.username}</div>
+                    <div className="text-[7px] sm:text-[9px] font-bold opacity-80 mt-0.5">{user.email}</div>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         )}
       </AnimatePresence>
