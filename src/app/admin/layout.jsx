@@ -89,7 +89,7 @@ export default function AdminLayout({ children }) {
       } else if (isLoginRoute) {
         router.push(isMentorSession ? "/mentor/dashboard" : "/admin/dashboard");
       } else {
-        const name = user?.username || "DMX Admin";
+        const name = user?.username || "Eduvantix Admin";
         const email = user?.email || "admin@synapse.com";
         const roleName = user?.role === "INSTITUTE_ADMIN"
           ? "Institute Admin"
@@ -230,14 +230,14 @@ export default function AdminLayout({ children }) {
           <div className="flex items-center justify-between px-4 h-14 border-b" style={{ borderColor: "var(--border-primary)" }}>
             {!isSidebarCollapsed && (
               <div className="flex items-center gap-2.5">
-                <div className="h-6 w-6 rounded-md flex items-center justify-center text-white flex-shrink-0" style={{ background: "var(--accent-gradient)" }}>
+                <div className="h-6 w-6 rounded-md flex items-center justify-center text-[var(--text-on-accent)] flex-shrink-0" style={{ background: "var(--accent-gradient)" }}>
                   <ShieldAlert size={14} />
                 </div>
-                <span className="text-[13px] font-bold tracking-tight" style={{ color: "var(--text-primary)" }}>DMX Admin</span>
+                <span className="text-[13px] font-bold tracking-tight" style={{ color: "var(--text-primary)" }}>Eduvantix Admin</span>
               </div>
             )}
             {isSidebarCollapsed && (
-              <div className="h-6 w-6 rounded-md flex items-center justify-center text-white mx-auto" style={{ background: "var(--accent-gradient)" }}>
+              <div className="h-6 w-6 rounded-md flex items-center justify-center text-[var(--text-on-accent)] mx-auto" style={{ background: "var(--accent-gradient)" }}>
                 <ShieldAlert size={14} />
               </div>
             )}
@@ -315,10 +315,10 @@ export default function AdminLayout({ children }) {
           >
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-2.5">
-                <div className="h-6 w-6 rounded-md flex items-center justify-center text-white" style={{ background: "var(--accent-gradient)" }}>
+                <div className="h-6 w-6 rounded-md flex items-center justify-center text-[var(--text-on-accent)]" style={{ background: "var(--accent-gradient)" }}>
                   <ShieldAlert size={14} />
                 </div>
-                <span className="text-sm font-bold" style={{ color: "var(--text-primary)" }}>DMX Admin</span>
+                <span className="text-sm font-bold" style={{ color: "var(--text-primary)" }}>Eduvantix Admin</span>
               </div>
               <button onClick={() => setIsMobileMenuOpen(false)} className="p-1.5 rounded-lg" style={{ color: "var(--text-secondary)" }}>
                 <X size={16} />
@@ -396,7 +396,7 @@ export default function AdminLayout({ children }) {
                     onMouseEnter={e => e.currentTarget.style.backgroundColor = "var(--bg-hover)"}
                     onMouseLeave={e => e.currentTarget.style.backgroundColor = "transparent"}
                   >
-                    <div className="w-7 h-7 rounded-lg flex items-center justify-center text-[11px] font-bold text-white" style={{ background: "var(--accent-gradient)" }}>
+                    <div className="w-7 h-7 rounded-lg flex items-center justify-center text-[11px] font-bold text-[var(--text-on-accent)]" style={{ background: "var(--accent-gradient)" }}>
                       {adminUser.avatar}
                     </div>
                     <div className="hidden sm:block text-left">
@@ -408,13 +408,13 @@ export default function AdminLayout({ children }) {
                   {isProfileMenuOpen && (
                     <>
                       <div className="fixed inset-0 z-40" onClick={() => setIsProfileMenuOpen(false)} />
-                      <div className="absolute right-0 top-full mt-2 w-64 rounded-xl border shadow-xl z-50 overflow-hidden"
+                      <div className="absolute right-0 top-full mt-2 w-64 rounded-xl border border-[var(--border-primary)] shadow-xl z-50 overflow-hidden"
                         style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
 
                     {/* Profile header */}
                     <div className="p-4 border-b" style={{ borderColor: "var(--border-primary)" }}>
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl flex items-center justify-center font-bold text-white" style={{ background: "var(--accent-gradient)" }}>
+                        <div className="w-10 h-10 rounded-xl flex items-center justify-center font-bold text-[var(--text-on-accent)]" style={{ background: "var(--accent-gradient)" }}>
                           {adminUser.avatar}
                         </div>
                         <div>
@@ -465,14 +465,14 @@ export default function AdminLayout({ children }) {
       {showEndConfirmModal && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-md p-4 animate-in fade-in duration-200">
           <div 
-            className="w-full max-w-md rounded-3xl p-6 border shadow-2xl text-center space-y-6"
+            className="w-full max-w-md rounded-3xl p-6 border border-[var(--border-primary)] shadow-2xl text-center space-y-6"
             style={{ 
               backgroundColor: "var(--bg-card)",
               borderColor: "var(--border-primary)",
               backgroundImage: "linear-gradient(to bottom right, var(--bg-card), rgba(239, 68, 68, 0.05))"
             }}
           >
-            <div className="w-16 h-16 rounded-full bg-red-500/10 text-red-500 flex items-center justify-center mx-auto border border-red-500/20 animate-pulse">
+            <div className="w-16 h-16 rounded-full bg-red-500/10 text-red-500 flex items-center justify-center mx-auto border border-[var(--border-primary)] border-red-500/20 animate-pulse">
               <AlertTriangle size={32} />
             </div>
             
@@ -491,7 +491,7 @@ export default function AdminLayout({ children }) {
                   setShowEndConfirmModal(false);
                   setPendingNavAction(null);
                 }}
-                className="flex-1 py-3 px-4 rounded-xl border transition-all cursor-pointer font-bold text-xs"
+                className="flex-1 py-3 px-4 rounded-xl border border-[var(--border-primary)] transition-all cursor-pointer font-bold text-xs"
                 style={{
                   backgroundColor: "var(--bg-primary)",
                   borderColor: "var(--border-primary)",
@@ -514,9 +514,9 @@ export default function AdminLayout({ children }) {
       {/* Logout Confirmation Modal */}
       {showLogoutConfirm && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-          <div className="w-full max-w-sm rounded-2xl p-6 border shadow-2xl text-center space-y-5"
+          <div className="w-full max-w-sm rounded-2xl p-6 border border-[var(--border-primary)] shadow-2xl text-center space-y-5"
             style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
-            <div className="w-11 h-11 rounded-xl bg-rose-500/10 text-rose-500 flex items-center justify-center mx-auto border border-rose-500/20">
+            <div className="w-11 h-11 rounded-xl bg-rose-500/10 text-rose-500 flex items-center justify-center mx-auto border border-[var(--border-primary)] border-rose-500/20">
               <AlertTriangle size={20} />
             </div>
             <div className="space-y-1.5">
@@ -525,7 +525,7 @@ export default function AdminLayout({ children }) {
             </div>
             <div className="flex gap-3">
               <button type="button" onClick={() => setShowLogoutConfirm(false)}
-                className="flex-1 py-2.5 rounded-xl border text-xs font-semibold transition-all cursor-pointer"
+                className="flex-1 py-2.5 rounded-xl border border-[var(--border-primary)] text-xs font-semibold transition-all cursor-pointer"
                 style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}>
                 Cancel
               </button>

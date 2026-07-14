@@ -73,7 +73,7 @@ export default function ResetPasswordPage() {
           className="w-full max-w-md space-y-6"
         >
           <div
-            className="glass-panel p-8 rounded-3xl border shadow-xl backdrop-blur-xl space-y-6"
+            className="glass-panel p-8 rounded-3xl border border-[var(--border-primary)] shadow-xl backdrop-blur-xl space-y-6"
             style={{
               backgroundColor: "var(--glass-bg)",
               borderColor: "rgba(139, 92, 246, 0.2)"
@@ -102,7 +102,7 @@ export default function ResetPasswordPage() {
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: "auto" }}
                   exit={{ opacity: 0, height: 0 }}
-                  className="flex items-start space-x-2 p-3.5 rounded-2xl border text-xs font-bold bg-rose-500/10 border-rose-500/20 text-rose-500"
+                  className="flex items-start space-x-2 p-3.5 rounded-2xl border border-[var(--border-primary)] text-xs font-bold bg-rose-500/10 border-rose-500/20 text-rose-500"
                 >
                   <AlertCircle size={16} className="shrink-0 mt-0.5" />
                   <span className="whitespace-pre-line">{errorMsg}</span>
@@ -113,7 +113,7 @@ export default function ResetPasswordPage() {
             {/* Success State */}
             {success ? (
               <div className="space-y-4 text-center">
-                <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-xs font-bold leading-relaxed">
+                <div className="p-4 rounded-2xl bg-emerald-500/10 border border-[var(--border-primary)] border-emerald-500/20 text-emerald-500 text-xs font-bold leading-relaxed">
                   ✅ Your password has been reset successfully! You can now log in with your new password.
                 </div>
                 <button
@@ -139,7 +139,7 @@ export default function ResetPasswordPage() {
                       placeholder="••••••••"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className="w-full rounded-2xl py-3 pl-11 pr-11 text-xs outline-none border transition-all"
+                      className="w-full rounded-2xl py-3 pl-11 pr-11 text-xs outline-none border border-[var(--border-primary)] transition-all"
                       style={{
                         backgroundColor: "var(--bg-input)",
                         borderColor: "var(--border-primary)",
@@ -166,7 +166,7 @@ export default function ResetPasswordPage() {
                       placeholder="••••••••"
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
-                      className="w-full rounded-2xl py-3 pl-11 pr-11 text-xs outline-none border transition-all"
+                      className="w-full rounded-2xl py-3 pl-11 pr-11 text-xs outline-none border border-[var(--border-primary)] transition-all"
                       style={{
                         backgroundColor: "var(--bg-input)",
                         borderColor: confirmPassword && confirmPassword !== password ? "#f43f5e" : "var(--border-primary)",

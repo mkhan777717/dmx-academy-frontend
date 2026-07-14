@@ -18,7 +18,7 @@ const DIFF_COLOR = {
   HARD: { bg: "bg-rose-500/10", text: "text-rose-500", border: "border-rose-500/20" },
 };
 const STATUS_META = {
-  UPLOADED:   { label: "Uploaded",   icon: CheckCircle2,  cls: "bg-slate-500/10 text-slate-400" },
+  UPLOADED:   { label: "Uploaded",   icon: CheckCircle2,  cls: "bg-slate-500/10 text-[var(--text-muted)]" },
   PROCESSING: { label: "Processing", icon: RefreshCw,     cls: "bg-amber-500/10 text-amber-400 animate-pulse" },
   COMPLETED:  { label: "Ready",      icon: CheckCircle2,  cls: "bg-emerald-500/10 text-emerald-500" },
   FAILED:     { label: "Failed",     icon: XCircle,       cls: "bg-rose-500/10 text-rose-500" },
@@ -583,52 +583,52 @@ export default function AIAllInOneVivaPage() {
         {/* 1. Add/Edit Question Modal */}
         {modalOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-            <div className="bg-[#111625] border border-slate-800 w-full max-w-xl rounded-2xl p-6 space-y-4">
+            <div className="bg-[#111625] border border-[var(--border-primary)] w-full max-w-xl rounded-2xl p-6 space-y-4">
               <div className="flex justify-between items-center">
                 <h3 className="text-lg font-bold text-slate-200">{editingId ? "Edit Question" : "Add New Question"}</h3>
-                <button onClick={closeModal} className="p-1 hover:bg-slate-800 rounded"><X size={18} /></button>
+                <button onClick={closeModal} className="p-1 hover:bg-[var(--bg-hover)] rounded"><X size={18} /></button>
               </div>
-              {formError && <div className="p-3 bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs rounded-xl">{formError}</div>}
+              {formError && <div className="p-3 bg-rose-500/10 border border-[var(--border-primary)] border-rose-500/20 text-rose-400 text-xs rounded-xl">{formError}</div>}
               <div className="space-y-3">
                 <div>
-                  <label className="block text-xs font-bold text-slate-400 mb-1">Question Text *</label>
-                  <textarea rows={3} value={form.questionText} onChange={e => setForm({...form, questionText: e.target.value})} className="w-full bg-[#161B2B] border border-slate-800 rounded-xl p-3 text-sm focus:border-zinc-500 outline-none resize-none" placeholder="Enter question..." />
+                  <label className="block text-xs font-bold text-[var(--text-muted)] mb-1">Question Text *</label>
+                  <textarea rows={3} value={form.questionText} onChange={e => setForm({...form, questionText: e.target.value})} className="w-full bg-[#161B2B] border border-[var(--border-primary)] rounded-xl p-3 text-sm focus:border-zinc-500 outline-none resize-none" placeholder="Enter question..." />
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-bold text-slate-400 mb-1">Subject Folder *</label>
-                    <select value={form.subject} onChange={e => setForm({...form, subject: e.target.value})} className="w-full bg-[#161B2B] border border-slate-800 rounded-xl p-3 text-sm outline-none">
+                    <label className="block text-xs font-bold text-[var(--text-muted)] mb-1">Subject Folder *</label>
+                    <select value={form.subject} onChange={e => setForm({...form, subject: e.target.value})} className="w-full bg-[#161B2B] border border-[var(--border-primary)] rounded-xl p-3 text-sm outline-none">
                       <option value="">Select Folder</option>
                       {subjectNames.map(s => <option key={s} value={s}>{s}</option>)}
                     </select>
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-slate-400 mb-1">Topic (Optional)</label>
-                    <input type="text" value={form.topic} onChange={e => setForm({...form, topic: e.target.value})} className="w-full bg-[#161B2B] border border-slate-800 rounded-xl p-3 text-sm outline-none" placeholder="e.g. Callbacks" />
+                    <label className="block text-xs font-bold text-[var(--text-muted)] mb-1">Topic (Optional)</label>
+                    <input type="text" value={form.topic} onChange={e => setForm({...form, topic: e.target.value})} className="w-full bg-[#161B2B] border border-[var(--border-primary)] rounded-xl p-3 text-sm outline-none" placeholder="e.g. Callbacks" />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-slate-400 mb-1">Difficulty *</label>
+                  <label className="block text-xs font-bold text-[var(--text-muted)] mb-1">Difficulty *</label>
                   <div className="flex gap-2">
                     {DIFFICULTIES.map(d => (
-                      <button type="button" key={d} onClick={() => setForm({...form, difficulty: d})} className={`flex-1 py-2 rounded-xl text-xs font-bold border transition-all ${form.difficulty === d ? "bg-zinc-600 text-white border-transparent" : "border-slate-800 text-slate-400"}`}>
+                      <button type="button" key={d} onClick={() => setForm({...form, difficulty: d})} className={`flex-1 py-2 rounded-xl text-xs font-bold border border-[var(--border-primary)] transition-all ${form.difficulty === d ? "bg-[var(--accent-primary)] text-[var(--text-on-accent)] border-transparent" : "border-[var(--border-primary)] text-[var(--text-muted)]"}`}>
                         {d}
                       </button>
                     ))}
                   </div>
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-slate-400 mb-1">Expected Answer Keywords (comma separated) *</label>
-                  <input type="text" value={form.keywords} onChange={e => setForm({...form, keywords: e.target.value})} className="w-full bg-[#161B2B] border border-slate-800 rounded-xl p-3 text-sm outline-none" placeholder="e.g. scope, lexical, variables" />
+                  <label className="block text-xs font-bold text-[var(--text-muted)] mb-1">Expected Answer Keywords (comma separated) *</label>
+                  <input type="text" value={form.keywords} onChange={e => setForm({...form, keywords: e.target.value})} className="w-full bg-[#161B2B] border border-[var(--border-primary)] rounded-xl p-3 text-sm outline-none" placeholder="e.g. scope, lexical, variables" />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-slate-400 mb-1">Detailed Rubric Expected Answer (Optional)</label>
-                  <textarea rows={2} value={form.expectedAnswer} onChange={e => setForm({...form, expectedAnswer: e.target.value})} className="w-full bg-[#161B2B] border border-slate-800 rounded-xl p-3 text-sm outline-none resize-none" placeholder="Provide complete context..." />
+                  <label className="block text-xs font-bold text-[var(--text-muted)] mb-1">Detailed Rubric Expected Answer (Optional)</label>
+                  <textarea rows={2} value={form.expectedAnswer} onChange={e => setForm({...form, expectedAnswer: e.target.value})} className="w-full bg-[#161B2B] border border-[var(--border-primary)] rounded-xl p-3 text-sm outline-none resize-none" placeholder="Provide complete context..." />
                 </div>
               </div>
               <div className="flex gap-3 pt-2">
-                <button onClick={closeModal} className="flex-1 py-2.5 border border-slate-800 rounded-xl text-sm text-slate-400 font-bold hover:bg-slate-800">Cancel</button>
-                <button onClick={handleSaveManual} disabled={formSaving} className="flex-1 py-2.5 bg-zinc-600 hover:bg-zinc-700 font-bold text-sm text-white rounded-xl">
+                <button onClick={closeModal} className="flex-1 py-2.5 border border-[var(--border-primary)] rounded-xl text-sm text-[var(--text-muted)] font-bold hover:bg-[var(--bg-hover)]">Cancel</button>
+                <button onClick={handleSaveManual} disabled={formSaving} className="flex-1 py-2.5 bg-[var(--accent-primary)] hover:bg-zinc-700 font-bold text-sm text-[var(--text-primary)] rounded-xl">
                   {formSaving ? "Saving..." : "Save"}
                 </button>
               </div>
@@ -639,13 +639,13 @@ export default function AIAllInOneVivaPage() {
         {/* 2. Add Folder Modal */}
         {subjectModalOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-            <div className="bg-[#111625] border border-slate-800 w-full max-w-sm rounded-2xl p-6 space-y-4">
+            <div className="bg-[#111625] border border-[var(--border-primary)] w-full max-w-sm rounded-2xl p-6 space-y-4">
               <h3 className="text-lg font-bold text-slate-200">Add Subject Folder</h3>
-              {subjectModalError && <div className="p-2 bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs rounded-lg">{subjectModalError}</div>}
-              <input type="text" value={newFolderSubjectName} onChange={e => setNewFolderSubjectName(e.target.value)} className="w-full bg-[#161B2B] border border-slate-800 rounded-xl p-3 text-sm outline-none" placeholder="Subject Name..." />
+              {subjectModalError && <div className="p-2 bg-rose-500/10 border border-[var(--border-primary)] border-rose-500/20 text-rose-400 text-xs rounded-lg">{subjectModalError}</div>}
+              <input type="text" value={newFolderSubjectName} onChange={e => setNewFolderSubjectName(e.target.value)} className="w-full bg-[#161B2B] border border-[var(--border-primary)] rounded-xl p-3 text-sm outline-none" placeholder="Subject Name..." />
               <div className="flex gap-3">
-                <button onClick={() => setSubjectModalOpen(false)} className="flex-1 py-2 border border-slate-800 rounded-xl text-xs text-slate-400 font-bold hover:bg-slate-800">Cancel</button>
-                <button onClick={handleCreateSubjectFolder} className="flex-1 py-2 bg-zinc-600 hover:bg-zinc-700 font-bold text-xs text-white rounded-xl">Create</button>
+                <button onClick={() => setSubjectModalOpen(false)} className="flex-1 py-2 border border-[var(--border-primary)] rounded-xl text-xs text-[var(--text-muted)] font-bold hover:bg-[var(--bg-hover)]">Cancel</button>
+                <button onClick={handleCreateSubjectFolder} className="flex-1 py-2 bg-[var(--accent-primary)] hover:bg-zinc-700 font-bold text-xs text-[var(--text-primary)] rounded-xl">Create</button>
               </div>
             </div>
           </div>
@@ -654,12 +654,12 @@ export default function AIAllInOneVivaPage() {
         {/* 3. Delete Question Confirm */}
         {deleteTarget && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-            <div className="bg-[#111625] border border-slate-800 w-full max-w-sm rounded-2xl p-6 space-y-4">
+            <div className="bg-[#111625] border border-[var(--border-primary)] w-full max-w-sm rounded-2xl p-6 space-y-4">
               <h3 className="text-lg font-bold text-slate-200">Delete Question</h3>
-              <p className="text-slate-400 text-sm">Are you sure you want to delete: <span className="font-semibold text-slate-200">"{deleteTarget.questionText}"</span>?</p>
+              <p className="text-[var(--text-muted)] text-sm">Are you sure you want to delete: <span className="font-semibold text-slate-200">"{deleteTarget.questionText}"</span>?</p>
               <div className="flex gap-3">
-                <button onClick={() => setDeleteTarget(null)} className="flex-1 py-2 border border-slate-800 rounded-xl text-xs font-bold text-slate-400 hover:bg-slate-800">Cancel</button>
-                <button onClick={handleDeleteQuestion} disabled={deleteLoading} className="flex-1 py-2 bg-rose-600 hover:bg-rose-700 font-bold text-xs text-white rounded-xl">
+                <button onClick={() => setDeleteTarget(null)} className="flex-1 py-2 border border-[var(--border-primary)] rounded-xl text-xs font-bold text-[var(--text-muted)] hover:bg-[var(--bg-hover)]">Cancel</button>
+                <button onClick={handleDeleteQuestion} disabled={deleteLoading} className="flex-1 py-2 bg-rose-600 hover:bg-rose-700 font-bold text-xs text-[var(--text-primary)] rounded-xl">
                   {deleteLoading ? "Deleting..." : "Delete"}
                 </button>
               </div>
@@ -670,12 +670,12 @@ export default function AIAllInOneVivaPage() {
         {/* 5. Delete PDF Confirm */}
         {pdfDeleteTarget && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-            <div className="bg-[#111625] border border-slate-800 w-full max-w-sm rounded-2xl p-6 space-y-4">
+            <div className="bg-[#111625] border border-[var(--border-primary)] w-full max-w-sm rounded-2xl p-6 space-y-4">
               <h3 className="text-lg font-bold text-slate-200">Delete PDF Notes</h3>
-              <p className="text-slate-400 text-sm">Are you sure you want to delete <span className="font-semibold text-slate-200">"{pdfDeleteTarget.title}"</span>?</p>
+              <p className="text-[var(--text-muted)] text-sm">Are you sure you want to delete <span className="font-semibold text-slate-200">"{pdfDeleteTarget.title}"</span>?</p>
               <div className="flex gap-3">
-                <button onClick={() => setPdfDeleteTarget(null)} className="flex-1 py-2 border border-slate-800 rounded-xl text-xs font-bold text-slate-400 hover:bg-slate-800">Cancel</button>
-                <button onClick={handleDeletePdf} disabled={pdfDeleteLoading} className="flex-1 py-2 bg-rose-600 hover:bg-rose-700 font-bold text-xs text-white rounded-xl">
+                <button onClick={() => setPdfDeleteTarget(null)} className="flex-1 py-2 border border-[var(--border-primary)] rounded-xl text-xs font-bold text-[var(--text-muted)] hover:bg-[var(--bg-hover)]">Cancel</button>
+                <button onClick={handleDeletePdf} disabled={pdfDeleteLoading} className="flex-1 py-2 bg-rose-600 hover:bg-rose-700 font-bold text-xs text-[var(--text-primary)] rounded-xl">
                   {pdfDeleteLoading ? "Deleting..." : "Delete"}
                 </button>
               </div>
@@ -686,47 +686,47 @@ export default function AIAllInOneVivaPage() {
         {/* 6. Schedule Viva Modal */}
         {scheduleOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm overflow-y-auto">
-            <form onSubmit={handleScheduleSubmit} className="bg-[#111625] border border-slate-800 w-full max-w-3xl rounded-2xl p-6 space-y-4 my-8">
+            <form onSubmit={handleScheduleSubmit} className="bg-[#111625] border border-[var(--border-primary)] w-full max-w-3xl rounded-2xl p-6 space-y-4 my-8">
               <div className="flex justify-between items-center">
-                <h3 className="text-lg font-bold text-slate-200 flex items-center gap-2"><Calendar className="w-5 h-5 text-pink-400" />{editingVivaId ? "Edit Viva Session" : "Schedule Viva Session"}</h3>
-                <button type="button" onClick={() => setScheduleOpen(false)} className="p-1 hover:bg-slate-800 rounded"><X size={18} /></button>
+                <h3 className="text-lg font-bold text-slate-200 flex items-center gap-2"><Calendar className="w-5 h-5 text-[var(--text-primary)]" />{editingVivaId ? "Edit Viva Session" : "Schedule Viva Session"}</h3>
+                <button type="button" onClick={() => setScheduleOpen(false)} className="p-1 hover:bg-[var(--bg-hover)] rounded"><X size={18} /></button>
               </div>
-              {scheduleError && <div className="p-3 bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs rounded-xl">{scheduleError}</div>}
-              {scheduleSuccess && <div className="p-3 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs rounded-xl">{scheduleSuccess}</div>}
+              {scheduleError && <div className="p-3 bg-rose-500/10 border border-[var(--border-primary)] border-rose-500/20 text-rose-400 text-xs rounded-xl">{scheduleError}</div>}
+              {scheduleSuccess && <div className="p-3 bg-emerald-500/10 border border-[var(--border-primary)] border-emerald-500/20 text-emerald-400 text-xs rounded-xl">{scheduleSuccess}</div>}
               
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Form Details */}
                 <div className="lg:col-span-2 space-y-4">
                   <div>
-                    <label className="block text-xs font-bold text-slate-400 mb-1">Viva Title *</label>
-                    <input type="text" required value={scheduleTitle} onChange={e => setScheduleTitle(e.target.value)} className="w-full bg-[#161B2B] border border-slate-800 rounded-xl p-3 text-sm outline-none" placeholder="e.g. JS Closures Final Exam" />
+                    <label className="block text-xs font-bold text-[var(--text-muted)] mb-1">Viva Title *</label>
+                    <input type="text" required value={scheduleTitle} onChange={e => setScheduleTitle(e.target.value)} className="w-full bg-[#161B2B] border border-[var(--border-primary)] rounded-xl p-3 text-sm outline-none" placeholder="e.g. JS Closures Final Exam" />
                   </div>
                    <div>
-                     <label className="block text-xs font-bold text-slate-400 mb-1">Select Subject *</label>
-                     <select required value={scheduleSubject} onChange={e => setScheduleSubject(e.target.value)} className="w-full bg-[#161B2B] border border-slate-800 rounded-xl p-3 text-sm outline-none">
+                     <label className="block text-xs font-bold text-[var(--text-muted)] mb-1">Select Subject *</label>
+                     <select required value={scheduleSubject} onChange={e => setScheduleSubject(e.target.value)} className="w-full bg-[#161B2B] border border-[var(--border-primary)] rounded-xl p-3 text-sm outline-none">
                        <option value="">Select Folder</option>
                        {instituteSubjectNames.map(s => <option key={s} value={s}>{s}</option>)}
                      </select>
                    </div>
                   <div>
-                    <label className="block text-xs font-bold text-slate-400 mb-1">Description (Optional)</label>
-                    <textarea rows={2} value={scheduleDescription} onChange={e => setScheduleDescription(e.target.value)} className="w-full bg-[#161B2B] border border-slate-800 rounded-xl p-3 text-sm outline-none resize-none" placeholder="Instructions..." />
+                    <label className="block text-xs font-bold text-[var(--text-muted)] mb-1">Description (Optional)</label>
+                    <textarea rows={2} value={scheduleDescription} onChange={e => setScheduleDescription(e.target.value)} className="w-full bg-[#161B2B] border border-[var(--border-primary)] rounded-xl p-3 text-sm outline-none resize-none" placeholder="Instructions..." />
                   </div>
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-xs font-bold text-slate-400 mb-1">Start Time *</label>
-                      <input type="datetime-local" required value={scheduleStartTime} onChange={e => setScheduleStartTime(e.target.value)} className="w-full bg-[#161B2B] border border-slate-800 rounded-xl p-3 text-xs outline-none" />
+                      <label className="block text-xs font-bold text-[var(--text-muted)] mb-1">Start Time *</label>
+                      <input type="datetime-local" required value={scheduleStartTime} onChange={e => setScheduleStartTime(e.target.value)} className="w-full bg-[#161B2B] border border-[var(--border-primary)] rounded-xl p-3 text-xs outline-none" />
                     </div>
                     <div>
-                      <label className="block text-xs font-bold text-slate-400 mb-1">End Time *</label>
-                      <input type="datetime-local" required value={scheduleEndTime} onChange={e => setScheduleEndTime(e.target.value)} className="w-full bg-[#161B2B] border border-slate-800 rounded-xl p-3 text-xs outline-none" />
+                      <label className="block text-xs font-bold text-[var(--text-muted)] mb-1">End Time *</label>
+                      <input type="datetime-local" required value={scheduleEndTime} onChange={e => setScheduleEndTime(e.target.value)} className="w-full bg-[#161B2B] border border-[var(--border-primary)] rounded-xl p-3 text-xs outline-none" />
                     </div>
                   </div>
                 </div>
 
                 {/* Questions Picker */}
-                <div className="flex flex-col h-[320px] lg:h-[350px] border border-slate-800 rounded-xl p-4 bg-[#0E1322]">
-                  <p className="text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">Select Questions ({scheduleSelectedQuestions.length})</p>
+                <div className="flex flex-col h-[320px] lg:h-[350px] border border-[var(--border-primary)] rounded-xl p-4 bg-[#0E1322]">
+                  <p className="text-xs font-bold text-[var(--text-muted)] mb-2 uppercase tracking-wider">Select Questions ({scheduleSelectedQuestions.length})</p>
                   <div className="flex-1 overflow-y-auto space-y-2 pr-1">
                     {questions.length === 0 ? (
                       <p className="text-slate-500 text-xs text-center py-10">No questions in bank.</p>
@@ -743,11 +743,11 @@ export default function AIAllInOneVivaPage() {
                                   prev.includes(q.id) ? prev.filter(id => id !== q.id) : [...prev, q.id]
                                 );
                               }}
-                              className={`p-2.5 rounded border text-left cursor-pointer transition-all select-none ${
-                                isSel ? "bg-emerald-500/10 border-emerald-500/50 outline outline-2 outline-emerald-500/30" : "bg-[#111625] border-slate-800/80 hover:border-slate-700"
+                              className={`p-2.5 rounded border border-[var(--border-primary)] text-left cursor-pointer transition-all select-none ${
+                                isSel ? "bg-emerald-500/10 border-emerald-500/50 outline outline-2 outline-emerald-500/30" : "bg-[#111625] border-[var(--border-primary)]/80 hover:border-[var(--border-primary)]"
                               }`}
                             >
-                              <span className="text-[9px] uppercase font-bold text-zinc-400">{q.difficulty}</span>
+                              <span className="text-[9px] uppercase font-bold text-[var(--text-muted)]">{q.difficulty}</span>
                               <p className="text-xs font-medium text-slate-200 mt-0.5 line-clamp-2">{q.questionText}</p>
                             </div>
                           );
@@ -757,9 +757,9 @@ export default function AIAllInOneVivaPage() {
                 </div>
               </div>
 
-              <div className="flex gap-3 pt-4 border-t border-slate-800/80">
-                <button type="button" onClick={() => setScheduleOpen(false)} className="flex-1 py-2.5 border border-slate-800 rounded-xl text-sm text-slate-400 font-bold hover:bg-slate-800">Cancel</button>
-                <button type="submit" disabled={scheduleSubmitting} className="flex-1 py-2.5 bg-gradient-to-r from-pink-500 to-slate-600 hover:from-pink-600 hover:to-slate-700 font-bold text-sm text-white rounded-xl">
+              <div className="flex gap-3 pt-4 border-t border-[var(--border-primary)]/80">
+                <button type="button" onClick={() => setScheduleOpen(false)} className="flex-1 py-2.5 border border-[var(--border-primary)] rounded-xl text-sm text-[var(--text-muted)] font-bold hover:bg-[var(--bg-hover)]">Cancel</button>
+                <button type="submit" disabled={scheduleSubmitting} className="flex-1 py-2.5 bg-[var(--accent-gradient)] hover:brightness-110  font-bold text-sm text-[var(--text-primary)] rounded-xl">
                   {scheduleSubmitting ? "Scheduling..." : "Schedule & Publish"}
                 </button>
               </div>
@@ -770,24 +770,24 @@ export default function AIAllInOneVivaPage() {
         {/* 7. PDF AI Question Extraction Main Modal */}
         {extractModalOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm overflow-y-auto">
-            <div className="bg-[#111625] border border-slate-800 w-full max-w-4xl rounded-2xl p-6 space-y-6 my-8">
-              <div className="flex justify-between items-center border-b border-slate-800 pb-3">
+            <div className="bg-[#111625] border border-[var(--border-primary)] w-full max-w-4xl rounded-2xl p-6 space-y-6 my-8">
+              <div className="flex justify-between items-center border-b border-[var(--border-primary)] pb-3">
                 <h3 className="text-lg font-bold text-slate-200 flex items-center gap-2">
-                  <Sparkles className="w-5 h-5 text-zinc-400" />
+                  <Sparkles className="w-5 h-5 text-[var(--text-muted)]" />
                   AI Question Extractor
                 </h3>
-                <button type="button" onClick={() => setExtractModalOpen(false)} className="p-1 hover:bg-slate-800 rounded"><X size={18} /></button>
+                <button type="button" onClick={() => setExtractModalOpen(false)} className="p-1 hover:bg-[var(--bg-hover)] rounded"><X size={18} /></button>
               </div>
 
-              <div className="flex justify-between items-center bg-[#0E1322] p-4 rounded-xl border border-slate-800">
+              <div className="flex justify-between items-center bg-[#0E1322] p-4 rounded-xl border border-[var(--border-primary)]">
                 <div>
                   <p className="text-sm font-bold text-slate-200">Generate Questions from PDF</p>
-                  <p className="text-xs text-slate-400">Upload class notes or document slides to extract viva questions automatically.</p>
+                  <p className="text-xs text-[var(--text-muted)]">Upload class notes or document slides to extract viva questions automatically.</p>
                 </div>
                 <button
                   type="button"
                   onClick={() => setUploadOpen(true)}
-                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-zinc-600 hover:bg-zinc-700 font-bold text-xs text-white"
+                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[var(--accent-primary)] hover:bg-zinc-700 font-bold text-xs text-[var(--text-primary)]"
                 >
                   <Upload className="w-4 h-4" />
                   <span>Upload PDF</span>
@@ -795,7 +795,7 @@ export default function AIAllInOneVivaPage() {
               </div>
 
               <div className="space-y-3">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">Uploaded Materials</h4>
+                <h4 className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">Uploaded Materials</h4>
                 {materialsLoading && materials.length === 0 ? (
                   <div className="flex justify-center py-6"><Loader2 className="w-6 h-6 animate-spin text-zinc-500" /></div>
                 ) : materials.length === 0 ? (
@@ -809,11 +809,11 @@ export default function AIAllInOneVivaPage() {
                       const isFailed = m.processingStatus === "FAILED";
 
                       return (
-                        <div key={m.id} className="group p-4 rounded-xl border border-slate-800 bg-[#0E1322]/40 flex justify-between items-center hover:border-slate-700 transition-all">
+                        <div key={m.id} className="group p-4 rounded-xl border border-[var(--border-primary)] bg-[#0E1322]/40 flex justify-between items-center hover:border-[var(--border-primary)] transition-all">
                           <div className="min-w-0 flex-1 pr-2">
                             <p className="text-xs font-bold text-slate-200 truncate">{m.title}</p>
-                            <div className="flex flex-wrap items-center gap-1.5 text-[9px] text-slate-400 mt-1">
-                              <span className="px-1.5 py-0.5 rounded bg-zinc-500/10 text-zinc-400 font-bold uppercase">{m.subject}</span>
+                            <div className="flex flex-wrap items-center gap-1.5 text-[9px] text-[var(--text-muted)] mt-1">
+                              <span className="px-1.5 py-0.5 rounded bg-zinc-500/10 text-[var(--text-muted)] font-bold uppercase">{m.subject}</span>
                               <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full ${statusMeta.cls}`}>
                                 <StatusIcon size={8} />
                                 <span>{statusMeta.label}</span>
@@ -822,19 +822,19 @@ export default function AIAllInOneVivaPage() {
                           </div>
                           <div className="flex items-center gap-2 shrink-0">
                             {isFailed && (
-                              <button type="button" onClick={() => handleRetryExtraction(m.id)} title="Retry" className="p-1.5 rounded hover:bg-slate-800 text-slate-400"><RefreshCw size={11} /></button>
+                              <button type="button" onClick={() => handleRetryExtraction(m.id)} title="Retry" className="p-1.5 rounded hover:bg-[var(--bg-hover)] text-[var(--text-muted)]"><RefreshCw size={11} /></button>
                             )}
                             {isReady && (
                               <button
                                 type="button"
                                 onClick={() => triggerGenerate(m)}
-                                className="flex items-center gap-1 px-2.5 py-1.5 rounded bg-zinc-600 hover:bg-zinc-700 font-bold text-[10px] text-white"
+                                className="flex items-center gap-1 px-2.5 py-1.5 rounded bg-[var(--accent-primary)] hover:bg-zinc-700 font-bold text-[10px] text-[var(--text-primary)]"
                               >
                                 <Sparkles size={9} />
                                 <span>Generate</span>
                               </button>
                             )}
-                            <button type="button" onClick={() => setPdfDeleteTarget(m)} className="p-1.5 rounded hover:bg-slate-800 text-rose-500 opacity-0 group-hover:opacity-100 transition-opacity"><Trash2 size={11} /></button>
+                            <button type="button" onClick={() => setPdfDeleteTarget(m)} className="p-1.5 rounded hover:bg-[var(--bg-hover)] text-rose-500 opacity-0 group-hover:opacity-100 transition-opacity"><Trash2 size={11} /></button>
                           </div>
                         </div>
                       );
@@ -843,8 +843,8 @@ export default function AIAllInOneVivaPage() {
                 )}
               </div>
 
-              <div className="flex justify-end pt-3 border-t border-slate-800/80">
-                <button type="button" onClick={() => setExtractModalOpen(false)} className="px-4 py-2 border border-slate-800 rounded-xl text-xs font-bold text-slate-400 hover:bg-slate-800">Close</button>
+              <div className="flex justify-end pt-3 border-t border-[var(--border-primary)]/80">
+                <button type="button" onClick={() => setExtractModalOpen(false)} className="px-4 py-2 border border-[var(--border-primary)] rounded-xl text-xs font-bold text-[var(--text-muted)] hover:bg-[var(--bg-hover)]">Close</button>
               </div>
             </div>
           </div>
@@ -853,32 +853,32 @@ export default function AIAllInOneVivaPage() {
         {/* 8. Upload PDF Modal */}
         {uploadOpen && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-            <form onSubmit={handleUploadFile} className="bg-[#111625] border border-slate-800 w-full max-w-md rounded-2xl p-6 space-y-4">
+            <form onSubmit={handleUploadFile} className="bg-[#111625] border border-[var(--border-primary)] w-full max-w-md rounded-2xl p-6 space-y-4">
               <div className="flex justify-between items-center">
                 <h3 className="text-lg font-bold text-slate-200">Upload PDF</h3>
-                <button type="button" onClick={() => setUploadOpen(false)} className="p-1 hover:bg-slate-800 rounded"><X size={18} /></button>
+                <button type="button" onClick={() => setUploadOpen(false)} className="p-1 hover:bg-[var(--bg-hover)] rounded"><X size={18} /></button>
               </div>
-              {uploadError && <div className="p-3 bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs rounded-xl">{uploadError}</div>}
+              {uploadError && <div className="p-3 bg-rose-500/10 border border-[var(--border-primary)] border-rose-500/20 text-rose-400 text-xs rounded-xl">{uploadError}</div>}
               <div className="space-y-3">
                 <div>
-                  <label className="block text-xs font-bold text-slate-400 mb-1">Select PDF Document *</label>
-                  <input type="file" accept=".pdf" required onChange={e => setUploadFile(e.target.files[0])} className="w-full text-sm text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-zinc-600 file:text-white hover:file:bg-zinc-700 cursor-pointer" />
+                  <label className="block text-xs font-bold text-[var(--text-muted)] mb-1">Select PDF Document *</label>
+                  <input type="file" accept=".pdf" required onChange={e => setUploadFile(e.target.files[0])} className="w-full text-sm text-[var(--text-muted)] file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-[var(--accent-primary)] file:text-[var(--text-primary)] hover:file:bg-zinc-700 cursor-pointer" />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-slate-400 mb-1">Title *</label>
-                  <input type="text" required value={uploadTitle} onChange={e => setUploadTitle(e.target.value)} className="w-full bg-[#161B2B] border border-slate-800 rounded-xl p-3 text-sm outline-none" placeholder="e.g. JavaScript Class Notes" />
+                  <label className="block text-xs font-bold text-[var(--text-muted)] mb-1">Title *</label>
+                  <input type="text" required value={uploadTitle} onChange={e => setUploadTitle(e.target.value)} className="w-full bg-[#161B2B] border border-[var(--border-primary)] rounded-xl p-3 text-sm outline-none" placeholder="e.g. JavaScript Class Notes" />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-slate-400 mb-1">Subject Folder *</label>
-                  <select required value={uploadSubject} onChange={e => setUploadSubject(e.target.value)} className="w-full bg-[#161B2B] border border-slate-800 rounded-xl p-3 text-sm outline-none">
+                  <label className="block text-xs font-bold text-[var(--text-muted)] mb-1">Subject Folder *</label>
+                  <select required value={uploadSubject} onChange={e => setUploadSubject(e.target.value)} className="w-full bg-[#161B2B] border border-[var(--border-primary)] rounded-xl p-3 text-sm outline-none">
                     <option value="">Select Folder</option>
                     {subjectNames.map(s => <option key={s} value={s}>{s}</option>)}
                   </select>
                 </div>
               </div>
               <div className="flex gap-3 pt-2">
-                <button type="button" onClick={() => setUploadOpen(false)} className="flex-1 py-2.5 border border-slate-800 rounded-xl text-sm text-slate-400 font-bold hover:bg-slate-800">Cancel</button>
-                <button type="submit" disabled={uploading} className="flex-1 py-2.5 bg-zinc-600 hover:bg-zinc-700 font-bold text-sm text-white rounded-xl cursor-pointer">
+                <button type="button" onClick={() => setUploadOpen(false)} className="flex-1 py-2.5 border border-[var(--border-primary)] rounded-xl text-sm text-[var(--text-muted)] font-bold hover:bg-[var(--bg-hover)]">Cancel</button>
+                <button type="submit" disabled={uploading} className="flex-1 py-2.5 bg-[var(--accent-primary)] hover:bg-zinc-700 font-bold text-sm text-[var(--text-primary)] rounded-xl cursor-pointer">
                   {uploading ? "Uploading..." : "Upload"}
                 </button>
               </div>
@@ -889,12 +889,12 @@ export default function AIAllInOneVivaPage() {
         {/* 9. Delete PDF Confirm */}
         {pdfDeleteTarget && (
           <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-            <div className="bg-[#111625] border border-slate-800 w-full max-w-sm rounded-2xl p-6 space-y-4">
+            <div className="bg-[#111625] border border-[var(--border-primary)] w-full max-w-sm rounded-2xl p-6 space-y-4">
               <h3 className="text-lg font-bold text-slate-200">Delete PDF Notes</h3>
-              <p className="text-slate-400 text-sm">Are you sure you want to delete <span className="font-semibold text-slate-200">"{pdfDeleteTarget.title}"</span>?</p>
+              <p className="text-[var(--text-muted)] text-sm">Are you sure you want to delete <span className="font-semibold text-slate-200">"{pdfDeleteTarget.title}"</span>?</p>
               <div className="flex gap-3">
-                <button onClick={() => setPdfDeleteTarget(null)} className="flex-1 py-2 border border-slate-800 rounded-xl text-xs font-bold text-slate-400 hover:bg-slate-800 cursor-pointer">Cancel</button>
-                <button onClick={handleDeletePdf} disabled={pdfDeleteLoading} className="flex-1 py-2 bg-rose-600 hover:bg-rose-700 font-bold text-xs text-white rounded-xl cursor-pointer">
+                <button onClick={() => setPdfDeleteTarget(null)} className="flex-1 py-2 border border-[var(--border-primary)] rounded-xl text-xs font-bold text-[var(--text-muted)] hover:bg-[var(--bg-hover)] cursor-pointer">Cancel</button>
+                <button onClick={handleDeletePdf} disabled={pdfDeleteLoading} className="flex-1 py-2 bg-rose-600 hover:bg-rose-700 font-bold text-xs text-[var(--text-primary)] rounded-xl cursor-pointer">
                   {pdfDeleteLoading ? "Deleting..." : "Delete"}
                 </button>
               </div>
@@ -909,73 +909,73 @@ export default function AIAllInOneVivaPage() {
   if (workspaceView === "review") {
     const approvedCount = draftQuestions.filter(q => q._approved).length;
     return (
-      <div className="min-h-screen bg-[#0B0F19] text-white p-6 md:p-10 font-sans space-y-6">
-        <div className="flex items-center space-x-3 border-b border-slate-800 pb-4">
-          <button onClick={() => setWorkspaceView("default")} className="p-2 rounded-xl hover:bg-slate-500/10 transition-all text-slate-300 cursor-pointer">
+      <div className="min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)] p-6 md:p-10 font-sans space-y-6">
+        <div className="flex items-center space-x-3 border-b border-[var(--border-primary)] pb-4">
+          <button onClick={() => setWorkspaceView("default")} className="p-2 rounded-xl hover:bg-slate-500/10 transition-all text-[var(--text-secondary)] cursor-pointer">
             <ChevronLeft className="w-5 h-5" />
           </button>
           <div>
             <h1 className="text-2xl font-black">Generate &amp; Review Questions</h1>
-            <p className="text-xs text-slate-400">PDF: {activeMaterial?.title}</p>
+            <p className="text-xs text-[var(--text-muted)]">PDF: {activeMaterial?.title}</p>
           </div>
         </div>
 
         {draftQuestions.length === 0 ? (
-          <div className="max-w-xl mx-auto p-8 rounded-3xl border border-slate-800 bg-[#111625] space-y-6">
+          <div className="max-w-xl mx-auto p-8 rounded-3xl border border-[var(--border-primary)] bg-[#111625] space-y-6">
             <div className="space-y-3">
-              <label className="text-xs font-bold uppercase tracking-wider text-slate-400">Number of AI Questions</label>
+              <label className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">Number of AI Questions</label>
               <div className="flex gap-2">
                 {[5, 10, 15, 20].map(n => (
                   <button key={n} onClick={() => setGenCount(n)}
-                          className={`px-4 py-2 rounded-xl text-sm font-bold border transition-all cursor-pointer ${genCount === n ? "bg-zinc-600 text-white border-transparent" : "border-slate-800 text-slate-400 hover:border-slate-700"}`}>
+                          className={`px-4 py-2 rounded-xl text-sm font-bold border border-[var(--border-primary)] transition-all cursor-pointer ${genCount === n ? "bg-[var(--accent-primary)] text-[var(--text-on-accent)] border-transparent" : "border-[var(--border-primary)] text-[var(--text-muted)] hover:border-[var(--border-primary)]"}`}>
                     {n}
                   </button>
                 ))}
               </div>
             </div>
-            {genError && <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs">{genError}</div>}
+            {genError && <div className="p-3 rounded-xl bg-rose-500/10 border border-[var(--border-primary)] border-rose-500/20 text-rose-400 text-xs">{genError}</div>}
             <button onClick={handleGenerateQuestions} disabled={generating}
-                    className="w-full py-3.5 rounded-2xl bg-zinc-600 hover:bg-zinc-700 font-bold text-sm text-white flex items-center justify-center gap-2 cursor-pointer">
+                    className="w-full py-3.5 rounded-2xl bg-[var(--accent-primary)] hover:bg-zinc-700 font-bold text-sm text-[var(--text-primary)] flex items-center justify-center gap-2 cursor-pointer">
               {generating ? <><Loader2 className="w-4 h-4 animate-spin" />Generating...</> : <><Sparkles className="w-4 h-4" />Generate Questions</>}
             </button>
           </div>
         ) : (
           <div className="space-y-4 max-w-4xl mx-auto">
             <div className="flex items-center justify-between">
-              <p className="text-slate-400 text-sm">Review generated drafts and select which to save.</p>
+              <p className="text-[var(--text-muted)] text-sm">Review generated drafts and select which to save.</p>
               {saveResult ? (
                 <div className="text-emerald-400 text-sm font-bold">✓ {saveResult.saved} questions added!</div>
               ) : (
                 <button onClick={handleSaveDraftToBank} disabled={savingToBank || approvedCount === 0}
-                        className="px-5 py-2.5 rounded-xl bg-zinc-600 hover:bg-zinc-700 font-bold text-sm text-white disabled:opacity-50 cursor-pointer">
+                        className="px-5 py-2.5 rounded-xl bg-[var(--accent-primary)] hover:bg-zinc-700 font-bold text-sm text-[var(--text-primary)] disabled:opacity-50 cursor-pointer">
                   Save {approvedCount} to Bank
                 </button>
               )}
             </div>
-            {genError && <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs">{genError}</div>}
+            {genError && <div className="p-3 rounded-xl bg-rose-500/10 border border-[var(--border-primary)] border-rose-500/20 text-rose-400 text-xs">{genError}</div>}
             <div className="space-y-3">
               {draftQuestions.map((q, idx) => (
-                <div key={q._id} className={`p-5 rounded-2xl border bg-[#111625] transition-all ${q._approved ? "border-slate-800" : "border-slate-800/40 opacity-50"}`}>
+                <div key={q._id} className={`p-5 rounded-2xl border border-[var(--border-primary)] bg-[#111625] transition-all ${q._approved ? "border-[var(--border-primary)]" : "border-[var(--border-primary)]/40 opacity-50"}`}>
                   <div className="flex items-start gap-4 justify-between">
                     <div className="flex items-start gap-4 flex-1">
                       <button onClick={() => updateDraft(idx, "_approved", !q._approved)}
-                              className={`w-5 h-5 mt-1 rounded border flex items-center justify-center cursor-pointer shrink-0 ${q._approved ? "bg-zinc-500 border-zinc-500" : "border-slate-700"}`}>
+                              className={`w-5 h-5 mt-1 rounded border border-[var(--border-primary)] flex items-center justify-center cursor-pointer shrink-0 ${q._approved ? "bg-zinc-500 border-zinc-500" : "border-[var(--border-primary)]"}`}>
                         {q._approved && <Check size={12} />}
                       </button>
                       <div className="flex-1 space-y-2">
                         {q._editing ? (
                           <div className="space-y-3">
-                            <textarea rows={2} className="w-full p-3 bg-[#161b2b] border border-slate-800 rounded-xl text-sm focus:border-zinc-500 outline-none resize-none" value={q.questionText} onChange={e => updateDraft(idx, "questionText", e.target.value)} />
+                            <textarea rows={2} className="w-full p-3 bg-[#161b2b] border border-[var(--border-primary)] rounded-xl text-sm focus:border-zinc-500 outline-none resize-none" value={q.questionText} onChange={e => updateDraft(idx, "questionText", e.target.value)} />
                             <div className="flex items-center gap-3">
                               <div className="flex-1">
-                                <label className="block text-[10px] font-bold text-slate-400 mb-1">Difficulty</label>
-                                <select value={q.difficulty} onChange={e => updateDraft(idx, "difficulty", e.target.value)} className="w-full bg-[#161B2B] border border-slate-800 rounded-lg p-2 text-xs outline-none">
+                                <label className="block text-[10px] font-bold text-[var(--text-muted)] mb-1">Difficulty</label>
+                                <select value={q.difficulty} onChange={e => updateDraft(idx, "difficulty", e.target.value)} className="w-full bg-[#161B2B] border border-[var(--border-primary)] rounded-lg p-2 text-xs outline-none">
                                   {DIFFICULTIES.map(d => <option key={d} value={d}>{d}</option>)}
                                 </select>
                               </div>
                               <div className="flex-1">
-                                <label className="block text-[10px] font-bold text-slate-400 mb-1">Keywords</label>
-                                <input type="text" value={q.keywords || ""} onChange={e => updateDraft(idx, "keywords", e.target.value)} className="w-full bg-[#161B2B] border border-slate-800 rounded-lg p-2 text-xs outline-none" placeholder="Keywords..." />
+                                <label className="block text-[10px] font-bold text-[var(--text-muted)] mb-1">Keywords</label>
+                                <input type="text" value={q.keywords || ""} onChange={e => updateDraft(idx, "keywords", e.target.value)} className="w-full bg-[#161B2B] border border-[var(--border-primary)] rounded-lg p-2 text-xs outline-none" placeholder="Keywords..." />
                               </div>
                             </div>
                           </div>
@@ -983,7 +983,7 @@ export default function AIAllInOneVivaPage() {
                           <>
                             <p className="text-sm font-semibold text-slate-200 leading-snug">{q.questionText}</p>
                             <div className="flex gap-2">
-                              <span className="text-[10px] bg-slate-800 px-2 py-0.5 rounded text-slate-400 uppercase font-medium">{q.subject}</span>
+                              <span className="text-[10px] bg-[var(--bg-hover)] px-2 py-0.5 rounded text-[var(--text-muted)] uppercase font-medium">{q.subject}</span>
                               <span className={`text-[10px] px-2 py-0.5 rounded uppercase font-bold ${DIFF_COLOR[q.difficulty].bg} ${DIFF_COLOR[q.difficulty].text}`}>{q.difficulty}</span>
                             </div>
                           </>
@@ -993,15 +993,15 @@ export default function AIAllInOneVivaPage() {
                     
                     <div className="flex items-center space-x-1 shrink-0">
                       {q._editing ? (
-                        <button onClick={() => updateDraft(idx, "_editing", false)} className="p-2 rounded hover:bg-emerald-500/10 hover:text-emerald-400 text-slate-400 cursor-pointer" title="Save changes">
+                        <button onClick={() => updateDraft(idx, "_editing", false)} className="p-2 rounded hover:bg-emerald-500/10 hover:text-emerald-400 text-[var(--text-muted)] cursor-pointer" title="Save changes">
                           <Check size={14} />
                         </button>
                       ) : (
-                        <button onClick={() => updateDraft(idx, "_editing", true)} className="p-2 rounded hover:bg-zinc-500/10 hover:text-zinc-400 text-slate-400 cursor-pointer" title="Edit draft">
+                        <button onClick={() => updateDraft(idx, "_editing", true)} className="p-2 rounded hover:bg-zinc-500/10 hover:text-[var(--text-muted)] text-[var(--text-muted)] cursor-pointer" title="Edit draft">
                           <Edit2 size={14} />
                         </button>
                       )}
-                      <button onClick={() => setDraftQuestions(qs => qs.filter((_, i) => i !== idx))} className="p-2 rounded hover:bg-rose-500/10 hover:text-rose-400 text-slate-400 cursor-pointer" title="Remove question">
+                      <button onClick={() => setDraftQuestions(qs => qs.filter((_, i) => i !== idx))} className="p-2 rounded hover:bg-rose-500/10 hover:text-rose-400 text-[var(--text-muted)] cursor-pointer" title="Remove question">
                         <Trash2 size={14} />
                       </button>
                     </div>
@@ -1010,9 +1010,9 @@ export default function AIAllInOneVivaPage() {
               ))}
               
               {generating && (
-                <div className="p-5 rounded-2xl border border-slate-800/40 bg-[#111625]/50 flex items-center justify-center space-x-3">
-                  <Loader2 className="w-5 h-5 animate-spin text-zinc-400" />
-                  <span className="text-sm font-medium text-slate-400">Generating question {draftQuestions.length + 1} of {genCount}...</span>
+                <div className="p-5 rounded-2xl border border-[var(--border-primary)]/40 bg-[#111625]/50 flex items-center justify-center space-x-3">
+                  <Loader2 className="w-5 h-5 animate-spin text-[var(--text-muted)]" />
+                  <span className="text-sm font-medium text-[var(--text-muted)]">Generating question {draftQuestions.length + 1} of {genCount}...</span>
                 </div>
               )}
             </div>
@@ -1025,24 +1025,24 @@ export default function AIAllInOneVivaPage() {
   // --- EXPLORER VIEW (WHEN FOLDER IS OPENED) ---
   if (selectedSubject) {
     return (
-      <div className="min-h-screen bg-[#0B0F19] text-white p-6 md:p-10 font-sans space-y-6 animate-fade-in">
+      <div className="min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)] p-6 md:p-10 font-sans space-y-6 animate-fade-in">
         {/* Breadcrumb folder navigation */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-800 pb-5">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-[var(--border-primary)] pb-5">
           <div className="flex items-center space-x-3">
             <button
               onClick={() => setSelectedSubject("")}
-              className="p-2 rounded-xl bg-slate-900 border border-slate-800 hover:bg-slate-805 hover:text-white transition-all text-slate-300 cursor-pointer animate-fade-in"
+              className="p-2 rounded-xl bg-[var(--bg-card)] border border-[var(--border-primary)] hover:bg-slate-805 hover:text-[var(--text-primary)] transition-all text-[var(--text-secondary)] cursor-pointer animate-fade-in"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
             <div>
-              <div className="flex items-center space-x-2 text-xs text-slate-400 font-semibold">
+              <div className="flex items-center space-x-2 text-xs text-[var(--text-muted)] font-semibold">
                 <span className="cursor-pointer hover:underline" onClick={() => setSelectedSubject("")}>Question Bank</span>
                 <span>/</span>
-                <span className="text-zinc-400">{selectedSubject}</span>
+                <span className="text-[var(--text-muted)]">{selectedSubject}</span>
               </div>
               <h1 className="text-2xl font-black mt-1 flex items-center gap-2">
-                <FolderOpen className="w-6 h-6 text-zinc-400 animate-pulse" />
+                <FolderOpen className="w-6 h-6 text-[var(--text-muted)] animate-pulse" />
                 {selectedSubject}
               </h1>
             </div>
@@ -1057,7 +1057,7 @@ export default function AIAllInOneVivaPage() {
                   setFormError("");
                   setModalOpen(true);
                 }}
-                className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-zinc-500 to-slate-600 hover:from-zinc-600 hover:to-slate-700 font-semibold text-xs text-white shadow-lg transition-all cursor-pointer"
+                className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-zinc-500 to-slate-600 hover:from-zinc-600  font-semibold text-xs text-[var(--text-primary)] shadow-lg transition-all cursor-pointer"
               >
                 <Plus className="w-4 h-4" />
                 <span>Add Question</span>
@@ -1068,13 +1068,13 @@ export default function AIAllInOneVivaPage() {
 
         {/* List of questions for the selected subject */}
         <div className="space-y-4 max-w-5xl">
-          <div className="flex justify-between items-center text-xs text-slate-400">
+          <div className="flex justify-between items-center text-xs text-[var(--text-muted)]">
             <span>Questions inside folder</span>
             <span className="text-[10px] text-slate-500">Page {questionPage}</span>
           </div>
           
           {visibleQuestions.length === 0 ? (
-            <div className="p-8 rounded-xl border border-dashed border-slate-800 text-center text-slate-500">
+            <div className="p-8 rounded-xl border border-[var(--border-primary)] border-dashed border-[var(--border-primary)] text-center text-slate-500">
               No questions in this folder yet. Click "Add Question" to create one.
             </div>
           ) : (
@@ -1082,21 +1082,21 @@ export default function AIAllInOneVivaPage() {
               {visibleQuestions.map((q) => (
                 <div
                   key={q.id}
-                  className="group flex items-start justify-between gap-4 p-5 rounded-xl border border-slate-850 bg-[#0E1322]/80 hover:border-slate-750 transition-all hover:bg-slate-900/30"
+                  className="group flex items-start justify-between gap-4 p-5 rounded-xl border border-[var(--border-primary)] border-slate-850 bg-[#0E1322]/80 hover:border-slate-750 transition-all hover:bg-[var(--bg-card)]/30"
                 >
                   <div className="flex-1 min-w-0 space-y-2">
                     <p className="text-sm font-semibold text-slate-200 leading-snug">{q.questionText}</p>
                     <div className="flex items-center gap-2">
-                      <span className="text-[10px] bg-slate-800 px-2 py-0.5 rounded text-slate-400 uppercase font-medium">{q.topic || "General"}</span>
+                      <span className="text-[10px] bg-[var(--bg-hover)] px-2 py-0.5 rounded text-[var(--text-muted)] uppercase font-medium">{q.topic || "General"}</span>
                       <span className={`text-[10px] px-2 py-0.5 rounded uppercase font-bold ${DIFF_COLOR[q.difficulty].bg} ${DIFF_COLOR[q.difficulty].text}`}>{q.difficulty}</span>
                     </div>
                   </div>
                   {!(q.instituteId === null && user?.role !== "ADMIN") && (
                     <div className="flex items-center space-x-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button onClick={() => openEdit(q)} className="p-2 rounded hover:bg-zinc-500/10 hover:text-zinc-400 text-slate-400 cursor-pointer">
+                      <button onClick={() => openEdit(q)} className="p-2 rounded hover:bg-zinc-500/10 hover:text-[var(--text-muted)] text-[var(--text-muted)] cursor-pointer">
                         <Edit2 size={13} />
                       </button>
-                      <button onClick={() => setDeleteTarget({ id: q.id, questionText: q.questionText })} className="p-2 rounded hover:bg-rose-500/10 hover:text-rose-400 text-slate-400 cursor-pointer">
+                      <button onClick={() => setDeleteTarget({ id: q.id, questionText: q.questionText })} className="p-2 rounded hover:bg-rose-500/10 hover:text-rose-400 text-[var(--text-muted)] cursor-pointer">
                         <Trash2 size={13} />
                       </button>
                     </div>
@@ -1112,7 +1112,7 @@ export default function AIAllInOneVivaPage() {
               <button
                 disabled={questionPage === 1}
                 onClick={() => setQuestionPage(p => p - 1)}
-                className="px-3 py-1.5 text-xs rounded border border-slate-850 bg-slate-900 disabled:opacity-40 text-slate-300 cursor-pointer"
+                className="px-3 py-1.5 text-xs rounded border border-[var(--border-primary)] border-slate-850 bg-[var(--bg-card)] disabled:opacity-40 text-[var(--text-secondary)] cursor-pointer"
               >
                 Previous
               </button>
@@ -1122,7 +1122,7 @@ export default function AIAllInOneVivaPage() {
               <button
                 disabled={questionPage >= Math.ceil(selectedQuestions.length / QUESTIONS_PER_PAGE)}
                 onClick={() => setQuestionPage(p => p + 1)}
-                className="px-3 py-1.5 text-xs rounded border border-slate-850 bg-slate-900 disabled:opacity-40 text-slate-300 cursor-pointer"
+                className="px-3 py-1.5 text-xs rounded border border-[var(--border-primary)] border-slate-850 bg-[var(--bg-card)] disabled:opacity-40 text-[var(--text-secondary)] cursor-pointer"
               >
                 Next
               </button>
@@ -1137,22 +1137,22 @@ export default function AIAllInOneVivaPage() {
 
   // --- MAIN ALL-IN-ONE VIEW (FOLDERS CLOSED VIEW) ---
   return (
-    <div className="min-h-screen bg-[#0B0F19] text-white p-6 md:p-10 font-sans">
+    <div className="min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)] p-6 md:p-10 font-sans">
       <div className="max-w-7xl mx-auto space-y-8">
         
         {/* Page Title / Header */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-slate-800 pb-6">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-[var(--border-primary)] pb-6">
           <div className="space-y-1.5">
             <div className="flex items-center space-x-2">
-              <div className="p-1.5 rounded-lg bg-zinc-500/10 text-zinc-400">
+              <div className="p-1.5 rounded-lg bg-zinc-500/10 text-[var(--text-muted)]">
                 <Brain size={18} />
               </div>
-              <span className="text-xs font-bold uppercase tracking-widest text-zinc-400">AI Viva</span>
+              <span className="text-xs font-bold uppercase tracking-widest text-[var(--text-muted)]">AI Viva</span>
             </div>
-            <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-zinc-400 via-slate-400 to-pink-400 bg-clip-text text-transparent">
+            <h1 className="text-3xl font-extrabold tracking-tight text-[var(--text-primary)]">
               Viva Management Dashboard
             </h1>
-            <p className="text-slate-400 text-sm">
+            <p className="text-[var(--text-muted)] text-sm">
               Manage question banks and schedule student assessments.
             </p>
           </div>
@@ -1163,21 +1163,21 @@ export default function AIAllInOneVivaPage() {
                 <>
                   <button
                     onClick={() => { setSubjectModalError(""); setNewFolderSubjectName(""); setSubjectModalOpen(true); }}
-                    className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 hover:bg-slate-800 font-medium text-xs text-slate-300 transition-all cursor-pointer"
+                    className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-[var(--bg-card)] border border-[var(--border-primary)] hover:bg-[var(--bg-hover)] font-medium text-xs text-[var(--text-secondary)] transition-all cursor-pointer"
                   >
-                    <Plus className="w-4 h-4 text-zinc-400" />
+                    <Plus className="w-4 h-4 text-[var(--text-muted)]" />
                     <span>Add Folder</span>
                   </button>
                   <button
                     onClick={() => { setExtractModalOpen(true); fetchMaterials(); }}
-                    className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 hover:bg-slate-800 font-medium text-xs text-slate-300 transition-all cursor-pointer"
+                    className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-[var(--bg-card)] border border-[var(--border-primary)] hover:bg-[var(--bg-hover)] font-medium text-xs text-[var(--text-secondary)] transition-all cursor-pointer"
                   >
-                    <Sparkles className="w-4 h-4 text-zinc-400" />
+                    <Sparkles className="w-4 h-4 text-[var(--text-muted)]" />
                     <span>Extract from PDF</span>
                   </button>
                   <button
                     onClick={openCreate}
-                    className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-zinc-500 to-slate-600 hover:from-zinc-600 hover:to-slate-700 font-semibold text-xs text-white shadow-lg transition-all cursor-pointer"
+                    className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-[var(--accent-primary)] hover:bg-[var(--accent-secondary)] font-semibold text-xs text-[var(--text-on-accent)] shadow-lg transition-all cursor-pointer"
                   >
                     <Plus className="w-4 h-4" />
                     <span>Add Question</span>
@@ -1202,7 +1202,7 @@ export default function AIAllInOneVivaPage() {
                   setScheduleSuccess("");
                   setScheduleOpen(true);
                 }}
-                className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-pink-500 to-slate-600 hover:from-pink-600 hover:to-slate-700 font-bold text-xs text-white shadow transition-all cursor-pointer"
+                className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[var(--accent-gradient)] hover:brightness-110  font-bold text-xs text-[var(--text-primary)] shadow transition-all cursor-pointer"
               >
                 <Plus className="w-4 h-4" />
                 <span>Schedule Viva</span>
@@ -1212,24 +1212,24 @@ export default function AIAllInOneVivaPage() {
         </div>
 
         {/* Tab Switcher: Question Bank vs Schedule Viva */}
-        <div className="flex space-x-1 p-1 bg-slate-900 border border-slate-800 rounded-xl max-w-md">
+        <div className="flex space-x-1 p-1 bg-[var(--bg-card)] border border-[var(--border-primary)] rounded-xl max-w-md">
           <button
             type="button"
             onClick={() => setSubSectionTab("bank")}
-            className={`flex-1 py-2 px-4 rounded-lg font-bold text-xs transition-all cursor-pointer ${subSectionTab === "bank" ? "bg-zinc-600 text-white" : "text-slate-400 hover:text-slate-200"}`}
+            className={`flex-1 py-2 px-4 rounded-lg font-bold text-xs transition-all cursor-pointer ${subSectionTab === "bank" ? "bg-[var(--accent-primary)] text-[var(--text-on-accent)]" : "text-[var(--text-muted)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)]"}`}
           >
             Question Bank
           </button>
           <button
             type="button"
             onClick={() => setSubSectionTab("schedule")}
-            className={`flex-1 py-2 px-4 rounded-lg font-bold text-xs transition-all cursor-pointer ${subSectionTab === "schedule" ? "bg-zinc-600 text-white" : "text-slate-400 hover:text-slate-200"}`}
+            className={`flex-1 py-2 px-4 rounded-lg font-bold text-xs transition-all cursor-pointer ${subSectionTab === "schedule" ? "bg-[var(--accent-primary)] text-[var(--text-on-accent)]" : "text-[var(--text-muted)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)]"}`}
           >
             Schedule Viva
           </button>
         </div>
 
-        {error && <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs">{error}</div>}
+        {error && <div className="p-4 rounded-xl bg-rose-500/10 border border-[var(--border-primary)] border-rose-500/20 text-rose-400 text-xs">{error}</div>}
 
         {/* ==========================================
             TAB 1: QUESTION BANK
@@ -1244,8 +1244,8 @@ export default function AIAllInOneVivaPage() {
                 { label: "Medium Questions", value: byDiff.MEDIUM, icon: Layers, color: "amber" },
                 { label: "Hard Questions", value: byDiff.HARD, icon: Layers, color: "rose" },
               ].map(({ label, value, icon: Icon, color }) => (
-                <div key={label} className="p-4 rounded-xl border border-slate-800 bg-slate-900/30 flex items-center space-x-3">
-                  <div className={`p-2 rounded-lg bg-zinc-500/10 text-zinc-400 shrink-0`}><Icon size={16} /></div>
+                <div key={label} className="p-4 rounded-xl border border-[var(--border-primary)] bg-[var(--bg-card)]/30 flex items-center space-x-3">
+                  <div className={`p-2 rounded-lg bg-zinc-500/10 text-[var(--text-muted)] shrink-0`}><Icon size={16} /></div>
                   <div>
                     <p className="text-xl font-black">{value}</p>
                     <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">{label}</p>
@@ -1256,18 +1256,18 @@ export default function AIAllInOneVivaPage() {
 
             {/* Institute/Global toggle switcher */}
             {user?.role !== "ADMIN" && (
-              <div className="flex space-x-1 p-1 bg-slate-900 border border-slate-800 rounded-xl max-w-xs">
+              <div className="flex space-x-1 p-1 bg-[var(--bg-card)] border border-[var(--border-primary)] rounded-xl max-w-xs">
                 <button
                   type="button"
                   onClick={() => { setActiveTab("institute"); setSelectedSubject(""); setQuestionPage(1); }}
-                  className={`flex-1 py-1.5 px-3 rounded-lg font-bold text-xs transition-all cursor-pointer ${activeTab === "institute" ? "bg-zinc-600 text-white" : "text-slate-400 hover:text-slate-200"}`}
+                  className={`flex-1 py-1.5 px-3 rounded-lg font-bold text-xs transition-all cursor-pointer ${activeTab === "institute" ? "bg-[var(--accent-primary)] text-[var(--text-on-accent)]" : "text-[var(--text-muted)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)]"}`}
                 >
                   Your Institute
                 </button>
                 <button
                   type="button"
                   onClick={() => { setActiveTab("global"); setSelectedSubject(""); setQuestionPage(1); }}
-                  className={`flex-1 py-1.5 px-3 rounded-lg font-bold text-xs transition-all cursor-pointer ${activeTab === "global" ? "bg-zinc-600 text-white" : "text-slate-400 hover:text-slate-200"}`}
+                  className={`flex-1 py-1.5 px-3 rounded-lg font-bold text-xs transition-all cursor-pointer ${activeTab === "global" ? "bg-[var(--accent-primary)] text-[var(--text-on-accent)]" : "text-[var(--text-muted)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)]"}`}
                 >
                   Global Bank
                 </button>
@@ -1277,7 +1277,7 @@ export default function AIAllInOneVivaPage() {
             {/* Folder Grid */}
             <div className="space-y-4">
               <h2 className="text-lg font-bold flex items-center gap-2 text-zinc-300">
-                <Folder className="w-5 h-5 text-zinc-400" />
+                <Folder className="w-5 h-5 text-[var(--text-muted)]" />
                 Question Bank Subjects
               </h2>
 
@@ -1286,7 +1286,7 @@ export default function AIAllInOneVivaPage() {
                   <Loader2 className="w-6 h-6 animate-spin text-zinc-500" />
                 </div>
               ) : subjectNames.length === 0 ? (
-                <div className="p-8 rounded-xl border border-dashed border-slate-800 text-center text-slate-500">
+                <div className="p-8 rounded-xl border border-[var(--border-primary)] border-dashed border-[var(--border-primary)] text-center text-slate-500">
                   No questions found. Add folder or create questions to begin.
                 </div>
               ) : (
@@ -1301,10 +1301,10 @@ export default function AIAllInOneVivaPage() {
                           setSelectedSubject(subject);
                           setQuestionPage(1);
                         }}
-                        className="group flex items-center justify-between gap-4 p-5 rounded-xl bg-[#111625] border border-slate-800 hover:border-zinc-500/40 text-left transition-all cursor-pointer outline-none font-sans"
+                        className="group flex items-center justify-between gap-4 p-5 rounded-xl border border-[var(--border-primary)] hover:border-zinc-500/40 text-left transition-all cursor-pointer outline-none font-sans"
                       >
                         <div className="flex items-center gap-3 min-w-0">
-                          <div className="p-2 rounded-lg bg-zinc-500/10 text-zinc-400 shrink-0">
+                          <div className="p-2 rounded-lg bg-zinc-500/10 text-[var(--text-muted)] shrink-0">
                             <Folder className="w-4 h-4" />
                           </div>
                           <div className="min-w-0">
@@ -1314,7 +1314,7 @@ export default function AIAllInOneVivaPage() {
                             </p>
                           </div>
                         </div>
-                        <ChevronRight className="w-4 h-4 text-slate-600 group-hover:text-zinc-400 transition-colors" />
+                        <ChevronRight className="w-4 h-4 text-slate-600 group-hover:text-[var(--text-muted)] transition-colors" />
                       </button>
                     );
                   })}
@@ -1329,19 +1329,19 @@ export default function AIAllInOneVivaPage() {
             ========================================== */}
         {subSectionTab === "schedule" && (
           <div className="space-y-4 animate-fade-in">
-            <div className="flex justify-between items-center pb-2 border-b border-slate-800/60">
-              <h2 className="text-lg font-bold flex items-center gap-2 text-pink-300">
-                <Calendar className="w-5 h-5 text-pink-400" />
+            <div className="flex justify-between items-center pb-2 border-b border-[var(--border-primary)]/60">
+              <h2 className="text-lg font-bold flex items-center gap-2 text-[var(--text-primary)]">
+                <Calendar className="w-5 h-5 text-[var(--text-primary)]" />
                 Viva Scheduling & Session History
               </h2>
             </div>
 
             {vivasLoading ? (
               <div className="flex justify-center py-10">
-                <Loader2 className="w-6 h-6 animate-spin text-pink-500" />
+                <Loader2 className="w-6 h-6 animate-spin text-[var(--text-primary)]" />
               </div>
             ) : vivas.length === 0 ? (
-              <div className="p-8 rounded-xl border border-dashed border-slate-800 text-center text-slate-500">
+              <div className="p-8 rounded-xl border border-[var(--border-primary)] border-dashed border-[var(--border-primary)] text-center text-slate-500">
                 No Vivas scheduled. Click "Schedule Viva" to host a new session.
               </div>
             ) : (
@@ -1349,17 +1349,17 @@ export default function AIAllInOneVivaPage() {
                 {vivas.map(viva => {
                   const status = getVivaStatus(viva);
                   return (
-                    <div key={viva.id} className="p-5 rounded-xl border border-slate-800 bg-slate-900/30 flex flex-col justify-between space-y-4 hover:border-slate-700 transition-all font-sans">
+                    <div key={viva.id} className="p-5 rounded-xl border border-[var(--border-primary)] bg-[var(--bg-card)]/30 flex flex-col justify-between space-y-4 hover:border-[var(--border-primary)] transition-all font-sans">
                       <div className="space-y-3">
                         <div className="flex justify-between items-center">
-                          <span className="text-xs font-bold px-2 py-0.5 rounded bg-zinc-500/10 text-zinc-400">{viva.subject}</span>
-                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${status.color}`}>{status.label}</span>
+                          <span className="text-xs font-bold px-2 py-0.5 rounded bg-zinc-500/10 text-[var(--text-muted)]">{viva.subject}</span>
+                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border border-[var(--border-primary)] ${status.color}`}>{status.label}</span>
                         </div>
                         <div>
                           <h3 className="text-base font-bold text-slate-200">{viva.title}</h3>
-                          {viva.description && <p className="text-xs text-slate-400 line-clamp-2 mt-1">{viva.description}</p>}
+                          {viva.description && <p className="text-xs text-[var(--text-muted)] line-clamp-2 mt-1">{viva.description}</p>}
                         </div>
-                        <div className="space-y-1 pt-2 border-t border-slate-800/80 text-[11px] text-slate-400">
+                        <div className="space-y-1 pt-2 border-t border-[var(--border-primary)]/80 text-[11px] text-[var(--text-muted)]">
                           <div className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5 text-slate-500" /><span>Start: {new Date(viva.startTime).toLocaleString()}</span></div>
                           {viva.endTime && <div className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5 text-slate-500" /><span>End: {new Date(viva.endTime).toLocaleString()}</span></div>}
                           <div className="flex items-center gap-1.5"><BookOpen className="w-3.5 h-3.5 text-slate-500" /><span>Questions: {viva.questions?.length || 0}</span></div>
@@ -1368,7 +1368,7 @@ export default function AIAllInOneVivaPage() {
                           <button
                             type="button"
                             onClick={() => openEditViva(viva)}
-                            className="inline-flex items-center justify-center p-1.5 rounded-lg text-zinc-400 hover:text-zinc-300 hover:bg-zinc-500/10 cursor-pointer transition-colors"
+                            className="inline-flex items-center justify-center p-1.5 rounded-lg text-[var(--text-muted)] hover:text-zinc-300 hover:bg-zinc-500/10 cursor-pointer transition-colors"
                             title="Edit Viva Details"
                           >
                             <Edit2 className="w-4 h-4" />

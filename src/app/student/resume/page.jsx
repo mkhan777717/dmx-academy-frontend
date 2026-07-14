@@ -108,7 +108,7 @@ export default function ResumeBuilderPage() {
       {/* Header - Hidden when printing */}
       <section className="flex flex-col gap-2 border-b pb-6 shrink-0 print:hidden mb-6" style={{ borderColor: "var(--border-primary)" }}>
         <div className="flex items-center justify-between">
-          <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border mb-3 w-fit"
+          <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border border-[var(--border-primary)] mb-3 w-fit"
             style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)", backgroundColor: "var(--bg-secondary)" }}>
             <FileText size={12} className="text-violet-500" />
             Resume Builder
@@ -117,7 +117,7 @@ export default function ResumeBuilderPage() {
             <button
               onClick={handleSave}
               disabled={isSaving}
-              className="flex items-center px-4 py-2 border rounded-xl font-semibold text-sm transition-colors shadow-sm cursor-pointer hover:bg-[var(--bg-secondary)]"
+              className="flex items-center px-4 py-2 border border-[var(--border-primary)] rounded-xl font-semibold text-sm transition-colors shadow-sm cursor-pointer hover:bg-[var(--bg-secondary)]"
               style={{ 
                 backgroundColor: "var(--bg-primary)", 
                 borderColor: "var(--border-primary)",
@@ -135,7 +135,7 @@ export default function ResumeBuilderPage() {
             </button>
             <button
               onClick={handlePrint}
-              className="flex items-center px-4 py-2.5 rounded-xl font-semibold text-white text-sm transition-transform hover:-translate-y-0.5 shadow-md cursor-pointer"
+              className="flex items-center px-4 py-2.5 rounded-xl font-semibold text-[var(--text-on-accent)] text-sm transition-transform hover:-translate-y-0.5 shadow-md cursor-pointer"
               style={{ 
                 background: "var(--accent-primary)"
               }}

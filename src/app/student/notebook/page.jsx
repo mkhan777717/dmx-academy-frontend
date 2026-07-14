@@ -13,12 +13,12 @@ export default function NotebookPage() {
     <div className="max-w-6xl mx-auto space-y-6 animate-fade-in px-0 sm:px-6 pb-12">
       <section className="flex flex-col gap-2 border-b pb-6 shrink-0" style={{ borderColor: "var(--border-primary)" }}>
         <div className="flex items-center justify-between">
-          <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border mb-3 w-fit"
+          <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border border-[var(--border-primary)] mb-3 w-fit"
             style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)", backgroundColor: "var(--bg-secondary)" }}>
             <FileText size={12} className="text-violet-500" />
             Notebook
           </div>
-          <button className="flex items-center space-x-2 px-4 py-2.5 rounded-xl font-semibold text-sm text-white transition-transform hover:-translate-y-0.5 shadow-md"
+          <button className="flex items-center space-x-2 px-4 py-2.5 rounded-xl font-semibold text-sm text-[var(--text-on-accent)] transition-transform hover:-translate-y-0.5 shadow-md"
             style={{ background: "var(--accent-primary)" }}>
             <Plus size={16} />
             <span>New Note</span>
@@ -32,7 +32,7 @@ export default function NotebookPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-2">
         {notes.map(note => (
-          <div key={note.id} className="p-6 rounded-2xl border shadow-sm cursor-pointer transition-colors hover:bg-[var(--bg-secondary)]" 
+          <div key={note.id} className="p-6 rounded-2xl border border-[var(--border-primary)] shadow-sm cursor-pointer transition-colors hover:bg-[var(--bg-secondary)]" 
                style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}>
             <h3 className="text-sm font-semibold mb-2" style={{ color: "var(--text-primary)" }}>{note.title}</h3>
             <p className="text-xs line-clamp-3" style={{ color: "var(--text-secondary)" }}>{note.snippet}</p>

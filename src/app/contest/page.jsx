@@ -366,7 +366,7 @@ export default function ContestLobby() {
             className="text-center max-w-3xl mx-auto space-y-4"
           >
             <div
-              className="inline-flex items-center space-x-1.5 rounded-full border px-4 py-1.5 text-xs font-semibold"
+              className="inline-flex items-center space-x-1.5 rounded-full border border-[var(--border-primary)] px-4 py-1.5 text-xs font-semibold"
               style={{
                 backgroundColor: "var(--bg-badge)",
                 borderColor: "var(--border-accent)",
@@ -374,18 +374,18 @@ export default function ContestLobby() {
               }}
             >
               <Trophy size={13} className="text-[var(--text-accent)] animate-bounce" />
-              <span>DMX Competitive Coding</span>
+              <span>Eduvantix Competitive Coding</span>
             </div>
             <h1 className="text-4xl sm:text-5xl font-black font-display tracking-tight" style={{ color: "var(--text-primary)" }}>
               Contest Arena
             </h1>
             <p className="text-sm sm:text-base leading-relaxed" style={{ color: "var(--text-secondary)" }}>
-              Challenge other students, solve system architectures under pressure, and climb the DMX leaderboard in timed hackathons.
+              Challenge other students, solve system architectures under pressure, and climb the Eduvantix leaderboard in timed hackathons.
             </p>
           </motion.div>
 
           {/* Lobby controls bar */}
-          <div className="flex flex-col lg:flex-row gap-4 justify-between items-center p-4 rounded-3xl border backdrop-blur-md"
+          <div className="flex flex-col lg:flex-row gap-4 justify-between items-center p-4 rounded-3xl border border-[var(--border-primary)] backdrop-blur-md"
             style={{
               backgroundColor: "var(--glass-bg)",
               borderColor: "var(--border-primary)"
@@ -430,7 +430,7 @@ export default function ContestLobby() {
                   placeholder="Search contests..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full rounded-full py-2.5 pl-11 pr-4 text-xs outline-none border transition-all"
+                  className="w-full rounded-full py-2.5 pl-11 pr-4 text-xs outline-none border border-[var(--border-primary)] transition-all"
                   style={{
                     backgroundColor: "var(--bg-input)",
                     borderColor: "var(--border-primary)",
@@ -448,12 +448,12 @@ export default function ContestLobby() {
               <motion.div
                 initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="border rounded-3xl overflow-hidden shadow-sm max-w-4xl mx-auto"
+                className="border border-[var(--border-primary)] rounded-3xl overflow-hidden shadow-sm max-w-4xl mx-auto"
                 style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-card)" }}
               >
                 <div className="px-6 py-5 border-b flex items-center justify-between" style={{ borderColor: "var(--border-primary)" }}>
                   <div>
-                    <h3 className="text-lg font-bold" style={{ color: "var(--text-primary)" }}>DMX Grand Rankings</h3>
+                    <h3 className="text-lg font-bold" style={{ color: "var(--text-primary)" }}>Eduvantix Grand Rankings</h3>
                     <p className="text-xs" style={{ color: "var(--text-secondary)" }}>Updated after every official weekly speedrun contest.</p>
                   </div>
                   <Trophy size={20} className="text-amber-500" />
@@ -526,7 +526,7 @@ export default function ContestLobby() {
                 {!searchQuery && (
                   <button
                     onClick={fetchContests}
-                    className="flex items-center space-x-2 px-4 py-2 rounded-xl border text-xs font-bold cursor-pointer transition-all"
+                    className="flex items-center space-x-2 px-4 py-2 rounded-xl border border-[var(--border-primary)] text-xs font-bold cursor-pointer transition-all"
                     style={{ borderColor: "var(--border-accent)", color: "var(--text-accent)" }}
                   >
                     <RefreshCw size={12} />
@@ -555,7 +555,7 @@ export default function ContestLobby() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
                         transition={{ duration: 0.4, delay: idx * 0.03 }}
-                        className="group relative flex flex-col justify-between rounded-3xl p-6 shadow-sm border overflow-hidden hover:shadow-xl transition-all duration-300"
+                        className="group relative flex flex-col justify-between rounded-3xl p-6 shadow-sm border border-[var(--border-primary)] overflow-hidden hover:shadow-xl transition-all duration-300"
                         style={{
                           backgroundColor: "var(--bg-card)",
                           borderColor: "var(--border-card)"
@@ -570,14 +570,14 @@ export default function ContestLobby() {
                         {/* Card Top */}
                         <div className="space-y-4 relative z-10">
                           <div className="flex justify-between items-center">
-                            <span className="text-[9px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded border bg-slate-500/5"
+                            <span className="text-[9px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded border border-[var(--border-primary)] bg-slate-500/5"
                               style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}
                             >
                               {contest.category}
                             </span>
 
                             {/* Dynamic Tag Pill */}
-                            <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md border ${isActive ? "text-emerald-500 bg-emerald-500/10 border-emerald-500/20" :
+                            <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md border border-[var(--border-primary)] ${isActive ? "text-emerald-500 bg-emerald-500/10 border-emerald-500/20" :
                                 isUpcoming ? "text-zinc-500 bg-zinc-500/10 border-zinc-500/20" :
                                   "text-[var(--text-muted)] bg-slate-500/5 border-transparent"
                               }`}>
@@ -597,7 +597,7 @@ export default function ContestLobby() {
                           </div>
 
                           {/* Stats Grid */}
-                          <div className="grid grid-cols-2 gap-3 p-3 rounded-2xl border bg-slate-500/5" style={{ borderColor: "var(--border-primary)" }}>
+                          <div className="grid grid-cols-2 gap-3 p-3 rounded-2xl border border-[var(--border-primary)] bg-slate-500/5" style={{ borderColor: "var(--border-primary)" }}>
                             <div className="space-y-0.5">
                               <span className="text-[10px] text-[var(--text-muted)] font-bold uppercase">Points</span>
                               <div className="text-sm font-black text-[var(--text-primary)]">{contest.totalPoints} pts</div>
@@ -621,7 +621,7 @@ export default function ContestLobby() {
                             // Non-students / guests: show login nudge
                             <Link
                               href="/login?redirect=/contest"
-                              className="px-4 py-2 text-xs font-bold rounded-xl border transition-all cursor-pointer flex items-center space-x-1"
+                              className="px-4 py-2 text-xs font-bold rounded-xl border border-[var(--border-primary)] transition-all cursor-pointer flex items-center space-x-1"
                               style={{
                                 backgroundColor: "var(--bg-primary)",
                                 borderColor: "var(--border-primary)",
@@ -637,7 +637,7 @@ export default function ContestLobby() {
                                 contest.attempted ? (
                                   <button
                                     disabled
-                                    className="px-4 py-2 text-xs font-bold rounded-xl border flex items-center space-x-1 opacity-60 cursor-not-allowed"
+                                    className="px-4 py-2 text-xs font-bold rounded-xl border border-[var(--border-primary)] flex items-center space-x-1 opacity-60 cursor-not-allowed"
                                     style={{
                                       backgroundColor: "var(--bg-badge)",
                                       borderColor: "var(--border-primary)",
@@ -649,7 +649,7 @@ export default function ContestLobby() {
                                 ) : (
                                   <button
                                     onClick={() => handleEnterArena(contest.id)}
-                                    className="px-4 py-2 text-xs font-bold text-white rounded-xl shadow-md transition-all cursor-pointer flex items-center space-x-1"
+                                    className="px-4 py-2 text-xs font-bold text-[var(--text-on-accent)] rounded-xl shadow-md transition-all cursor-pointer flex items-center space-x-1"
                                     style={{ background: "var(--accent-gradient)" }}
                                   >
                                     <span>Enter Arena</span>
@@ -662,7 +662,7 @@ export default function ContestLobby() {
                                 isRegistered ? (
                                   <button
                                     disabled
-                                    className="px-4 py-2 text-xs font-bold rounded-xl border flex items-center space-x-1"
+                                    className="px-4 py-2 text-xs font-bold rounded-xl border border-[var(--border-primary)] flex items-center space-x-1"
                                     style={{
                                       backgroundColor: "var(--bg-badge)",
                                       borderColor: "var(--border-accent)",
@@ -675,7 +675,7 @@ export default function ContestLobby() {
                                 ) : (
                                   <button
                                     onClick={() => handleRegister(contest.id)}
-                                    className="px-4 py-2 text-xs font-bold rounded-xl border transition-all cursor-pointer"
+                                    className="px-4 py-2 text-xs font-bold rounded-xl border border-[var(--border-primary)] transition-all cursor-pointer"
                                     style={{
                                       backgroundColor: "var(--bg-primary)",
                                       borderColor: "var(--border-primary)",
@@ -690,7 +690,7 @@ export default function ContestLobby() {
                               {isPast && (
                                 <button
                                   onClick={() => handleViewScoreboard(contest)}
-                                  className="px-4 py-2 text-xs font-bold rounded-xl border transition-all cursor-pointer"
+                                  className="px-4 py-2 text-xs font-bold rounded-xl border border-[var(--border-primary)] transition-all cursor-pointer"
                                   style={{
                                     backgroundColor: "var(--bg-primary)",
                                     borderColor: "var(--border-primary)",
@@ -731,7 +731,7 @@ export default function ContestLobby() {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="max-w-xl w-full rounded-3xl border p-6 shadow-2xl space-y-4"
+              className="max-w-xl w-full rounded-3xl border border-[var(--border-primary)] p-6 shadow-2xl space-y-4"
               style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-card)" }}
             >
               <div className="flex justify-between items-center border-b pb-3" style={{ borderColor: "var(--border-primary)" }}>

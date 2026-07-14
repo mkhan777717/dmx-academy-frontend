@@ -69,7 +69,7 @@ export function PollResultsOverlay({ pollData, onClose, currentUsername }) {
 
   return (
     <div className="absolute inset-0 z-[70] flex items-center justify-center bg-black/80 backdrop-blur-lg p-4 animate-fade-in">
-      <div className="w-full max-w-lg rounded-3xl border shadow-2xl overflow-hidden"
+      <div className="w-full max-w-lg rounded-3xl border border-[var(--border-primary)] shadow-2xl overflow-hidden"
         style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
 
         {/* Header */}
@@ -98,7 +98,7 @@ export function PollResultsOverlay({ pollData, onClose, currentUsername }) {
             const myChoice = myResult?.chosenIdx === idx;
 
             return (
-              <div key={idx} className={`relative rounded-2xl border overflow-hidden transition-all ${isCorrect
+              <div key={idx} className={`relative rounded-2xl border border-[var(--border-primary)] overflow-hidden transition-all ${isCorrect
                   ? "border-emerald-500/40 bg-emerald-500/8"
                   : myChoice && !isCorrect
                     ? "border-red-500/30 bg-red-500/5"
@@ -157,7 +157,7 @@ export function PollResultsOverlay({ pollData, onClose, currentUsername }) {
             </p>
             <div className="space-y-1.5 max-h-60 overflow-y-auto" style={{ scrollbarWidth: "thin" }}>
               {sortedResults.map((r, idx) => (
-                <div key={r.username} className={`flex items-center gap-3 px-3 py-2 rounded-xl border ${r.username === currentUsername ? "border-[var(--border-accent)] bg-[var(--bg-badge)]" : ""}`}
+                <div key={r.username} className={`flex items-center gap-3 px-3 py-2 rounded-xl border border-[var(--border-primary)] ${r.username === currentUsername ? "border-[var(--border-accent)] bg-[var(--bg-badge)]" : ""}`}
                   style={r.username !== currentUsername ? { borderColor: "var(--border-primary)", backgroundColor: "var(--bg-primary)" } : {}}>
                   <RankBadge rank={idx + 1} />
                   <span className="flex-1 text-xs font-bold font-mono truncate" style={{ color: "var(--text-primary)" }}>
@@ -195,7 +195,7 @@ export function PollResultsOverlay({ pollData, onClose, currentUsername }) {
 export function SessionLeaderboard({ leaderboard, totalPolls, currentUsername, compact = false, title = "Session Leaderboard" }) {
   if (!leaderboard || leaderboard.length === 0) {
     return (
-      <div className="rounded-[1.1rem] border p-3.5 text-center space-y-2" style={{ backgroundColor: "var(--bg-card)", borderColor: "rgba(148, 163, 184, 0.18)" }}>
+      <div className="rounded-[1.1rem] border border-[var(--border-primary)] p-3.5 text-center space-y-2" style={{ backgroundColor: "var(--bg-card)", borderColor: "rgba(148, 163, 184, 0.18)" }}>
         <Trophy size={24} className="mx-auto opacity-30" style={{ color: "var(--text-muted)" }} />
         <p className="text-xs font-semibold" style={{ color: "var(--text-muted)" }}>
           No leaderboard yet — no polls have been run in this session.
@@ -205,7 +205,7 @@ export function SessionLeaderboard({ leaderboard, totalPolls, currentUsername, c
   }
 
   return (
-    <div className="rounded-[1.1rem] border overflow-hidden" style={{ backgroundColor: "var(--bg-card)", borderColor: "rgba(148, 163, 184, 0.18)" }}>
+    <div className="rounded-[1.1rem] border border-[var(--border-primary)] overflow-hidden" style={{ backgroundColor: "var(--bg-card)", borderColor: "rgba(148, 163, 184, 0.18)" }}>
       {/* Header */}
       <div className="px-4 py-2.5 border-b flex items-center gap-2" style={{ borderColor: "rgba(148, 163, 184, 0.16)" }}>
         <Trophy size={14} className="text-amber-400" />
@@ -285,7 +285,7 @@ export function EndSessionLeaderboard({ leaderboard, totalPolls, currentUsername
         </span>
       </div>
 
-      <div className="rounded-2xl border overflow-hidden" style={{ borderColor: "var(--border-primary)" }}>
+      <div className="rounded-2xl border border-[var(--border-primary)] overflow-hidden" style={{ borderColor: "var(--border-primary)" }}>
         {/* Top 3 podium */}
         {leaderboard.length >= 3 && (
           <div className="flex items-end justify-center gap-4 px-6 pt-6 pb-4"

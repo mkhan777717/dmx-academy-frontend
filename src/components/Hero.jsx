@@ -199,7 +199,7 @@ export default function Hero() {
             >
               <div className="h-px w-12" style={{ background: "var(--accent-primary)" }} />
               <span className="text-[11px] font-bold tracking-[0.2em] uppercase" style={{ color: "var(--text-muted)" }}>
-                DMX Academy — Est. 2024
+                Eduvantix — Est. 2024
               </span>
             </motion.div>
 
@@ -254,7 +254,7 @@ export default function Hero() {
             >
               <Link
                 href="/courses/generative-ai"
-                className="group inline-flex items-center gap-3 rounded-full px-7 py-3.5 text-sm font-semibold text-white transition-all duration-300"
+                className="group inline-flex items-center gap-3 rounded-full px-7 py-3.5 text-sm font-semibold text-[var(--text-on-accent)] transition-all duration-300"
                 style={{
                   background: "var(--accent-gradient)",
                   boxShadow: "0 0 0 0 var(--accent-glow)",

@@ -17,9 +17,9 @@ function renderMarkdown(md) {
   if (!md) return "";
   let html = md.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
   html = html.replace(/```([\w]*)\n([\s\S]*?)```/g, (_, _lang, code) =>
-    `<div class="bg-[#0d1117] border border-slate-800/80 text-slate-200 p-4 rounded-xl font-mono text-[11px] my-3 overflow-x-auto leading-relaxed"><pre class="whitespace-pre"><code>${code}</code></pre></div>`
+    `<div class="bg-[#0d1117] border border-[var(--border-primary)] border-[var(--border-primary)]/80 text-slate-200 p-4 rounded-xl font-mono text-[11px] my-3 overflow-x-auto leading-relaxed"><pre class="whitespace-pre"><code>${code}</code></pre></div>`
   );
-  html = html.replace(/`([^`]+)`/g, '<code class="bg-zinc-500/10 border border-zinc-500/20 text-zinc-400 text-[11px] px-1.5 py-0.5 rounded font-mono font-semibold mx-0.5">$1</code>');
+  html = html.replace(/`([^`]+)`/g, '<code class="bg-zinc-500/10 border border-[var(--border-primary)] border-zinc-500/20 text-zinc-400 text-[11px] px-1.5 py-0.5 rounded font-mono font-semibold mx-0.5">$1</code>');
   html = html.replace(/^### (.*$)/gim, '<h4 class="text-[11px] font-extrabold uppercase tracking-wider mt-4 mb-2 text-zinc-400">$1</h4>');
   html = html.replace(/^## (.*$)/gim, '<h3 class="text-sm font-black mt-5 mb-2 text-white">$1</h3>');
   html = html.replace(/^# (.*$)/gim, '<h2 class="text-base font-black mt-6 mb-3 pb-1 border-b border-white/10 text-white">$1</h2>');
@@ -58,7 +58,7 @@ function MdToolbar({ taRef, setValue }) {
     </button>
   );
   return (
-    <div className="flex items-center gap-0.5 px-2 py-1 rounded-lg bg-[#1a1f2e] border border-white/10 flex-wrap">
+    <div className="flex items-center gap-0.5 px-2 py-1 rounded-lg bg-[#1a1f2e] border border-[var(--border-primary)] border-white/10 flex-wrap">
       <button type="button" onClick={() => insertMd(taRef, setValue, "bold")} className="p-1 rounded hover:bg-white/10 text-slate-400 hover:text-white cursor-pointer"><Bold size={10} /></button>
       <button type="button" onClick={() => insertMd(taRef, setValue, "italic")} className="p-1 rounded hover:bg-white/10 text-slate-400 hover:text-white cursor-pointer"><Italic size={10} /></button>
       <div className="w-px h-3 bg-white/10 mx-1" />
@@ -78,7 +78,7 @@ function CodePanel({ lang, value, onChange, rows = 10 }) {
   const colors = { javascript: "#f59e0b", python: "#3b82f6", go: "#10b981", cpp: "#f43f5e", java: "#06b6d4" };
   const labels = { javascript: "JS · Node.js", python: "Python 3", go: "Go", cpp: "C++ (GCC 17)", java: "Java (JDK 21)" };
   return (
-    <div className="rounded-2xl overflow-hidden border border-white/10 shadow-2xl">
+    <div className="rounded-2xl overflow-hidden border border-[var(--border-primary)] border-white/10 shadow-2xl">
       <div className="flex items-center justify-between px-4 py-2.5 bg-[#161b27] border-b border-white/10">
         <div className="flex items-center gap-2">
           <div className="flex gap-1.5">
@@ -105,10 +105,10 @@ function CodePanel({ lang, value, onChange, rows = 10 }) {
 }
 
 function DarkInput({ style, ...props }) {
-  return <input {...props} style={style} className="w-full rounded-xl px-4 py-3 text-sm bg-[#111827] border border-white/10 text-white placeholder:text-slate-600 outline-none focus:border-zinc-500/60 focus:ring-1 focus:ring-indigo-500/30 transition-all font-medium" />;
+  return <input {...props} style={style} className="w-full rounded-xl px-4 py-3 text-sm bg-[#111827] border border-[var(--border-primary)] border-white/10 text-white placeholder:text-slate-600 outline-none focus:border-zinc-500/60 focus:ring-1 focus:ring-indigo-500/30 transition-all font-medium" />;
 }
 function DarkSelect({ children, ...props }) {
-  return <select {...props} className="w-full rounded-xl px-4 py-3 text-sm bg-[#111827] border border-white/10 text-white outline-none focus:border-zinc-500/60 focus:ring-1 focus:ring-indigo-500/30 transition-all font-medium cursor-pointer">{children}</select>;
+  return <select {...props} className="w-full rounded-xl px-4 py-3 text-sm bg-[#111827] border border-[var(--border-primary)] border-white/10 text-white outline-none focus:border-zinc-500/60 focus:ring-1 focus:ring-indigo-500/30 transition-all font-medium cursor-pointer">{children}</select>;
 }
 function DarkTextarea({ style, onPaste, ...props }) {
   const handlePaste = (e) => {
@@ -144,7 +144,7 @@ function DarkTextarea({ style, onPaste, ...props }) {
       {...props}
       onPaste={handlePaste}
       style={style}
-      className="w-full rounded-xl px-4 py-3 text-sm bg-[#111827] border border-white/10 text-white placeholder:text-slate-600 outline-none focus:border-zinc-500/60 focus:ring-1 focus:ring-indigo-500/30 transition-all font-mono resize-none leading-relaxed"
+      className="w-full rounded-xl px-4 py-3 text-sm bg-[#111827] border border-[var(--border-primary)] border-white/10 text-white placeholder:text-slate-600 outline-none focus:border-zinc-500/60 focus:ring-1 focus:ring-indigo-500/30 transition-all font-mono resize-none leading-relaxed"
     />
   );
 }
@@ -345,7 +345,7 @@ export default function CreateProblem() {
         {toast && (
           <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
             className="fixed top-6 left-1/2 -translate-x-1/2 z-50 max-w-md w-full px-4">
-            <div className={`flex items-start gap-3 p-4 rounded-2xl border shadow-2xl text-sm font-medium backdrop-blur-xl ${toast.type === "error" ? "bg-rose-950/90 border-rose-500/30 text-rose-300" : "bg-emerald-950/90 border-emerald-500/30 text-emerald-300"}`}>
+            <div className={`flex items-start gap-3 p-4 rounded-2xl border border-[var(--border-primary)] shadow-2xl text-sm font-medium backdrop-blur-xl ${toast.type === "error" ? "bg-rose-950/90 border-rose-500/30 text-rose-300" : "bg-emerald-950/90 border-emerald-500/30 text-emerald-300"}`}>
               {toast.type === "error" ? <AlertCircle size={16} className="shrink-0 mt-0.5" /> : <CheckCircle2 size={16} className="shrink-0 mt-0.5" />}
               <span className="whitespace-pre-wrap text-xs leading-relaxed">{toast.text}</span>
               <button onClick={() => setToast(null)} className="ml-auto shrink-0 cursor-pointer opacity-60 hover:opacity-100"><X size={14} /></button>
@@ -359,7 +359,7 @@ export default function CreateProblem() {
         {success && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-xl bg-black/70">
             <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="flex flex-col items-center gap-4 text-center p-10">
-              <div className="w-20 h-20 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center">
+              <div className="w-20 h-20 rounded-full bg-emerald-500/20 border border-[var(--border-primary)] border-emerald-500/40 flex items-center justify-center">
                 <CheckCircle2 size={40} className="text-emerald-400" />
               </div>
               <h2 className="text-2xl font-black text-white">Problem Published!</h2>
@@ -377,11 +377,11 @@ export default function CreateProblem() {
               <ArrowLeft size={13} /> Back to Problems
             </button>
             <h1 className="text-2xl sm:text-3xl font-black tracking-tight flex items-center gap-3">
-              <span className="bg-gradient-to-r from-zinc-400 via-violet-400 to-pink-400 text-transparent bg-clip-text">Create Coding Problem</span>
+              <span className="bg-gradient-to-r from-zinc-400 via-violet-400 to-[var(--text-primary)] text-transparent bg-clip-text">Create Coding Problem</span>
               <Sparkles size={20} className="text-amber-400 animate-pulse" />
             </h1>
           </div>
-          <div className="hidden sm:flex items-center gap-1.5 text-xs text-slate-600 bg-white/5 border border-white/10 rounded-full px-3 py-1.5">
+          <div className="hidden sm:flex items-center gap-1.5 text-xs text-slate-600 bg-white/5 border border-[var(--border-primary)] border-white/10 rounded-full px-3 py-1.5">
             <span className="font-black text-white">{STEPS.filter(s => stepDone[s.id]).length}</span>/{STEPS.length} steps done
           </div>
         </div>
@@ -389,7 +389,7 @@ export default function CreateProblem() {
         <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-6 items-start">
           {/* Sidebar */}
           <div className="space-y-3 lg:sticky lg:top-8">
-            <div className="rounded-2xl border overflow-hidden" style={{ background: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
+            <div className="rounded-2xl border border-[var(--border-primary)] overflow-hidden" style={{ background: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
               {STEPS.map((step, i) => {
                 const Icon = step.icon;
                 const isActive = activeTab === step.id;
@@ -397,7 +397,7 @@ export default function CreateProblem() {
                 return (
                   <button key={step.id} onClick={() => setActiveTab(step.id)}
                     className={`w-full flex items-center gap-3 px-4 py-3.5 transition-all cursor-pointer text-left ${isActive ? "bg-gradient-to-r from-zinc-600/20 to-violet-600/10 border-l-2 border-zinc-500" : "hover:bg-white/5 border-l-2 border-transparent"} ${i < STEPS.length - 1 ? "border-b border-white/5" : ""}`}>
-                    <div className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 text-[11px] font-black transition-all ${done ? "bg-emerald-500/20 border border-emerald-500/40 text-emerald-400" : isActive ? "bg-zinc-500/20 border border-zinc-500/60 text-zinc-300" : "bg-white/5 border border-white/10 text-slate-600"}`}>
+                    <div className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 text-[11px] font-black transition-all ${done ? "bg-emerald-500/20 border border-[var(--border-primary)] border-emerald-500/40 text-emerald-400" : isActive ? "bg-zinc-500/20 border border-[var(--border-primary)] border-zinc-500/60 text-zinc-300" : "bg-white/5 border border-[var(--border-primary)] border-white/10 text-slate-600"}`}>
                       {done ? <Check size={12} /> : step.num}
                     </div>
                     <div className="min-w-0">
@@ -418,17 +418,17 @@ export default function CreateProblem() {
                 : <><Save size={15} /><span>Publish Problem</span></>}
             </button>
 
-            <div className="rounded-2xl border p-3 space-y-2" style={{ background: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
+            <div className="rounded-2xl border border-[var(--border-primary)] p-3 space-y-2" style={{ background: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
               <p className="text-[10px] font-extrabold uppercase tracking-widest text-slate-600">Demo Templates</p>
               <div className="grid grid-cols-2 gap-1.5">
-                <button onClick={() => loadDemo("fizzbuzz")} className="py-2 rounded-xl text-[10px] font-bold bg-zinc-500/10 text-zinc-400 hover:bg-zinc-500/20 transition-all border border-zinc-500/20 cursor-pointer">FizzBuzz</button>
-                <button onClick={() => loadDemo("clear")} className="py-2 rounded-xl text-[10px] font-bold bg-rose-500/10 text-rose-400 hover:bg-rose-500/20 transition-all border border-rose-500/20 cursor-pointer">Clear All</button>
+                <button onClick={() => loadDemo("fizzbuzz")} className="py-2 rounded-xl text-[10px] font-bold bg-zinc-500/10 text-zinc-400 hover:bg-zinc-500/20 transition-all border border-[var(--border-primary)] border-zinc-500/20 cursor-pointer">FizzBuzz</button>
+                <button onClick={() => loadDemo("clear")} className="py-2 rounded-xl text-[10px] font-bold bg-rose-500/10 text-rose-400 hover:bg-rose-500/20 transition-all border border-[var(--border-primary)] border-rose-500/20 cursor-pointer">Clear All</button>
               </div>
             </div>
           </div>
 
           {/* Content panel */}
-          <div className="rounded-2xl border shadow-xl overflow-hidden" style={{ background: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
+          <div className="rounded-2xl border border-[var(--border-primary)] shadow-xl overflow-hidden" style={{ background: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
             {/* Panel header */}
             <div className="px-6 py-4 border-b flex items-center justify-between" style={{ borderColor: "var(--border-primary)", background: "var(--bg-secondary)" }}>
               <div className="flex items-center gap-3">
@@ -512,12 +512,12 @@ export default function CreateProblem() {
                         { id: "constr", label: "Constraints",  cls: "text-amber-400 bg-amber-500/15 border-amber-500/40" },
                       ].map(sub => (
                         <button key={sub.id} type="button" onClick={() => setStatSub(sub.id)}
-                          className={`px-4 py-2 rounded-xl text-[11px] font-bold border transition-all cursor-pointer ${statSub === sub.id ? sub.cls : "bg-white/5 border-white/10 text-slate-500 hover:text-slate-300"}`}>
+                          className={`px-4 py-2 rounded-xl text-[11px] font-bold border border-[var(--border-primary)] transition-all cursor-pointer ${statSub === sub.id ? sub.cls : "bg-white/5 border-white/10 text-slate-500 hover:text-slate-300"}`}>
                           {sub.label}
                         </button>
                       ))}
                       <button type="button" onClick={() => setPreview(p => !p)}
-                        className={`ml-auto px-4 py-2 rounded-xl text-[11px] font-bold border transition-all cursor-pointer flex items-center gap-1.5 ${preview ? "bg-emerald-500/15 border-emerald-500/40 text-emerald-400" : "bg-white/5 border-white/10 text-slate-500 hover:text-slate-300"}`}>
+                        className={`ml-auto px-4 py-2 rounded-xl text-[11px] font-bold border border-[var(--border-primary)] transition-all cursor-pointer flex items-center gap-1.5 ${preview ? "bg-emerald-500/15 border-emerald-500/40 text-emerald-400" : "bg-white/5 border-white/10 text-slate-500 hover:text-slate-300"}`}>
                         <Eye size={12} />{preview ? "Hide Preview" : "Live Preview"}
                       </button>
                     </div>
@@ -567,7 +567,7 @@ export default function CreateProblem() {
                       </div>
 
                       {preview && (
-                        <div className="rounded-2xl border p-5 overflow-auto max-h-[520px] space-y-5" style={{ background: "var(--bg-primary)", borderColor: "var(--border-primary)" }}>
+                        <div className="rounded-2xl border border-[var(--border-primary)] p-5 overflow-auto max-h-[520px] space-y-5" style={{ background: "var(--bg-primary)", borderColor: "var(--border-primary)" }}>
                           <div className="space-y-2">
                             <h3 className="text-lg font-black text-white">{title || "Untitled Problem"}</h3>
                             <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${difficulty === "EASY" ? "bg-emerald-500/20 text-emerald-400" : difficulty === "HARD" ? "bg-rose-500/20 text-rose-400" : "bg-amber-500/20 text-amber-400"}`}>{difficulty}</span>
@@ -581,7 +581,7 @@ export default function CreateProblem() {
                       )}
                     </div>
 
-                    <div className="rounded-xl border border-zinc-500/20 bg-zinc-500/5 p-3.5 text-[11px] text-slate-500 flex items-center gap-2 flex-wrap">
+                    <div className="rounded-xl border border-[var(--border-primary)] border-zinc-500/20 bg-zinc-500/5 p-3.5 text-[11px] text-slate-500 flex items-center gap-2 flex-wrap">
                       <Info size={11} className="text-zinc-400 shrink-0" />
                       Markdown: <code className="text-slate-600">## Heading</code> · <code className="text-slate-600">**bold**</code> · <code className="text-slate-600">`inline`</code> · <code className="text-slate-600">- list</code> · triple backticks for code blocks
                     </div>
@@ -591,7 +591,7 @@ export default function CreateProblem() {
                 {/* ─── Step 3: Templates ───────────────────────────── */}
                 {activeTab === "templates" && (
                   <motion.div key="templates" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} className="space-y-5">
-                    <div className="rounded-xl border border-neutral-500/20 bg-neutral-500/5 p-4 text-xs text-slate-400 flex items-start gap-3">
+                    <div className="rounded-xl border border-[var(--border-primary)] border-neutral-500/20 bg-neutral-500/5 p-4 text-xs text-slate-400 flex items-start gap-3">
                       <Info size={14} className="text-neutral-400 shrink-0 mt-0.5" />
                       <span>These templates are pre-loaded in the code editor when students open this problem. Write complete starter functions that match the judge wrapper signature.</span>
                     </div>
@@ -604,7 +604,7 @@ export default function CreateProblem() {
                         { id: "go",         label: "Go",         cls: "text-emerald-400 bg-emerald-500/15 border-emerald-500/40" },
                       ].map(l => (
                         <button key={l.id} type="button" onClick={() => setActiveTmpl(l.id)}
-                          className={`px-5 py-2.5 rounded-xl text-[11px] font-bold border transition-all cursor-pointer ${activeTmpl === l.id ? l.cls : "text-slate-500 bg-white/5 border-white/10 hover:text-slate-300"}`}>
+                          className={`px-5 py-2.5 rounded-xl text-[11px] font-bold border border-[var(--border-primary)] transition-all cursor-pointer ${activeTmpl === l.id ? l.cls : "text-slate-500 bg-white/5 border-white/10 hover:text-slate-300"}`}>
                           {l.label}
                         </button>
                       ))}
@@ -642,11 +642,11 @@ export default function CreateProblem() {
                     <div className="space-y-4">
                       {testCases.map((tc, i) => (
                         <motion.div key={i} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
-                          className={`rounded-2xl border p-5 space-y-4 transition-all ${tc.isSample ? "border-amber-500/25 bg-amber-500/5" : "border-white/10 bg-white/[0.02]"}`}>
+                          className={`rounded-2xl border border-[var(--border-primary)] p-5 space-y-4 transition-all ${tc.isSample ? "border-amber-500/25 bg-amber-500/5" : "border-white/10 bg-white/[0.02]"}`}>
                           <div className="flex items-center justify-between flex-wrap gap-2">
                             <div className="flex items-center gap-3">
                               <span className="text-xs font-black text-white">Test Case #{i + 1}</span>
-                              {tc.isSample && <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-amber-500/20 border border-amber-500/30 text-amber-400">Sample</span>}
+                              {tc.isSample && <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-amber-500/20 border border-[var(--border-primary)] border-amber-500/30 text-amber-400">Sample</span>}
                               {errors[`tc_${i}`] && <span className="text-[10px] text-rose-400 flex items-center gap-1"><AlertCircle size={10} />{errors[`tc_${i}`]}</span>}
                             </div>
                             <div className="flex items-center gap-3">
@@ -669,13 +669,13 @@ export default function CreateProblem() {
                               <label className="text-[10px] font-extrabold uppercase tracking-widest text-amber-400">Input</label>
                               <textarea placeholder="Test input…" value={tc.input}
                                 onChange={e => { const n = [...testCases]; n[i].input = e.target.value; setTestCases(n); }}
-                                rows={4} className="w-full rounded-xl px-4 py-3 text-xs bg-[#0d1117] border border-white/10 text-slate-300 font-mono outline-none resize-y focus:border-amber-500/40 transition-all placeholder:text-slate-700" />
+                                rows={4} className="w-full rounded-xl px-4 py-3 text-xs bg-[#0d1117] border border-[var(--border-primary)] border-white/10 text-slate-300 font-mono outline-none resize-y focus:border-amber-500/40 transition-all placeholder:text-slate-700" />
                             </div>
                             <div className="space-y-2">
                               <label className="text-[10px] font-extrabold uppercase tracking-widest text-emerald-400">Expected Output</label>
                               <textarea placeholder="Expected output…" value={tc.expectedOutput}
                                 onChange={e => { const n = [...testCases]; n[i].expectedOutput = e.target.value; setTestCases(n); }}
-                                rows={4} className="w-full rounded-xl px-4 py-3 text-xs bg-[#0d1117] border border-white/10 text-slate-300 font-mono outline-none resize-y focus:border-emerald-500/40 transition-all placeholder:text-slate-700" />
+                                rows={4} className="w-full rounded-xl px-4 py-3 text-xs bg-[#0d1117] border border-[var(--border-primary)] border-white/10 text-slate-300 font-mono outline-none resize-y focus:border-emerald-500/40 transition-all placeholder:text-slate-700" />
                             </div>
                           </div>
                         </motion.div>
@@ -683,7 +683,7 @@ export default function CreateProblem() {
                     </div>
 
                     <button type="button" onClick={() => setTestCases([...testCases, { input: "", expectedOutput: "", isSample: false }])}
-                      className="w-full py-3.5 rounded-2xl border border-dashed border-zinc-500/30 text-zinc-400 hover:bg-zinc-500/5 text-xs font-bold flex items-center justify-center gap-2 transition-all cursor-pointer hover:border-zinc-500/50">
+                      className="w-full py-3.5 rounded-2xl border border-[var(--border-primary)] border-dashed border-zinc-500/30 text-zinc-400 hover:bg-zinc-500/5 text-xs font-bold flex items-center justify-center gap-2 transition-all cursor-pointer hover:border-zinc-500/50">
                       <Plus size={14} /> Add Test Case
                     </button>
                   </motion.div>
@@ -692,7 +692,7 @@ export default function CreateProblem() {
                 {/* ─── Step 5: Tab Content ─────────────────────────── */}
                 {activeTab === "tabcontent" && (
                   <motion.div key="tabcontent" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} className="space-y-5">
-                    <div className="rounded-xl border border-violet-500/20 bg-violet-500/5 p-4 text-xs text-slate-400 flex items-start gap-3">
+                    <div className="rounded-xl border border-[var(--border-primary)] border-violet-500/20 bg-violet-500/5 p-4 text-xs text-slate-400 flex items-start gap-3">
                       <Info size={14} className="text-violet-400 shrink-0 mt-0.5" />
                       <span>These tabs appear in the student problem view. Editorials and solutions are hidden during active contests. All fields support Markdown.</span>
                     </div>
@@ -704,7 +704,7 @@ export default function CreateProblem() {
                         { id: "evaluation", label: "Evaluation", icon: "🎯", cls: "text-amber-400 bg-amber-500/15 border-amber-500/40" },
                       ].map(s => (
                         <button key={s.id} type="button" onClick={() => setSub5(s.id)}
-                          className={`py-3 rounded-xl text-[11px] font-bold border transition-all cursor-pointer flex flex-col items-center gap-1 ${sub5 === s.id ? s.cls : "bg-white/5 border-white/10 text-slate-500 hover:text-slate-300"}`}>
+                          className={`py-3 rounded-xl text-[11px] font-bold border border-[var(--border-primary)] transition-all cursor-pointer flex flex-col items-center gap-1 ${sub5 === s.id ? s.cls : "bg-white/5 border-white/10 text-slate-500 hover:text-slate-300"}`}>
                           <span>{s.icon}</span>{s.label}
                         </button>
                       ))}
@@ -725,7 +725,7 @@ export default function CreateProblem() {
                             <DarkTextarea ref={s.ref} placeholder="Write in markdown…" value={s.val} onChange={e => s.set(e.target.value)} rows={14} />
                             {errors[s.id] && <p className="text-[10px] text-rose-400 flex items-center gap-1"><AlertCircle size={10} />{errors[s.id]}</p>}
                           </div>
-                          <div className={`rounded-2xl border p-5 overflow-auto text-xs ${s.previewCls}`} style={{ minHeight: "14rem" }}
+                          <div className={`rounded-2xl border border-[var(--border-primary)] p-5 overflow-auto text-xs ${s.previewCls}`} style={{ minHeight: "14rem" }}
                             dangerouslySetInnerHTML={{ __html: renderMarkdown(s.val || "*Preview will appear here…*") }} />
                         </motion.div>
                       ))}
@@ -739,7 +739,7 @@ export default function CreateProblem() {
             {/* Panel footer */}
             <div className="px-6 sm:px-8 py-4 border-t flex items-center justify-between" style={{ borderColor: "var(--border-primary)", background: "var(--bg-secondary)" }}>
               <button type="button" onClick={goPrev} disabled={idx === 0}
-                className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-xs border border-white/10 text-slate-400 hover:text-white hover:border-white/25 transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed">
+                className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-xs border border-[var(--border-primary)] border-white/10 text-slate-400 hover:text-white hover:border-white/25 transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed">
                 <ArrowLeft size={13} /> Back
               </button>
               {idx < STEPS.length - 1 ? (

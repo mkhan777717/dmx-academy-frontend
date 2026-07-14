@@ -308,7 +308,7 @@ export default function CodeMatch({ onProgressChange, savedProgress, onBack }) {
   };
 
   return (
-    <div className="relative min-h-[70vh] w-full bg-[#0a0714] border border-slate-500/20 rounded-3xl overflow-hidden font-mono text-[#E8E6E1]">
+    <div className="relative min-h-[70vh] w-full bg-[#0a0714] border border-[var(--border-primary)] border-slate-500/20 rounded-3xl overflow-hidden font-mono text-[#E8E6E1]">
       {/* CSS 3D Card Flip Styles */}
       <style dangerouslySetInnerHTML={{ __html: `
         .arcade-card-container {
@@ -344,7 +344,7 @@ export default function CodeMatch({ onProgressChange, savedProgress, onBack }) {
       <div className="absolute top-4 right-4 z-30">
         <button
           onClick={() => setSoundEnabled(!soundEnabled)}
-          className="p-2 rounded-xl border border-slate-500/20 bg-slate-950/20 hover:bg-slate-950/40 text-slate-300 hover:text-white transition-all cursor-pointer shadow-sm"
+          className="p-2 rounded-xl border border-[var(--border-primary)] border-slate-500/20 bg-slate-950/20 hover:bg-slate-950/40 text-slate-300 hover:text-white transition-all cursor-pointer shadow-sm"
         >
           {soundEnabled ? <Volume2 size={16} /> : <VolumeX size={16} />}
         </button>
@@ -368,10 +368,10 @@ export default function CodeMatch({ onProgressChange, savedProgress, onBack }) {
             ) : !selectedTrack ? (
               <>
                 <div className="space-y-3">
-                  <span className="text-[10px] font-bold tracking-widest text-[#7CFFB2] border border-[#7CFFB2]/20 bg-[#7CFFB2]/5 px-3 py-1 rounded-full uppercase">
+                  <span className="text-[10px] font-bold tracking-widest text-[#7CFFB2] border border-[var(--border-primary)] border-[#7CFFB2]/20 bg-[#7CFFB2]/5 px-3 py-1 rounded-full uppercase">
                     Mode: Code Match
                   </span>
-                  <h2 className="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-slate-400 via-pink-400 to-cyan-400 uppercase tracking-tight">
+                  <h2 className="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-slate-400 via-[var(--text-secondary)] to-cyan-400 uppercase tracking-tight">
                     Concepts Match
                   </h2>
                   <p className="text-xs text-slate-300/50 max-w-md mx-auto">
@@ -386,7 +386,7 @@ export default function CodeMatch({ onProgressChange, savedProgress, onBack }) {
                       <button
                         key={track}
                         onClick={() => setSelectedTrack(track)}
-                        className="relative p-5 rounded-2xl border border-slate-500/25 bg-gradient-to-br from-[#1a0e30]/40 to-[#0e071e]/70 text-left hover:scale-[1.03] transition-all cursor-pointer hover:border-slate-400 group overflow-hidden shadow-lg"
+                        className="relative p-5 rounded-2xl border border-[var(--border-primary)] border-slate-500/25 bg-gradient-to-br from-[#1a0e30]/40 to-[#0e071e]/70 text-left hover:scale-[1.03] transition-all cursor-pointer hover:border-slate-400 group overflow-hidden shadow-lg"
                       >
                         <div className="absolute top-0 right-0 w-24 h-24 bg-slate-500/5 rounded-full blur-2xl group-hover:bg-slate-500/10 transition-all" />
                         <span className="text-xs font-bold text-slate-400/60 uppercase">Track</span>
@@ -409,10 +409,10 @@ export default function CodeMatch({ onProgressChange, savedProgress, onBack }) {
             ) : (
               <>
                 <div className="space-y-3">
-                  <span className="text-[10px] font-bold tracking-widest text-[#7CFFB2] border border-[#7CFFB2]/20 bg-[#7CFFB2]/5 px-3 py-1 rounded-full uppercase">
+                  <span className="text-[10px] font-bold tracking-widest text-[#7CFFB2] border border-[var(--border-primary)] border-[#7CFFB2]/20 bg-[#7CFFB2]/5 px-3 py-1 rounded-full uppercase">
                     Track: {selectedTrack}
                   </span>
-                  <h2 className="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-slate-400 via-pink-400 to-cyan-400 uppercase tracking-tight">
+                  <h2 className="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-slate-400 via-[var(--text-secondary)] to-cyan-400 uppercase tracking-tight">
                     Select Level
                   </h2>
                   <p className="text-xs text-slate-300/50 max-w-md mx-auto">
@@ -429,7 +429,7 @@ export default function CodeMatch({ onProgressChange, savedProgress, onBack }) {
                         key={lvl}
                         disabled={!isUnlocked}
                         onClick={() => handleStartGame(selectedTrack, lvl)}
-                        className={`relative p-5 rounded-2xl border flex flex-col items-center justify-center transition-all ${
+                        className={`relative p-5 rounded-2xl border border-[var(--border-primary)] flex flex-col items-center justify-center transition-all ${
                           isUnlocked
                             ? "bg-slate-950/20 border-slate-500/30 hover:border-[#7CFFB2] hover:scale-105 cursor-pointer text-white"
                             : "bg-[#180f2d]/40 border-slate-950/20 text-slate-500/20 cursor-not-allowed"
@@ -437,9 +437,9 @@ export default function CodeMatch({ onProgressChange, savedProgress, onBack }) {
                       >
                         <span className="text-xs font-bold uppercase tracking-wider mb-2">Lvl {lvl}</span>
                         {isCompleted ? (
-                          <span className="text-[9px] font-bold text-[#7CFFB2] bg-[#7CFFB2]/10 border border-[#7CFFB2]/20 px-2 py-0.5 rounded uppercase">Cleared</span>
+                          <span className="text-[9px] font-bold text-[#7CFFB2] bg-[#7CFFB2]/10 border border-[var(--border-primary)] border-[#7CFFB2]/20 px-2 py-0.5 rounded uppercase">Cleared</span>
                         ) : isUnlocked ? (
-                          <span className="text-[9px] font-bold text-cyan-400 bg-cyan-500/10 border border-cyan-500/20 px-2 py-0.5 rounded uppercase">Play</span>
+                          <span className="text-[9px] font-bold text-cyan-400 bg-cyan-500/10 border border-[var(--border-primary)] border-cyan-500/20 px-2 py-0.5 rounded uppercase">Play</span>
                         ) : (
                           <span className="text-[9px] font-bold text-slate-500/10 uppercase">Locked</span>
                         )}
@@ -474,7 +474,7 @@ export default function CodeMatch({ onProgressChange, savedProgress, onBack }) {
                 <span className="text-xs font-black uppercase text-slate-400 tracking-wider">
                   {selectedTrack} — Level {currentLevel}
                 </span>
-                <span className="text-[10px] font-bold text-cyan-400 border border-cyan-500/20 px-2 py-0.5 rounded bg-cyan-500/5 uppercase flex items-center gap-1">
+                <span className="text-[10px] font-bold text-cyan-400 border border-[var(--border-primary)] border-cyan-500/20 px-2 py-0.5 rounded bg-cyan-500/5 uppercase flex items-center gap-1">
                   <Clock size={11} /> {getFormatTime(elapsedTime)}
                 </span>
               </div>
@@ -510,13 +510,13 @@ export default function CodeMatch({ onProgressChange, savedProgress, onBack }) {
                   >
                     <div className="arcade-card-inner w-full h-full">
                       {/* CARD FRONT (FACE DOWN - arcade design) */}
-                      <div className="arcade-card-front flex flex-col items-center justify-center border border-slate-500/20 bg-gradient-to-br from-[#1b0a33] to-[#0a0414] hover:border-slate-500/40 text-slate-500 shadow-lg">
+                      <div className="arcade-card-front flex flex-col items-center justify-center border border-[var(--border-primary)] border-slate-500/20 bg-gradient-to-br from-[#1b0a33] to-[#0a0414] hover:border-slate-500/40 text-slate-500 shadow-lg">
                         <Grid size={24} className="animate-pulse" />
-                        <span className="text-[9px] uppercase tracking-wider text-slate-500/40 mt-2">DMX ARCADE</span>
+                        <span className="text-[9px] uppercase tracking-wider text-slate-500/40 mt-2">Eduvantix ARCADE</span>
                       </div>
 
                       {/* CARD BACK (FACE UP - details) */}
-                      <div className={`arcade-card-back flex items-center justify-center p-3 text-center border text-[10px] md:text-xs font-bold leading-tight ${
+                      <div className={`arcade-card-back flex items-center justify-center p-3 text-center border border-[var(--border-primary)] text-[10px] md:text-xs font-bold leading-tight ${
                         card.isMatched
                           ? "border-emerald-500/50 bg-emerald-950/20 text-emerald-300 shadow-[0_0_12px_rgba(16,185,129,0.1)]"
                           : "border-slate-500 bg-[#160c2b] text-white shadow-[0_0_12px_rgba(139,92,246,0.15)]"
@@ -557,7 +557,7 @@ export default function CodeMatch({ onProgressChange, savedProgress, onBack }) {
             exit={{ opacity: 0 }}
             className="flex flex-col items-center justify-center p-8 text-center h-[70vh] space-y-6"
           >
-            <div className="p-4 rounded-full bg-amber-500/10 border border-amber-500/20">
+            <div className="p-4 rounded-full bg-amber-500/10 border border-[var(--border-primary)] border-amber-500/20">
               <Trophy size={36} className="text-amber-400" />
             </div>
 
@@ -575,15 +575,15 @@ export default function CodeMatch({ onProgressChange, savedProgress, onBack }) {
 
             {/* Metrics */}
             <div className="grid grid-cols-3 gap-3 w-full max-w-md">
-              <div className="bg-slate-950/15 border border-slate-500/10 rounded-2xl p-4">
+              <div className="bg-slate-950/15 border border-[var(--border-primary)] border-slate-500/10 rounded-2xl p-4">
                 <div className="text-2xl font-black text-cyan-300">{score}</div>
                 <div className="text-[9px] uppercase tracking-wider text-slate-300/40 font-bold mt-1">Score</div>
               </div>
-              <div className="bg-slate-950/15 border border-slate-500/10 rounded-2xl p-4">
+              <div className="bg-slate-950/15 border border-[var(--border-primary)] border-slate-500/10 rounded-2xl p-4">
                 <div className="text-2xl font-black text-[#7CFFB2]">{getFormatTime(elapsedTime)}</div>
                 <div className="text-[9px] uppercase tracking-wider text-slate-300/40 font-bold mt-1">Time</div>
               </div>
-              <div className="bg-slate-950/15 border border-slate-500/10 rounded-2xl p-4">
+              <div className="bg-slate-950/15 border border-[var(--border-primary)] border-slate-500/10 rounded-2xl p-4">
                 <div className="text-2xl font-black text-orange-400">{moves}</div>
                 <div className="text-[9px] uppercase tracking-wider text-slate-300/40 font-bold mt-1">Moves</div>
               </div>
@@ -609,7 +609,7 @@ export default function CodeMatch({ onProgressChange, savedProgress, onBack }) {
               })()}
               <button
                 onClick={() => handleStartGame(selectedTrack, currentLevel)}
-                className="px-5 py-2.5 rounded-xl border border-slate-500/25 bg-[#1b0d35]/30 text-slate-300 hover:text-white hover:border-slate-400 text-xs font-bold transition-all cursor-pointer flex items-center gap-2 font-mono"
+                className="px-5 py-2.5 rounded-xl border border-[var(--border-primary)] border-slate-500/25 bg-[#1b0d35]/30 text-slate-300 hover:text-white hover:border-slate-400 text-xs font-bold transition-all cursor-pointer flex items-center gap-2 font-mono"
               >
                 <RotateCcw size={13} /> Replay Level {currentLevel}
               </button>

@@ -113,7 +113,7 @@ function QuizForm({ form, onChange }) {
         <div>
           <label className="block text-[10px] font-bold uppercase tracking-wider mb-1.5" style={{ color: "var(--text-muted)" }}>Track *</label>
           <select value={form.track} onChange={e => onChange("track", e.target.value)}
-            className="w-full px-3 py-2 rounded-xl border text-sm font-medium outline-none transition-all cursor-pointer"
+            className="w-full px-3 py-2 rounded-xl border border-[var(--border-primary)] text-sm font-medium outline-none transition-all cursor-pointer"
             style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}>
             {["JavaScript", "React.js", "Node.js", "MongoDB"].map(t => <option key={t}>{t}</option>)}
           </select>
@@ -121,13 +121,13 @@ function QuizForm({ form, onChange }) {
         <div>
           <label className="block text-[10px] font-bold uppercase tracking-wider mb-1.5" style={{ color: "var(--text-muted)" }}>Time Limit (sec)</label>
           <input type="number" min={10} max={60} value={form.time_limit} onChange={e => onChange("time_limit", Number(e.target.value))}
-            className="w-full px-3 py-2 rounded-xl border text-sm font-medium outline-none"
+            className="w-full px-3 py-2 rounded-xl border border-[var(--border-primary)] text-sm font-medium outline-none"
             style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }} />
         </div>
         <div>
           <label className="block text-[10px] font-bold uppercase tracking-wider mb-1.5" style={{ color: "var(--text-muted)" }}>Level *</label>
           <input type="number" min={1} value={form.level} onChange={e => onChange("level", e.target.value === "" ? "" : Math.max(1, Number(e.target.value)))}
-            className="w-full px-3 py-2 rounded-xl border text-sm font-medium outline-none"
+            className="w-full px-3 py-2 rounded-xl border border-[var(--border-primary)] text-sm font-medium outline-none"
             style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }} />
         </div>
       </div>
@@ -135,14 +135,14 @@ function QuizForm({ form, onChange }) {
       <div>
         <label className="block text-[10px] font-bold uppercase tracking-wider mb-1.5" style={{ color: "var(--text-muted)" }}>Question *</label>
         <textarea rows={2} value={form.question} onChange={e => onChange("question", e.target.value)} placeholder="What does this code output?"
-          className="w-full px-3 py-2 rounded-xl border text-sm font-medium outline-none resize-none"
+          className="w-full px-3 py-2 rounded-xl border border-[var(--border-primary)] text-sm font-medium outline-none resize-none"
           style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }} />
       </div>
 
       <div>
         <label className="block text-[10px] font-bold uppercase tracking-wider mb-1.5" style={{ color: "var(--text-muted)" }}>Code Snippet (optional)</label>
         <textarea rows={3} value={form.code} onChange={e => onChange("code", e.target.value)} placeholder="console.log(typeof null);"
-          className="w-full px-3 py-2 rounded-xl border text-sm font-mono outline-none resize-none"
+          className="w-full px-3 py-2 rounded-xl border border-[var(--border-primary)] text-sm font-mono outline-none resize-none"
           style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }} />
       </div>
 
@@ -155,7 +155,7 @@ function QuizForm({ form, onChange }) {
             <input type="text" value={form[`option_${opt.toLowerCase()}`]}
               onChange={e => onChange(`option_${opt.toLowerCase()}`, e.target.value)}
               placeholder={`Option ${opt}...`}
-              className="w-full px-3 py-2 rounded-xl border text-sm font-medium outline-none"
+              className="w-full px-3 py-2 rounded-xl border border-[var(--border-primary)] text-sm font-medium outline-none"
               style={{ backgroundColor: "var(--bg-primary)", borderColor: form.correct_option === opt ? "rgb(52 211 153 / 0.4)" : "var(--border-primary)", color: "var(--text-primary)" }} />
           </div>
         ))}
@@ -171,7 +171,7 @@ function QuizForm({ form, onChange }) {
                 key={opt}
                 type="button"
                 onClick={() => onChange("correct_option", opt)}
-                className={`flex-1 py-2 rounded-xl border text-xs font-black transition-all cursor-pointer ${
+                className={`flex-1 py-2 rounded-xl border border-[var(--border-primary)] text-xs font-black transition-all cursor-pointer ${
                   isSelected
                     ? "bg-emerald-500/10 border-emerald-500 text-emerald-600 dark:text-emerald-400 dark:bg-emerald-500/20"
                     : "hover:bg-black/5 dark:hover:bg-white/5"
@@ -191,7 +191,7 @@ function QuizForm({ form, onChange }) {
       <div>
         <label className="block text-[10px] font-bold uppercase tracking-wider mb-1.5" style={{ color: "var(--text-muted)" }}>Explanation *</label>
         <textarea rows={2} value={form.explanation} onChange={e => onChange("explanation", e.target.value)} placeholder="Why is this the correct answer?"
-          className="w-full px-3 py-2 rounded-xl border text-sm font-medium outline-none resize-none"
+          className="w-full px-3 py-2 rounded-xl border border-[var(--border-primary)] text-sm font-medium outline-none resize-none"
           style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }} />
       </div>
     </div>
@@ -205,7 +205,7 @@ function MatchForm({ form, onChange }) {
         <div>
           <label className="block text-[10px] font-bold uppercase tracking-wider mb-1.5" style={{ color: "var(--text-muted)" }}>Track *</label>
           <select value={form.track} onChange={e => onChange("track", e.target.value)}
-            className="w-full px-3 py-2 rounded-xl border text-sm font-medium outline-none cursor-pointer"
+            className="w-full px-3 py-2 rounded-xl border border-[var(--border-primary)] text-sm font-medium outline-none cursor-pointer"
             style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}>
             {["JavaScript", "React.js", "Node.js", "MongoDB"].map(t => <option key={t}>{t}</option>)}
           </select>
@@ -213,20 +213,20 @@ function MatchForm({ form, onChange }) {
         <div>
           <label className="block text-[10px] font-bold uppercase tracking-wider mb-1.5" style={{ color: "var(--text-muted)" }}>Level *</label>
           <input type="number" min={1} value={form.level} onChange={e => onChange("level", e.target.value === "" ? "" : Math.max(1, Number(e.target.value)))}
-            className="w-full px-3 py-2 rounded-xl border text-sm font-medium outline-none"
+            className="w-full px-3 py-2 rounded-xl border border-[var(--border-primary)] text-sm font-medium outline-none"
             style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }} />
         </div>
       </div>
       <div>
         <label className="block text-[10px] font-bold uppercase tracking-wider mb-1.5" style={{ color: "var(--text-muted)" }}>Term *</label>
         <input type="text" value={form.term} onChange={e => onChange("term", e.target.value)} placeholder="e.g. Closure"
-          className="w-full px-3 py-2 rounded-xl border text-sm font-medium outline-none"
+          className="w-full px-3 py-2 rounded-xl border border-[var(--border-primary)] text-sm font-medium outline-none"
           style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }} />
       </div>
       <div>
         <label className="block text-[10px] font-bold uppercase tracking-wider mb-1.5" style={{ color: "var(--text-muted)" }}>Definition *</label>
         <textarea rows={3} value={form.definition} onChange={e => onChange("definition", e.target.value)} placeholder="A function that retains access to its outer lexical scope..."
-          className="w-full px-3 py-2 rounded-xl border text-sm font-medium outline-none resize-none"
+          className="w-full px-3 py-2 rounded-xl border border-[var(--border-primary)] text-sm font-medium outline-none resize-none"
           style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }} />
       </div>
     </div>
@@ -256,7 +256,7 @@ function DebugForm({ form, onChange }) {
         <div>
           <label className="block text-[10px] font-bold uppercase tracking-wider mb-1.5" style={{ color: "var(--text-muted)" }}>Track *</label>
           <select value={form.track} onChange={e => onChange("track", e.target.value)}
-            className="w-full px-3 py-2 rounded-xl border text-sm font-medium outline-none cursor-pointer"
+            className="w-full px-3 py-2 rounded-xl border border-[var(--border-primary)] text-sm font-medium outline-none cursor-pointer"
             style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}>
             {["JavaScript", "React.js", "Node.js", "MongoDB"].map(t => <option key={t}>{t}</option>)}
           </select>
@@ -264,13 +264,13 @@ function DebugForm({ form, onChange }) {
         <div>
           <label className="block text-[10px] font-bold uppercase tracking-wider mb-1.5" style={{ color: "var(--text-muted)" }}>Title *</label>
           <input type="text" value={form.title} onChange={e => onChange("title", e.target.value)} placeholder="Off-by-one Loop Error"
-            className="w-full px-3 py-2 rounded-xl border text-sm font-medium outline-none"
+            className="w-full px-3 py-2 rounded-xl border border-[var(--border-primary)] text-sm font-medium outline-none"
             style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }} />
         </div>
         <div>
           <label className="block text-[10px] font-bold uppercase tracking-wider mb-1.5" style={{ color: "var(--text-muted)" }}>Level *</label>
           <input type="number" min={1} value={form.level} onChange={e => onChange("level", e.target.value === "" ? "" : Math.max(1, Number(e.target.value)))}
-            className="w-full px-3 py-2 rounded-xl border text-sm font-medium outline-none"
+            className="w-full px-3 py-2 rounded-xl border border-[var(--border-primary)] text-sm font-medium outline-none"
             style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }} />
         </div>
       </div>
@@ -281,7 +281,7 @@ function DebugForm({ form, onChange }) {
         </label>
         <textarea rows={6} value={form.code} onChange={e => onChange("code", e.target.value)}
           placeholder={"function avg(arr) {\n  let total = 0;\n  for (let i = 0; i <= arr.length; i++) {\n    total += arr[i];\n  }\n  return total / arr.length;\n}"}
-          className="w-full px-3 py-2 rounded-xl border text-sm font-mono outline-none resize-none"
+          className="w-full px-3 py-2 rounded-xl border border-[var(--border-primary)] text-sm font-mono outline-none resize-none"
           style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }} />
       </div>
 
@@ -293,7 +293,7 @@ function DebugForm({ form, onChange }) {
           </label>
           {buggyLines.length < 6 && (
             <button type="button" onClick={addBugLine}
-              className="text-[10px] font-bold px-3 py-1 rounded-lg border border-amber-500/30 text-amber-400 hover:bg-amber-500/10 transition-all cursor-pointer">
+              className="text-[10px] font-bold px-3 py-1 rounded-lg border border-[var(--border-primary)] border-amber-500/30 text-amber-400 hover:bg-amber-500/10 transition-all cursor-pointer">
               + Add Bug
             </button>
           )}
@@ -306,7 +306,7 @@ function DebugForm({ form, onChange }) {
               <label className="block text-[10px] font-bold uppercase tracking-wider mb-1" style={{ color: "var(--text-muted)" }}>Line #</label>
               <input type="number" min={1} value={bug.line_number}
                 onChange={e => updateBugLine(bi, "line_number", Number(e.target.value))}
-                className="w-16 px-2.5 py-1.5 rounded-lg border text-xs font-mono outline-none text-center"
+                className="w-16 px-2.5 py-1.5 rounded-lg border border-[var(--border-primary)] text-xs font-mono outline-none text-center"
                 style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }} />
             </div>
             <div className="flex-1">
@@ -314,7 +314,7 @@ function DebugForm({ form, onChange }) {
               <input type="text" value={bug.line_content}
                 onChange={e => updateBugLine(bi, "line_content", e.target.value)}
                 placeholder={`Content of line ${bi + 1}...`}
-                className="w-full px-2.5 py-1.5 rounded-lg border text-xs font-mono outline-none"
+                className="w-full px-2.5 py-1.5 rounded-lg border border-[var(--border-primary)] text-xs font-mono outline-none"
                 style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }} />
             </div>
             {buggyLines.length > 1 && (
@@ -330,7 +330,7 @@ function DebugForm({ form, onChange }) {
       <div>
         <label className="block text-[10px] font-bold uppercase tracking-wider mb-1.5" style={{ color: "var(--text-muted)" }}>Explanation *</label>
         <textarea rows={2} value={form.explanation} onChange={e => onChange("explanation", e.target.value)} placeholder="The condition i <= arr.length goes out of bounds..."
-          className="w-full px-3 py-2 rounded-xl border text-sm font-medium outline-none resize-none"
+          className="w-full px-3 py-2 rounded-xl border border-[var(--border-primary)] text-sm font-medium outline-none resize-none"
           style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }} />
       </div>
     </div>
@@ -363,7 +363,7 @@ function FillinForm({ form, onChange }) {
         <div>
           <label className="block text-[10px] font-bold uppercase tracking-wider mb-1.5" style={{ color: "var(--text-muted)" }}>Language *</label>
           <select value={form.lang} onChange={e => onChange("lang", e.target.value)}
-            className="w-full px-3 py-2 rounded-xl border text-sm font-medium outline-none cursor-pointer"
+            className="w-full px-3 py-2 rounded-xl border border-[var(--border-primary)] text-sm font-medium outline-none cursor-pointer"
             style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}>
             {["Python", "JavaScript", "SQL"].map(l => <option key={l}>{l}</option>)}
           </select>
@@ -371,13 +371,13 @@ function FillinForm({ form, onChange }) {
         <div>
           <label className="block text-[10px] font-bold uppercase tracking-wider mb-1.5" style={{ color: "var(--text-muted)" }}>Title *</label>
           <input type="text" value={form.title} onChange={e => onChange("title", e.target.value)} placeholder="Prime Checker"
-            className="w-full px-3 py-2 rounded-xl border text-sm font-medium outline-none"
+            className="w-full px-3 py-2 rounded-xl border border-[var(--border-primary)] text-sm font-medium outline-none"
             style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }} />
         </div>
         <div>
           <label className="block text-[10px] font-bold uppercase tracking-wider mb-1.5" style={{ color: "var(--text-muted)" }}>Level *</label>
           <input type="number" min={1} value={form.level} onChange={e => onChange("level", e.target.value === "" ? "" : Math.max(1, Number(e.target.value)))}
-            className="w-full px-3 py-2 rounded-xl border text-sm font-medium outline-none"
+            className="w-full px-3 py-2 rounded-xl border border-[var(--border-primary)] text-sm font-medium outline-none"
             style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }} />
         </div>
       </div>
@@ -393,7 +393,7 @@ function FillinForm({ form, onChange }) {
         </label>
         <textarea rows={5} value={form.code} onChange={e => onChange("code", e.target.value)}
           placeholder={"def prime(n):\n  for i in ____(2, int(n**0.5)+1):\n    if n % ____2 == 0:\n      return False\n  return True"}
-          className="w-full px-3 py-2 rounded-xl border text-sm font-mono outline-none resize-none"
+          className="w-full px-3 py-2 rounded-xl border border-[var(--border-primary)] text-sm font-mono outline-none resize-none"
           style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }} />
       </div>
 
@@ -405,14 +405,14 @@ function FillinForm({ form, onChange }) {
           </label>
           {blanks.length < 5 && (
             <button type="button" onClick={addBlank}
-              className="text-[10px] font-bold px-3 py-1 rounded-lg border border-violet-500/30 text-violet-400 hover:bg-violet-500/10 transition-all cursor-pointer">
+              className="text-[10px] font-bold px-3 py-1 rounded-lg border border-[var(--border-primary)] border-violet-500/30 text-violet-400 hover:bg-violet-500/10 transition-all cursor-pointer">
               + Add Blank
             </button>
           )}
         </div>
 
         {blanks.map((blank, bi) => (
-          <div key={bi} className="p-4 rounded-2xl border space-y-3"
+          <div key={bi} className="p-4 rounded-2xl border border-[var(--border-primary)] space-y-3"
             style={{ borderColor: "var(--border-primary)", backgroundColor: "var(--bg-primary)" }}>
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-black uppercase tracking-wider text-violet-400">
@@ -436,7 +436,7 @@ function FillinForm({ form, onChange }) {
                   <input type="text" value={blank[`option_${opt}`]}
                     onChange={e => updateBlank(bi, `option_${opt}`, e.target.value)}
                     placeholder={["range", "len", "list", "iter"][oi]}
-                    className="w-full px-2.5 py-1.5 rounded-lg border text-xs font-mono outline-none"
+                    className="w-full px-2.5 py-1.5 rounded-lg border border-[var(--border-primary)] text-xs font-mono outline-none"
                     style={{ backgroundColor: "var(--bg-card)", borderColor: blank.answer === blank[`option_${opt}`] && blank.answer ? "rgb(52 211 153 / 0.4)" : "var(--border-primary)", color: "var(--text-primary)" }} />
                 </div>
               ))}
@@ -449,7 +449,7 @@ function FillinForm({ form, onChange }) {
               <input type="text" value={blank.answer}
                 onChange={e => updateBlank(bi, "answer", e.target.value)}
                 placeholder="range"
-                className="w-full px-2.5 py-1.5 rounded-lg border text-xs font-mono outline-none"
+                className="w-full px-2.5 py-1.5 rounded-lg border border-[var(--border-primary)] text-xs font-mono outline-none"
                 style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }} />
             </div>
           </div>
@@ -459,7 +459,7 @@ function FillinForm({ form, onChange }) {
       <div>
         <label className="block text-[10px] font-bold uppercase tracking-wider mb-1.5" style={{ color: "var(--text-muted)" }}>Hint *</label>
         <textarea rows={2} value={form.hint} onChange={e => onChange("hint", e.target.value)} placeholder="Use range() to iterate and i to check divisibility..."
-          className="w-full px-3 py-2 rounded-xl border text-sm font-medium outline-none resize-none"
+          className="w-full px-3 py-2 rounded-xl border border-[var(--border-primary)] text-sm font-medium outline-none resize-none"
           style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }} />
       </div>
     </div>
@@ -521,13 +521,13 @@ function QuestionCard({ q, type, onEdit, onDelete, canManage }) {
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.97 }}
-      className="flex items-start justify-between gap-4 p-4 rounded-xl border group transition-colors hover:bg-[var(--bg-secondary)]"
+      className="flex items-start justify-between gap-4 p-4 rounded-xl border border-[var(--border-primary)] group transition-colors hover:bg-[var(--bg-secondary)]"
       style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}
     >
       <div className="flex items-center gap-2 flex-1 min-w-0">
         <p className="text-xs font-mono flex-1 leading-relaxed" style={{ color: "var(--text-secondary)" }}>{preview}</p>
         {!canManage && (
-          <span className="shrink-0 text-[9px] font-bold text-amber-400/60 bg-amber-400/10 border border-amber-400/20 px-1.5 py-0.5 rounded uppercase tracking-wide">Built-in</span>
+          <span className="shrink-0 text-[9px] font-bold text-amber-400/60 bg-amber-400/10 border border-[var(--border-primary)] border-amber-400/20 px-1.5 py-0.5 rounded uppercase tracking-wide">Built-in</span>
         )}
       </div>
       {canManage && (
@@ -789,7 +789,7 @@ export default function ArcadeQuestionsPage() {
             initial={{ opacity: 0, y: -12, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -12, scale: 0.95 }}
-            className={`fixed top-6 right-6 z-[9999] flex items-center gap-3 px-5 py-3 rounded-xl shadow-2xl border text-sm font-semibold ${
+            className={`fixed top-6 right-6 z-[9999] flex items-center gap-3 px-5 py-3 rounded-xl shadow-2xl border border-[var(--border-primary)] text-sm font-semibold ${
               notification.type === "error"
                 ? "bg-rose-50 text-rose-600 border-rose-200 dark:bg-rose-950 dark:text-rose-300 dark:border-rose-900"
                 : "bg-emerald-50 text-emerald-600 border-emerald-200 dark:bg-emerald-950 dark:text-emerald-300 dark:border-emerald-900"
@@ -810,7 +810,7 @@ export default function ArcadeQuestionsPage() {
           >
             <motion.div
               initial={{ scale: 0.9, y: 10 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.9, y: 10 }}
-              className="w-full max-w-sm rounded-2xl p-6 border shadow-2xl text-center space-y-4"
+              className="w-full max-w-sm rounded-2xl p-6 border border-[var(--border-primary)] shadow-2xl text-center space-y-4"
               style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}
             >
               <div className="w-12 h-12 rounded-full bg-rose-500/10 text-rose-500 flex items-center justify-center mx-auto">
@@ -822,7 +822,7 @@ export default function ArcadeQuestionsPage() {
               </div>
               <div className="flex gap-3 pt-2">
                 <button onClick={() => setDeleteConfirm(null)}
-                  className="flex-1 px-4 py-2.5 rounded-xl border text-xs font-semibold cursor-pointer hover:bg-[var(--bg-secondary)] transition-colors"
+                  className="flex-1 px-4 py-2.5 rounded-xl border border-[var(--border-primary)] text-xs font-semibold cursor-pointer hover:bg-[var(--bg-secondary)] transition-colors"
                   style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}>Cancel</button>
                 <button onClick={() => handleDelete(deleteConfirm)}
                   className="flex-1 px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold cursor-pointer transition-colors">
@@ -837,7 +837,7 @@ export default function ArcadeQuestionsPage() {
       {/* ── Page Header ──────────────────────────────────────────────────── */}
       <section className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b pb-6" style={{ borderColor: "var(--border-primary)" }}>
         <div className="space-y-2">
-          <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border mb-3"
+          <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border border-[var(--border-primary)] mb-3"
             style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)", backgroundColor: "var(--bg-secondary)" }}>
             <Gamepad2 size={12} className="text-violet-500" />
             Arcade Manager
@@ -850,12 +850,12 @@ export default function ArcadeQuestionsPage() {
           </p>
         </div>
         <div className="flex items-center gap-3 shrink-0">
-          <div className="px-4 py-2 rounded-xl border text-xs font-medium" style={{ borderColor: "var(--border-primary)", backgroundColor: "var(--bg-primary)", color: "var(--text-secondary)" }}>
+          <div className="px-4 py-2 rounded-xl border border-[var(--border-primary)] text-xs font-medium" style={{ borderColor: "var(--border-primary)", backgroundColor: "var(--bg-primary)", color: "var(--text-secondary)" }}>
             <span style={{ color: "var(--text-primary)" }} className="font-bold text-sm">{totalAll}</span> custom {totalAll === 1 ? "question" : "questions"} total
           </div>
           <button
             onClick={openAddForm}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-xs text-white shadow-md transition-transform hover:-translate-y-0.5 cursor-pointer"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-xs text-[var(--text-on-accent)] shadow-md transition-transform hover:-translate-y-0.5 cursor-pointer"
             style={{ background: "var(--accent-primary)" }}
           >
             <Plus size={14} /> Add Question
@@ -873,7 +873,7 @@ export default function ArcadeQuestionsPage() {
             <button
               key={gt.key}
               onClick={() => { setActiveType(gt.key); setSearch(""); setShowForm(false); }}
-              className={`p-5 rounded-2xl border text-left transition-colors cursor-pointer flex flex-col items-start ${isActive ? "shadow-md" : "hover:bg-[var(--bg-secondary)]"}`}
+              className={`p-5 rounded-2xl border border-[var(--border-primary)] text-left transition-colors cursor-pointer flex flex-col items-start ${isActive ? "shadow-md" : "hover:bg-[var(--bg-secondary)]"}`}
               style={{
                 backgroundColor: isActive ? "var(--bg-secondary)" : "var(--bg-primary)",
                 borderColor: isActive ? "var(--accent-primary)" : "var(--border-primary)"
@@ -901,7 +901,7 @@ export default function ArcadeQuestionsPage() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2 }}
-            className="rounded-2xl border p-6 md:p-8 space-y-6 shadow-sm"
+            className="rounded-2xl border border-[var(--border-primary)] p-6 md:p-8 space-y-6 shadow-sm"
             style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}
           >
             <div className="flex items-center justify-between border-b pb-4" style={{ borderColor: "var(--border-primary)" }}>
@@ -920,19 +920,19 @@ export default function ArcadeQuestionsPage() {
             {activeType === "fillin" && <FillinForm form={form} onChange={handleFieldChange} />}
 
             {formError && (
-              <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-rose-50 text-rose-600 border border-rose-200 dark:bg-rose-950/50 dark:border-rose-900/50 dark:text-rose-400 text-xs font-medium">
+              <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-rose-50 text-rose-600 border border-[var(--border-primary)] border-rose-200 dark:bg-rose-950/50 dark:border-rose-900/50 dark:text-rose-400 text-xs font-medium">
                 <AlertCircle size={14} className="shrink-0" /> {formError}
               </div>
             )}
 
             <div className="flex justify-end gap-3 pt-4 border-t" style={{ borderColor: "var(--border-primary)" }}>
               <button onClick={closeForm}
-                className="px-5 py-2.5 rounded-xl border text-xs font-semibold cursor-pointer hover:bg-[var(--bg-secondary)] transition-colors"
+                className="px-5 py-2.5 rounded-xl border border-[var(--border-primary)] text-xs font-semibold cursor-pointer hover:bg-[var(--bg-secondary)] transition-colors"
                 style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}>
                 Cancel
               </button>
               <button onClick={handleSave}
-                className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-white text-xs font-semibold cursor-pointer transition-transform hover:-translate-y-0.5"
+                className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-[var(--text-on-accent)] text-xs font-semibold cursor-pointer transition-transform hover:-translate-y-0.5"
                 style={{ background: "var(--accent-primary)" }}>
                 <Save size={14} /> {editingId ? "Save Changes" : "Add Question"}
               </button>
@@ -943,7 +943,7 @@ export default function ArcadeQuestionsPage() {
 
       {/* ── Questions list ────────────────────────────────────────────────── */}
       <div
-        className="rounded-2xl border p-6 md:p-8 space-y-6"
+        className="rounded-2xl border border-[var(--border-primary)] p-6 md:p-8 space-y-6"
         style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}
       >
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b pb-4" style={{ borderColor: "var(--border-primary)" }}>
@@ -963,7 +963,7 @@ export default function ArcadeQuestionsPage() {
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 placeholder="Search questions..."
-                className="pl-9 pr-4 py-2.5 rounded-xl border text-sm font-medium outline-none w-full md:w-64 transition-colors focus:border-[var(--text-muted)]"
+                className="pl-9 pr-4 py-2.5 rounded-xl border border-[var(--border-primary)] text-sm font-medium outline-none w-full md:w-64 transition-colors focus:border-[var(--text-muted)]"
                 style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
               />
             </div>
@@ -971,7 +971,7 @@ export default function ArcadeQuestionsPage() {
         </div>
 
         {filtered.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-16 text-center space-y-4 border border-dashed rounded-2xl" style={{ borderColor: "var(--border-primary)" }}>
+          <div className="flex flex-col items-center justify-center py-16 text-center space-y-4 border border-[var(--border-primary)] border-dashed rounded-2xl" style={{ borderColor: "var(--border-primary)" }}>
             <div className={`p-4 rounded-full ${activeGameType.bg}`}>
               {React.createElement(activeGameType.icon, { size: 24, className: activeGameType.accent })}
             </div>
@@ -986,7 +986,7 @@ export default function ArcadeQuestionsPage() {
             {!search && (
               <button
                 onClick={openAddForm}
-                className="mt-2 flex items-center gap-2 px-5 py-2.5 rounded-xl text-white text-xs font-semibold cursor-pointer transition-transform hover:-translate-y-0.5"
+                className="mt-2 flex items-center gap-2 px-5 py-2.5 rounded-xl text-[var(--text-on-accent)] text-xs font-semibold cursor-pointer transition-transform hover:-translate-y-0.5"
                 style={{ background: "var(--accent-primary)" }}
               >
                 <Plus size={14} /> Add First Question
@@ -1019,7 +1019,7 @@ export default function ArcadeQuestionsPage() {
       </div>
 
       {/* ── Info panel ───────────────────────────────────────────────────── */}
-      <div className="p-5 rounded-2xl border flex items-start gap-3"
+      <div className="p-5 rounded-2xl border border-[var(--border-primary)] flex items-start gap-3"
         style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)" }}>
         <AlertCircle size={16} className="text-amber-500 shrink-0 mt-0.5" />
         <div className="space-y-1">

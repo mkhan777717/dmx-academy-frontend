@@ -1,4 +1,4 @@
-// DMX Academy Contest Registry Data
+// Eduvantix Contest Registry Data
 import { practiceProblems } from "./practiceProblems";
 
 // Helper: build ISO timestamp relative to NOW
@@ -9,7 +9,7 @@ function relativeISO(offsetMinutes) {
 export const contests = [
   {
     id: "speedrun-01",
-    title: "DMX Web & Algorithm Speedrun #01",
+    title: "Eduvantix Web & Algorithm Speedrun #01",
     desc: "Test your skills in coding performance and core virtual DOM rendering mechanics in this weekly speed challenge.",
     durationMins: 30,
     totalPoints: 300,
@@ -59,7 +59,7 @@ export const contests = [
   },
   {
     id: "hackathon-04",
-    title: "DMX Monthly Hackathon #04",
+    title: "Eduvantix Monthly Hackathon #04",
     desc: "Our premium monthly marathon challenge exploring distributed services rate limits, array optimizations, and reconciliation trees.",
     durationMins: 90,
     totalPoints: 600,

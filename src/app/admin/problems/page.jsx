@@ -161,7 +161,7 @@ export default function AdminProblemsPage() {
       {/* Page Header */}
       <section className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 border-b pb-6 shrink-0" style={{ borderColor: "var(--border-primary)" }}>
         <div className="space-y-2">
-          <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border mb-3"
+          <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border border-[var(--border-primary)] mb-3"
             style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)", backgroundColor: "var(--bg-secondary)" }}>
             <Code size={12} className="text-violet-500" />
             Problem Registry
@@ -176,7 +176,7 @@ export default function AdminProblemsPage() {
         <div className="flex items-center gap-3 shrink-0">
           <button
             onClick={loadProblems}
-            className="p-2.5 rounded-xl border transition-colors hover:bg-[var(--bg-secondary)] flex items-center justify-center cursor-pointer"
+            className="p-2.5 rounded-xl border border-[var(--border-primary)] transition-colors hover:bg-[var(--bg-secondary)] flex items-center justify-center cursor-pointer"
             style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}
             title="Refresh"
           >
@@ -185,7 +185,7 @@ export default function AdminProblemsPage() {
           {!(activeTab === "global" && user?.role !== "ADMIN") && (
             <button
               onClick={() => router.push("/admin/problems/new")}
-              className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-white text-xs font-semibold transition-transform hover:-translate-y-0.5 cursor-pointer shadow-md"
+              className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-[var(--text-on-accent)] text-xs font-semibold transition-transform hover:-translate-y-0.5 cursor-pointer shadow-md"
               style={{ background: "var(--accent-primary)" }}
             >
               <Plus size={14} />
@@ -202,7 +202,7 @@ export default function AdminProblemsPage() {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
-            className={`p-4 rounded-2xl border text-xs text-center font-bold ${notification.type === "error"
+            className={`p-4 rounded-2xl border border-[var(--border-primary)] text-xs text-center font-bold ${notification.type === "error"
               ? "bg-rose-500/10 border-rose-500/20 text-rose-400"
               : "bg-emerald-500/10 border-emerald-500/20 text-emerald-400"
               }`}
@@ -223,7 +223,7 @@ export default function AdminProblemsPage() {
           <button
             key={key}
             onClick={() => setFilterDiff(key)}
-            className={`p-5 rounded-2xl border text-left transition-all cursor-pointer group ${filterDiff === key
+            className={`p-5 rounded-2xl border border-[var(--border-primary)] text-left transition-all cursor-pointer group ${filterDiff === key
               ? "ring-2 ring-[var(--accent-primary)] border-transparent bg-[var(--bg-secondary)]"
               : "hover:bg-[var(--bg-secondary)] bg-[var(--bg-card)]"
               }`}
@@ -245,7 +245,7 @@ export default function AdminProblemsPage() {
       {/* Scope Tabs & Search */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 shrink-0">
         {user?.role !== "ADMIN" ? (
-          <div className="flex gap-2 p-1.5 rounded-2xl w-fit border shrink-0 bg-[var(--bg-secondary)]" style={{ borderColor: "var(--border-primary)" }}>
+          <div className="flex gap-2 p-1.5 rounded-2xl w-fit border border-[var(--border-primary)] shrink-0 bg-[var(--bg-secondary)]" style={{ borderColor: "var(--border-primary)" }}>
             <button
               onClick={() => {
                 setActiveTab("institute");
@@ -253,7 +253,7 @@ export default function AdminProblemsPage() {
               }}
               className={`px-4 py-2 rounded-xl text-xs font-semibold transition-colors cursor-pointer ${activeTab === "institute"
                 ? "bg-[var(--bg-primary)] text-[var(--text-primary)] shadow-sm border border-[var(--border-primary)]"
-                : "text-[var(--text-muted)] hover:text-[var(--text-secondary)] border border-transparent"
+                : "text-[var(--text-muted)] hover:text-[var(--text-secondary)] border border-[var(--border-primary)] border-transparent"
                 }`}
             >
               Your Institute
@@ -265,7 +265,7 @@ export default function AdminProblemsPage() {
               }}
               className={`px-4 py-2 rounded-xl text-xs font-semibold transition-colors cursor-pointer ${activeTab === "global"
                 ? "bg-[var(--bg-primary)] text-[var(--text-primary)] shadow-sm border border-[var(--border-primary)]"
-                : "text-[var(--text-muted)] hover:text-[var(--text-secondary)] border border-transparent"
+                : "text-[var(--text-muted)] hover:text-[var(--text-secondary)] border border-[var(--border-primary)] border-transparent"
                 }`}
             >
               Global Problems
@@ -281,7 +281,7 @@ export default function AdminProblemsPage() {
             placeholder="Search problems..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-[var(--bg-secondary)] border rounded-xl px-4 py-2 text-sm font-medium focus:outline-none focus:border-[var(--text-muted)] transition-colors placeholder:text-[var(--text-muted)]"
+            className="w-full bg-[var(--bg-secondary)] border border-[var(--border-primary)] rounded-xl px-4 py-2 text-sm font-medium focus:outline-none focus:border-[var(--text-muted)] transition-colors placeholder:text-[var(--text-muted)]"
             style={{ borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
           />
           {search && (
@@ -296,7 +296,7 @@ export default function AdminProblemsPage() {
         </div>
       </div>
 
-      <div className="flex-1 min-h-0 overflow-y-auto rounded-2xl border pb-12" style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}>
+      <div className="flex-1 min-h-0 overflow-y-auto rounded-2xl border border-[var(--border-primary)] pb-12" style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}>
         {loading ? (
           <div className="flex items-center justify-center py-20 space-x-2">
             <RefreshCw size={16} className="animate-spin text-violet-500" />
@@ -320,7 +320,7 @@ export default function AdminProblemsPage() {
             {!search && (
               <button
                 onClick={() => router.push("/admin/problems/new")}
-                className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-lg border text-xs font-semibold transition-colors cursor-pointer hover:bg-[var(--bg-secondary)] mt-2"
+                className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-lg border border-[var(--border-primary)] text-xs font-semibold transition-colors cursor-pointer hover:bg-[var(--bg-secondary)] mt-2"
                 style={{ borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
               >
                 <Plus size={14} />
@@ -377,7 +377,7 @@ export default function AdminProblemsPage() {
                           </span>
                         </td>
                         <td className="px-6 py-4">
-                          <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-md border ${cls}`}>
+                          <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-md border border-[var(--border-primary)] ${cls}`}>
                             {label}
                           </span>
                         </td>
@@ -435,7 +435,7 @@ export default function AdminProblemsPage() {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="p-8 rounded-3xl border shadow-2xl max-w-sm w-full space-y-6 text-center"
+              className="p-8 rounded-3xl border border-[var(--border-primary)] shadow-2xl max-w-sm w-full space-y-6 text-center"
               style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}
             >
               <div className="space-y-2">
@@ -452,7 +452,7 @@ export default function AdminProblemsPage() {
               <div className="flex justify-center gap-3">
                 <button
                   onClick={() => setDeletingId(null)}
-                  className="px-5 py-2.5 rounded-xl border text-sm font-semibold transition-colors cursor-pointer hover:bg-[var(--bg-secondary)]"
+                  className="px-5 py-2.5 rounded-xl border border-[var(--border-primary)] text-sm font-semibold transition-colors cursor-pointer hover:bg-[var(--bg-secondary)]"
                   style={{ borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
                 >
                   Cancel

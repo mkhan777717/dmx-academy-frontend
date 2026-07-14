@@ -123,7 +123,7 @@ export default function CTA() {
             >
               <a
                 href="/courses/generative-ai"
-                className="inline-flex items-center gap-3 rounded-full px-8 py-4 text-sm font-bold text-white transition-all duration-300"
+                className="inline-flex items-center gap-3 rounded-full px-8 py-4 text-sm font-bold text-[var(--text-on-accent)] transition-all duration-300"
                 style={{ background: "var(--accent-gradient)" }}
                 onMouseEnter={e => e.currentTarget.style.boxShadow = "0 8px 32px var(--accent-glow)"}
                 onMouseLeave={e => e.currentTarget.style.boxShadow = "none"}
@@ -190,7 +190,7 @@ export default function CTA() {
               <button
                 suppressHydrationWarning
                 type="submit"
-                className="w-full rounded-xl py-3 text-sm font-bold text-white transition-all duration-200"
+                className="w-full rounded-xl py-3 text-sm font-bold text-[var(--text-on-accent)] transition-all duration-200"
                 style={{ background: "var(--accent-gradient)" }}
                 onMouseEnter={e => e.currentTarget.style.opacity = "0.9"}
                 onMouseLeave={e => e.currentTarget.style.opacity = "1"}

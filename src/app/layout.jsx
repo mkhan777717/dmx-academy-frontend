@@ -3,7 +3,7 @@ import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
 
 export const metadata = {
-  title: "DMX Academy | The Creative & Tech Learning Platform",
+  title: "Eduvantix | The Creative & Tech Learning Platform",
   description: "Master creative motion design, machine learning, and advanced frontend engineering with interactive, project-driven tracks.",
 };
 

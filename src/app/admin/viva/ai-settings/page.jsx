@@ -105,7 +105,7 @@ export default function AISettingsPage() {
     <div className="space-y-6 animate-fade-in pb-12 max-w-2xl px-0 sm:px-6">
       {/* Header */}
       <section className="flex flex-col gap-2 border-b pb-6 shrink-0" style={{ borderColor: "var(--border-primary)" }}>
-        <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border mb-3 w-fit"
+        <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border border-[var(--border-primary)] mb-3 w-fit"
           style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)", backgroundColor: "var(--bg-secondary)" }}>
           <Brain size={12} className="text-violet-500" />
           AI Viva
@@ -117,7 +117,7 @@ export default function AISettingsPage() {
       </section>
 
       {/* Status banner */}
-      <div className={`flex items-center justify-between p-4 rounded-2xl border ${
+      <div className={`flex items-center justify-between p-4 rounded-2xl border border-[var(--border-primary)] ${
         isHealthy
           ? "bg-emerald-500/10 border-emerald-500/20"
           : health?.available
@@ -156,14 +156,14 @@ export default function AISettingsPage() {
 
       {/* Error */}
       {error && (
-        <div className="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/20 flex items-center space-x-3">
+        <div className="p-4 rounded-2xl bg-rose-500/10 border border-[var(--border-primary)] border-rose-500/20 flex items-center space-x-3">
           <AlertCircle size={16} className="text-rose-500 shrink-0" />
           <p className="text-sm font-semibold text-rose-500">{error}</p>
         </div>
       )}
 
       {/* Settings form */}
-      <div className="p-6 rounded-2xl border space-y-6 shadow-sm" style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}>
+      <div className="p-6 rounded-2xl border border-[var(--border-primary)] space-y-6 shadow-sm" style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}>
         <div className="flex items-center space-x-2 pb-2 border-b" style={{ borderColor: "var(--border-primary)" }}>
           <Settings size={16} className="text-violet-500" />
           <h2 className="text-sm font-semibold uppercase tracking-wider" style={{ color: "var(--text-primary)" }}>Configuration</h2>
@@ -187,7 +187,7 @@ export default function AISettingsPage() {
           <label className="text-xs font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Model</label>
           <div className="flex gap-2">
             <select
-              className="flex-1 p-3 rounded-xl border text-sm font-medium outline-none focus:border-[var(--text-muted)] transition-colors"
+              className="flex-1 p-3 rounded-xl border border-[var(--border-primary)] text-sm font-medium outline-none focus:border-[var(--text-muted)] transition-colors"
               style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
               value={PRESET_MODELS.find(m => m.value === settings.model) ? settings.model : "custom"}
               onChange={e => { if (e.target.value !== "custom") setSettings(s => ({ ...s, model: e.target.value })); }}
@@ -199,7 +199,7 @@ export default function AISettingsPage() {
             </select>
           </div>
           <input
-            className="w-full p-3 rounded-xl border text-sm font-medium outline-none focus:border-[var(--text-muted)] transition-colors font-mono"
+            className="w-full p-3 rounded-xl border border-[var(--border-primary)] text-sm font-medium outline-none focus:border-[var(--text-muted)] transition-colors font-mono"
             style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
             placeholder="Or type any model name..."
             value={settings.model}
@@ -210,7 +210,7 @@ export default function AISettingsPage() {
         <div className="space-y-2">
           <label className="text-xs font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Ollama Endpoint</label>
           <input
-            className="w-full p-3 rounded-xl border text-sm font-medium outline-none focus:border-[var(--text-muted)] transition-colors font-mono"
+            className="w-full p-3 rounded-xl border border-[var(--border-primary)] text-sm font-medium outline-none focus:border-[var(--text-muted)] transition-colors font-mono"
             style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
             value={settings.endpoint}
             onChange={e => setSettings(s => ({ ...s, endpoint: e.target.value }))}
@@ -220,7 +220,7 @@ export default function AISettingsPage() {
         <div className="space-y-2">
           <label className="text-xs font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Timeout (ms)</label>
           <input type="number"
-            className="w-full p-3 rounded-xl border text-sm font-medium outline-none focus:border-[var(--text-muted)] transition-colors"
+            className="w-full p-3 rounded-xl border border-[var(--border-primary)] text-sm font-medium outline-none focus:border-[var(--text-muted)] transition-colors"
             style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
             value={settings.timeout}
             onChange={e => setSettings(s => ({ ...s, timeout: parseInt(e.target.value) || 60000 }))}
@@ -240,7 +240,7 @@ export default function AISettingsPage() {
               <div key={key} className="space-y-1.5">
                 <label className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>{label}</label>
                 <input type="number" step={step} min={min} max={max}
-                  className="w-full p-2.5 rounded-xl border text-sm font-medium outline-none focus:border-[var(--text-muted)] transition-colors"
+                  className="w-full p-2.5 rounded-xl border border-[var(--border-primary)] text-sm font-medium outline-none focus:border-[var(--text-muted)] transition-colors"
                   style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
                   value={settings[key]}
                   onChange={e => setSettings(s => ({ ...s, [key]: parseFloat(e.target.value) || s[key] }))}
@@ -252,12 +252,12 @@ export default function AISettingsPage() {
 
         <div className="flex gap-3 pt-4">
           <button onClick={handleTest} disabled={testing}
-                  className="flex items-center justify-center space-x-2 px-5 py-2.5 rounded-xl border text-sm font-semibold cursor-pointer transition-colors hover:bg-[var(--bg-secondary)] disabled:opacity-50"
+                  className="flex items-center justify-center space-x-2 px-5 py-2.5 rounded-xl border border-[var(--border-primary)] text-sm font-semibold cursor-pointer transition-colors hover:bg-[var(--bg-secondary)] disabled:opacity-50"
                   style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}>
             {testing ? <><div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" /><span>Testing...</span></> : <><Zap size={14} /><span>Test Connection</span></>}
           </button>
           <button onClick={handleSave} disabled={saving}
-                  className="flex-1 flex items-center justify-center space-x-2 py-2.5 rounded-xl text-sm font-semibold text-white cursor-pointer transition-transform hover:-translate-y-0.5 disabled:opacity-50 shadow-md"
+                  className="flex-1 flex items-center justify-center space-x-2 py-2.5 rounded-xl text-sm font-semibold text-[var(--text-on-accent)] cursor-pointer transition-transform hover:-translate-y-0.5 disabled:opacity-50 shadow-md"
                   style={{ background: "var(--accent-primary)" }}>
             {saving ? <><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /><span>Saving...</span></> : saved ? <><CheckCircle2 size={14} /><span>Saved!</span></> : <><Save size={14} /><span>Save Settings</span></>}
           </button>
@@ -265,14 +265,14 @@ export default function AISettingsPage() {
       </div>
 
       {testMsg && (
-        <div className={`p-4 rounded-2xl border flex items-start space-x-3 ${testMsg.ok ? "bg-emerald-500/10 border-emerald-500/20" : "bg-rose-500/10 border-rose-500/20"}`}>
+        <div className={`p-4 rounded-2xl border border-[var(--border-primary)] flex items-start space-x-3 ${testMsg.ok ? "bg-emerald-500/10 border-emerald-500/20" : "bg-rose-500/10 border-rose-500/20"}`}>
           {testMsg.ok ? <CheckCircle2 size={16} className="text-emerald-500 shrink-0 mt-0.5" /> : <XCircle size={16} className="text-rose-500 shrink-0 mt-0.5" />}
           <p className={`text-sm font-semibold ${testMsg.ok ? "text-emerald-500" : "text-rose-500"}`}>{testMsg.text}</p>
         </div>
       )}
 
       {health?.available && health?.models?.length > 0 && (
-        <div className="p-6 rounded-2xl border space-y-4 shadow-sm" style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}>
+        <div className="p-6 rounded-2xl border border-[var(--border-primary)] space-y-4 shadow-sm" style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}>
           <div className="flex items-center space-x-2 pb-2 border-b" style={{ borderColor: "var(--border-primary)" }}>
             <Cpu size={14} className="text-violet-500" />
             <p className="text-sm font-semibold uppercase tracking-wider" style={{ color: "var(--text-primary)" }}>Pulled Models on this Machine</p>
@@ -289,7 +289,7 @@ export default function AISettingsPage() {
         </div>
       )}
 
-      <div className="p-4 rounded-2xl border flex items-start space-x-3"
+      <div className="p-4 rounded-2xl border border-[var(--border-primary)] flex items-start space-x-3"
            style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
         <Info size={14} className="shrink-0 mt-0.5" style={{ color: "var(--text-muted)" }} />
         <div className="space-y-1">

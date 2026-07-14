@@ -777,7 +777,7 @@ const formatTime = (seconds) => {
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
           {/* Hero Card */}
           <section className="flex flex-col gap-2 border-b pb-6 shrink-0 relative" style={{ borderColor: "var(--border-primary)" }}>
-            <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border mb-3 w-fit"
+            <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border border-[var(--border-primary)] mb-3 w-fit"
               style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)", backgroundColor: "var(--bg-secondary)" }}>
               <Sparkles size={12} className="text-violet-500 animate-pulse" />
               Next-Gen Assessment Engine
@@ -788,7 +788,7 @@ const formatTime = (seconds) => {
             </p>
 
             {lobbyError && (
-              <div className="bg-rose-500/10 border border-rose-500/20 text-rose-500 p-3 rounded-xl text-sm font-semibold flex items-center space-x-2 w-fit mt-2">
+              <div className="bg-rose-500/10 border border-[var(--border-primary)] border-rose-500/20 text-rose-500 p-3 rounded-xl text-sm font-semibold flex items-center space-x-2 w-fit mt-2">
                 <AlertCircle size={16} />
                 <span>{lobbyError}</span>
               </div>
@@ -800,7 +800,7 @@ const formatTime = (seconds) => {
                 role="switch"
                 aria-checked={showFeedbackAfterEach}
                 onClick={() => setShowFeedbackAfterEach(value => !value)}
-                className="group w-full sm:w-auto min-h-[54px] px-4 py-2.5 rounded-xl border font-semibold text-sm transition-all duration-300 cursor-pointer flex items-center justify-between gap-4 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400/70"
+                className="group w-full sm:w-auto min-h-[54px] px-4 py-2.5 rounded-xl border border-[var(--border-primary)] font-semibold text-sm transition-all duration-300 cursor-pointer flex items-center justify-between gap-4 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400/70"
                 style={{
                   backgroundColor: showFeedbackAfterEach ? "var(--bg-secondary)" : "var(--bg-primary)",
                   borderColor: showFeedbackAfterEach ? "var(--text-primary)" : "var(--border-primary)",
@@ -842,7 +842,7 @@ const formatTime = (seconds) => {
           </h2>
           
           {scheduledVivas.length === 0 ? (
-            <div className="p-8 rounded-2xl border border-dashed text-center" style={{ borderColor: "var(--border-primary)" }}>
+            <div className="p-8 rounded-2xl border border-[var(--border-primary)] border-dashed text-center" style={{ borderColor: "var(--border-primary)" }}>
               <p className="text-sm font-medium" style={{ color: "var(--text-secondary)" }}>No Vivas currently scheduled for your institute.</p>
             </div>
           ) : (
@@ -860,7 +860,7 @@ const formatTime = (seconds) => {
                 return (
                   <div
                     key={viva.id}
-                    className="p-6 rounded-2xl border shadow-sm flex flex-col justify-between space-y-4 transition-colors hover:bg-[var(--bg-secondary)]"
+                    className="p-6 rounded-2xl border border-[var(--border-primary)] shadow-sm flex flex-col justify-between space-y-4 transition-colors hover:bg-[var(--bg-secondary)]"
                     style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}
                   >
                     <div className="space-y-3">
@@ -868,7 +868,7 @@ const formatTime = (seconds) => {
                         <span className="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-violet-500/10 text-violet-500">
                           {viva.subject}
                         </span>
-                        <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border ${
+                        <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-[var(--border-primary)] ${
                           hasAttempted
                             ? "bg-violet-500/10 text-violet-500 border-violet-500/20"
                             : isActive
@@ -912,7 +912,7 @@ const formatTime = (seconds) => {
                       {hasAttempted ? (
                         <button
                           disabled
-                          className="w-full py-2.5 rounded-xl font-semibold text-xs border cursor-not-allowed text-center"
+                          className="w-full py-2.5 rounded-xl font-semibold text-xs border border-[var(--border-primary)] cursor-not-allowed text-center"
                           style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)", color: "var(--text-muted)" }}
                         >
                           Already Attempted
@@ -920,7 +920,7 @@ const formatTime = (seconds) => {
                       ) : isActive ? (
                         <button
                           onClick={() => startSession(viva.id)}
-                          className="w-full py-2.5 rounded-xl font-semibold text-xs text-white shadow-md transition-transform flex items-center justify-center gap-2 hover:-translate-y-0.5 cursor-pointer"
+                          className="w-full py-2.5 rounded-xl font-semibold text-xs text-[var(--text-on-accent)] shadow-md transition-transform flex items-center justify-center gap-2 hover:-translate-y-0.5 cursor-pointer"
                           style={{ background: "var(--accent-primary)" }}
                         >
                           <Play size={14} fill="currentColor" />
@@ -929,7 +929,7 @@ const formatTime = (seconds) => {
                       ) : (
                         <button
                           disabled
-                          className="w-full py-2.5 rounded-xl font-semibold text-xs border cursor-not-allowed text-center"
+                          className="w-full py-2.5 rounded-xl font-semibold text-xs border border-[var(--border-primary)] cursor-not-allowed text-center"
                           style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)", color: "var(--text-muted)" }}
                         >
                           Upcoming (Locked)
@@ -947,14 +947,14 @@ const formatTime = (seconds) => {
         <div className="space-y-4">
           <h2 className="text-xl font-serif tracking-tight" style={{ color: "var(--text-primary)" }}>Past Viva Sessions</h2>
           {history.length === 0 ? (
-            <div className="p-8 rounded-2xl border border-dashed text-center" style={{ borderColor: "var(--border-primary)" }}>
+            <div className="p-8 rounded-2xl border border-[var(--border-primary)] border-dashed text-center" style={{ borderColor: "var(--border-primary)" }}>
               <p className="text-sm font-medium" style={{ color: "var(--text-secondary)" }}>You haven't attempted any viva sessions yet.</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {history.map(session => (
                 <Link key={session.id} href={`/student/viva/result/${session.id}`}
-                  className="p-5 rounded-2xl border shadow-sm space-y-3 block transition-colors hover:bg-[var(--bg-secondary)]"
+                  className="p-5 rounded-2xl border border-[var(--border-primary)] shadow-sm space-y-3 block transition-colors hover:bg-[var(--bg-secondary)]"
                   style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}>
                   <div className="flex justify-between items-start">
                     <span className="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-violet-500/10 text-violet-500">
@@ -1011,13 +1011,13 @@ const formatTime = (seconds) => {
           </button>
         </div>
 
-        <div className="w-full bg-slate-200 dark:bg-slate-800 rounded-full h-2">
+        <div className="w-full bg-slate-200 dark:bg-[var(--bg-hover)] rounded-full h-2">
           <div className="h-2 rounded-full transition-all duration-500"
             style={{ width: `${(progress.current / progress.total) * 100}%`, background: "var(--accent-gradient)" }} />
         </div>
 
         {/* Phase indicator & Timer */}
-        <div className="flex items-center justify-between p-4 rounded-2xl border bg-zinc-500/5 border-zinc-500/20">
+        <div className="flex items-center justify-between p-4 rounded-2xl border border-[var(--border-primary)] bg-zinc-500/5 border-zinc-500/20">
           <div className="flex items-center space-x-3">
             {phase === "reading" ? <BookOpen size={20} className="text-zinc-500 animate-pulse" /> :
               phase === "answering" ? <Mic size={20} className="text-rose-500 animate-pulse" /> :
@@ -1059,7 +1059,7 @@ const formatTime = (seconds) => {
               className="flex justify-center p-8">
               <button
                 onClick={startAnsweringPhase}
-                className="px-8 py-4 rounded-full font-bold text-sm text-white shadow-xl transition-all cursor-pointer flex items-center justify-center space-x-2 hover:scale-105"
+                className="px-8 py-4 rounded-full font-bold text-sm text-[var(--text-on-accent)] shadow-xl transition-all cursor-pointer flex items-center justify-center space-x-2 hover:scale-105"
                 style={{ background: "var(--accent-gradient)" }}
               >
                 <Mic size={18} />
@@ -1073,7 +1073,7 @@ const formatTime = (seconds) => {
             <motion.div key="answering" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-4">
 
               {/* Mic status banner */}
-              <div className={`flex items-center justify-between p-3 rounded-2xl border transition-colors ${micEnabled
+              <div className={`flex items-center justify-between p-3 rounded-2xl border border-[var(--border-primary)] transition-colors ${micEnabled
                 ? "bg-rose-500/10 border-rose-500/30"
                 : "bg-slate-500/10 border-slate-500/20"
                 }`}>
@@ -1104,7 +1104,7 @@ const formatTime = (seconds) => {
                   disabled={evaluating}
                   className={`shrink-0 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${micEnabled
                     ? "bg-rose-500 text-white hover:bg-rose-600"
-                    : "bg-zinc-500 text-white hover:bg-zinc-600"
+                    : "bg-zinc-500 text-white hover:bg-[var(--accent-primary)]"
                     }`}
                 >
                   {micEnabled ? "Turn Off Mic" : "Turn On Mic"}
@@ -1112,14 +1112,14 @@ const formatTime = (seconds) => {
               </div>
 
               {micError && (
-                <div className="bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 p-3 rounded-xl text-sm font-semibold flex items-center space-x-2">
+                <div className="bg-amber-500/10 border border-[var(--border-primary)] border-amber-500/20 text-amber-600 dark:text-amber-400 p-3 rounded-xl text-sm font-semibold flex items-center space-x-2">
                   <AlertCircle size={16} className="shrink-0" />
                   <span>{micError}</span>
                 </div>
               )}
 
               {submitError && (
-                <div className="bg-rose-500/10 border border-rose-500/20 text-rose-500 p-3 rounded-xl text-sm font-semibold flex items-center space-x-2">
+                <div className="bg-rose-500/10 border border-[var(--border-primary)] border-rose-500/20 text-rose-500 p-3 rounded-xl text-sm font-semibold flex items-center space-x-2">
                   <AlertCircle size={16} className="shrink-0" />
                   <span>{submitError}</span>
                 </div>
@@ -1127,14 +1127,14 @@ const formatTime = (seconds) => {
 
               {/* Live transcript */}
               <div
-                className="relative rounded-2xl min-h-[200px] border overflow-hidden"
+                className="relative rounded-2xl min-h-[200px] border border-[var(--border-primary)] overflow-hidden"
                 style={{
                   backgroundColor: "var(--bg-input)",
                   borderColor: micEnabled ? "#f43f5e" : "var(--border-primary)",
                 }}
               >
                 {micEnabled && (
-                  <div className="absolute top-4 right-4 flex items-center space-x-1.5 px-2.5 py-1 rounded-full bg-rose-500/15 border border-rose-500/30 z-10">
+                  <div className="absolute top-4 right-4 flex items-center space-x-1.5 px-2.5 py-1 rounded-full bg-rose-500/15 border border-[var(--border-primary)] border-rose-500/30 z-10">
                     <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
                     <span className="text-[10px] font-bold text-rose-500 uppercase tracking-wider">Live</span>
                   </div>
@@ -1182,7 +1182,7 @@ const formatTime = (seconds) => {
                     <button
                       type="button"
                       onClick={retryAnswer}
-                      className="px-4 py-2.5 rounded-2xl font-bold text-sm border transition-all cursor-pointer flex items-center space-x-2 hover:scale-102 hover:bg-rose-500/10 hover:border-rose-500/30 hover:text-rose-500"
+                      className="px-4 py-2.5 rounded-2xl font-bold text-sm border border-[var(--border-primary)] transition-all cursor-pointer flex items-center space-x-2 hover:scale-102 hover:bg-rose-500/10 hover:border-rose-500/30 hover:text-rose-500"
                       style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}
                       title="Clear transcript and try again"
                     >
@@ -1194,7 +1194,7 @@ const formatTime = (seconds) => {
                     type="button"
                     onClick={() => stopListeningAndReview()}
                     disabled={evaluating}
-                    className="px-6 py-2.5 rounded-2xl font-bold text-sm text-white shadow-md transition-all cursor-pointer flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-102"
+                    className="px-6 py-2.5 rounded-2xl font-bold text-sm text-[var(--text-on-accent)] shadow-md transition-all cursor-pointer flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-102"
                     style={{ background: "var(--accent-gradient)" }}
                   >
                     {evaluating ? (
@@ -1220,7 +1220,7 @@ const formatTime = (seconds) => {
               className="space-y-4">
 
               {/* Header banner */}
-              <div className="flex items-center justify-between p-4 rounded-2xl border bg-amber-500/8 border-amber-500/25">
+              <div className="flex items-center justify-between p-4 rounded-2xl border border-[var(--border-primary)] bg-amber-500/8 border-amber-500/25">
                 <div className="flex items-center space-x-3">
                   <div className="w-9 h-9 rounded-xl bg-amber-500/15 flex items-center justify-center text-amber-500">
                     <Edit2 size={17} />
@@ -1243,19 +1243,19 @@ const formatTime = (seconds) => {
                   </div>
                 )}
                 {!correctionLoading && correctionApplied && (
-                  <span className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/25">
+                  <span className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-[var(--border-primary)] border-amber-500/25">
                     ✦ Corrections Applied
                   </span>
                 )}
                 {!correctionLoading && !correctionApplied && !correctionError && (
-                  <span className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/25">
+                  <span className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-[var(--border-primary)] border-emerald-500/25">
                     ✓ Looks Good
                   </span>
                 )}
               </div>
 
               {correctionError && (
-                <div className="bg-slate-500/10 border border-slate-500/20 p-3 rounded-xl text-sm flex items-start space-x-2" style={{ color: "var(--text-secondary)" }}>
+                <div className="bg-slate-500/10 border border-[var(--border-primary)] border-slate-500/20 p-3 rounded-xl text-sm flex items-start space-x-2" style={{ color: "var(--text-secondary)" }}>
                   <AlertCircle size={15} className="shrink-0 mt-0.5 text-amber-500" />
                   <span>{correctionError}</span>
                 </div>
@@ -1268,7 +1268,7 @@ const formatTime = (seconds) => {
                     Raw Transcript (from microphone)
                   </span>
                 </div>
-                <div className="p-4 rounded-2xl border text-sm leading-relaxed"
+                <div className="p-4 rounded-2xl border border-[var(--border-primary)] text-sm leading-relaxed"
                   style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}>
                   {rawTranscriptSnapshot || <span className="italic" style={{ color: "var(--text-muted)" }}>No transcript captured.</span>}
                 </div>
@@ -1288,7 +1288,7 @@ const formatTime = (seconds) => {
                   rows={5}
                   disabled={correctionLoading}
                   placeholder={correctionLoading ? "AI is correcting your transcript…" : "Edit your transcript if needed…"}
-                  className="w-full p-4 rounded-2xl border text-sm leading-relaxed resize-none outline-none transition-colors focus:ring-2 focus:ring-indigo-500/30"
+                  className="w-full p-4 rounded-2xl border border-[var(--border-primary)] text-sm leading-relaxed resize-none outline-none transition-colors focus:ring-2 focus:ring-indigo-500/30"
                   style={{
                     backgroundColor: "var(--bg-input)",
                     borderColor: correctionApplied ? "rgba(245,158,11,0.35)" : "var(--border-primary)",
@@ -1307,7 +1307,7 @@ const formatTime = (seconds) => {
                     submitAnswer(rawTranscriptSnapshot);
                   }}
                   disabled={correctionLoading || evaluating}
-                  className="w-full sm:w-auto px-5 py-2.5 rounded-2xl font-bold text-sm border transition-all cursor-pointer disabled:opacity-50"
+                  className="w-full sm:w-auto px-5 py-2.5 rounded-2xl font-bold text-sm border border-[var(--border-primary)] transition-all cursor-pointer disabled:opacity-50"
                   style={{
                     backgroundColor: "var(--bg-primary)",
                     borderColor: "var(--border-primary)",
@@ -1321,7 +1321,7 @@ const formatTime = (seconds) => {
                   type="button"
                   onClick={() => submitAnswer(editedTranscript || rawTranscriptSnapshot)}
                   disabled={correctionLoading || evaluating}
-                  className="w-full sm:w-auto px-6 py-2.5 rounded-2xl font-bold text-sm text-white shadow-md transition-all cursor-pointer flex items-center justify-center space-x-2 disabled:opacity-50 hover:scale-102"
+                  className="w-full sm:w-auto px-6 py-2.5 rounded-2xl font-bold text-sm text-[var(--text-on-accent)] shadow-md transition-all cursor-pointer flex items-center justify-center space-x-2 disabled:opacity-50 hover:scale-102"
                   style={{ background: "var(--accent-gradient)" }}
                 >
                   {evaluating ? (
@@ -1346,7 +1346,7 @@ const formatTime = (seconds) => {
 
           {/* RESULT PHASE */}
           {phase === "result" && lastEvaluation && (
-            <motion.div key="result" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="p-6 rounded-3xl border space-y-4 shadow-sm"
+            <motion.div key="result" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="p-6 rounded-3xl border border-[var(--border-primary)] space-y-4 shadow-sm"
               style={{ backgroundColor: lastEvaluation.score >= 5 ? 'rgba(16, 185, 129, 0.05)' : 'rgba(244, 63, 94, 0.05)', borderColor: lastEvaluation.score >= 5 ? 'rgba(16, 185, 129, 0.2)' : 'rgba(244, 63, 94, 0.2)' }}>
               <div className="flex justify-between items-center">
                 <div className="flex items-center space-x-2">
@@ -1361,7 +1361,7 @@ const formatTime = (seconds) => {
                   )}
                 </div>
                 {summaryData ? (
-                  <span className="text-xs font-bold px-3 py-1 rounded-full bg-slate-800 text-white animate-pulse">Session Complete</span>
+                  <span className="text-xs font-bold px-3 py-1 rounded-full bg-[var(--bg-hover)] text-white animate-pulse">Session Complete</span>
                 ) : (
                   <button onClick={nextQuestion} className="flex items-center space-x-1 text-sm font-bold text-zinc-500 hover:underline">
                     <span>Next Question</span>
@@ -1378,7 +1378,7 @@ const formatTime = (seconds) => {
               {(lastEvaluation.strengths?.length > 0 || lastEvaluation.weaknesses?.length > 0) && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   {lastEvaluation.strengths?.length > 0 && (
-                    <div className="p-3 rounded-2xl bg-emerald-500/5 border border-emerald-500/15 space-y-1">
+                    <div className="p-3 rounded-2xl bg-emerald-500/5 border border-[var(--border-primary)] border-emerald-500/15 space-y-1">
                       <p className="text-[10px] font-black uppercase tracking-wider text-emerald-500">Strengths</p>
                       {lastEvaluation.strengths.map((s, i) => (
                         <p key={i} className="text-[11px] flex items-start space-x-1.5" style={{ color: "var(--text-secondary)" }}>
@@ -1389,7 +1389,7 @@ const formatTime = (seconds) => {
                     </div>
                   )}
                   {lastEvaluation.weaknesses?.length > 0 && (
-                    <div className="p-3 rounded-2xl bg-rose-500/5 border border-rose-500/15 space-y-1">
+                    <div className="p-3 rounded-2xl bg-rose-500/5 border border-[var(--border-primary)] border-rose-500/15 space-y-1">
                       <p className="text-[10px] font-black uppercase tracking-wider text-rose-500">To Improve</p>
                       {lastEvaluation.weaknesses.map((w, i) => (
                         <p key={i} className="text-[11px] flex items-start space-x-1.5" style={{ color: "var(--text-secondary)" }}>
@@ -1404,7 +1404,7 @@ const formatTime = (seconds) => {
 
               {/* Follow-up */}
               {lastEvaluation.followUp && !summaryData && (
-                <div className="p-3 rounded-2xl border flex items-start space-x-2"
+                <div className="p-3 rounded-2xl border border-[var(--border-primary)] flex items-start space-x-2"
                   style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}>
                   <MessageSquare size={13} className="shrink-0 mt-0.5" style={{ color: "var(--text-accent)" }} />
                   <div>
@@ -1418,7 +1418,7 @@ const formatTime = (seconds) => {
               {(lastEvaluation.missingConcepts?.length > 0 || lastEvaluation.suggestedRevision?.length > 0) && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   {lastEvaluation.missingConcepts?.length > 0 && (
-                    <div className="p-3 rounded-2xl bg-amber-500/5 border border-amber-500/15 space-y-1">
+                    <div className="p-3 rounded-2xl bg-amber-500/5 border border-[var(--border-primary)] border-amber-500/15 space-y-1">
                       <p className="text-[10px] font-black uppercase tracking-wider text-amber-500">Missing Concepts</p>
                       {lastEvaluation.missingConcepts.map((c, i) => (
                         <p key={i} className="text-[11px] flex items-start space-x-1.5" style={{ color: "var(--text-secondary)" }}>
@@ -1429,7 +1429,7 @@ const formatTime = (seconds) => {
                     </div>
                   )}
                   {lastEvaluation.suggestedRevision?.length > 0 && (
-                    <div className="p-3 rounded-2xl bg-zinc-500/5 border border-zinc-500/15 space-y-1">
+                    <div className="p-3 rounded-2xl bg-zinc-500/5 border border-[var(--border-primary)] border-zinc-500/15 space-y-1">
                       <p className="text-[10px] font-black uppercase tracking-wider text-zinc-500">Revise</p>
                       {lastEvaluation.suggestedRevision.map((r, i) => (
                         <p key={i} className="text-[11px] flex items-start space-x-1.5" style={{ color: "var(--text-secondary)" }}>
@@ -1457,7 +1457,7 @@ const formatTime = (seconds) => {
     {/* ── SUMMARY VIEW ── */}
     {view === "summary" && summaryData && (
       <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="max-w-2xl mx-auto text-center space-y-8">
-        <div className="p-10 rounded-[2.5rem] border shadow-xl relative overflow-hidden"
+        <div className="p-10 rounded-[2.5rem] border border-[var(--border-primary)] shadow-xl relative overflow-hidden"
           style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
           <div className="absolute inset-0 bg-gradient-to-tr from-zinc-500/10 to-slate-500/5 pointer-events-none" />
 
@@ -1478,7 +1478,7 @@ const formatTime = (seconds) => {
           </div>
         </div>
 
-        <button onClick={exitToLobby} className="px-8 py-3 rounded-full font-bold text-sm text-white shadow-md transition-all hover:scale-105"
+        <button onClick={exitToLobby} className="px-8 py-3 rounded-full font-bold text-sm text-[var(--text-on-accent)] shadow-md transition-all hover:scale-105"
           style={{ background: "var(--accent-gradient)" }}>
           Return to Dashboard
         </button>

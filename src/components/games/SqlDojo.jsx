@@ -240,7 +240,7 @@ function saveProgress(data) {
 function ResultTable({ columns, rows }) {
   if (!columns || columns.length === 0) return null;
   return (
-    <div className="overflow-x-auto rounded-xl border border-white/8">
+    <div className="overflow-x-auto rounded-xl border border-[var(--border-primary)] border-white/8">
       <table className="min-w-full text-xs font-mono">
         <thead>
           <tr className="bg-white/5 border-b border-white/8">
@@ -377,10 +377,10 @@ export default function SqlDojo({ onBack }) {
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="max-w-md w-full bg-gradient-to-br from-emerald-900/30 to-cyan-900/30 border border-emerald-500/20 rounded-3xl p-8 text-center space-y-6 relative z-10"
+          className="max-w-md w-full bg-gradient-to-br from-emerald-900/30 to-cyan-900/30 border border-[var(--border-primary)] border-emerald-500/20 rounded-3xl p-8 text-center space-y-6 relative z-10"
         >
           <div className="flex justify-center">
-            <div className="p-4 rounded-full bg-amber-500/15 border border-amber-500/25">
+            <div className="p-4 rounded-full bg-amber-500/15 border border-[var(--border-primary)] border-amber-500/25">
               <Trophy size={36} className="text-amber-300" />
             </div>
           </div>
@@ -391,11 +391,11 @@ export default function SqlDojo({ onBack }) {
             </p>
           </div>
           <div className="grid grid-cols-2 gap-3">
-            <div className="bg-white/5 border border-white/6 rounded-2xl p-4">
+            <div className="bg-white/5 border border-[var(--border-primary)] border-white/6 rounded-2xl p-4">
               <div className="text-3xl font-black text-emerald-300">{completedCount}</div>
               <div className="text-[9px] uppercase tracking-wider text-white/30 font-bold mt-1">Solved</div>
             </div>
-            <div className="bg-white/5 border border-white/6 rounded-2xl p-4">
+            <div className="bg-white/5 border border-[var(--border-primary)] border-white/6 rounded-2xl p-4">
               <div className="text-3xl font-black text-cyan-300">{total}</div>
               <div className="text-[9px] uppercase tracking-wider text-white/30 font-bold mt-1">Total</div>
             </div>
@@ -403,7 +403,7 @@ export default function SqlDojo({ onBack }) {
           <div className="flex items-center justify-center gap-3">
             <button
               onClick={() => { setLevelIdx(0); setPhase("playing"); }}
-              className="px-5 py-2.5 rounded-xl border border-white/10 bg-white/5 text-white/70 hover:text-white text-xs font-bold transition-all cursor-pointer flex items-center gap-2"
+              className="px-5 py-2.5 rounded-xl border border-[var(--border-primary)] border-white/10 bg-white/5 text-white/70 hover:text-white text-xs font-bold transition-all cursor-pointer flex items-center gap-2"
             >
               <RotateCcw size={13} /> Play Again
             </button>
@@ -438,7 +438,7 @@ export default function SqlDojo({ onBack }) {
           <div className="flex items-center justify-between border-b border-white/5 pb-4">
             <button
               onClick={onBack}
-              className="flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-emerald-500/20 bg-emerald-950/20 text-emerald-300 hover:text-white hover:border-emerald-400/40 transition-all text-xs font-bold font-mono cursor-pointer"
+              className="flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[var(--border-primary)] border-emerald-500/20 bg-emerald-950/20 text-emerald-300 hover:text-white hover:border-emerald-400/40 transition-all text-xs font-bold font-mono cursor-pointer"
             >
               <ArrowLeft size={13} /> Exit Arena
             </button>
@@ -451,16 +451,16 @@ export default function SqlDojo({ onBack }) {
           {/* ── Header ───────────────────────────────────────────────── */}
           <div className="flex items-center justify-between flex-wrap gap-3">
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
+              <div className="p-2 rounded-xl bg-emerald-500/10 border border-[var(--border-primary)] border-emerald-500/20">
                 <Database size={20} className="text-emerald-400" />
               </div>
               <div>
                 <div className="flex items-center gap-2">
                   <h1 className="text-xl font-black">SQL Dojo</h1>
-                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border font-mono ${DIFF_COLOR[level.difficulty]}`}>
+                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border border-[var(--border-primary)] font-mono ${DIFF_COLOR[level.difficulty]}`}>
                     {level.difficulty}
                   </span>
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full border border-cyan-500/20 bg-cyan-500/8 text-cyan-400 font-mono">
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full border border-[var(--border-primary)] border-cyan-500/20 bg-cyan-500/8 text-cyan-400 font-mono">
                     {level.topic}
                   </span>
                 </div>
@@ -478,7 +478,7 @@ export default function SqlDojo({ onBack }) {
                 <button
                   key={l.id}
                   onClick={() => setLevelIdx(i)}
-                  className={`w-7 h-7 rounded-full text-[9px] font-bold font-mono border transition-all cursor-pointer flex items-center justify-center ${
+                  className={`w-7 h-7 rounded-full text-[9px] font-bold font-mono border border-[var(--border-primary)] transition-all cursor-pointer flex items-center justify-center ${
                     isActive
                       ? "bg-emerald-500 border-emerald-400 text-black shadow-[0_0_10px_rgba(52,211,153,0.4)]"
                       : done
@@ -497,7 +497,7 @@ export default function SqlDojo({ onBack }) {
 
             {/* LEFT: Instructions + Schema Preview */}
             <div className="space-y-4">
-              <div className="bg-[#0D1117]/80 border border-white/8 rounded-2xl p-5 space-y-4">
+              <div className="bg-[#0D1117]/80 border border-[var(--border-primary)] border-white/8 rounded-2xl p-5 space-y-4">
                 <h3 className="text-sm font-black text-white flex items-center gap-2">
                   <Table2 size={15} className="text-emerald-400" />
                   {level.title}
@@ -521,7 +521,7 @@ export default function SqlDojo({ onBack }) {
                       exit={{ opacity: 0, height: 0 }}
                       className="overflow-hidden"
                     >
-                      <div className="bg-amber-500/8 border border-amber-500/20 rounded-xl p-3">
+                      <div className="bg-amber-500/8 border border-[var(--border-primary)] border-amber-500/20 rounded-xl p-3">
                         <p className="text-xs text-amber-200/70 leading-relaxed font-mono">{level.hint}</p>
                       </div>
                     </motion.div>
@@ -544,7 +544,7 @@ export default function SqlDojo({ onBack }) {
                       exit={{ opacity: 0, height: 0 }}
                       className="overflow-hidden"
                     >
-                      <div className="bg-rose-500/8 border border-rose-500/20 rounded-xl p-3">
+                      <div className="bg-rose-500/8 border border-[var(--border-primary)] border-rose-500/20 rounded-xl p-3">
                         <p className="text-[10px] text-rose-300/50 mb-1 font-bold uppercase tracking-wider">Solution</p>
                         <pre className="text-xs text-rose-200/70 font-mono whitespace-pre-wrap break-all">{level.solutionSQL}</pre>
                       </div>
@@ -554,7 +554,7 @@ export default function SqlDojo({ onBack }) {
               </div>
 
               {/* Data table preview */}
-              <div className="bg-[#0D1117]/80 border border-white/8 rounded-2xl p-4 space-y-2">
+              <div className="bg-[#0D1117]/80 border border-[var(--border-primary)] border-white/8 rounded-2xl p-4 space-y-2">
                 <p className="text-[10px] font-bold font-mono uppercase tracking-wider text-white/30">
                   employees table (preview)
                 </p>
@@ -574,14 +574,14 @@ export default function SqlDojo({ onBack }) {
             {/* RIGHT: Query Editor + Results */}
             <div className="space-y-4">
               {/* Tabs */}
-              <div className="flex items-center gap-1 bg-white/3 border border-white/6 rounded-xl p-1 w-fit">
+              <div className="flex items-center gap-1 bg-white/3 border border-[var(--border-primary)] border-white/6 rounded-xl p-1 w-fit">
                 {["query", "result"].map(tab => (
                   <button
                     key={tab}
                     onClick={() => setActiveTab(tab)}
                     className={`px-3.5 py-1.5 rounded-lg text-xs font-bold font-mono transition-all cursor-pointer capitalize ${
                       activeTab === tab
-                        ? "bg-emerald-500/20 border border-emerald-500/30 text-emerald-300"
+                        ? "bg-emerald-500/20 border border-[var(--border-primary)] border-emerald-500/30 text-emerald-300"
                         : "text-white/30 hover:text-white/60"
                     }`}
                   >
@@ -591,7 +591,7 @@ export default function SqlDojo({ onBack }) {
               </div>
 
               {activeTab === "query" && (
-                <div className="bg-[#0D1117]/80 border border-white/8 rounded-2xl overflow-hidden">
+                <div className="bg-[#0D1117]/80 border border-[var(--border-primary)] border-white/8 rounded-2xl overflow-hidden">
                   <div className="flex items-center gap-1.5 px-4 py-2.5 border-b border-white/5">
                     <span className="w-2 h-2 rounded-full bg-rose-500/60" />
                     <span className="w-2 h-2 rounded-full bg-amber-500/60" />
@@ -614,7 +614,7 @@ export default function SqlDojo({ onBack }) {
               )}
 
               {activeTab === "result" && (
-                <div className="bg-[#0D1117]/80 border border-white/8 rounded-2xl p-4 min-h-[280px] space-y-3">
+                <div className="bg-[#0D1117]/80 border border-[var(--border-primary)] border-white/8 rounded-2xl p-4 min-h-[280px] space-y-3">
                   {!result && !error && (
                     <div className="flex flex-col items-center justify-center h-48 text-center space-y-2">
                       <Database size={28} className="text-white/15" />
@@ -622,7 +622,7 @@ export default function SqlDojo({ onBack }) {
                     </div>
                   )}
                   {error && (
-                    <div className="bg-rose-500/10 border border-rose-500/20 rounded-xl p-3 flex items-start gap-2">
+                    <div className="bg-rose-500/10 border border-[var(--border-primary)] border-rose-500/20 rounded-xl p-3 flex items-start gap-2">
                       <AlertTriangle size={14} className="text-rose-400 shrink-0 mt-0.5" />
                       <pre className="text-xs text-rose-300/70 font-mono whitespace-pre-wrap break-all">{error}</pre>
                     </div>
@@ -656,7 +656,7 @@ export default function SqlDojo({ onBack }) {
                 </button>
                 <button
                   onClick={() => { setQuery(""); setResult(null); setError(null); setActiveTab("query"); }}
-                  className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl border border-white/8 bg-white/3 text-white/40 hover:text-white text-xs font-bold transition-all cursor-pointer"
+                  className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl border border-[var(--border-primary)] border-white/8 bg-white/3 text-white/40 hover:text-white text-xs font-bold transition-all cursor-pointer"
                 >
                   <RotateCcw size={12} /> Clear
                 </button>
@@ -669,7 +669,7 @@ export default function SqlDojo({ onBack }) {
                     initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0 }}
-                    className="bg-emerald-500/10 border border-emerald-500/25 rounded-2xl p-4 flex items-center justify-between"
+                    className="bg-emerald-500/10 border border-[var(--border-primary)] border-emerald-500/25 rounded-2xl p-4 flex items-center justify-between"
                   >
                     <div className="flex items-center gap-3">
                       <CheckCircle2 size={20} className="text-emerald-400" />

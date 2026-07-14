@@ -280,7 +280,7 @@ export default function QuizBlitz({ onProgressChange, savedProgress, onBack }) {
   };
 
   return (
-    <div className="relative min-h-[70vh] w-full bg-[#0a0714] border border-slate-500/20 rounded-3xl overflow-hidden font-mono text-[#E8E6E1]">
+    <div className="relative min-h-[70vh] w-full bg-[#0a0714] border border-[var(--border-primary)] border-slate-500/20 rounded-3xl overflow-hidden font-mono text-[#E8E6E1]">
       {/* Retro Arcade Scanline overlay effect */}
       <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.4)_100%)] z-20" />
       <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(18,10,36,0)_97%,rgba(18,10,36,0.3)_98%)] bg-[size:100%_4px] opacity-35 z-20" />
@@ -289,7 +289,7 @@ export default function QuizBlitz({ onProgressChange, savedProgress, onBack }) {
       <div className="absolute top-4 right-4 z-30">
         <button
           onClick={() => setSoundEnabled(!soundEnabled)}
-          className="p-2 rounded-xl border border-slate-500/20 bg-slate-950/20 hover:bg-slate-950/40 text-slate-300 hover:text-white transition-all cursor-pointer shadow-sm"
+          className="p-2 rounded-xl border border-[var(--border-primary)] border-slate-500/20 bg-slate-950/20 hover:bg-slate-950/40 text-slate-300 hover:text-white transition-all cursor-pointer shadow-sm"
         >
           {soundEnabled ? <Volume2 size={16} /> : <VolumeX size={16} />}
         </button>
@@ -313,10 +313,10 @@ export default function QuizBlitz({ onProgressChange, savedProgress, onBack }) {
             ) : !selectedTrack ? (
               <>
                 <div className="space-y-3">
-                  <span className="text-[10px] font-bold tracking-widest text-[#7CFFB2] border border-[#7CFFB2]/20 bg-[#7CFFB2]/5 px-3 py-1 rounded-full uppercase">
+                  <span className="text-[10px] font-bold tracking-widest text-[#7CFFB2] border border-[var(--border-primary)] border-[#7CFFB2]/20 bg-[#7CFFB2]/5 px-3 py-1 rounded-full uppercase">
                     Mode: Quiz Blitz
                   </span>
-                  <h2 className="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-slate-400 via-pink-400 to-cyan-400 uppercase tracking-tight">
+                  <h2 className="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-slate-400 via-[var(--text-secondary)] to-cyan-400 uppercase tracking-tight">
                     Speed Trivia Core
                   </h2>
                   <p className="text-xs text-slate-300/50 max-w-md mx-auto">
@@ -331,7 +331,7 @@ export default function QuizBlitz({ onProgressChange, savedProgress, onBack }) {
                       <button
                         key={track}
                         onClick={() => setSelectedTrack(track)}
-                        className="relative p-5 rounded-2xl border border-slate-500/25 bg-gradient-to-br from-[#1a0e30]/40 to-[#0e071e]/70 text-left hover:scale-[1.03] transition-all cursor-pointer hover:border-slate-400 group overflow-hidden shadow-lg"
+                        className="relative p-5 rounded-2xl border border-[var(--border-primary)] border-slate-500/25 bg-gradient-to-br from-[#1a0e30]/40 to-[#0e071e]/70 text-left hover:scale-[1.03] transition-all cursor-pointer hover:border-slate-400 group overflow-hidden shadow-lg"
                       >
                         <div className="absolute top-0 right-0 w-24 h-24 bg-slate-500/5 rounded-full blur-2xl group-hover:bg-slate-500/10 transition-all" />
                         <span className="text-xs font-bold text-slate-400/60 uppercase">Track</span>
@@ -354,10 +354,10 @@ export default function QuizBlitz({ onProgressChange, savedProgress, onBack }) {
             ) : (
               <>
                 <div className="space-y-3">
-                  <span className="text-[10px] font-bold tracking-widest text-[#7CFFB2] border border-[#7CFFB2]/20 bg-[#7CFFB2]/5 px-3 py-1 rounded-full uppercase">
+                  <span className="text-[10px] font-bold tracking-widest text-[#7CFFB2] border border-[var(--border-primary)] border-[#7CFFB2]/20 bg-[#7CFFB2]/5 px-3 py-1 rounded-full uppercase">
                     Track: {selectedTrack}
                   </span>
-                  <h2 className="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-slate-400 via-pink-400 to-cyan-400 uppercase tracking-tight">
+                  <h2 className="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-slate-400 via-[var(--text-secondary)] to-cyan-400 uppercase tracking-tight">
                     Select Level
                   </h2>
                   <p className="text-xs text-slate-300/50 max-w-md mx-auto">
@@ -374,7 +374,7 @@ export default function QuizBlitz({ onProgressChange, savedProgress, onBack }) {
                         key={lvl}
                         disabled={!isUnlocked}
                         onClick={() => handleStartGame(selectedTrack, lvl)}
-                        className={`relative p-5 rounded-2xl border flex flex-col items-center justify-center transition-all ${
+                        className={`relative p-5 rounded-2xl border border-[var(--border-primary)] flex flex-col items-center justify-center transition-all ${
                           isUnlocked
                             ? "bg-slate-950/20 border-slate-500/30 hover:border-[#7CFFB2] hover:scale-105 cursor-pointer text-white"
                             : "bg-[#180f2d]/40 border-slate-950/20 text-slate-500/20 cursor-not-allowed"
@@ -382,9 +382,9 @@ export default function QuizBlitz({ onProgressChange, savedProgress, onBack }) {
                       >
                         <span className="text-xs font-bold uppercase tracking-wider mb-2">Lvl {lvl}</span>
                         {isCompleted ? (
-                          <span className="text-[9px] font-bold text-[#7CFFB2] bg-[#7CFFB2]/10 border border-[#7CFFB2]/20 px-2 py-0.5 rounded uppercase">Cleared</span>
+                          <span className="text-[9px] font-bold text-[#7CFFB2] bg-[#7CFFB2]/10 border border-[var(--border-primary)] border-[#7CFFB2]/20 px-2 py-0.5 rounded uppercase">Cleared</span>
                         ) : isUnlocked ? (
-                          <span className="text-[9px] font-bold text-cyan-400 bg-cyan-500/10 border border-cyan-500/20 px-2 py-0.5 rounded uppercase">Play</span>
+                          <span className="text-[9px] font-bold text-cyan-400 bg-cyan-500/10 border border-[var(--border-primary)] border-cyan-500/20 px-2 py-0.5 rounded uppercase">Play</span>
                         ) : (
                           <span className="text-[9px] font-bold text-slate-500/10 uppercase">Locked</span>
                         )}
@@ -419,7 +419,7 @@ export default function QuizBlitz({ onProgressChange, savedProgress, onBack }) {
                 <span className="text-xs font-black uppercase text-slate-400 tracking-wider">
                   {selectedTrack} — Level {currentLevel}
                 </span>
-                <span className="text-[10px] font-bold text-[#7CFFB2] border border-[#7CFFB2]/20 px-2 py-0.5 rounded bg-[#7CFFB2]/5 uppercase">
+                <span className="text-[10px] font-bold text-[#7CFFB2] border border-[var(--border-primary)] border-[#7CFFB2]/20 px-2 py-0.5 rounded bg-[#7CFFB2]/5 uppercase">
                   Q {qIdx + 1}/{questions.length}
                 </span>
               </div>
@@ -457,7 +457,7 @@ export default function QuizBlitz({ onProgressChange, savedProgress, onBack }) {
 
               {/* Optional Code Block */}
               {currentQuestion.code && (
-                <div className="relative rounded-xl border border-slate-950 bg-[#0d071b] p-4 font-mono text-xs overflow-x-auto shadow-inner text-slate-300">
+                <div className="relative rounded-xl border border-[var(--border-primary)] border-slate-950 bg-[#0d071b] p-4 font-mono text-xs overflow-x-auto shadow-inner text-slate-300">
                   <div className="absolute top-2 right-3 text-[9px] uppercase tracking-wider text-slate-600 font-bold">
                     code_sandbox
                   </div>
@@ -498,9 +498,9 @@ export default function QuizBlitz({ onProgressChange, savedProgress, onBack }) {
                     key={optLetter}
                     disabled={revealMode}
                     onClick={() => handleSelectOption(optLetter)}
-                    className={`flex items-start gap-3 p-4 rounded-xl border text-xs font-semibold text-left transition-all duration-150 ${btnStyles}`}
+                    className={`flex items-start gap-3 p-4 rounded-xl border border-[var(--border-primary)] text-xs font-semibold text-left transition-all duration-150 ${btnStyles}`}
                   >
-                    <span className={`h-5 w-5 rounded border flex items-center justify-center shrink-0 text-[10px] font-bold ${
+                    <span className={`h-5 w-5 rounded border border-[var(--border-primary)] flex items-center justify-center shrink-0 text-[10px] font-bold ${
                       revealMode && isCorrectOpt ? "border-emerald-500/40 bg-emerald-500/10" :
                       revealMode && isSelected ? "border-rose-500/40 bg-rose-500/10" :
                       "border-slate-500/20 bg-slate-500/5"
@@ -552,7 +552,7 @@ export default function QuizBlitz({ onProgressChange, savedProgress, onBack }) {
             exit={{ opacity: 0 }}
             className="flex flex-col items-center justify-center p-8 text-center h-[70vh] space-y-6"
           >
-            <div className="p-4 rounded-full bg-amber-500/10 border border-amber-500/20">
+            <div className="p-4 rounded-full bg-amber-500/10 border border-[var(--border-primary)] border-amber-500/20">
               <Trophy size={36} className="text-amber-400" />
             </div>
 
@@ -570,17 +570,17 @@ export default function QuizBlitz({ onProgressChange, savedProgress, onBack }) {
 
             {/* Performance metrics */}
             <div className="grid grid-cols-3 gap-3 w-full max-w-md">
-              <div className="bg-slate-950/15 border border-slate-500/10 rounded-2xl p-4">
+              <div className="bg-slate-950/15 border border-[var(--border-primary)] border-slate-500/10 rounded-2xl p-4">
                 <div className="text-2xl font-black text-cyan-300">{score}</div>
                 <div className="text-[9px] uppercase tracking-wider text-slate-300/40 font-bold mt-1">Score</div>
               </div>
-              <div className="bg-slate-950/15 border border-slate-500/10 rounded-2xl p-4">
+              <div className="bg-slate-950/15 border border-[var(--border-primary)] border-slate-500/10 rounded-2xl p-4">
                 <div className="text-2xl font-black text-[#7CFFB2]">
                   {Math.round((results.filter(r => r.correct).length / questions.length) * 100)}%
                 </div>
                 <div className="text-[9px] uppercase tracking-wider text-slate-300/40 font-bold mt-1">Accuracy</div>
               </div>
-              <div className="bg-slate-950/15 border border-slate-500/10 rounded-2xl p-4">
+              <div className="bg-slate-950/15 border border-[var(--border-primary)] border-slate-500/10 rounded-2xl p-4">
                 <div className="text-2xl font-black text-orange-400">{bestStreak}</div>
                 <div className="text-[9px] uppercase tracking-wider text-slate-300/40 font-bold mt-1">Best Streak</div>
               </div>
@@ -606,7 +606,7 @@ export default function QuizBlitz({ onProgressChange, savedProgress, onBack }) {
               })()}
               <button
                 onClick={() => handleStartGame(selectedTrack, currentLevel)}
-                className="px-5 py-2.5 rounded-xl border border-slate-500/25 bg-[#1b0d35]/30 text-slate-300 hover:text-white hover:border-slate-400 text-xs font-bold transition-all cursor-pointer flex items-center gap-2 font-mono"
+                className="px-5 py-2.5 rounded-xl border border-[var(--border-primary)] border-slate-500/25 bg-[#1b0d35]/30 text-slate-300 hover:text-white hover:border-slate-400 text-xs font-bold transition-all cursor-pointer flex items-center gap-2 font-mono"
               >
                 <RotateCcw size={13} /> Replay Level {currentLevel}
               </button>

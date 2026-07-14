@@ -1,4 +1,4 @@
-// DMX Academy Practice Problems Dataset
+// Eduvantix Practice Problems Dataset
 // Contains detailed content for practice zone exercises
 
 export const practiceProblems = [

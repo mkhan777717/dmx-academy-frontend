@@ -45,7 +45,7 @@ export function ReactStatePropsLab() {
   };
 
   return (
-    <div className="rounded-2xl border p-5 space-y-6 shadow-md" style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
+    <div className="rounded-2xl border border-[var(--border-primary)] p-5 space-y-6 shadow-md" style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
       <div className="flex items-center gap-2">
         <Layers size={18} style={{ color: "var(--text-accent)" }} />
         <h4 className="text-sm font-bold font-display" style={{ color: "var(--text-primary)" }}>React State & Props Lab</h4>
@@ -60,7 +60,7 @@ export function ReactStatePropsLab() {
               type="text"
               value={username}
               onChange={(e) => handlePropChange("username", e.target.value)}
-              className="w-full p-2.5 rounded-lg border outline-none font-medium"
+              className="w-full p-2.5 rounded-lg border border-[var(--border-primary)] outline-none font-medium"
               style={{ backgroundColor: "var(--bg-input)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
             />
           </div>
@@ -71,7 +71,7 @@ export function ReactStatePropsLab() {
               type="text"
               value={role}
               onChange={(e) => handlePropChange("role", e.target.value)}
-              className="w-full p-2.5 rounded-lg border outline-none font-medium"
+              className="w-full p-2.5 rounded-lg border border-[var(--border-primary)] outline-none font-medium"
               style={{ backgroundColor: "var(--bg-input)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
             />
           </div>
@@ -83,7 +83,7 @@ export function ReactStatePropsLab() {
                 <button
                   key={color}
                   onClick={() => handlePropChange("theme", color)}
-                  className={`px-3 py-1.5 rounded-lg border capitalize font-semibold transition-all ${theme === color ? "scale-105" : ""}`}
+                  className={`px-3 py-1.5 rounded-lg border border-[var(--border-primary)] capitalize font-semibold transition-all ${theme === color ? "scale-105" : ""}`}
                   style={{
                     backgroundColor: theme === color ? themeColors[color].bg : "var(--bg-hover)",
                     borderColor: theme === color ? themeColors[color].accent : "var(--border-primary)",
@@ -104,7 +104,7 @@ export function ReactStatePropsLab() {
           </label>
           
           <div
-            className="rounded-xl border p-5 relative overflow-hidden transition-all duration-500 flex flex-col justify-between h-40 shadow-inner"
+            className="rounded-xl border border-[var(--border-primary)] p-5 relative overflow-hidden transition-all duration-500 flex flex-col justify-between h-40 shadow-inner"
             style={{
               backgroundColor: "var(--bg-code)",
               borderColor: renderHighlight ? themeColors[theme].accent : "var(--border-primary)",
@@ -152,7 +152,7 @@ export function ReactStatePropsLab() {
       </div>
 
       {/* Compiler Log Box */}
-      <div className="rounded-xl p-3.5 border font-mono text-[10px] space-y-1.5" style={{ backgroundColor: "var(--bg-input)", borderColor: "var(--border-primary)" }}>
+      <div className="rounded-xl p-3.5 border border-[var(--border-primary)] font-mono text-[10px] space-y-1.5" style={{ backgroundColor: "var(--bg-input)", borderColor: "var(--border-primary)" }}>
         <div className="flex items-center gap-1.5 pb-1 border-b" style={{ borderColor: "var(--border-primary)", color: "var(--text-muted)" }}>
           <Cpu size={10} />
           <span>REACT FIBER MONITOR LOGS</span>
@@ -259,14 +259,14 @@ export function ExpressRestController() {
   };
 
   return (
-    <div className="rounded-2xl border overflow-hidden flex flex-col shadow-lg" style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
+    <div className="rounded-2xl border border-[var(--border-primary)] overflow-hidden flex flex-col shadow-lg" style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
       {/* Title Bar */}
       <div className="flex items-center justify-between px-4 py-3 border-b" style={{ borderColor: "var(--border-primary)", backgroundColor: "var(--bg-hover)" }}>
         <div className="flex items-center gap-2">
           <Globe size={14} style={{ color: "var(--text-accent)" }} />
           <span className="text-[11px] font-mono font-bold" style={{ color: "var(--text-primary)" }}>Express.js API Router Lab</span>
         </div>
-        <span className="text-[9px] font-bold px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
+        <span className="text-[9px] font-bold px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-500 border border-[var(--border-primary)] border-emerald-500/20">
           Server: Running (Port 5000)
         </span>
       </div>
@@ -282,7 +282,7 @@ export function ExpressRestController() {
             <select
               value={method}
               onChange={(e) => setMethod(e.target.value)}
-              className="p-2.5 rounded-lg border outline-none text-xs font-bold shrink-0 cursor-pointer"
+              className="p-2.5 rounded-lg border border-[var(--border-primary)] outline-none text-xs font-bold shrink-0 cursor-pointer"
               style={{ backgroundColor: "var(--bg-input)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
             >
               <option value="GET">GET</option>
@@ -293,7 +293,7 @@ export function ExpressRestController() {
             <select
               value={route}
               onChange={(e) => setRoute(e.target.value)}
-              className="p-2.5 rounded-lg border outline-none text-xs font-semibold flex-1 cursor-pointer"
+              className="p-2.5 rounded-lg border border-[var(--border-primary)] outline-none text-xs font-semibold flex-1 cursor-pointer"
               style={{ backgroundColor: "var(--bg-input)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
             >
               <option value="/api/users">/api/users (All users)</option>
@@ -308,7 +308,7 @@ export function ExpressRestController() {
               <textarea
                 value={requestBody}
                 onChange={(e) => setRequestBody(e.target.value)}
-                className="w-full h-24 p-2 rounded-lg font-mono text-[11px] outline-none border resize-none leading-relaxed"
+                className="w-full h-24 p-2 rounded-lg font-mono text-[11px] outline-none border border-[var(--border-primary)] resize-none leading-relaxed"
                 style={{ backgroundColor: "var(--bg-input)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
               />
             </div>
@@ -317,7 +317,7 @@ export function ExpressRestController() {
           <button
             onClick={handleSend}
             disabled={loading}
-            className="w-full py-2.5 px-4 rounded-lg text-xs font-bold text-white shadow transition-all flex items-center justify-center gap-1.5 hover:brightness-110 disabled:opacity-50"
+            className="w-full py-2.5 px-4 rounded-lg text-xs font-bold text-[var(--text-on-accent)] shadow transition-all flex items-center justify-center gap-1.5 hover:brightness-110 disabled:opacity-50"
             style={{ background: "var(--accent-gradient)" }}
           >
             {loading ? "Waiting..." : <>Send Request <Play size={10} fill="white" /></>}
@@ -331,7 +331,7 @@ export function ExpressRestController() {
           <div className="p-4 border-b flex-1 flex flex-col" style={{ borderColor: "var(--border-primary)" }}>
             <span className="text-[10px] font-bold uppercase tracking-wider mb-2" style={{ color: "var(--text-muted)" }}>HTTP Client Response</span>
             
-            <div className="flex-grow rounded-lg border p-3 font-mono text-[11px] overflow-auto flex flex-col justify-between" style={{ backgroundColor: "var(--bg-code)", borderColor: "var(--border-primary)" }}>
+            <div className="flex-grow rounded-lg border border-[var(--border-primary)] p-3 font-mono text-[11px] overflow-auto flex flex-col justify-between" style={{ backgroundColor: "var(--bg-code)", borderColor: "var(--border-primary)" }}>
               {loading ? (
                 <div className="flex items-center justify-center h-28 gap-2" style={{ color: "var(--text-muted)" }}>
                   <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }} className="w-4 h-4 border-2 border-t-transparent rounded-full" style={{ borderColor: "var(--text-accent)" }} />
@@ -367,8 +367,8 @@ export function ExpressRestController() {
           </div>
 
           {/* Bottom Half: Express Server Console */}
-          <div className="p-4 flex flex-col bg-slate-900 text-slate-300 font-mono text-[10px] h-40">
-            <div className="flex items-center gap-2 pb-2 mb-2 border-b border-slate-800 text-slate-400 shrink-0">
+          <div className="p-4 flex flex-col bg-[var(--bg-card)] text-slate-300 font-mono text-[10px] h-40">
+            <div className="flex items-center gap-2 pb-2 mb-2 border-b border-[var(--border-primary)] text-slate-400 shrink-0">
               <Server size={10} />
               <span>EXPRESS MIDDLEWARE TERMINAL LOGGER</span>
             </div>
@@ -424,7 +424,7 @@ export function NextRouterMap() {
   const current = routeFiles[activeRoute];
 
   return (
-    <div className="rounded-2xl border p-5 space-y-6 shadow-md" style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
+    <div className="rounded-2xl border border-[var(--border-primary)] p-5 space-y-6 shadow-md" style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
       <div className="flex items-center gap-2">
         <Server size={18} style={{ color: "var(--text-accent)" }} />
         <h4 className="text-sm font-bold font-display" style={{ color: "var(--text-primary)" }}>Next.js 15 App Router Explorer</h4>
@@ -449,7 +449,7 @@ export function NextRouterMap() {
               }}
             >
               <span>📁 app/</span>
-              <span className="text-[9px] font-mono px-1 rounded border opacity-60">/</span>
+              <span className="text-[9px] font-mono px-1 rounded border border-[var(--border-primary)] opacity-60">/</span>
             </button>
 
             {/* Route 2 */}
@@ -463,7 +463,7 @@ export function NextRouterMap() {
                 }}
               >
                 <span>📁 dashboard/</span>
-                <span className="text-[9px] font-mono px-1 rounded border opacity-60">/dashboard</span>
+                <span className="text-[9px] font-mono px-1 rounded border border-[var(--border-primary)] opacity-60">/dashboard</span>
               </button>
 
               {/* Route 3 */}
@@ -477,7 +477,7 @@ export function NextRouterMap() {
                   }}
                 >
                   <span>📁 settings/</span>
-                  <span className="text-[9px] font-mono px-1 rounded border opacity-60">/settings</span>
+                  <span className="text-[9px] font-mono px-1 rounded border border-[var(--border-primary)] opacity-60">/settings</span>
                 </button>
               </div>
             </div>
@@ -495,7 +495,7 @@ export function NextRouterMap() {
                   }}
                 >
                   <span>📁 products/</span>
-                  <span className="text-[9px] font-mono px-1 rounded border opacity-60">/api/products</span>
+                  <span className="text-[9px] font-mono px-1 rounded border border-[var(--border-primary)] opacity-60">/api/products</span>
                 </button>
               </div>
             </div>
@@ -509,7 +509,7 @@ export function NextRouterMap() {
             ROUTE DETAILS & BOUNDARY
           </label>
 
-          <div className="rounded-xl border p-4.5 space-y-4" style={{ backgroundColor: "var(--bg-hover)", borderColor: "var(--border-primary)" }}>
+          <div className="rounded-xl border border-[var(--border-primary)] p-4.5 space-y-4" style={{ backgroundColor: "var(--bg-hover)", borderColor: "var(--border-primary)" }}>
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold" style={{ color: "var(--text-accent)" }}>Route: {activeRoute}</span>
               <span className={`text-[9px] px-2 py-0.5 rounded font-extrabold tracking-wide uppercase border`}

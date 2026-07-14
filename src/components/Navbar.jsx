@@ -52,7 +52,7 @@ export default function Navbar() {
             style={{ color: "var(--text-primary)" }}
           >
             <div
-              className="flex h-7 w-7 items-center justify-center rounded-lg text-white"
+              className="flex h-7 w-7 items-center justify-center rounded-lg text-[var(--text-on-accent)]"
               style={{ background: "var(--accent-gradient)" }}
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -60,7 +60,7 @@ export default function Navbar() {
               </svg>
             </div>
             <span className="text-[15px] font-bold tracking-[-0.02em]" style={{ color: "var(--text-primary)" }}>
-              DMX Academy
+              Eduvantix
             </span>
           </Link>
 
@@ -107,7 +107,7 @@ export default function Navbar() {
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: 10, scale: 0.95 }}
                     transition={{ duration: 0.2 }}
-                    className="absolute left-1/2 -translate-x-1/2 mt-2 w-64 rounded-2xl border p-2 shadow-2xl backdrop-blur-xl z-50"
+                    className="absolute left-1/2 -translate-x-1/2 mt-2 w-64 rounded-2xl border border-[var(--border-primary)] p-2 shadow-2xl backdrop-blur-xl z-50"
                     style={{
                       backgroundColor: "var(--bg-card)",
                       borderColor: "var(--border-primary)",
@@ -204,7 +204,7 @@ export default function Navbar() {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 10, scale: 0.95 }}
                       transition={{ duration: 0.2 }}
-                      className="absolute right-0 mt-2 w-56 rounded-2xl border p-2 shadow-2xl backdrop-blur-xl z-50 text-left"
+                      className="absolute right-0 mt-2 w-56 rounded-2xl border border-[var(--border-primary)] p-2 shadow-2xl backdrop-blur-xl z-50 text-left"
                       style={{
                         backgroundColor: "var(--bg-card)",
                         borderColor: "var(--border-primary)",
@@ -330,7 +330,7 @@ export default function Navbar() {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 10, scale: 0.95 }}
                       transition={{ duration: 0.2 }}
-                      className="absolute right-0 mt-2 w-56 rounded-2xl border p-2 shadow-2xl backdrop-blur-xl z-50 text-left"
+                      className="absolute right-0 mt-2 w-56 rounded-2xl border border-[var(--border-primary)] p-2 shadow-2xl backdrop-blur-xl z-50 text-left"
                       style={{
                         backgroundColor: "var(--bg-card)",
                         borderColor: "var(--border-primary)",
@@ -410,7 +410,7 @@ export default function Navbar() {
                 href="#pricing"
                 whileHover={{ scale: 1.05, boxShadow: "0px 6px 20px var(--accent-glow)" }}
                 whileTap={{ scale: 0.95 }}
-                className="inline-flex items-center space-x-2 rounded-full px-5 py-2.5 text-sm font-semibold text-white shadow-md transition-all shrink-0"
+                className="inline-flex items-center space-x-2 rounded-full px-5 py-2.5 text-sm font-semibold text-[var(--text-on-accent)] shadow-md transition-all shrink-0"
                 style={{ background: "var(--accent-gradient)" }}
               >
                 <span>Enroll Now</span>
@@ -556,7 +556,7 @@ export default function Navbar() {
                         setIsOpen(false);
                         setShowLogoutConfirm(true);
                       }}
-                      className="w-full flex items-center justify-center gap-2.5 rounded-xl py-3 font-semibold text-rose-500 border border-rose-500/20 bg-rose-500/5 cursor-pointer"
+                      className="w-full flex items-center justify-center gap-2.5 rounded-xl py-3 font-semibold text-rose-500 border border-[var(--border-primary)] border-rose-500/20 bg-rose-500/5 cursor-pointer"
                     >
                       <LogOut size={16} />
                       <span>Sign Out</span>
@@ -609,7 +609,7 @@ export default function Navbar() {
                   <a
                     href="#pricing"
                     onClick={() => setIsOpen(false)}
-                    className="flex w-full items-center justify-center space-x-2 rounded-xl py-3 font-semibold text-white shadow-lg"
+                    className="flex w-full items-center justify-center space-x-2 rounded-xl py-3 font-semibold text-[var(--text-on-accent)] shadow-lg"
                     style={{ background: "var(--accent-gradient)" }}
                   >
                     <span>Enroll Now</span>
@@ -626,13 +626,13 @@ export default function Navbar() {
         {showLogoutConfirm && (
           <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-md p-4 animate-in fade-in duration-200">
             <div
-              className="w-full max-w-sm rounded-3xl p-6 border shadow-2xl text-center space-y-5"
+              className="w-full max-w-sm rounded-3xl p-6 border border-[var(--border-primary)] shadow-2xl text-center space-y-5"
               style={{
                 backgroundColor: "var(--bg-card)",
                 borderColor: "var(--border-primary)"
               }}
             >
-              <div className="w-12 h-12 rounded-2xl bg-rose-500/10 text-rose-500 flex items-center justify-center mx-auto border border-rose-500/20">
+              <div className="w-12 h-12 rounded-2xl bg-rose-500/10 text-rose-500 flex items-center justify-center mx-auto border border-[var(--border-primary)] border-rose-500/20">
                 <AlertTriangle size={24} />
               </div>
 
@@ -641,7 +641,7 @@ export default function Navbar() {
                   Are u sure want to logout
                 </h3>
                 <p className="text-[11px]" style={{ color: "var(--text-muted)" }}>
-                  You will need to sign back in to access your DMX account.
+                  You will need to sign back in to access your Eduvantix account.
                 </p>
               </div>
 
@@ -649,7 +649,7 @@ export default function Navbar() {
                 <button
                   type="button"
                   onClick={() => setShowLogoutConfirm(false)}
-                  className="px-4 py-2.5 rounded-2xl border text-xs font-bold transition-all hover:bg-[var(--bg-primary)] cursor-pointer text-[var(--text-secondary)]"
+                  className="px-4 py-2.5 rounded-2xl border border-[var(--border-primary)] text-xs font-bold transition-all hover:bg-[var(--bg-primary)] premium-glass cursor-pointer text-[var(--text-secondary)]"
                   style={{ borderColor: "var(--border-primary)" }}
                 >
                   Cancel

@@ -297,7 +297,7 @@ Traditional styling requires writing custom CSS classes in separate files, which
 
 #### Key Advantages:
 * **No CSS Files:** Build complex layouts without writing a single line of custom CSS.
-* **Consistency:** Utility classes match a pre-defined design system (colors, spacings, border radii).
+* **Consistency:** Utility classes match a pre-defined design system (colors, spacings, border border-[var(--border-primary)] radii).
 * **Responsive Prefixes:** Apply layouts conditionally based on screen width using breakpoints: \`md:\`, \`lg:\`.
 
 #### Code Example (React + Tailwind):

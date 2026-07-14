@@ -222,14 +222,14 @@ export default function TypeRacer({ onBack }) {
         <div className="flex items-center justify-between border-b border-white/5 pb-4">
           <button
             onClick={onBack}
-            className="flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-cyan-500/20 bg-cyan-950/20 text-cyan-300 hover:text-white hover:border-cyan-400/40 transition-all text-xs font-bold font-mono cursor-pointer"
+            className="flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[var(--border-primary)] border-cyan-500/20 bg-cyan-950/20 text-cyan-300 hover:text-white hover:border-cyan-400/40 transition-all text-xs font-bold font-mono cursor-pointer"
           >
             <ArrowLeft size={13} />
             <span>Exit Arena</span>
           </button>
 
           {/* Language Toggle */}
-          <div className="flex items-center gap-1 bg-white/3 border border-white/8 rounded-full p-1">
+          <div className="flex items-center gap-1 bg-white/3 border border-[var(--border-primary)] border-white/8 rounded-full p-1">
             {["python", "javascript"].map(l => (
               <button
                 key={l}
@@ -255,7 +255,7 @@ export default function TypeRacer({ onBack }) {
         {/* ── Header ──────────────────────────────────────────────────── */}
         <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <div className="p-2 rounded-xl bg-cyan-500/10 border border-cyan-500/20">
+            <div className="p-2 rounded-xl bg-cyan-500/10 border border-[var(--border-primary)] border-cyan-500/20">
               <Zap size={20} className="text-cyan-400" />
             </div>
             <div>
@@ -276,7 +276,7 @@ export default function TypeRacer({ onBack }) {
               <button
                 key={i}
                 onClick={() => { setLevelIdx(i); setPhase("lobby"); setTyped(""); }}
-                className={`w-7 h-7 rounded-full text-[10px] font-bold font-mono border transition-all cursor-pointer ${
+                className={`w-7 h-7 rounded-full text-[10px] font-bold font-mono border border-[var(--border-primary)] transition-all cursor-pointer ${
                   isActive
                     ? "bg-cyan-500 border-cyan-400 text-black shadow-[0_0_10px_rgba(6,182,212,0.5)]"
                     : done
@@ -303,7 +303,7 @@ export default function TypeRacer({ onBack }) {
               { label: "Progress", value: `${progressPct}%`, icon: <ChevronRight size={14} className="text-violet-400" />, accent: "text-violet-300" },
               { label: "Mistakes", value: mistakes, icon: <RefreshCw size={14} className="text-rose-400" />, accent: "text-rose-300" },
             ].map(stat => (
-              <div key={stat.label} className="bg-white/3 border border-white/6 rounded-2xl p-3 text-center">
+              <div key={stat.label} className="bg-white/3 border border-[var(--border-primary)] border-white/6 rounded-2xl p-3 text-center">
                 <div className="flex justify-center mb-1">{stat.icon}</div>
                 <div className={`text-xl font-black font-mono ${stat.accent}`}>{stat.value}</div>
                 <div className="text-[9px] uppercase tracking-wider text-white/30 font-bold">{stat.label}</div>
@@ -313,7 +313,7 @@ export default function TypeRacer({ onBack }) {
         )}
 
         {/* ── Code Display ─────────────────────────────────────────────── */}
-        <div className="relative bg-[#0D1117]/80 border border-white/8 rounded-3xl p-6 overflow-hidden">
+        <div className="relative bg-[#0D1117]/80 border border-[var(--border-primary)] border-white/8 rounded-3xl p-6 overflow-hidden">
           {/* Header bar */}
           <div className="flex items-center gap-1.5 mb-4">
             <span className="w-2.5 h-2.5 rounded-full bg-rose-500/70" />
@@ -359,7 +359,7 @@ export default function TypeRacer({ onBack }) {
           {phase === "lobby" && (
             <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#0D1117]/75 backdrop-blur-sm rounded-3xl">
               <div className="text-center space-y-4">
-                <div className="p-3 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 inline-block">
+                <div className="p-3 rounded-2xl bg-cyan-500/10 border border-[var(--border-primary)] border-cyan-500/20 inline-block">
                   <Zap size={28} className="text-cyan-400" />
                 </div>
                 <div>
@@ -408,10 +408,10 @@ export default function TypeRacer({ onBack }) {
               initial={{ opacity: 0, scale: 0.92, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-gradient-to-br from-cyan-900/30 to-violet-900/30 border border-cyan-500/25 rounded-3xl p-8 text-center space-y-6"
+              className="bg-gradient-to-br from-cyan-900/30 to-violet-900/30 border border-[var(--border-primary)] border-cyan-500/25 rounded-3xl p-8 text-center space-y-6"
             >
               <div className="flex justify-center">
-                <div className="p-4 rounded-full bg-cyan-500/15 border border-cyan-500/25">
+                <div className="p-4 rounded-full bg-cyan-500/15 border border-[var(--border-primary)] border-cyan-500/25">
                   <Trophy size={32} className="text-cyan-300" />
                 </div>
               </div>
@@ -422,15 +422,15 @@ export default function TypeRacer({ onBack }) {
               </div>
 
               <div className="grid grid-cols-3 gap-4">
-                <div className="bg-white/5 border border-white/8 rounded-2xl p-4">
+                <div className="bg-white/5 border border-[var(--border-primary)] border-white/8 rounded-2xl p-4">
                   <div className="text-3xl font-black text-cyan-300 font-mono">{wpm}</div>
                   <div className="text-[10px] uppercase tracking-wider text-white/30 font-bold mt-1">WPM</div>
                 </div>
-                <div className="bg-white/5 border border-white/8 rounded-2xl p-4">
+                <div className="bg-white/5 border border-[var(--border-primary)] border-white/8 rounded-2xl p-4">
                   <div className="text-3xl font-black text-emerald-300 font-mono">{accuracy}%</div>
                   <div className="text-[10px] uppercase tracking-wider text-white/30 font-bold mt-1">Accuracy</div>
                 </div>
-                <div className="bg-white/5 border border-white/8 rounded-2xl p-4">
+                <div className="bg-white/5 border border-[var(--border-primary)] border-white/8 rounded-2xl p-4">
                   <div className="text-3xl font-black text-violet-300 font-mono">{Math.round(elapsed)}s</div>
                   <div className="text-[10px] uppercase tracking-wider text-white/30 font-bold mt-1">Time</div>
                 </div>
@@ -447,7 +447,7 @@ export default function TypeRacer({ onBack }) {
               <div className="flex items-center justify-center gap-3">
                 <button
                   onClick={restart}
-                  className="px-5 py-2.5 rounded-xl border border-white/10 bg-white/5 text-white/70 hover:text-white hover:border-white/20 text-xs font-bold transition-all cursor-pointer flex items-center gap-2"
+                  className="px-5 py-2.5 rounded-xl border border-[var(--border-primary)] border-white/10 bg-white/5 text-white/70 hover:text-white hover:border-white/20 text-xs font-bold transition-all cursor-pointer flex items-center gap-2"
                 >
                   <RotateCcw size={13} />
                   Retry
@@ -480,10 +480,10 @@ export default function TypeRacer({ onBack }) {
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="bg-gradient-to-br from-violet-900/30 to-cyan-900/30 border border-violet-500/25 rounded-3xl p-10 text-center space-y-6"
+              className="bg-gradient-to-br from-violet-900/30 to-cyan-900/30 border border-[var(--border-primary)] border-violet-500/25 rounded-3xl p-10 text-center space-y-6"
             >
               <div className="flex justify-center">
-                <div className="p-5 rounded-full bg-amber-500/15 border border-amber-500/25">
+                <div className="p-5 rounded-full bg-amber-500/15 border border-[var(--border-primary)] border-amber-500/25">
                   <Trophy size={40} className="text-amber-300" />
                 </div>
               </div>
@@ -500,7 +500,7 @@ export default function TypeRacer({ onBack }) {
                   const k = `${lang}_${i}`;
                   const b = progress[k];
                   return (
-                    <div key={i} className="bg-white/4 border border-white/6 rounded-xl p-3 flex items-center justify-between">
+                    <div key={i} className="bg-white/4 border border-[var(--border-primary)] border-white/6 rounded-xl p-3 flex items-center justify-between">
                       <span className="text-xs font-mono text-white/50">{s.title}</span>
                       <span className="text-xs font-black text-cyan-300">{b?.bestWpm || "—"} WPM</span>
                     </div>
@@ -511,7 +511,7 @@ export default function TypeRacer({ onBack }) {
               <div className="flex items-center justify-center gap-3">
                 <button
                   onClick={() => { setLevelIdx(0); setPhase("lobby"); }}
-                  className="px-5 py-2.5 rounded-xl border border-white/10 bg-white/5 text-white/70 hover:text-white text-xs font-bold transition-all cursor-pointer flex items-center gap-2"
+                  className="px-5 py-2.5 rounded-xl border border-[var(--border-primary)] border-white/10 bg-white/5 text-white/70 hover:text-white text-xs font-bold transition-all cursor-pointer flex items-center gap-2"
                 >
                   <RotateCcw size={13} />
                   Play Again

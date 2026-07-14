@@ -109,7 +109,7 @@ export default function CoursesCatalogPage() {
             className="text-center max-w-3xl mx-auto space-y-4"
           >
             <div 
-              className="inline-flex items-center space-x-1.5 rounded-full border px-3.5 py-1.5 text-xs font-semibold"
+              className="inline-flex items-center space-x-1.5 rounded-full border border-[var(--border-primary)] px-3.5 py-1.5 text-xs font-semibold"
               style={{
                 backgroundColor: "var(--bg-badge)",
                 borderColor: "var(--border-accent)",
@@ -133,7 +133,7 @@ export default function CoursesCatalogPage() {
               
               {/* Filter Tabs */}
               <div 
-                className="flex flex-wrap items-center gap-1.5 rounded-full border p-1.5 backdrop-blur-md w-full lg:w-auto justify-center"
+                className="flex flex-wrap items-center gap-1.5 rounded-full border border-[var(--border-primary)] p-1.5 backdrop-blur-md w-full lg:w-auto justify-center"
                 style={{
                   backgroundColor: "var(--glass-bg)",
                   borderColor: "var(--border-primary)"
@@ -171,7 +171,7 @@ export default function CoursesCatalogPage() {
                   placeholder="Search titles, technologies, skills..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full rounded-full py-3 pl-11 pr-4 text-xs outline-none border transition-all"
+                  className="w-full rounded-full py-3 pl-11 pr-4 text-xs outline-none border border-[var(--border-primary)] transition-all"
                   style={{
                     backgroundColor: "var(--bg-input)",
                     borderColor: "var(--border-primary)",

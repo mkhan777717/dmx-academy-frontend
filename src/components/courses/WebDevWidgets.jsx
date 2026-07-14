@@ -24,7 +24,7 @@ export function HtmlCssSandbox() {
   `;
 
   return (
-    <div className="rounded-2xl border overflow-hidden flex flex-col shadow-lg" style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
+    <div className="rounded-2xl border border-[var(--border-primary)] overflow-hidden flex flex-col shadow-lg" style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
       {/* Editor Title Bar */}
       <div className="flex items-center gap-1.5 px-4 py-3 border-b" style={{ borderColor: "var(--border-primary)", backgroundColor: "var(--bg-hover)" }}>
         <div className="h-2.5 w-2.5 rounded-full bg-red-400" />
@@ -66,7 +66,7 @@ export function HtmlCssSandbox() {
           srcDoc={srcDoc}
           title="Sandbox Preview Frame"
           sandbox="allow-scripts"
-          className="w-full h-32 rounded-xl border bg-white shadow-inner"
+          className="w-full h-32 rounded-xl border border-[var(--border-primary)] bg-white shadow-inner"
           style={{ borderColor: "var(--border-primary)" }}
         />
       </div>
@@ -88,7 +88,7 @@ export function FlexboxLab() {
   ];
 
   return (
-    <div className="rounded-2xl border p-5 space-y-6 shadow-md" style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
+    <div className="rounded-2xl border border-[var(--border-primary)] p-5 space-y-6 shadow-md" style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
       <div className="flex items-center gap-2">
         <Layout size={18} style={{ color: "var(--text-accent)" }} />
         <h4 className="text-sm font-bold font-display" style={{ color: "var(--text-primary)" }}>Visual Flexbox Controls</h4>
@@ -160,7 +160,7 @@ export function FlexboxLab() {
 
       {/* Render Canvas Workspace */}
       <div 
-        className="rounded-xl border p-4 h-48 flex transition-all duration-300 shadow-inner" 
+        className="rounded-xl border border-[var(--border-primary)] p-4 h-48 flex transition-all duration-300 shadow-inner" 
         style={{
           display: "flex",
           flexDirection: direction,
@@ -218,7 +218,7 @@ export function JsDomDebugger() {
   };
 
   return (
-    <div className="rounded-2xl border p-5 space-y-6 shadow-md" style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
+    <div className="rounded-2xl border border-[var(--border-primary)] p-5 space-y-6 shadow-md" style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
       <div className="flex items-center gap-2">
         <Layers size={18} style={{ color: "var(--text-accent)" }} />
         <h4 className="text-sm font-bold font-display" style={{ color: "var(--text-primary)" }}>JS DOM Mutation Lab</h4>
@@ -227,28 +227,28 @@ export function JsDomDebugger() {
       <div className="flex flex-wrap gap-2">
         <button
           onClick={handleTextChange}
-          className="px-3.5 py-1.5 rounded-lg text-xs font-bold shadow-sm border hover:shadow transition-all"
+          className="px-3.5 py-1.5 rounded-lg text-xs font-bold shadow-sm border border-[var(--border-primary)] hover:shadow transition-all"
           style={{ backgroundColor: "var(--bg-hover)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
         >
           Change Text
         </button>
         <button
           onClick={handleGradientToggle}
-          className="px-3.5 py-1.5 rounded-lg text-xs font-bold shadow-sm border hover:shadow transition-all"
+          className="px-3.5 py-1.5 rounded-lg text-xs font-bold shadow-sm border border-[var(--border-primary)] hover:shadow transition-all"
           style={{ backgroundColor: "var(--bg-hover)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
         >
           Toggle Gradient
         </button>
         <button
           onClick={handleBorderToggle}
-          className="px-3.5 py-1.5 rounded-lg text-xs font-bold shadow-sm border hover:shadow transition-all"
+          className="px-3.5 py-1.5 rounded-lg text-xs font-bold shadow-sm border border-[var(--border-primary)] hover:shadow transition-all"
           style={{ backgroundColor: "var(--bg-hover)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
         >
           Toggle Border Glow
         </button>
         <button
           onClick={handleReset}
-          className="px-3.5 py-1.5 rounded-lg text-xs font-bold shadow-sm border hover:shadow transition-all ml-auto flex items-center gap-1 bg-red-500/10 border-red-500/20 text-red-500 hover:bg-red-500/20"
+          className="px-3.5 py-1.5 rounded-lg text-xs font-bold shadow-sm border border-[var(--border-primary)] hover:shadow transition-all ml-auto flex items-center gap-1 bg-red-500/10 border-red-500/20 text-red-500 hover:bg-red-500/20"
         >
           <RotateCcw size={10} /> Reset
         </button>
@@ -256,7 +256,7 @@ export function JsDomDebugger() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Mock DOM representation */}
-        <div className="rounded-xl border p-6 flex flex-col items-center justify-center min-h-[120px] relative overflow-hidden transition-all duration-300"
+        <div className="rounded-xl border border-[var(--border-primary)] p-6 flex flex-col items-center justify-center min-h-[120px] relative overflow-hidden transition-all duration-300"
           style={{
             backgroundColor: "var(--bg-code)",
             borderColor: hasBorder ? "var(--accent-primary)" : "var(--border-primary)",
@@ -280,7 +280,7 @@ export function JsDomDebugger() {
         </div>
 
         {/* Code Visualizer */}
-        <div className="rounded-xl border p-4 min-h-[120px]" style={{ backgroundColor: "var(--bg-input)", borderColor: "var(--border-primary)" }}>
+        <div className="rounded-xl border border-[var(--border-primary)] p-4 min-h-[120px]" style={{ backgroundColor: "var(--bg-input)", borderColor: "var(--border-primary)" }}>
           <div className="text-[8px] uppercase tracking-wider font-mono mb-2" style={{ color: "var(--text-muted)" }}>Dynamic code output</div>
           <pre className="font-mono text-xs leading-relaxed overflow-x-auto" style={{ color: "var(--text-accent)" }}>{code}</pre>
         </div>
@@ -702,7 +702,7 @@ btn.addEventListener("click", () => {
           <select
             value={activeTemplate}
             onChange={(e) => handleTemplateChange(e.target.value)}
-            className="p-2 rounded-lg text-xs outline-none cursor-pointer border font-semibold"
+            className="p-2 rounded-lg text-xs outline-none cursor-pointer border border-[var(--border-primary)] font-semibold"
             style={{ backgroundColor: "var(--bg-hover)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
           >
             {Object.keys(templates).map((key) => (
@@ -715,7 +715,7 @@ btn.addEventListener("click", () => {
       {/* 2. Workspace: Editor (Left) & Canvas Output + Console (Right) */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Left Side: Editor */}
-        <div className="rounded-2xl border overflow-hidden flex flex-col shadow-sm" style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
+        <div className="rounded-2xl border border-[var(--border-primary)] overflow-hidden flex flex-col shadow-sm" style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
           {/* Tab buttons switcher */}
           <div className="flex items-center justify-between px-4 py-2 border-b" style={{ borderColor: "var(--border-primary)", backgroundColor: "var(--bg-hover)" }}>
             <div className="flex gap-1.5 text-[11px] font-bold font-mono">
@@ -754,14 +754,14 @@ btn.addEventListener("click", () => {
             <div className="flex items-center gap-2">
               <button
                 onClick={handleReset}
-                className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[10px] font-bold border transition-colors bg-amber-500/10 border-amber-500/20 text-amber-500 hover:bg-amber-500/20"
+                className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[10px] font-bold border border-[var(--border-primary)] transition-colors bg-amber-500/10 border-amber-500/20 text-amber-500 hover:bg-amber-500/20"
                 title="Reset code to default template parameters"
               >
                 <RotateCcw size={10} /> Reset
               </button>
               <button
                 onClick={handleRun}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-bold text-white shadow-sm transition-all"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-bold text-[var(--text-on-accent)] shadow-sm transition-all"
                 style={{ background: "var(--accent-gradient)" }}
               >
                 <Play size={10} fill="white" /> Run Code
@@ -807,7 +807,7 @@ btn.addEventListener("click", () => {
         {/* Right Side: Preview Frame & Mock Console */}
         <div className="space-y-6 flex flex-col justify-between">
           {/* Canvas Live Output Container */}
-          <div className="rounded-2xl border overflow-hidden flex flex-col shadow-sm flex-grow" style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
+          <div className="rounded-2xl border border-[var(--border-primary)] overflow-hidden flex flex-col shadow-sm flex-grow" style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
             <div className="flex items-center px-4 py-3 border-b" style={{ borderColor: "var(--border-primary)", backgroundColor: "var(--bg-hover)" }}>
               <span className="text-[10px] font-bold uppercase tracking-wider flex items-center gap-1" style={{ color: "var(--text-muted)" }}>
                 <Play size={10} style={{ color: "var(--text-accent)" }} /> Live Sandbox Canvas Preview
@@ -819,21 +819,21 @@ btn.addEventListener("click", () => {
                 key={runKey}
                 title="Interactive Workspace Sandbox"
                 sandbox="allow-scripts allow-modals"
-                className="w-full h-full min-h-[220px] rounded-xl border bg-white shadow-inner"
+                className="w-full h-full min-h-[220px] rounded-xl border border-[var(--border-primary)] bg-white shadow-inner"
                 style={{ borderColor: "var(--border-primary)" }}
               />
             </div>
           </div>
 
           {/* Console Logger Terminal Output */}
-          <div className="rounded-2xl border overflow-hidden flex flex-col shadow-sm" style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
+          <div className="rounded-2xl border border-[var(--border-primary)] overflow-hidden flex flex-col shadow-sm" style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
             <div className="flex items-center justify-between px-4 py-2 border-b" style={{ borderColor: "var(--border-primary)", backgroundColor: "var(--bg-hover)" }}>
               <span className="text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5 font-mono" style={{ color: "var(--text-muted)" }}>
                 <Terminal size={12} style={{ color: "var(--text-accent)" }} /> Execution Console
               </span>
               <button
                 onClick={() => setLogs([])}
-                className="flex items-center gap-1 px-2 py-1 rounded text-[9px] font-bold transition-all border hover:bg-slate-200/10"
+                className="flex items-center gap-1 px-2 py-1 rounded text-[9px] font-bold transition-all border border-[var(--border-primary)] hover:bg-slate-200/10"
                 style={{ borderColor: "var(--border-primary)", color: "var(--text-muted)" }}
                 title="Clear console output logs"
               >
@@ -849,7 +849,7 @@ btn.addEventListener("click", () => {
               ) : (
                 <div className="space-y-1">
                   {logs.map((log, lIdx) => (
-                    <div key={lIdx} className="border-b pb-0.5 border-slate-700/10" style={{ color: log.startsWith("❌") ? "rgb(239, 68, 68)" : log.startsWith("⚠️") ? "rgb(245, 158, 11)" : "var(--text-accent)" }}>
+                    <div key={lIdx} className="border-b pb-0.5 border-[var(--border-primary)]/10" style={{ color: log.startsWith("❌") ? "rgb(239, 68, 68)" : log.startsWith("⚠️") ? "rgb(245, 158, 11)" : "var(--text-accent)" }}>
                       {log}
                     </div>
                   ))}

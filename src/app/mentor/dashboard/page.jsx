@@ -103,7 +103,7 @@ export default function MentorDashboard() {
             <Award size={14} /> Manage Contests
           </button>
           <button onClick={() => router.push("/courses")}
-            className="px-5 py-2.5 rounded-xl font-semibold text-xs text-white flex items-center justify-center gap-2 transition-all hover:-translate-y-0.5 shadow-lg"
+            className="px-5 py-2.5 rounded-xl font-semibold text-xs text-[var(--text-on-accent)] flex items-center justify-center gap-2 transition-all hover:-translate-y-0.5 shadow-lg"
             style={{ background: "var(--accent-primary)" }}>
             Curriculum <ArrowUpRight size={14} />
           </button>
@@ -117,7 +117,7 @@ export default function MentorDashboard() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="fixed top-8 left-1/2 -translate-x-1/2 z-[100] px-4 py-3 rounded-xl border shadow-2xl text-xs font-semibold flex items-center gap-3"
+            className="fixed top-8 left-1/2 -translate-x-1/2 z-[100] px-4 py-3 rounded-xl border border-[var(--border-primary)] shadow-2xl text-xs font-semibold flex items-center gap-3"
             style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
           >
             <CheckCircle size={14} style={{ color: "var(--accent-primary)" }} />
@@ -127,7 +127,7 @@ export default function MentorDashboard() {
       </AnimatePresence>
 
       {/* ── KEY METRICS (Asymmetrical Rail) ───────────────────── */}
-      <section className="grid grid-cols-2 md:grid-cols-4 gap-px border bg-slate-200/20 dark:bg-slate-800/50 rounded-2xl overflow-hidden" style={{ borderColor: "var(--border-primary)" }}>
+      <section className="grid grid-cols-2 md:grid-cols-4 gap-px border border-[var(--border-primary)] bg-slate-200/20 dark:bg-[var(--bg-hover)]/50 rounded-2xl overflow-hidden" style={{ borderColor: "var(--border-primary)" }}>
         {stats.map((stat, idx) => {
           const Icon = stat.icon;
           return (
@@ -161,7 +161,7 @@ export default function MentorDashboard() {
             </div>
           </div>
 
-          <div className="border rounded-2xl overflow-hidden" style={{ borderColor: "var(--border-primary)", backgroundColor: "var(--bg-primary)" }}>
+          <div className="border border-[var(--border-primary)] rounded-2xl overflow-hidden" style={{ borderColor: "var(--border-primary)", backgroundColor: "var(--bg-primary)" }}>
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm whitespace-nowrap">
                 <thead>
@@ -202,7 +202,7 @@ export default function MentorDashboard() {
                         {sub.status !== "Reviewed" ? (
                           <button
                             onClick={() => setSelectedReview(sub)}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all hover:bg-[var(--bg-secondary)]"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border border-[var(--border-primary)] transition-all hover:bg-[var(--bg-secondary)]"
                             style={{ borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
                           >
                             <FileCode size={12} /> Review Code
@@ -227,19 +227,19 @@ export default function MentorDashboard() {
                 exit={{ opacity: 0, height: 0, marginTop: 0 }}
                 className="overflow-hidden"
               >
-                <div className="p-6 md:p-8 rounded-2xl border bg-[var(--bg-secondary)] space-y-6" style={{ borderColor: "var(--border-primary)" }}>
+                <div className="p-6 md:p-8 rounded-2xl border border-[var(--border-primary)] bg-[var(--bg-secondary)] space-y-6" style={{ borderColor: "var(--border-primary)" }}>
                   <div className="flex items-start justify-between pb-4 border-b" style={{ borderColor: "var(--border-primary)" }}>
                     <div>
                       <h3 className="text-xl font-serif" style={{ color: "var(--text-primary)" }}>Review Workspace</h3>
                       <p className="text-xs mt-1" style={{ color: "var(--text-muted)" }}>Evaluating {selectedReview.user}'s submission for {selectedReview.problem}</p>
                     </div>
-                    <button onClick={() => setSelectedReview(null)} className="p-1.5 rounded-full border bg-[var(--bg-primary)] transition-transform hover:rotate-90" style={{ borderColor: "var(--border-primary)", color: "var(--text-muted)" }}>
+                    <button onClick={() => setSelectedReview(null)} className="p-1.5 rounded-full border border-[var(--border-primary)] bg-[var(--bg-primary)] transition-transform hover:rotate-90" style={{ borderColor: "var(--border-primary)", color: "var(--text-muted)" }}>
                       <X size={14} />
                     </button>
                   </div>
 
                   <div className="rounded-xl overflow-hidden border" style={{ borderColor: "var(--border-primary)" }}>
-                    <div className="px-4 py-2 border-b flex items-center justify-between bg-slate-900/50" style={{ borderColor: "var(--border-primary)" }}>
+                    <div className="px-4 py-2 border-b flex items-center justify-between bg-[var(--bg-card)]/50" style={{ borderColor: "var(--border-primary)" }}>
                       <span className="text-[10px] font-mono text-slate-400">{selectedReview.lang}</span>
                     </div>
                     <div className="p-4 bg-[#0d1117] overflow-x-auto">
@@ -269,7 +269,7 @@ export default function MentorDashboard() {
                         placeholder="Leave constructive feedback regarding logic and style..."
                         value={reviewComment}
                         onChange={(e) => setReviewComment(e.target.value)}
-                        className="w-full rounded-xl p-3 text-sm border bg-[var(--bg-primary)] outline-none resize-none transition-colors focus:border-[var(--text-primary)]"
+                        className="w-full rounded-xl p-3 text-sm border border-[var(--border-primary)] bg-[var(--bg-primary)] outline-none resize-none transition-colors focus:border-[var(--text-primary)]"
                         style={{ borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
                       />
                     </div>
@@ -277,12 +277,12 @@ export default function MentorDashboard() {
 
                   <div className="flex justify-end gap-3 pt-4">
                     <button onClick={() => setSelectedReview(null)}
-                      className="px-5 py-2.5 rounded-xl text-xs font-semibold border hover:bg-[var(--bg-primary)] transition-colors"
+                      className="px-5 py-2.5 rounded-xl text-xs font-semibold border border-[var(--border-primary)] hover:bg-[var(--bg-primary)] transition-colors"
                       style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}>
                       Discard
                     </button>
                     <button onClick={() => handleSubmitReview(selectedReview.id)}
-                      className="px-6 py-2.5 rounded-xl text-xs font-semibold text-white transition-transform hover:-translate-y-0.5 shadow-md flex items-center gap-2"
+                      className="px-6 py-2.5 rounded-xl text-xs font-semibold text-[var(--text-on-accent)] transition-transform hover:-translate-y-0.5 shadow-md flex items-center gap-2"
                       style={{ background: "var(--accent-primary)" }}>
                       <Send size={12} /> Submit Evaluation
                     </button>
@@ -303,7 +303,7 @@ export default function MentorDashboard() {
             </h2>
             <div className="space-y-4">
               {mentoredTracks.map((cohort) => (
-                <div key={cohort.id} className="p-5 rounded-2xl border transition-all hover:-translate-y-1 hover:shadow-lg"
+                <div key={cohort.id} className="p-5 rounded-2xl border border-[var(--border-primary)] transition-all hover:-translate-y-1 hover:shadow-lg"
                   style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}>
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
@@ -332,7 +332,7 @@ export default function MentorDashboard() {
             <div className="flex items-center justify-between pb-2 border-b" style={{ borderColor: "var(--border-primary)" }}>
               <h2 className="text-xl font-serif" style={{ color: "var(--text-primary)" }}>Office Hours</h2>
               <button onClick={() => setShowAddSlot(!showAddSlot)}
-                className="p-1.5 rounded-lg border hover:bg-[var(--bg-secondary)] transition-colors"
+                className="p-1.5 rounded-lg border border-[var(--border-primary)] hover:bg-[var(--bg-secondary)] transition-colors"
                 style={{ borderColor: "var(--border-primary)", color: "var(--text-primary)" }}>
                 {showAddSlot ? <X size={14} /> : <Plus size={14} />}
               </button>
@@ -345,14 +345,14 @@ export default function MentorDashboard() {
                   initial={{ opacity: 0, height: 0, marginBottom: 0 }}
                   animate={{ opacity: 1, height: "auto", marginBottom: 24 }}
                   exit={{ opacity: 0, height: 0, marginBottom: 0 }}
-                  className="space-y-4 p-5 rounded-2xl border bg-[var(--bg-secondary)] overflow-hidden"
+                  className="space-y-4 p-5 rounded-2xl border border-[var(--border-primary)] bg-[var(--bg-secondary)] overflow-hidden"
                   style={{ borderColor: "var(--border-primary)" }}
                 >
                   <div className="space-y-1.5">
                     <label className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "var(--text-secondary)" }}>Topic / Agenda</label>
                     <input 
                       type="text" placeholder="e.g. Data Structures Q&A" value={newSlotTopic} onChange={(e) => setNewSlotTopic(e.target.value)} required
-                      className="w-full px-3 py-2 text-xs rounded-lg border bg-[var(--bg-primary)] outline-none focus:border-[var(--text-primary)] transition-colors"
+                      className="w-full px-3 py-2 text-xs rounded-lg border border-[var(--border-primary)] bg-[var(--bg-primary)] outline-none focus:border-[var(--text-primary)] transition-colors"
                       style={{ borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
                     />
                   </div>
@@ -360,7 +360,7 @@ export default function MentorDashboard() {
                     <label className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "var(--text-secondary)" }}>Date & Time</label>
                     <input 
                       type="text" placeholder="e.g. Wednesday at 5:00 PM" value={newSlotTime} onChange={(e) => setNewSlotTime(e.target.value)} required
-                      className="w-full px-3 py-2 text-xs rounded-lg border bg-[var(--bg-primary)] outline-none focus:border-[var(--text-primary)] transition-colors"
+                      className="w-full px-3 py-2 text-xs rounded-lg border border-[var(--border-primary)] bg-[var(--bg-primary)] outline-none focus:border-[var(--text-primary)] transition-colors"
                       style={{ borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
                     />
                   </div>
@@ -375,7 +375,7 @@ export default function MentorDashboard() {
 
             <div className="space-y-3">
               {officeHours.map((slot) => (
-                <div key={slot.id} className="p-4 rounded-2xl border bg-[var(--bg-primary)] flex items-start gap-4 transition-colors hover:border-[var(--text-muted)]"
+                <div key={slot.id} className="p-4 rounded-2xl border border-[var(--border-primary)] bg-[var(--bg-primary)] flex items-start gap-4 transition-colors hover:border-[var(--text-muted)]"
                   style={{ borderColor: "var(--border-primary)" }}>
                   <div className="p-2 rounded-xl bg-[var(--bg-secondary)] shrink-0 mt-0.5" style={{ color: "var(--text-secondary)" }}>
                     <Calendar size={16} />
@@ -389,7 +389,7 @@ export default function MentorDashboard() {
                 </div>
               ))}
               {officeHours.length === 0 && (
-                <div className="text-center py-6 border border-dashed rounded-2xl" style={{ borderColor: "var(--border-primary)", color: "var(--text-muted)" }}>
+                <div className="text-center py-6 border border-[var(--border-primary)] border-dashed rounded-2xl" style={{ borderColor: "var(--border-primary)", color: "var(--text-muted)" }}>
                   <p className="text-xs">No upcoming sessions scheduled.</p>
                 </div>
               )}

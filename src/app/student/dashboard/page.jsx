@@ -276,7 +276,7 @@ export default function StudentDashboard() {
             </button>
             <button
               onClick={() => router.push("/contest")}
-              className="px-6 py-3 rounded-xl font-bold text-xs transition-all border cursor-pointer flex items-center gap-2 hover:bg-[var(--bg-hover)]"
+              className="px-6 py-3 rounded-xl font-bold text-xs transition-all border border-[var(--border-primary)] cursor-pointer flex items-center gap-2 hover:bg-[var(--bg-hover)]"
               style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
             >
               <span>Contest Arena</span>
@@ -341,7 +341,7 @@ export default function StudentDashboard() {
       {/* ── Dashboard Widgets: Goal & Recommended ─── */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Daily Goal Tracker */}
-        <div className="p-6 rounded-2xl border flex flex-col justify-between" style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
+        <div className="p-6 rounded-2xl border border-[var(--border-primary)] flex flex-col justify-between" style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
           <div className="space-y-2 mb-8">
             <h2 className="text-[11px] font-bold uppercase tracking-widest" style={{ color: "var(--text-secondary)" }}>
               Daily Study Goal
@@ -362,7 +362,7 @@ export default function StudentDashboard() {
         </div>
 
         {/* Recommended Problem */}
-        <div className="lg:col-span-2 p-8 rounded-2xl border relative overflow-hidden" style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)" }}>
+        <div className="lg:col-span-2 p-8 rounded-2xl border border-[var(--border-primary)] relative overflow-hidden" style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)" }}>
           <div className="absolute inset-0 dot-grid opacity-50 pointer-events-none" />
           
           <div className="relative z-10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
@@ -433,13 +433,13 @@ export default function StudentDashboard() {
             <div className="space-y-4">
               {loading ? (
                 [0, 1, 2].map(i => (
-                  <div key={i} className="p-5 rounded-xl border animate-pulse" style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
+                  <div key={i} className="p-5 rounded-xl border border-[var(--border-primary)] animate-pulse" style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
                     <div className="h-3 w-40 rounded bg-[var(--border-primary)] mb-3" />
                     <div className="h-2 w-24 rounded bg-[var(--border-primary)]" />
                   </div>
                 ))
               ) : [...activeContests, ...upcomingContests].length === 0 ? (
-                <div className="p-8 rounded-xl border text-center space-y-3" style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
+                <div className="p-8 rounded-xl border border-[var(--border-primary)] text-center space-y-3" style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
                   <Trophy size={24} className="mx-auto opacity-20" style={{ color: "var(--text-muted)" }} />
                   <p className="text-xs font-bold uppercase tracking-widest" style={{ color: "var(--text-secondary)" }}>No contests scheduled yet</p>
                 </div>
@@ -455,7 +455,7 @@ export default function StudentDashboard() {
                       key={contest.id}
                       initial={{ opacity: 0, x: -10 }}
                       animate={{ opacity: 1, x: 0 }}
-                      className="p-5 rounded-xl border flex items-center justify-between gap-4 cursor-pointer hover:bg-[var(--bg-hover)] transition-all group"
+                      className="p-5 rounded-xl border border-[var(--border-primary)] flex items-center justify-between gap-4 cursor-pointer hover:bg-[var(--bg-hover)] transition-all group"
                       style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}
                       onClick={() => handleEnterContest(contest.id)}
                     >
@@ -475,7 +475,7 @@ export default function StudentDashboard() {
                       </div>
                       <div className="shrink-0">
                         {isLive ? (
-                          <span className="px-4 py-2 text-[10px] font-bold uppercase tracking-widest rounded-lg border transition-colors group-hover:bg-[var(--text-primary)] group-hover:text-[var(--bg-primary)]" style={{ borderColor: "var(--border-primary)", color: "var(--text-primary)" }}>
+                          <span className="px-4 py-2 text-[10px] font-bold uppercase tracking-widest rounded-lg border border-[var(--border-primary)] transition-colors group-hover:bg-[var(--text-primary)] group-hover:text-[var(--bg-primary)]" style={{ borderColor: "var(--border-primary)", color: "var(--text-primary)" }}>
                             Enter
                           </span>
                         ) : (
@@ -491,13 +491,13 @@ export default function StudentDashboard() {
             <div className="space-y-4">
               {loading ? (
                 [0, 1].map(i => (
-                  <div key={i} className="p-5 rounded-xl border animate-pulse" style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
+                  <div key={i} className="p-5 rounded-xl border border-[var(--border-primary)] animate-pulse" style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
                     <div className="h-3 w-40 rounded bg-[var(--border-primary)] mb-3" />
                     <div className="h-2 w-24 rounded bg-[var(--border-primary)]" />
                   </div>
                 ))
               ) : contests.filter(c => c.userParticipation).length === 0 ? (
-                <div className="p-8 rounded-xl border text-center space-y-3" style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
+                <div className="p-8 rounded-xl border border-[var(--border-primary)] text-center space-y-3" style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
                   <Trophy size={24} className="mx-auto opacity-20" style={{ color: "var(--text-muted)" }} />
                   <p className="text-xs font-bold uppercase tracking-widest" style={{ color: "var(--text-secondary)" }}>No contest attempts recorded</p>
                 </div>
@@ -511,7 +511,7 @@ export default function StudentDashboard() {
                       key={contest.id}
                       initial={{ opacity: 0, x: -10 }}
                       animate={{ opacity: 1, x: 0 }}
-                      className="p-5 rounded-xl border flex items-center justify-between gap-4 cursor-pointer hover:bg-[var(--bg-hover)] transition-all group"
+                      className="p-5 rounded-xl border border-[var(--border-primary)] flex items-center justify-between gap-4 cursor-pointer hover:bg-[var(--bg-hover)] transition-all group"
                       style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}
                       onClick={() => handleEnterContest(contest.id)}
                     >
@@ -548,7 +548,7 @@ export default function StudentDashboard() {
             <Activity size={14} style={{ color: "var(--text-muted)" }} />
           </div>
 
-          <div className="border rounded-xl" style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
+          <div className="border border-[var(--border-primary)] rounded-xl" style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
             {loading ? (
               <div className="p-6 flex items-center justify-center gap-2" style={{ color: "var(--text-muted)" }}>
                 <RefreshCw size={14} className="animate-spin" />
@@ -569,7 +569,7 @@ export default function StudentDashboard() {
                   return (
                     <div key={sub.id} className="py-3 first:pt-1 last:pb-1 space-y-1.5">
                       <div className="flex justify-between items-center">
-                        <span className="text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 border rounded-sm" style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)", backgroundColor: "var(--bg-hover)" }}>
+                        <span className="text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 border border-[var(--border-primary)] rounded-sm" style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)", backgroundColor: "var(--bg-hover)" }}>
                           {sub.language}
                         </span>
                         <span className="text-[9px]" style={{ color: "var(--text-muted)" }}>

@@ -45,7 +45,7 @@ function LiveNowBanner({ session }) {
   return (
     <Link
       href="/live"
-      className="group block w-full rounded-lg border overflow-hidden transition-all hover:scale-[1.02] hover:shadow-2xl"
+      className="group block w-full rounded-lg border border-[var(--border-primary)] overflow-hidden transition-all hover:scale-[1.02] hover:shadow-2xl"
       style={{
         background: "linear-gradient(135deg, rgba(239,68,68,0.08), rgba(239,68,68,0.03))",
         borderColor: "rgba(239,68,68,0.25)",
@@ -98,18 +98,18 @@ function LiveNowBanner({ session }) {
 function PastSessionCard({ session, onWatchRecording }) {
   return (
     <div
-      className="group flex flex-col rounded-lg border overflow-hidden transition-all hover:shadow-md"
+      className="group flex flex-col rounded-lg border border-[var(--border-primary)] overflow-hidden transition-all hover:shadow-md"
       style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}
     >
       {/* Thumbnail area */}
-      <div className="relative aspect-video w-full overflow-hidden bg-slate-900/30 flex items-center justify-center border-b" style={{ borderColor: "var(--border-primary)" }}>
+      <div className="relative aspect-video w-full overflow-hidden bg-[var(--bg-card)]/30 flex items-center justify-center border-b" style={{ borderColor: "var(--border-primary)" }}>
         {session.thumbnailUrl ? (
           <img src={session.thumbnailUrl} alt={session.title} className="w-full h-full object-cover opacity-80" />
         ) : (
           <CheckCircle2 size={24} style={{ color: "var(--text-accent)" }} />
         )}
         {session.host && (
-          <div className="absolute bottom-2.5 left-2.5 text-[8px] font-bold px-1.5 py-0.5 rounded border bg-slate-950/60 backdrop-blur-sm text-slate-300"
+          <div className="absolute bottom-2.5 left-2.5 text-[8px] font-bold px-1.5 py-0.5 rounded border border-[var(--border-primary)] bg-slate-950/60 backdrop-blur-sm text-slate-300"
             style={{ borderColor: "var(--border-primary)" }}
           >
             {session.host.username}
@@ -152,17 +152,17 @@ function PastSessionCard({ session, onWatchRecording }) {
                 const url = session.recordingUrl.startsWith('/') ? `${API_BASE}${session.recordingUrl}` : session.recordingUrl;
                 onWatchRecording(url);
               }}
-              className="flex items-center justify-center gap-1.5 w-full py-2 rounded-lg bg-[var(--accent-primary)] hover:bg-[var(--accent-secondary)] text-[var(--text-on-accent)] text-[10px] font-extrabold uppercase tracking-wider transition-colors shadow-md shadow-[var(--accent-glow)] text-center cursor-pointer border border-transparent"
+              className="flex items-center justify-center gap-1.5 w-full py-2 rounded-lg bg-[var(--accent-primary)] hover:bg-[var(--accent-secondary)] text-[var(--text-on-accent)] text-[10px] font-extrabold uppercase tracking-wider transition-colors shadow-md shadow-[var(--accent-glow)] text-center cursor-pointer border border-[var(--border-primary)] border-transparent"
             >
               <Play size={10} />
               <span>Watch Recording</span>
             </button>
           ) : (session.egressSegments || (session.endedAt && (new Date() - new Date(session.endedAt)) < 180000)) ? (
-            <div className="w-full text-center text-[9px] font-extrabold text-neutral-500 bg-neutral-500/10 py-2 rounded-lg border border-neutral-500/20 animate-pulse">
+            <div className="w-full text-center text-[9px] font-extrabold text-neutral-500 bg-neutral-500/10 py-2 rounded-lg border border-[var(--border-primary)] border-neutral-500/20 animate-pulse">
               Processing Recording...
             </div>
           ) : (
-            <div className="w-full text-center text-[9px] font-bold text-[var(--text-muted)] bg-[var(--bg-secondary)] py-2 rounded-lg border border-dashed" style={{ borderColor: "var(--border-primary)" }}>
+            <div className="w-full text-center text-[9px] font-bold text-[var(--text-muted)] bg-[var(--bg-secondary)] py-2 rounded-lg border border-[var(--border-primary)] border-dashed" style={{ borderColor: "var(--border-primary)" }}>
               No recordings for this session
             </div>
           )}
@@ -261,7 +261,7 @@ export default function LiveBanner() {
       </div>
 
       {noSessions ? (
-        <div className="w-full rounded-lg border p-8 text-center space-y-4 max-w-md mx-auto"
+        <div className="w-full rounded-lg border border-[var(--border-primary)] p-8 text-center space-y-4 max-w-md mx-auto"
           style={{ 
             backgroundColor: "var(--bg-card)", 
             borderColor: "var(--border-primary)",
@@ -325,15 +325,15 @@ export default function LiveBanner() {
           onClick={() => setSelectedVideoUrl(null)}
         >
           <div 
-            className="relative w-full max-w-4xl rounded-2xl border border-slate-800 bg-slate-900/95 shadow-2xl overflow-hidden"
+            className="relative w-full max-w-4xl rounded-2xl border border-[var(--border-primary)] border-[var(--border-primary)] bg-[var(--bg-card)]/95 shadow-2xl overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
-            <div className="flex items-center justify-between px-4 py-3 border-b border-slate-800 bg-slate-900/50">
+            <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border-primary)] bg-[var(--bg-card)]/50">
               <span className="text-xs font-bold text-slate-300">Session Playback</span>
               <button 
                 onClick={() => setSelectedVideoUrl(null)}
-                className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer text-xs"
+                className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-[var(--bg-hover)] transition-colors cursor-pointer text-xs"
               >
                 ✕
               </button>
@@ -354,7 +354,7 @@ export default function LiveBanner() {
               {/* Dynamic Watermark Overlay */}
               {user && (
                 <div 
-                  className="absolute z-10 pointer-events-none select-none text-slate-100 font-mono text-[9px] sm:text-xs bg-slate-950/20 backdrop-blur-[1px] px-2.5 py-1.5 rounded-lg border border-white/5 opacity-[0.16] shadow-sm"
+                  className="absolute z-10 pointer-events-none select-none text-slate-100 font-mono text-[9px] sm:text-xs bg-slate-950/20 backdrop-blur-[1px] px-2.5 py-1.5 rounded-lg border border-[var(--border-primary)] border-white/5 opacity-[0.16] shadow-sm"
                   style={{
                     top: watermarkPos.top,
                     left: watermarkPos.left,

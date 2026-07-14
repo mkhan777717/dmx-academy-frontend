@@ -76,7 +76,7 @@ export default function AdminLogin() {
           className="text-center mb-8 space-y-2"
         >
           <div 
-            className="inline-flex p-3 rounded-2xl border mb-2 shadow-sm"
+            className="inline-flex p-3 rounded-2xl border border-[var(--border-primary)] mb-2 shadow-sm"
             style={{
               backgroundColor: "var(--bg-badge)",
               borderColor: "var(--border-accent)",
@@ -86,10 +86,10 @@ export default function AdminLogin() {
             <ShieldAlert size={28} className="animate-pulse" />
           </div>
           <h1 className="text-3xl font-black font-display tracking-tight text-gradient">
-            DMX Control Center
+            Eduvantix Control Center
           </h1>
           <p className="text-xs font-semibold" style={{ color: "var(--text-secondary)" }}>
-            DMX Academy Contest & Problems Manager
+            Eduvantix Contest & Problems Manager
           </p>
         </motion.div>
 
@@ -114,7 +114,7 @@ export default function AdminLogin() {
               <motion.div 
                 initial={{ opacity: 0, y: -5 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="flex items-center space-x-2 p-3 rounded-2xl border text-xs bg-rose-500/10 border-rose-500/20 text-rose-500"
+                className="flex items-center space-x-2 p-3 rounded-2xl border border-[var(--border-primary)] text-xs bg-rose-500/10 border-rose-500/20 text-rose-500"
               >
                 <span>{error}</span>
               </motion.div>
@@ -133,7 +133,7 @@ export default function AdminLogin() {
                   placeholder="name@synapse.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full rounded-2xl py-3 pl-11 pr-4 text-xs outline-none border transition-all"
+                  className="w-full rounded-2xl py-3 pl-11 pr-4 text-xs outline-none border border-[var(--border-primary)] transition-all"
                   style={{
                     backgroundColor: "var(--bg-input)",
                     borderColor: "var(--border-primary)",
@@ -159,7 +159,7 @@ export default function AdminLogin() {
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full rounded-2xl py-3 pl-11 pr-11 text-xs outline-none border transition-all"
+                  className="w-full rounded-2xl py-3 pl-11 pr-11 text-xs outline-none border border-[var(--border-primary)] transition-all"
                   style={{
                     backgroundColor: "var(--bg-input)",
                     borderColor: "var(--border-primary)",
@@ -179,7 +179,7 @@ export default function AdminLogin() {
               id="admin-login-btn"
               type="submit"
               disabled={loading}
-              className="w-full py-3 rounded-2xl font-bold text-xs text-white shadow-md transition-all cursor-pointer flex items-center justify-center space-x-2 group mt-2"
+              className="w-full py-3 rounded-2xl font-bold text-xs text-[var(--text-on-accent)] shadow-md transition-all cursor-pointer flex items-center justify-center space-x-2 group mt-2"
               style={{ background: "var(--accent-gradient)" }}
             >
               <span>{loading ? "Verifying..." : "Sign In to Control Room"}</span>
@@ -194,7 +194,7 @@ export default function AdminLogin() {
             </span>
             <button
               onClick={handleQuickFill}
-              className="w-full py-2.5 rounded-xl border text-[11px] font-bold transition-all cursor-pointer"
+              className="w-full py-2.5 rounded-xl border border-[var(--border-primary)] text-[11px] font-bold transition-all cursor-pointer"
               style={{
                 backgroundColor: "var(--bg-primary)",
                 borderColor: "var(--border-primary)",
@@ -213,7 +213,7 @@ export default function AdminLogin() {
             className="text-xs transition-colors hover:underline"
             style={{ color: "var(--text-secondary)" }}
           >
-            ← Back to DMX Lobby
+            ← Back to Eduvantix Lobby
           </button>
         </div>
       </div>

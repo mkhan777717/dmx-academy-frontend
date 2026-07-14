@@ -123,7 +123,7 @@ export default function ContestParticipantsPage() {
 
         <button
           onClick={fetchData}
-          className="flex items-center space-x-2 px-4 py-2 rounded-xl border text-xs font-bold transition-all cursor-pointer hover:scale-102"
+          className="flex items-center space-x-2 px-4 py-2 rounded-xl border border-[var(--border-primary)] text-xs font-bold transition-all cursor-pointer hover:scale-102"
           style={{
             backgroundColor: "var(--bg-card)",
             borderColor: "var(--border-primary)",
@@ -174,7 +174,7 @@ export default function ContestParticipantsPage() {
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="rounded-3xl border overflow-hidden shadow-sm"
+        className="rounded-3xl border border-[var(--border-primary)] overflow-hidden shadow-sm"
         style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-card)" }}
       >
         {/* Table Header */}
@@ -247,7 +247,7 @@ export default function ContestParticipantsPage() {
                       {p.user.email}
                     </td>
                     <td className="px-6 py-4">
-                      <span className={`text-[10px] font-extrabold uppercase px-2 py-0.5 rounded border ${
+                      <span className={`text-[10px] font-extrabold uppercase px-2 py-0.5 rounded border border-[var(--border-primary)] ${
                         p.user.role === "ADMIN" ? "text-rose-500 bg-rose-500/10 border-rose-500/20" :
                         p.user.role === "MENTOR" ? "text-slate-500 bg-slate-500/10 border-slate-500/20" :
                         "text-neutral-500 bg-neutral-500/10 border-neutral-500/20"

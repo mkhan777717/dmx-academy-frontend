@@ -100,7 +100,7 @@ export default function VivaHistoryPage() {
         </div>
         <Link
           href="/student/viva"
-          className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-2xl font-bold text-sm text-white shadow-md transition-all hover:scale-105"
+          className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-2xl font-bold text-sm text-[var(--text-on-accent)] shadow-md transition-all hover:scale-105"
           style={{ background: "var(--accent-gradient)" }}
         >
           <Sparkles size={15} />
@@ -116,7 +116,7 @@ export default function VivaHistoryPage() {
             { label: "Average Score", value: `${avgScore}%`, icon: BarChart2, color: "violet" },
             { label: "Best Score", value: `${bestScore}%`, icon: Trophy, color: "amber" },
           ].map(({ label, value, icon: Icon, color }) => (
-            <div key={label} className="p-5 rounded-3xl border flex items-center space-x-4"
+            <div key={label} className="p-5 rounded-3xl border border-[var(--border-primary)] flex items-center space-x-4"
                  style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-card)" }}>
               <div className={`p-3 rounded-2xl bg-${color}-500/10 text-${color}-500`}>
                 <Icon size={20} />
@@ -132,7 +132,7 @@ export default function VivaHistoryPage() {
 
       {/* Error */}
       {error && (
-        <div className="p-4 rounded-2xl border bg-rose-500/10 border-rose-500/20 flex items-center space-x-3">
+        <div className="p-4 rounded-2xl border border-[var(--border-primary)] bg-rose-500/10 border-rose-500/20 flex items-center space-x-3">
           <AlertCircle size={18} className="text-rose-500 shrink-0" />
           <p className="text-sm font-semibold text-rose-500">{error}</p>
         </div>
@@ -140,7 +140,7 @@ export default function VivaHistoryPage() {
 
       {/* Sessions List */}
       {sessions.length === 0 && !error ? (
-        <div className="p-12 rounded-3xl border border-dashed text-center space-y-4"
+        <div className="p-12 rounded-3xl border border-[var(--border-primary)] border-dashed text-center space-y-4"
              style={{ borderColor: "var(--border-primary)" }}>
           <div className="w-16 h-16 rounded-2xl mx-auto flex items-center justify-center"
                style={{ backgroundColor: "var(--bg-badge)", color: "var(--text-accent)" }}>
@@ -154,7 +154,7 @@ export default function VivaHistoryPage() {
           </div>
           <Link
             href="/student/viva"
-            className="inline-flex items-center space-x-2 px-6 py-2.5 rounded-full font-bold text-sm text-white"
+            className="inline-flex items-center space-x-2 px-6 py-2.5 rounded-full font-bold text-sm text-[var(--text-on-accent)]"
             style={{ background: "var(--accent-gradient)" }}
           >
             <Sparkles size={14} />
@@ -180,7 +180,7 @@ export default function VivaHistoryPage() {
                 <Link
                   key={session.id}
                   href={`/student/viva/result/${session.id}`}
-                  className="group flex items-center justify-between p-5 rounded-3xl border transition-all hover:shadow-md hover:scale-[1.01] cursor-pointer"
+                  className="group flex items-center justify-between p-5 rounded-3xl border border-[var(--border-primary)] transition-all hover:shadow-md hover:scale-[1.01] cursor-pointer"
                   style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-card)" }}
                 >
                   {/* Left: Score + Info */}

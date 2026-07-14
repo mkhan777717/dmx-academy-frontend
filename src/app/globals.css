@@ -12,35 +12,35 @@
   /* ---- LIGHT THEME (default) ---- */
   :root,
   html.theme-light {
-    --bg-primary:       #f8f7f4;
+    --bg-primary:       #f8fafc;
     --bg-secondary:     #ffffff;
     --bg-card:          #ffffff;
     --bg-sidebar:       #ffffff;
-    --bg-input:         #f1f0ed;
-    --bg-hover:         #efefed;
-    --bg-badge:         #f0effe;
-    --bg-code:          #1a1a1a;
-    --bg-surface:       #fafaf8;
+    --bg-input:         #f1f5f9;
+    --bg-hover:         #f1f5f9;
+    --bg-badge:         #f1f5f9;
+    --bg-code:          #f8fafc;
+    --bg-surface:       #ffffff;
 
-    --text-primary:     #111110;
-    --text-secondary:   #3c3c3a;
-    --text-muted:       #8a8a85;
-    --text-accent:      #111110;
-    --text-accent2:     #3c3c3a;
+    --text-primary:     #0f172a;
+    --text-secondary:   #475569;
+    --text-muted:       #64748b;
+    --text-accent:      #059669;
+    --text-accent2:     #047857;
 
-    --border-primary:   #e5e4e0;
-    --border-accent:    #111110;
-    --border-card:      #e8e7e3;
-    --border-subtle:    #f0eeea;
+    --border-primary:   #e2e8f0;
+    --border-accent:    #059669;
+    --border-card:      #e2e8f0;
+    --border-subtle:    #f1f5f9;
 
-    --accent-primary:   #111110;
-    --accent-secondary: #3c3c3a;
-    --accent-gradient:  #111110;
-    --accent-glow:      rgba(17, 17, 16, 0.08);
+    --accent-primary:   #059669;
+    --accent-secondary: #047857;
+    --accent-gradient:  linear-gradient(135deg, #059669 0%, #047857 100%);
+    --accent-glow:      rgba(5, 150, 105, 0.15);
     --text-on-accent:   #ffffff;
 
-    --glass-bg:         rgba(255, 255, 255, 0.85);
-    --glass-border:     rgba(17, 17, 16, 0.08);
+    --glass-bg:         rgba(255, 255, 255, 0.75);
+    --glass-border:     rgba(0, 0, 0, 0.05);
 
     --scrollbar-track:  #f8f7f4;
     --scrollbar-thumb:  #d4d3cf;
@@ -58,35 +58,35 @@
 
   /* ---- DARK THEME ---- */
   html.theme-dark {
-    --bg-primary:       #0c0c0b;
-    --bg-secondary:     #111110;
-    --bg-card:          #161615;
-    --bg-sidebar:       #0f0f0e;
-    --bg-input:         #1c1c1a;
-    --bg-hover:         #1e1e1c;
-    --bg-badge:         #1a1a2e;
-    --bg-code:          #0a0a09;
-    --bg-surface:       #131312;
+    --bg-primary:       #000000;
+    --bg-secondary:     #0a0a0a;
+    --bg-card:          #0a0a0a;
+    --bg-sidebar:       #000000;
+    --bg-input:         #111111;
+    --bg-hover:         #1a1a1a;
+    --bg-badge:         #111111;
+    --bg-code:          #000000;
+    --bg-surface:       #0a0a0a;
 
-    --text-primary:     #ededec;
-    --text-secondary:   #9b9b97;
-    --text-muted:       #52524e;
-    --text-accent:      #ffffff;
-    --text-accent2:     #ededec;
+    --text-primary:     #f8fafc;
+    --text-secondary:   #94a3b8;
+    --text-muted:       #64748b;
+    --text-accent:      #10b981;
+    --text-accent2:     #34d399;
 
-    --border-primary:   #1f1f1e;
-    --border-accent:    #ffffff;
-    --border-card:      #1a1a19;
-    --border-subtle:    #161615;
+    --border-primary:   #222222;
+    --border-accent:    #10b981;
+    --border-card:      #222222;
+    --border-subtle:    #111111;
 
-    --accent-primary:   #ffffff;
-    --accent-secondary: #ededec;
-    --accent-gradient:  #ffffff;
-    --accent-glow:      rgba(255, 255, 255, 0.12);
-    --text-on-accent:   #0c0c0b;
+    --accent-primary:   #10b981;
+    --accent-secondary: #34d399;
+    --accent-gradient:  #10b981;
+    --accent-glow:      rgba(16, 185, 129, 0.15);
+    --text-on-accent:   #022c22;
 
-    --glass-bg:         rgba(12, 12, 11, 0.88);
-    --glass-border:     rgba(237, 237, 236, 0.06);
+    --glass-bg:         rgba(0, 0, 0, 0.7);
+    --glass-border:     rgba(255, 255, 255, 0.08);
 
     --scrollbar-track:  #0c0c0b;
     --scrollbar-thumb:  #1f1f1e;

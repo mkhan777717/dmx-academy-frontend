@@ -159,7 +159,7 @@ export default function PracticeCatalogPage() {
             className="text-center max-w-3xl mx-auto space-y-4"
           >
             <div 
-              className="inline-flex items-center space-x-1.5 rounded-full border px-4 py-1.5 text-xs font-semibold"
+              className="inline-flex items-center space-x-1.5 rounded-full border border-[var(--border-primary)] px-4 py-1.5 text-xs font-semibold"
               style={{
                 backgroundColor: "var(--bg-badge)",
                 borderColor: "var(--border-accent)",
@@ -178,7 +178,7 @@ export default function PracticeCatalogPage() {
           </motion.div>
 
           {/* Filtering bar */}
-          <div className="flex flex-col lg:flex-row gap-4 justify-between items-center bg-white/5 p-4 rounded-3xl border backdrop-blur-md"
+          <div className="flex flex-col lg:flex-row gap-4 justify-between items-center bg-white/5 p-4 rounded-3xl border border-[var(--border-primary)] backdrop-blur-md"
             style={{
               backgroundColor: "var(--glass-bg)",
               borderColor: "var(--border-primary)"
@@ -242,7 +242,7 @@ export default function PracticeCatalogPage() {
                 placeholder="Search practice exercises..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full rounded-full py-2.5 pl-11 pr-4 text-xs outline-none border transition-all"
+                className="w-full rounded-full py-2.5 pl-11 pr-4 text-xs outline-none border border-[var(--border-primary)] transition-all"
                 style={{
                   backgroundColor: "var(--bg-input)",
                   borderColor: "var(--border-primary)",
@@ -299,7 +299,7 @@ export default function PracticeCatalogPage() {
                         {/* Top status */}
                         <div className="flex justify-between items-center">
                           <div className="flex items-center space-x-2">
-                            <div className="p-2 rounded-xl bg-slate-500/5 border border-slate-500/10">
+                            <div className="p-2 rounded-xl bg-slate-500/5 border border-[var(--border-primary)] border-slate-500/10">
                               {getIcon(prob.category)}
                             </div>
                             <span className="text-[10px] font-extrabold uppercase tracking-wider text-[var(--text-secondary)]">
@@ -309,12 +309,12 @@ export default function PracticeCatalogPage() {
 
                           <div className="flex items-center space-x-2">
                             {isCompleted && (
-                              <span className="inline-flex items-center space-x-1 text-xs text-emerald-500 font-semibold px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+                              <span className="inline-flex items-center space-x-1 text-xs text-emerald-500 font-semibold px-2 py-0.5 rounded-full bg-emerald-500/10 border border-[var(--border-primary)] border-emerald-500/20">
                                 <CheckCircle2 size={12} />
                                 <span>Solved</span>
                               </span>
                             )}
-                            <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md border ${
+                            <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md border border-[var(--border-primary)] ${
                               prob.difficulty === "Easy" ? "text-emerald-500 bg-emerald-500/10 border-emerald-500/20" :
                               prob.difficulty === "Medium" ? "text-amber-500 bg-amber-500/10 border-amber-500/20" :
                               "text-rose-500 bg-rose-500/10 border-rose-500/20"
@@ -339,7 +339,7 @@ export default function PracticeCatalogPage() {
                           {prob.tags.map(tag => (
                             <span 
                               key={tag}
-                              className="text-[9px] font-bold px-2.5 py-1 rounded-full border uppercase tracking-wider"
+                              className="text-[9px] font-bold px-2.5 py-1 rounded-full border border-[var(--border-primary)] uppercase tracking-wider"
                               style={{
                                 color: "var(--text-secondary)",
                                 borderColor: "var(--border-primary)",

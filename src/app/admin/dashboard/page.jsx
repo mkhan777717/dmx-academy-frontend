@@ -261,10 +261,10 @@ export default function AdminDashboard() {
       {/* Welcome Hero Banner */}
       <section className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b pb-6" style={{ borderColor: "var(--border-primary)" }}>
         <div className="space-y-2">
-          <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border mb-3"
+          <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border border-[var(--border-primary)] mb-3"
             style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)", backgroundColor: "var(--bg-secondary)" }}>
             <span className="w-1.5 h-1.5 rounded-full animate-ping" style={{ backgroundColor: "var(--accent-primary)" }} />
-            DMX Core Console
+            Eduvantix Core Console
           </div>
           <h1 className="text-4xl font-serif tracking-tight" style={{ color: "var(--text-primary)" }}>
             Welcome back, {user?.username || "Administrator"}
@@ -276,7 +276,7 @@ export default function AdminDashboard() {
         <div className="flex items-center gap-3 shrink-0">
           <button
             onClick={() => router.push("/admin/contests/new")}
-            className="px-5 py-2.5 rounded-xl font-semibold text-xs text-white shadow-md transition-transform hover:-translate-y-0.5 flex items-center space-x-1.5 cursor-pointer"
+            className="px-5 py-2.5 rounded-xl font-semibold text-xs text-[var(--text-on-accent)] shadow-md transition-transform hover:-translate-y-0.5 flex items-center space-x-1.5 cursor-pointer"
             style={{ background: "var(--accent-primary)" }}
           >
             <Plus size={14} />
@@ -284,7 +284,7 @@ export default function AdminDashboard() {
           </button>
           <button
             onClick={() => router.push("/contest")}
-            className="px-5 py-2.5 rounded-xl font-semibold text-xs border transition-colors hover:bg-[var(--bg-secondary)] flex items-center space-x-1.5 cursor-pointer"
+            className="px-5 py-2.5 rounded-xl font-semibold text-xs border border-[var(--border-primary)] transition-colors hover:bg-[var(--bg-secondary)] flex items-center space-x-1.5 cursor-pointer"
             style={{ borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
           >
             <span>View Contest Arena</span>
@@ -303,7 +303,7 @@ export default function AdminDashboard() {
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: idx * 0.05 }}
-              className="p-6 rounded-2xl border flex flex-col justify-between space-y-4 group transition-colors"
+              className="p-6 rounded-2xl border border-[var(--border-primary)] flex flex-col justify-between space-y-4 group transition-colors"
               style={{
                 backgroundColor: "var(--bg-primary)",
                 borderColor: "var(--border-primary)"
@@ -359,14 +359,14 @@ export default function AdminDashboard() {
               </button>
             </div>
             {activeLeftTab === "submissions" && (
-              <span className="inline-flex items-center space-x-1.5 text-[10px] font-bold uppercase tracking-wider text-emerald-500 border border-emerald-500/20 px-2 py-0.5 rounded bg-emerald-500/10">
+              <span className="inline-flex items-center space-x-1.5 text-[10px] font-bold uppercase tracking-wider text-emerald-500 border border-[var(--border-primary)] border-emerald-500/20 px-2 py-0.5 rounded bg-emerald-500/10">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" />
                 <span>Real-time</span>
               </span>
             )}
           </div>
 
-          <div className="border rounded-2xl overflow-hidden" style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}>
+          <div className="border border-[var(--border-primary)] rounded-2xl overflow-hidden" style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}>
             {activeLeftTab === "submissions" ? (
               <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse text-sm">
@@ -399,7 +399,7 @@ export default function AdminDashboard() {
                           {sub.lang}
                         </td>
                         <td className="px-6 py-4 text-center">
-                          <span className={`text-[9px] font-bold uppercase tracking-wider px-2 py-1 rounded-md border ${
+                          <span className={`text-[9px] font-bold uppercase tracking-wider px-2 py-1 rounded-md border border-[var(--border-primary)] ${
                             sub.verdict === "AC" ? "text-emerald-500 bg-emerald-500/10 border-emerald-500/20" :
                             sub.verdict === "TLE" ? "text-amber-500 bg-amber-500/10 border-amber-500/20" :
                             "text-rose-500 bg-rose-500/10 border-rose-500/20"
@@ -449,7 +449,7 @@ export default function AdminDashboard() {
                             {report.contest?.title || `Contest #${report.contestId}`}
                           </td>
                           <td className="px-6 py-4 text-center">
-                            <span className={`text-[9px] font-bold uppercase tracking-wider px-2 py-1 rounded-md border ${
+                            <span className={`text-[9px] font-bold uppercase tracking-wider px-2 py-1 rounded-md border border-[var(--border-primary)] ${
                               report.completed ? "text-emerald-500 bg-emerald-500/10 border-emerald-500/20" : "text-amber-500 bg-amber-500/10 border-amber-500/20"
                             }`}>
                               {report.completed ? "Completed" : "In Progress"}
@@ -465,7 +465,7 @@ export default function AdminDashboard() {
                             {report.employmentStatus ? (
                               <button
                                 onClick={() => setSelectedSurveyReport(report)}
-                                className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-lg border hover:bg-[var(--bg-secondary)] transition-colors cursor-pointer"
+                                className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-lg border border-[var(--border-primary)] hover:bg-[var(--bg-secondary)] transition-colors cursor-pointer"
                                 style={{ borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
                               >
                                 View
@@ -504,7 +504,7 @@ export default function AdminDashboard() {
               return (
                 <div
                   key={contest.id}
-                  className="p-5 rounded-2xl border space-y-4 transition-colors hover:shadow-lg"
+                  className="p-5 rounded-2xl border border-[var(--border-primary)] space-y-4 transition-colors hover:shadow-lg"
                   style={{
                     backgroundColor: "var(--bg-primary)",
                     borderColor: "var(--border-primary)"
@@ -527,7 +527,7 @@ export default function AdminDashboard() {
                     >
                       {contest.category}
                     </span>
-                    <span className={`text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded border ${
+                    <span className={`text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded border border-[var(--border-primary)] ${
                       isActive ? "text-emerald-500 bg-emerald-500/10 border-emerald-500/20" :
                       isUpcoming ? "text-zinc-500 bg-zinc-500/10 border-zinc-500/20" :
                       "text-[var(--text-muted)] bg-[var(--bg-secondary)] border-transparent"
@@ -546,7 +546,7 @@ export default function AdminDashboard() {
                       {isDbContest && (
                         <button
                           onClick={() => router.push(`/admin/contests/${contest.id}`)}
-                          className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg border text-xs font-semibold transition-colors hover:bg-[var(--bg-secondary)] cursor-pointer"
+                          className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg border border-[var(--border-primary)] text-xs font-semibold transition-colors hover:bg-[var(--bg-secondary)] cursor-pointer"
                           style={{ borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
                         >
                           <Users size={12} />
@@ -560,7 +560,7 @@ export default function AdminDashboard() {
             })}
             
             {allContests.length === 0 && (
-              <div className="text-center py-6 border border-dashed rounded-2xl" style={{ borderColor: "var(--border-primary)", color: "var(--text-muted)" }}>
+              <div className="text-center py-6 border border-[var(--border-primary)] border-dashed rounded-2xl" style={{ borderColor: "var(--border-primary)", color: "var(--text-muted)" }}>
                 <p className="text-xs">No contests available.</p>
               </div>
             )}
@@ -575,7 +575,7 @@ export default function AdminDashboard() {
                 initial={{ scale: 0.95, opacity: 0, y: 20 }}
                 animate={{ scale: 1, opacity: 1, y: 0 }}
                 exit={{ scale: 0.95, opacity: 0, y: 20 }}
-                className="max-w-md w-full rounded-2xl border p-6 md:p-8 space-y-6"
+                className="max-w-md w-full rounded-2xl border border-[var(--border-primary)] p-6 md:p-8 space-y-6"
                 style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}
               >
                 <div className="flex justify-between items-start">
@@ -587,7 +587,7 @@ export default function AdminDashboard() {
                   </div>
                   <button
                     onClick={() => setSelectedSurveyReport(null)}
-                    className="p-2 rounded-full border hover:bg-[var(--bg-secondary)] transition-colors cursor-pointer outline-none focus:outline-none"
+                    className="p-2 rounded-full border border-[var(--border-primary)] hover:bg-[var(--bg-secondary)] transition-colors cursor-pointer outline-none focus:outline-none"
                     style={{ borderColor: "var(--border-primary)", color: "var(--text-muted)" }}
                   >
                     <X size={16} />
@@ -597,28 +597,28 @@ export default function AdminDashboard() {
                 <div className="space-y-4 text-sm" style={{ color: "var(--text-secondary)" }}>
                   <div className="space-y-1.5">
                     <div className="text-[10px] uppercase tracking-wider font-bold" style={{ color: "var(--text-muted)" }}>Employment Status</div>
-                    <div className="p-3.5 rounded-xl border bg-[var(--bg-secondary)] font-medium text-[var(--text-primary)]" style={{ borderColor: "var(--border-primary)" }}>
+                    <div className="p-3.5 rounded-xl border border-[var(--border-primary)] bg-[var(--bg-secondary)] font-medium text-[var(--text-primary)]" style={{ borderColor: "var(--border-primary)" }}>
                       {selectedSurveyReport.employmentStatus}
                     </div>
                   </div>
 
                   <div className="space-y-1.5">
                     <div className="text-[10px] uppercase tracking-wider font-bold" style={{ color: "var(--text-muted)" }}>College / Institution</div>
-                    <div className="p-3.5 rounded-xl border bg-[var(--bg-secondary)] font-medium text-[var(--text-primary)]" style={{ borderColor: "var(--border-primary)" }}>
+                    <div className="p-3.5 rounded-xl border border-[var(--border-primary)] bg-[var(--bg-secondary)] font-medium text-[var(--text-primary)]" style={{ borderColor: "var(--border-primary)" }}>
                       {selectedSurveyReport.collegeName || "(Not specified)"}
                     </div>
                   </div>
 
                   <div className="space-y-1.5">
                     <div className="text-[10px] uppercase tracking-wider font-bold" style={{ color: "var(--text-muted)" }}>Target Companies</div>
-                    <div className="p-3.5 rounded-xl border bg-[var(--bg-secondary)] font-medium text-[var(--text-primary)]" style={{ borderColor: "var(--border-primary)" }}>
+                    <div className="p-3.5 rounded-xl border border-[var(--border-primary)] bg-[var(--bg-secondary)] font-medium text-[var(--text-primary)]" style={{ borderColor: "var(--border-primary)" }}>
                       {selectedSurveyReport.companies || "(Not specified)"}
                     </div>
                   </div>
 
                   <div className="space-y-1.5">
                     <div className="text-[10px] uppercase tracking-wider font-bold" style={{ color: "var(--text-muted)" }}>Current Interview Stage</div>
-                    <div className="p-3.5 rounded-xl border bg-[var(--bg-secondary)] font-medium text-[var(--text-primary)]" style={{ borderColor: "var(--border-primary)" }}>
+                    <div className="p-3.5 rounded-xl border border-[var(--border-primary)] bg-[var(--bg-secondary)] font-medium text-[var(--text-primary)]" style={{ borderColor: "var(--border-primary)" }}>
                       {selectedSurveyReport.interviewStage || "(Not specified)"}
                     </div>
                   </div>

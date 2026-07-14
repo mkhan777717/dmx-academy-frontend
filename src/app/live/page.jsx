@@ -219,7 +219,7 @@ function DraggableVideo({ track, name, isLocal = false, defaultPosition = { x: 2
           }}
           onMouseDown={(e) => e.stopPropagation()}
           onTouchStart={(e) => e.stopPropagation()}
-          className="absolute top-2.5 right-2.5 z-10 p-1 rounded-full bg-black/50 hover:bg-black/80 text-white/70 hover:text-white transition-colors cursor-pointer flex items-center justify-center border border-white/5 shadow-inner"
+          className="absolute top-2.5 right-2.5 z-10 p-1 rounded-full bg-black/50 hover:bg-black/80 text-white/70 hover:text-white transition-colors cursor-pointer flex items-center justify-center border border-[var(--border-primary)] border-white/5 shadow-inner"
           title={`Hide ${name === "Mentor" || name.includes("Mentor") ? "Mentor" : "Student"} Camera`}
         >
           <X size={10} />
@@ -629,7 +629,7 @@ console.log(session)
           </div>
 
           {session?.isRecording && (
-            <div className="flex items-center gap-1 px-2.5 py-1 rounded-full border border-red-500/20 bg-red-500/5 text-red-500 text-[10px] font-extrabold uppercase tracking-wider shrink-0">
+            <div className="flex items-center gap-1 px-2.5 py-1 rounded-full border border-[var(--border-primary)] border-red-500/20 bg-red-500/5 text-red-500 text-[10px] font-extrabold uppercase tracking-wider shrink-0">
               <span className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse" />
               REC
             </div>
@@ -659,7 +659,7 @@ console.log(session)
         {isHostCameraActive && isHostCameraHiddenLocal && (
           <button
             onClick={() => setIsHostCameraHiddenLocal(false)}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[var(--accent-primary)] hover:bg-[var(--accent-secondary)] text-[var(--text-on-accent)] text-[10px] font-bold uppercase transition-all cursor-pointer mr-1.5 shadow-md shadow-[var(--accent-glow)] border border-transparent"
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[var(--accent-primary)] hover:bg-[var(--accent-secondary)] text-[var(--text-on-accent)] text-[10px] font-bold uppercase transition-all cursor-pointer mr-1.5 shadow-md shadow-[var(--accent-glow)] border border-[var(--border-primary)] border-transparent"
             title="Restore Mentor Camera Feed"
           >
             <Camera size={12} />
@@ -670,7 +670,7 @@ console.log(session)
         {isStudentCameraActive && isStudentCameraHiddenLocal && (
           <button
             onClick={() => setIsStudentCameraHiddenLocal(false)}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[var(--accent-primary)] hover:bg-[var(--accent-secondary)] text-[var(--text-on-accent)] text-[10px] font-bold uppercase transition-all cursor-pointer mr-1.5 shadow-md shadow-[var(--accent-glow)] border border-transparent"
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[var(--accent-primary)] hover:bg-[var(--accent-secondary)] text-[var(--text-on-accent)] text-[10px] font-bold uppercase transition-all cursor-pointer mr-1.5 shadow-md shadow-[var(--accent-glow)] border border-[var(--border-primary)] border-transparent"
             title="Restore Student Camera Feed"
           >
             <Camera size={12} />
@@ -679,7 +679,7 @@ console.log(session)
         )}
         {/* Active Speaker Controls */}
         {activeSpeaker === user?.username ? (
-          <div className="flex items-center gap-1.5 p-1 rounded-full border mr-2"
+          <div className="flex items-center gap-1.5 p-1 rounded-full border border-[var(--border-primary)] mr-2"
             style={{
               backgroundColor: "var(--bg-primary)",
               borderColor: "var(--border-primary)"
@@ -696,19 +696,19 @@ console.log(session)
             </div>
             <TrackToggle
               source={Track.Source.Microphone}
-              className="!w-8 !h-8 !rounded-full !flex !items-center !justify-center text-[var(--text-on-accent)] transition-all cursor-pointer !p-0 border border-transparent data-[lk-on=true]:bg-[var(--accent-primary)] data-[lk-on=true]:hover:bg-[var(--accent-secondary)] data-[lk-on=false]:bg-red-600 data-[lk-on=false]:hover:bg-red-700"
+              className="!w-8 !h-8 !rounded-full !flex !items-center !justify-center text-[var(--text-on-accent)] transition-all cursor-pointer !p-0 border border-[var(--border-primary)] border-transparent data-[lk-on=true]:bg-[var(--accent-primary)] data-[lk-on=true]:hover:bg-[var(--accent-secondary)] data-[lk-on=false]:bg-red-600 data-[lk-on=false]:hover:bg-red-700"
             />
             <TrackToggle
               source={Track.Source.Camera}
-              className="!w-8 !h-8 !rounded-full !flex !items-center !justify-center text-[var(--text-on-accent)] transition-all cursor-pointer !p-0 border border-transparent data-[lk-on=true]:bg-[var(--accent-primary)] data-[lk-on=true]:hover:bg-[var(--accent-secondary)] data-[lk-on=false]:bg-red-600 data-[lk-on=false]:hover:bg-red-700"
+              className="!w-8 !h-8 !rounded-full !flex !items-center !justify-center text-[var(--text-on-accent)] transition-all cursor-pointer !p-0 border border-[var(--border-primary)] border-transparent data-[lk-on=true]:bg-[var(--accent-primary)] data-[lk-on=true]:hover:bg-[var(--accent-secondary)] data-[lk-on=false]:bg-red-600 data-[lk-on=false]:hover:bg-red-700"
             />
             <TrackToggle
               source={Track.Source.ScreenShare}
-              className="!w-8 !h-8 !rounded-full !flex !items-center !justify-center text-[var(--text-on-accent)] transition-all cursor-pointer !p-0 border border-transparent data-[lk-on=true]:bg-[var(--accent-primary)] data-[lk-on=true]:hover:bg-[var(--accent-secondary)] data-[lk-on=false]:bg-red-600 data-[lk-on=false]:hover:bg-red-700"
+              className="!w-8 !h-8 !rounded-full !flex !items-center !justify-center text-[var(--text-on-accent)] transition-all cursor-pointer !p-0 border border-[var(--border-primary)] border-transparent data-[lk-on=true]:bg-[var(--accent-primary)] data-[lk-on=true]:hover:bg-[var(--accent-secondary)] data-[lk-on=false]:bg-red-600 data-[lk-on=false]:hover:bg-red-700"
             />
             <button
               onClick={stopSpeaking}
-              className="flex items-center gap-1 py-1.5 px-3 rounded-full bg-red-600 hover:bg-red-700 text-white text-[10px] font-bold uppercase transition-all cursor-pointer shadow-md shadow-red-600/20 border border-red-500/20"
+              className="flex items-center gap-1 py-1.5 px-3 rounded-full bg-red-600 hover:bg-red-700 text-white text-[10px] font-bold uppercase transition-all cursor-pointer shadow-md shadow-red-600/20 border border-[var(--border-primary)] border-red-500/20"
               id="stop-speaking-btn"
             >
               <XCircle size={12} />
@@ -721,7 +721,7 @@ console.log(session)
             onClick={toggleRaiseHand}
             disabled={blockedUsers?.includes(user?.username)}
             className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all mr-1 ${blockedUsers?.includes(user?.username)
-              ? "bg-red-500/10 text-red-500 border border-red-500/20 cursor-not-allowed"
+              ? "bg-red-500/10 text-red-500 border border-[var(--border-primary)] border-red-500/20 cursor-not-allowed"
               : isHandRaised
                 ? "bg-amber-500 text-white hover:bg-amber-600 shadow-lg shadow-amber-500/20 cursor-pointer"
                 : "cursor-pointer"
@@ -753,7 +753,7 @@ console.log(session)
         {/* Chat Toggle Button */}
         <button
           onClick={onToggleChatOpen}
-          className="relative flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-[10px] font-bold uppercase tracking-wide transition-all cursor-pointer"
+          className="relative flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-[var(--border-primary)] text-[10px] font-bold uppercase tracking-wide transition-all cursor-pointer"
           style={{
             backgroundColor: isChatOpen && activeTab !== "polls" ? "var(--bg-badge)" : "var(--bg-primary)",
             borderColor: isChatOpen && activeTab !== "polls" ? "var(--border-accent)" : "var(--border-primary)",
@@ -772,7 +772,7 @@ console.log(session)
         {/* Leaderboard / Polls Tab Button */}
         <button
           onClick={onShowPollsTab}
-          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-[10px] font-bold uppercase tracking-wide transition-all cursor-pointer"
+          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-[var(--border-primary)] text-[10px] font-bold uppercase tracking-wide transition-all cursor-pointer"
           style={{
             backgroundColor: isChatOpen && activeTab === "polls" ? "var(--bg-badge)" : "var(--bg-primary)",
             borderColor: isChatOpen && activeTab === "polls" ? "var(--border-accent)" : "var(--border-primary)",
@@ -788,7 +788,7 @@ console.log(session)
         {/* Share Button */}
         <button
           onClick={handleShareLink}
-          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-[10px] font-bold uppercase tracking-wide transition-all cursor-pointer"
+          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-[var(--border-primary)] text-[10px] font-bold uppercase tracking-wide transition-all cursor-pointer"
           style={{
             backgroundColor: "var(--bg-primary)",
             borderColor: "var(--border-primary)",
@@ -840,7 +840,7 @@ console.log(session)
       {/* Video Container */}
       <div
         ref={containerRef}
-        className={isFullscreen ? "h-full w-full border-none rounded-none bg-black min-h-0 flex-1 relative" : "relative rounded-[1.45rem] overflow-hidden border bg-black flex-1 min-h-0 shadow-[0_18px_55px_rgba(15,23,42,0.16)]"}
+        className={isFullscreen ? "h-full w-full border-none rounded-none bg-black min-h-0 flex-1 relative" : "relative rounded-[1.45rem] overflow-hidden border border-[var(--border-primary)] bg-black flex-1 min-h-0 shadow-[0_18px_55px_rgba(15,23,42,0.16)]"}
         style={isFullscreen ? {} : {
           borderColor: "rgba(148, 163, 184, 0.22)",
         }}
@@ -858,7 +858,7 @@ console.log(session)
         ) : (
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-950">
             <div className="text-center space-y-4">
-              <div className="w-20 h-20 rounded-3xl bg-zinc-500/10 border border-zinc-500/20 flex items-center justify-center mx-auto shadow-inner">
+              <div className="w-20 h-20 rounded-3xl bg-zinc-500/10 border border-[var(--border-primary)] border-zinc-500/20 flex items-center justify-center mx-auto shadow-inner">
                 <Radio size={40} className="text-zinc-400 animate-pulse" />
               </div>
               <div className="space-y-1">
@@ -874,7 +874,7 @@ console.log(session)
         {/* Dynamic Watermark Overlay */}
         {user && (
           <div 
-            className="absolute z-10 pointer-events-none select-none text-slate-100 font-mono text-[9px] sm:text-xs bg-slate-950/20 backdrop-blur-[1px] px-2.5 py-1.5 rounded-lg border border-white/5 opacity-[0.16] shadow-sm"
+            className="absolute z-10 pointer-events-none select-none text-slate-100 font-mono text-[9px] sm:text-xs bg-slate-950/20 backdrop-blur-[1px] px-2.5 py-1.5 rounded-lg border border-[var(--border-primary)] border-white/5 opacity-[0.16] shadow-sm"
             style={{
               top: watermarkPos.top,
               left: watermarkPos.left,
@@ -911,7 +911,7 @@ console.log(session)
 
         {/* Active Speaker HUD Banner */}
         {activeSpeaker && (
-          <div className="absolute top-4 right-4 z-40 px-3 py-1.5 rounded-xl bg-zinc-600/90 text-white text-xs font-bold shadow-lg flex items-center gap-2 backdrop-blur-sm border border-zinc-500/30">
+          <div className="absolute top-4 right-4 z-40 px-3 py-1.5 rounded-xl bg-[var(--accent-primary)]/90 text-white text-xs font-bold shadow-lg flex items-center gap-2 backdrop-blur-sm border border-[var(--border-primary)] border-zinc-500/30">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
             <span>Active Speaker: <strong className="font-extrabold">{activeSpeaker}</strong></span>
           </div>
@@ -933,7 +933,7 @@ console.log(session)
             <div className="text-center space-y-5 max-w-sm px-6">
               <div className="relative w-20 h-20 mx-auto">
                 <div className="absolute inset-0 rounded-3xl bg-amber-500/20 animate-ping opacity-75" />
-                <div className="relative w-20 h-20 rounded-3xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center shadow-lg shadow-amber-500/10 text-amber-400">
+                <div className="relative w-20 h-20 rounded-3xl bg-amber-500/10 border border-[var(--border-primary)] border-amber-500/30 flex items-center justify-center shadow-lg shadow-amber-500/10 text-amber-400">
                   <WifiOff size={36} />
                 </div>
               </div>
@@ -999,9 +999,9 @@ console.log(session)
       <div
         className={
           isFullscreen
-            ? `absolute bottom-6 left-6 right-6 z-50 p-3 border rounded-[1.1rem] transition-all duration-300 shadow-2xl live-control-bar-fullscreen backdrop-blur-md ${showControls ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 translate-y-4 pointer-events-none"
+            ? `absolute bottom-6 left-6 right-6 z-50 p-3 border border-[var(--border-primary)] rounded-[1.1rem] transition-all duration-300 shadow-2xl live-control-bar-fullscreen backdrop-blur-md ${showControls ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 translate-y-4 pointer-events-none"
             }`
-            : "px-3.5 py-3 border rounded-[1.1rem]"
+            : "px-3.5 py-3 border border-[var(--border-primary)] rounded-[1.1rem]"
         }
         style={
           isFullscreen
@@ -1024,7 +1024,7 @@ console.log(session)
       {showAcceptedModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md p-4">
           <div
-            className="w-full max-w-md rounded-3xl p-6 border shadow-2xl text-center space-y-6"
+            className="w-full max-w-md rounded-3xl p-6 border border-[var(--border-primary)] shadow-2xl text-center space-y-6"
             style={{
               backgroundColor: "var(--bg-card)",
               borderColor: "var(--border-accent)",
@@ -1067,7 +1067,7 @@ console.log(session)
                   room?.localParticipant?.setCameraEnabled(true);
                   setShowAcceptedModal(false);
                 }}
-                className="flex-1 py-3 px-4 rounded-xl border transition-all hover:scale-102 text-xs font-extrabold uppercase tracking-wider cursor-pointer"
+                className="flex-1 py-3 px-4 rounded-xl border border-[var(--border-primary)] transition-all hover:scale-102 text-xs font-extrabold uppercase tracking-wider cursor-pointer"
                 style={{
                   backgroundColor: "var(--bg-primary)",
                   borderColor: "var(--border-primary)",
@@ -1318,7 +1318,7 @@ export default function LiveViewerPage() {
         <Navbar />
         <div className="flex-1 flex flex-col items-center justify-start min-h-[70vh] p-4 gap-8 pt-12">
           <div
-            className="w-full max-w-lg rounded-3xl p-8 border shadow-2xl text-center space-y-6 animate-fade-in"
+            className="w-full max-w-lg rounded-3xl p-8 border border-[var(--border-primary)] shadow-2xl text-center space-y-6 animate-fade-in"
             style={{
               backgroundColor: "var(--bg-card)",
               borderColor: "var(--border-primary)",
@@ -1346,7 +1346,7 @@ export default function LiveViewerPage() {
             <div className="pt-2">
               <Link
                 href="/"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-white text-xs font-extrabold uppercase tracking-wider transition-all hover:scale-105 shadow-lg cursor-pointer"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-[var(--text-on-accent)] text-xs font-extrabold uppercase tracking-wider transition-all hover:scale-105 shadow-lg cursor-pointer"
                 style={{
                   background: "var(--accent-gradient)",
                 }}
@@ -1412,7 +1412,7 @@ export default function LiveViewerPage() {
             </div>
             <Link
               href="/"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border text-xs font-bold transition-all hover:scale-105"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-[var(--border-primary)] text-xs font-bold transition-all hover:scale-105"
               style={{
                 backgroundColor: "var(--bg-card)",
                 borderColor: "var(--border-primary)",
@@ -1434,7 +1434,7 @@ export default function LiveViewerPage() {
       <div className="min-h-screen" style={{ backgroundColor: "var(--bg-primary)" }}>
         <Navbar />
         <div className="flex items-center justify-center h-[70vh]">
-          <div className="max-w-md text-center space-y-6 p-8 rounded-2xl border shadow-xl"
+          <div className="max-w-md text-center space-y-6 p-8 rounded-2xl border border-[var(--border-primary)] shadow-xl"
             style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}
           >
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-500/15 text-red-500 text-xs font-extrabold uppercase tracking-wider mx-auto w-fit">
@@ -1470,7 +1470,7 @@ export default function LiveViewerPage() {
       <div className="shrink-0 px-4 md:px-5 pt-4 max-w-[1440px] mx-auto w-full">
         <Link
           href="/student/dashboard"
-          className="inline-flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-bold transition-all hover:scale-[1.02]"
+          className="inline-flex items-center gap-2 px-3 py-2 rounded-xl border border-[var(--border-primary)] text-xs font-bold transition-all hover:scale-[1.02]"
           style={{
             backgroundColor: "var(--bg-card)",
             borderColor: "var(--border-primary)",
@@ -1561,7 +1561,7 @@ export default function LiveViewerPage() {
             </div>
           </LiveKitRoom>
         ) : (
-          <div className="flex flex-col items-center justify-center p-12 rounded-2xl border text-center space-y-4"
+          <div className="flex flex-col items-center justify-center p-12 rounded-2xl border border-[var(--border-primary)] text-center space-y-4"
             style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}
           >
             <WifiOff size={48} className="opacity-30" style={{ color: "var(--text-muted)" }} />

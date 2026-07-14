@@ -705,7 +705,7 @@ function BroadcastPanel({ session, onEndSession, authToken, shouldRecord }) {
 
       {/* Network Error Notification Banner */}
       {(isBrowserOffline || connectionState === "reconnecting" || connectionState === "disconnected") && (
-        <div className="flex items-center gap-3 p-3.5 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-500 text-xs font-bold animate-pulse shrink-0">
+        <div className="flex items-center gap-3 p-3.5 rounded-2xl bg-red-500/10 border border-[var(--border-primary)] border-red-500/20 text-red-500 text-xs font-bold animate-pulse shrink-0">
           <AlertTriangle size={16} className="shrink-0" />
           <div className="flex-1">
             <p className="font-extrabold text-xs">
@@ -735,7 +735,7 @@ function BroadcastPanel({ session, onEndSession, authToken, shouldRecord }) {
         {/* Center — Live Classroom Board */}
         <div className="flex-1 flex flex-col gap-3 min-h-0 overflow-hidden order-1">
           {/* Video Preview Area */}
-          <div className="relative rounded-[1.35rem] overflow-hidden border flex-1 min-h-0 bg-black shadow-[0_18px_55px_rgba(15,23,42,0.18)]"
+          <div className="relative rounded-[1.35rem] overflow-hidden border border-[var(--border-primary)] flex-1 min-h-0 bg-black shadow-[0_18px_55px_rgba(15,23,42,0.18)]"
             style={{ borderColor: "rgba(148, 163, 184, 0.22)" }}
           >
             {speakingStudentScreenTrack?.publication?.track ? (
@@ -751,7 +751,7 @@ function BroadcastPanel({ session, onEndSession, authToken, shouldRecord }) {
             ) : (
               <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-950">
                 <div className="text-center space-y-4">
-                  <div className="w-20 h-20 rounded-3xl bg-zinc-500/10 border border-zinc-500/20 flex items-center justify-center mx-auto shadow-inner">
+                  <div className="w-20 h-20 rounded-3xl bg-zinc-500/10 border border-[var(--border-primary)] border-zinc-500/20 flex items-center justify-center mx-auto shadow-inner">
                     <Radio size={40} className="text-zinc-400 animate-pulse" />
                   </div>
                   <div className="space-y-1">
@@ -834,28 +834,28 @@ function BroadcastPanel({ session, onEndSession, authToken, shouldRecord }) {
           </div>
 
           {/* Broadcast Control Bar */}
-          <div className="flex items-center justify-between p-3.5 rounded-[1.35rem] border bg-slate-900/40 backdrop-blur-md shrink-0 shadow-lg"
+          <div className="flex items-center justify-between p-3.5 rounded-[1.35rem] border border-[var(--border-primary)] bg-[var(--bg-card)]/40 backdrop-blur-md shrink-0 shadow-lg"
             style={{ borderColor: "rgba(148, 163, 184, 0.16)" }}
           >
             <div className="flex items-center gap-1 flex-wrap">
               <TrackToggle
                 source={Track.Source.Microphone}
                 showIcon={true}
-                className="px-4 py-2.5 rounded-xl border text-[10px] font-extrabold uppercase tracking-wider transition-all hover:scale-105 cursor-pointer shadow-sm text-slate-200 hover:text-white bg-slate-800 border-slate-700/50 hover:bg-slate-750"
+                className="px-4 py-2.5 rounded-xl border border-[var(--border-primary)] text-[10px] font-extrabold uppercase tracking-wider transition-all hover:scale-105 cursor-pointer shadow-sm text-slate-200 hover:text-white bg-[var(--bg-hover)] border-[var(--border-primary)]/50 hover:bg-slate-750"
               >
                 Mic
               </TrackToggle>
               <TrackToggle
                 source={Track.Source.Camera}
                 showIcon={true}
-                className="px-4 py-2.5 rounded-xl border text-[10px] font-extrabold uppercase tracking-wider transition-all hover:scale-105 cursor-pointer shadow-sm text-slate-200 hover:text-white bg-slate-800 border-slate-700/50 hover:bg-slate-750"
+                className="px-4 py-2.5 rounded-xl border border-[var(--border-primary)] text-[10px] font-extrabold uppercase tracking-wider transition-all hover:scale-105 cursor-pointer shadow-sm text-slate-200 hover:text-white bg-[var(--bg-hover)] border-[var(--border-primary)]/50 hover:bg-slate-750"
               >
                 Camera
               </TrackToggle>
               {speakingStudentScreenTrack?.publication?.track ? (
                 <button
                   disabled
-                  className="px-4 py-2.5 rounded-xl border text-[10px] font-extrabold uppercase tracking-wider transition-all opacity-40 cursor-not-allowed text-slate-200 bg-slate-800 border-slate-700/50"
+                  className="px-4 py-2.5 rounded-xl border border-[var(--border-primary)] text-[10px] font-extrabold uppercase tracking-wider transition-all opacity-40 cursor-not-allowed text-slate-200 bg-[var(--bg-hover)] border-[var(--border-primary)]/50"
                   title="A student is currently sharing their screen"
                 >
                   Share Screen
@@ -864,7 +864,7 @@ function BroadcastPanel({ session, onEndSession, authToken, shouldRecord }) {
                 <TrackToggle
                   source={Track.Source.ScreenShare}
                   showIcon={true}
-                  className="px-4 py-2.5 rounded-xl border text-[10px] font-extrabold uppercase tracking-wider transition-all hover:scale-105 cursor-pointer shadow-sm text-slate-200 hover:text-white bg-slate-800 border-slate-700/50 hover:bg-slate-750"
+                  className="px-4 py-2.5 rounded-xl border border-[var(--border-primary)] text-[10px] font-extrabold uppercase tracking-wider transition-all hover:scale-105 cursor-pointer shadow-sm text-slate-200 hover:text-white bg-[var(--bg-hover)] border-[var(--border-primary)]/50 hover:bg-slate-750"
                 >
                   Share Screen
                 </TrackToggle>
@@ -878,9 +878,9 @@ function BroadcastPanel({ session, onEndSession, authToken, shouldRecord }) {
                   setActiveTab("polls");
                   setShowPollCreatorSignal((v) => !v);
                 }}
-                className={`flex items-center gap-1.5 px-3 py-2 rounded-xl border text-[10px] font-bold uppercase tracking-wide transition-all hover:scale-105 cursor-pointer shadow-sm ${
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-xl border border-[var(--border-primary)] text-[10px] font-bold uppercase tracking-wide transition-all hover:scale-105 cursor-pointer shadow-sm ${
                   activeTab === "polls" || activePoll
-                    ? "bg-zinc-600 border-transparent text-white animate-pulse"
+                    ? "bg-[var(--accent-primary)] border-transparent text-white animate-pulse"
                     : "bg-[var(--bg-primary)] border-[var(--border-primary)] text-[var(--text-primary)]"
                 }`}
                 id="poll-tab-btn"
@@ -894,9 +894,9 @@ function BroadcastPanel({ session, onEndSession, authToken, shouldRecord }) {
               {/* Chat Toggle Button */}
               <button
                 onClick={() => setIsChatOpen((prev) => !prev)}
-                className={`flex items-center gap-1.5 px-3 py-2 rounded-xl border text-[10px] font-bold uppercase tracking-wide transition-all hover:scale-105 cursor-pointer shadow-sm ${
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-xl border border-[var(--border-primary)] text-[10px] font-bold uppercase tracking-wide transition-all hover:scale-105 cursor-pointer shadow-sm ${
                   isChatOpen
-                    ? "bg-zinc-600 border-transparent text-white"
+                    ? "bg-[var(--accent-primary)] border-transparent text-white"
                     : "bg-[var(--bg-primary)] border-[var(--border-primary)] text-[var(--text-primary)]"
                 }`}
                 title={isChatOpen ? "Hide Live Chat" : "Show Live Chat"}
@@ -912,7 +912,7 @@ function BroadcastPanel({ session, onEndSession, authToken, shouldRecord }) {
 
               <button
                 onClick={handleShareLink}
-                className="flex items-center gap-1.5 px-3 py-2 rounded-xl border text-[10px] font-bold uppercase tracking-wide transition-all hover:scale-105 cursor-pointer shadow-sm text-[var(--text-primary)] bg-[var(--bg-primary)] border-[var(--border-primary)]"
+                className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-[var(--border-primary)] text-[10px] font-bold uppercase tracking-wide transition-all hover:scale-105 cursor-pointer shadow-sm text-[var(--text-primary)] bg-[var(--bg-primary)] border-[var(--border-primary)]"
                 title="Copy share link for students"
               >
                 {copiedLink ? <Check size={14} className="text-emerald-500" /> : <Share2 size={14} />}
@@ -1290,7 +1290,7 @@ export default function AdminLivePage() {
         <div className="max-w-2xl mx-auto space-y-8 animate-fade-in px-0 sm:px-6">
         {/* Page Header */}
         <section className="flex flex-col gap-2 border-b pb-6 shrink-0" style={{ borderColor: "var(--border-primary)" }}>
-          <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border mb-3 w-fit"
+          <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border border-[var(--border-primary)] mb-3 w-fit"
             style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)", backgroundColor: "var(--bg-secondary)" }}>
             <Radio size={12} className="text-rose-500 animate-pulse" />
             Live Broadcast
@@ -1302,7 +1302,7 @@ export default function AdminLivePage() {
         </section>
 
         {/* Setup Form */}
-        <div className="rounded-2xl border p-6 space-y-6 shadow-sm"
+        <div className="rounded-2xl border border-[var(--border-primary)] p-6 space-y-6 shadow-sm"
           style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}
         >
           {/* Title */}
@@ -1315,7 +1315,7 @@ export default function AdminLivePage() {
               value={formState.title}
               onChange={(e) => setFormState((p) => ({ ...p, title: e.target.value }))}
               placeholder="e.g. DSA Masterclass — Trees & Graphs"
-              className="w-full px-4 py-3 rounded-xl border text-sm font-medium outline-none transition-colors focus:border-[var(--text-muted)]"
+              className="w-full px-4 py-3 rounded-xl border border-[var(--border-primary)] text-sm font-medium outline-none transition-colors focus:border-[var(--text-muted)]"
               style={{
                 backgroundColor: "var(--bg-secondary)",
                 borderColor: "var(--border-primary)",
@@ -1335,7 +1335,7 @@ export default function AdminLivePage() {
               onChange={(e) => setFormState((p) => ({ ...p, description: e.target.value }))}
               placeholder="Brief description of what you'll cover..."
               rows={3}
-              className="w-full px-4 py-3 rounded-xl border text-sm font-medium outline-none transition-colors focus:border-[var(--text-muted)] resize-none"
+              className="w-full px-4 py-3 rounded-xl border border-[var(--border-primary)] text-sm font-medium outline-none transition-colors focus:border-[var(--text-muted)] resize-none"
               style={{
                 backgroundColor: "var(--bg-secondary)",
                 borderColor: "var(--border-primary)",
@@ -1351,7 +1351,7 @@ export default function AdminLivePage() {
               <label className="text-xs font-extrabold uppercase tracking-wider" style={{ color: "var(--text-secondary)" }}>
                 Thumbnail Image
               </label>
-              <span className="text-[9px] font-black text-amber-500 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded-md uppercase tracking-wider select-none">
+              <span className="text-[9px] font-black text-amber-500 bg-amber-500/10 border border-[var(--border-primary)] border-amber-500/20 px-2 py-0.5 rounded-md uppercase tracking-wider select-none">
                 16:9 Aspect Ratio • Max 2MB
               </span>
             </div>
@@ -1398,7 +1398,7 @@ export default function AdminLivePage() {
               Target Cohorts (Batches)
             </label>
             <div 
-              className="w-full rounded-xl p-4 border grid grid-cols-1 sm:grid-cols-2 gap-2"
+              className="w-full rounded-xl p-4 border border-[var(--border-primary)] grid grid-cols-1 sm:grid-cols-2 gap-2"
               style={{
                 backgroundColor: "var(--bg-secondary)",
                 borderColor: "var(--border-primary)",
@@ -1454,7 +1454,7 @@ export default function AdminLivePage() {
           <button
             onClick={handleStartSession}
             disabled={isStarting || !formState.title.trim()}
-            className="w-full flex items-center justify-center gap-3 px-6 py-4 rounded-xl text-white text-sm font-bold uppercase tracking-wider transition-transform hover:-translate-y-0.5 shadow-md disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+            className="w-full flex items-center justify-center gap-3 px-6 py-4 rounded-xl text-[var(--text-on-accent)] text-sm font-bold uppercase tracking-wider transition-transform hover:-translate-y-0.5 shadow-md disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             style={{
               background: "var(--accent-primary)",
             }}
@@ -1475,7 +1475,7 @@ export default function AdminLivePage() {
         </div>
 
         {/* LiveKit Status Info */}
-        <div className="flex items-center gap-2 p-3 rounded-xl border text-[10px] font-semibold"
+        <div className="flex items-center gap-2 p-3 rounded-xl border border-[var(--border-primary)] text-[10px] font-semibold"
           style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)", color: "var(--text-muted)" }}
         >
           <Sparkles size={12} style={{ color: "var(--text-accent)" }} />
@@ -1494,13 +1494,13 @@ export default function AdminLivePage() {
           </div>
 
           {loadingPast ? (
-            <div className="flex items-center justify-center p-6 border border-dashed rounded-2xl"
+            <div className="flex items-center justify-center p-6 border border-[var(--border-primary)] border-dashed rounded-2xl"
               style={{ borderColor: "var(--border-primary)" }}
             >
               <div className="w-6 h-6 border-2 border-t-transparent rounded-full animate-spin" style={{ borderColor: "var(--text-accent)" }} />
             </div>
           ) : pastSessions.length === 0 ? (
-            <div className="flex flex-col items-center justify-center p-10 border border-dashed rounded-2xl text-center space-y-2"
+            <div className="flex flex-col items-center justify-center p-10 border border-[var(--border-primary)] border-dashed rounded-2xl text-center space-y-2"
               style={{ borderColor: "var(--border-primary)", backgroundColor: "var(--bg-card)" }}
             >
               <p className="text-xs font-bold" style={{ color: "var(--text-muted)" }}>No past broadcasts found</p>
@@ -1511,7 +1511,7 @@ export default function AdminLivePage() {
               {pastSessions.map((past) => (
                 <div
                   key={past.id}
-                  className="flex items-center justify-between p-4 rounded-2xl border transition-colors hover:bg-[var(--bg-secondary)]"
+                  className="flex items-center justify-between p-4 rounded-2xl border border-[var(--border-primary)] transition-colors hover:bg-[var(--bg-secondary)]"
                   style={{
                     backgroundColor: "var(--bg-primary)",
                     borderColor: "var(--border-primary)",
@@ -1522,10 +1522,10 @@ export default function AdminLivePage() {
                       <img
                         src={past.thumbnailUrl}
                         alt=""
-                        className="w-14 h-9 rounded-lg object-cover bg-slate-800 shrink-0"
+                        className="w-14 h-9 rounded-lg object-cover bg-[var(--bg-hover)] shrink-0"
                       />
                     ) : (
-                      <div className="w-14 h-9 rounded-lg bg-slate-800 flex items-center justify-center shrink-0 border"
+                      <div className="w-14 h-9 rounded-lg bg-[var(--bg-hover)] flex items-center justify-center shrink-0 border"
                         style={{ borderColor: "var(--border-primary)" }}
                       >
                         <Radio size={14} style={{ color: "var(--text-muted)" }} />
@@ -1552,23 +1552,23 @@ export default function AdminLivePage() {
                           const url = past.recordingUrl.startsWith('/') ? `${API_BASE}${past.recordingUrl}` : past.recordingUrl;
                           setSelectedVideoUrl(url);
                         }}
-                        className="px-3 py-1.5 rounded-xl bg-zinc-500/10 hover:bg-zinc-500/20 text-zinc-500 text-[10px] font-extrabold uppercase tracking-wider transition-all border border-zinc-500/10 hover:scale-[1.02] cursor-pointer text-center shrink-0"
+                        className="px-3 py-1.5 rounded-xl bg-zinc-500/10 hover:bg-zinc-500/20 text-zinc-500 text-[10px] font-extrabold uppercase tracking-wider transition-all border border-[var(--border-primary)] border-zinc-500/10 hover:scale-[1.02] cursor-pointer text-center shrink-0"
                       >
                         Watch
                       </button>
                     ) : (past.egressSegments || (past.endedAt && (new Date() - new Date(past.endedAt)) < 180000)) ? (
-                      <span className="text-[9px] font-extrabold text-neutral-500 bg-neutral-500/10 px-2 py-1.5 rounded border border-neutral-500/20 animate-pulse shrink-0">
+                      <span className="text-[9px] font-extrabold text-neutral-500 bg-neutral-500/10 px-2 py-1.5 rounded border border-[var(--border-primary)] border-neutral-500/20 animate-pulse shrink-0">
                         Processing...
                       </span>
                     ) : (
-                      <span className="text-[9px] font-bold text-slate-500 bg-slate-500/5 px-2 py-1.5 rounded border border-dashed border-slate-500/10 shrink-0">
+                      <span className="text-[9px] font-bold text-slate-500 bg-slate-500/5 px-2 py-1.5 rounded border border-[var(--border-primary)] border-dashed border-slate-500/10 shrink-0">
                         No Recording
                       </span>
                     )}
 
                     <button
                       onClick={() => handleDeleteSession(past.id)}
-                      className="p-2 rounded-xl text-rose-500 hover:bg-rose-500/10 transition-all border border-transparent hover:border-rose-500/20 text-[10px] font-bold uppercase tracking-wider cursor-pointer shrink-0"
+                      className="p-2 rounded-xl text-rose-500 hover:bg-rose-500/10 transition-all border border-[var(--border-primary)] border-transparent hover:border-rose-500/20 text-[10px] font-bold uppercase tracking-wider cursor-pointer shrink-0"
                       title="Delete past broadcast"
                     >
                       Delete
@@ -1589,7 +1589,7 @@ export default function AdminLivePage() {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="w-full max-w-sm rounded-3xl border shadow-2xl p-6 text-center space-y-4"
+              className="w-full max-w-sm rounded-3xl border border-[var(--border-primary)] shadow-2xl p-6 text-center space-y-4"
               style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}
             >
               <div className="w-12 h-12 rounded-2xl bg-[var(--bg-badge)] text-[var(--text-accent)] flex items-center justify-center mx-auto">
@@ -1610,7 +1610,7 @@ export default function AdminLivePage() {
                     setShowRecordPrompt(false);
                     startActualSession();
                   }}
-                  className="px-5 py-2.5 rounded-2xl border text-xs font-bold transition-all hover:bg-slate-100 dark:hover:bg-slate-800/60 cursor-pointer"
+                  className="px-5 py-2.5 rounded-2xl border border-[var(--border-primary)] text-xs font-bold transition-all hover:bg-slate-100 dark:hover:bg-[var(--bg-hover)]/60 cursor-pointer"
                   style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}
                 >
                   No, Skip
@@ -1621,7 +1621,7 @@ export default function AdminLivePage() {
                     setShowRecordPrompt(false);
                     startActualSession();
                   }}
-                  className="px-6 py-2.5 rounded-2xl text-white text-xs font-black uppercase transition-all shadow-lg hover:scale-[1.02] cursor-pointer"
+                  className="px-6 py-2.5 rounded-2xl text-[var(--text-on-accent)] text-xs font-black uppercase transition-all shadow-lg hover:scale-[1.02] cursor-pointer"
                   style={{ background: "var(--accent-gradient)" }}
                 >
                   Yes, Record
@@ -1637,15 +1637,15 @@ export default function AdminLivePage() {
             onClick={() => setSelectedVideoUrl(null)}
           >
             <div 
-              className="relative w-full max-w-4xl rounded-2xl border border-slate-800 bg-slate-900/95 shadow-2xl overflow-hidden"
+              className="relative w-full max-w-4xl rounded-2xl border border-[var(--border-primary)] border-[var(--border-primary)] bg-[var(--bg-card)]/95 shadow-2xl overflow-hidden"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Modal Header */}
-              <div className="flex items-center justify-between px-4 py-3 border-b border-slate-800 bg-slate-900/50">
+              <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border-primary)] bg-[var(--bg-card)]/50">
                 <span className="text-xs font-bold text-slate-300">Session Playback</span>
                 <button 
                   onClick={() => setSelectedVideoUrl(null)}
-                  className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer text-xs"
+                  className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-[var(--bg-hover)] transition-colors cursor-pointer text-xs"
                 >
                   ✕
                 </button>
@@ -1666,7 +1666,7 @@ export default function AdminLivePage() {
                 {/* Dynamic Watermark Overlay */}
                 {user && (
                   <div 
-                    className="absolute z-10 pointer-events-none select-none text-slate-100 font-mono text-[9px] sm:text-xs bg-slate-950/20 backdrop-blur-[1px] px-2.5 py-1.5 rounded-lg border border-white/5 opacity-[0.16] shadow-sm"
+                    className="absolute z-10 pointer-events-none select-none text-slate-100 font-mono text-[9px] sm:text-xs bg-slate-950/20 backdrop-blur-[1px] px-2.5 py-1.5 rounded-lg border border-[var(--border-primary)] border-white/5 opacity-[0.16] shadow-sm"
                     style={{
                       top: watermarkPos.top,
                       left: watermarkPos.left,
@@ -1692,7 +1692,7 @@ export default function AdminLivePage() {
       <button
         type="button"
         onClick={handleBackToPortal}
-        className="inline-flex items-center gap-1.5 px-2.5 py-1 mb-2 rounded-lg border text-xs font-bold leading-none transition-all hover:scale-[1.02] cursor-pointer shrink-0 w-fit"
+        className="inline-flex items-center gap-1.5 px-2.5 py-1 mb-2 rounded-lg border border-[var(--border-primary)] text-xs font-bold leading-none transition-all hover:scale-[1.02] cursor-pointer shrink-0 w-fit"
         style={{
           backgroundColor: "var(--bg-card)",
           borderColor: "var(--border-primary)",
@@ -1715,7 +1715,7 @@ export default function AdminLivePage() {
           <BroadcastPanel session={session} onEndSession={handleEndSession} authToken={authToken} shouldRecord={shouldRecord} />
         </LiveKitRoom>
       ) : (
-        <div className="flex flex-col items-center justify-center p-12 rounded-2xl border text-center space-y-4"
+        <div className="flex flex-col items-center justify-center p-12 rounded-2xl border border-[var(--border-primary)] text-center space-y-4"
           style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}
         >
           <WifiOff size={48} className="opacity-30" style={{ color: "var(--text-muted)" }} />

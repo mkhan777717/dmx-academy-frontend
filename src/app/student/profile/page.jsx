@@ -47,7 +47,7 @@ const Heatmap = ({ data, totalActiveDays, maxStreak }) => {
   };
 
   return (
-    <div className="p-8 rounded-2xl border flex flex-col gap-8 relative overflow-hidden" style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)" }}>
+    <div className="p-8 rounded-2xl border border-[var(--border-primary)] flex flex-col gap-8 relative overflow-hidden" style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)" }}>
       <div className="absolute inset-0 dot-grid opacity-50 pointer-events-none" />
       
       <div className="relative z-10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -240,7 +240,7 @@ export default function StudentProfile() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             
             {/* Solved Problems Ring */}
-            <div className="p-8 rounded-2xl border flex items-center justify-between" style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
+            <div className="p-8 rounded-2xl border border-[var(--border-primary)] flex items-center justify-between" style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
               <div className="relative w-32 h-32 shrink-0 flex items-center justify-center">
                 <svg className="w-full h-full transform -rotate-90">
                   <circle cx="64" cy="64" r="58" stroke="var(--bg-secondary)" strokeWidth="4" fill="transparent" />
@@ -285,9 +285,9 @@ export default function StudentProfile() {
             </div>
             
             {/* Badges Box */}
-            <div className="p-8 rounded-2xl border flex flex-col items-center justify-center text-center gap-4 relative overflow-hidden group" style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
+            <div className="p-8 rounded-2xl border border-[var(--border-primary)] flex flex-col items-center justify-center text-center gap-4 relative overflow-hidden group" style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
               <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-              <div className="w-20 h-20 rounded-xl bg-[var(--bg-hover)] border flex items-center justify-center transform group-hover:scale-110 transition-transform duration-500" style={{ borderColor: "var(--border-primary)", color: "var(--text-muted)" }}>
+              <div className="w-20 h-20 rounded-xl bg-[var(--bg-hover)] border border-[var(--border-primary)] flex items-center justify-center transform group-hover:scale-110 transition-transform duration-500" style={{ borderColor: "var(--border-primary)", color: "var(--text-muted)" }}>
                 <Award size={32} />
               </div>
               <div>
@@ -309,7 +309,7 @@ export default function StudentProfile() {
             {recentSubs.length > 0 ? (
               <div className="grid grid-cols-1 gap-3">
                 {recentSubs.map((sub, idx) => (
-                  <div key={idx} className="flex flex-col sm:flex-row justify-between sm:items-center p-4 rounded-xl border bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] transition-colors cursor-pointer group" style={{ borderColor: "var(--border-primary)" }} onClick={() => router.push(`/practice/${sub.problem?.slug || sub.problemId}`)}>
+                  <div key={idx} className="flex flex-col sm:flex-row justify-between sm:items-center p-4 rounded-xl border border-[var(--border-primary)] premium-card hover:bg-[var(--bg-hover)] transition-colors cursor-pointer group" style={{ borderColor: "var(--border-primary)" }} onClick={() => router.push(`/practice/${sub.problem?.slug || sub.problemId}`)}>
                     <div className="space-y-1">
                       <p className="text-sm font-bold group-hover:underline" style={{ color: "var(--text-primary)" }}>
                         {sub.problem?.title || `Problem #${sub.problemId}`}
@@ -322,7 +322,7 @@ export default function StudentProfile() {
                       <span className={`text-[10px] font-black uppercase tracking-widest ${sub.status === 'ACCEPTED' ? 'text-emerald-500' : 'text-rose-500'}`}>
                         {sub.status === 'ACCEPTED' ? 'Accepted' : 'Failed'}
                       </span>
-                      <span className="px-2 py-1 rounded bg-[var(--bg-primary)] border text-[9px] font-bold text-[var(--text-secondary)] uppercase tracking-widest" style={{ borderColor: "var(--border-primary)" }}>
+                      <span className="px-2 py-1 rounded bg-[var(--bg-primary)] border border-[var(--border-primary)] text-[9px] font-bold text-[var(--text-secondary)] uppercase tracking-widest" style={{ borderColor: "var(--border-primary)" }}>
                         {sub.language}
                       </span>
                     </div>
@@ -330,7 +330,7 @@ export default function StudentProfile() {
                 ))}
               </div>
             ) : (
-              <div className="p-8 border rounded-xl text-center" style={{ borderColor: "var(--border-primary)", backgroundColor: "var(--bg-card)" }}>
+              <div className="p-8 border border-[var(--border-primary)] rounded-xl text-center" style={{ borderColor: "var(--border-primary)", backgroundColor: "var(--bg-card)" }}>
                 <p className="text-xs text-[var(--text-muted)] font-bold uppercase tracking-widest">No recent submissions found.</p>
               </div>
             )}

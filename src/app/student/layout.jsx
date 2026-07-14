@@ -81,7 +81,7 @@ export default function StudentLayout({ children }) {
       } else if (isLoginRoute) {
         router.push("/student/dashboard");
       } else {
-        const name = user?.username || "DMX Student";
+        const name = user?.username || "Eduvantix Student";
         const email = user?.email || "student@synapse.com";
         const avatar = name.slice(0, 2).toUpperCase();
         setStudentUser({ name, email, role: roleName, avatar });
@@ -132,16 +132,16 @@ export default function StudentLayout({ children }) {
         <div className="flex items-center justify-between px-4 h-14 border-b" style={{ borderColor: "var(--border-primary)" }}>
           {!isSidebarCollapsed && (
             <div className="flex items-center gap-2.5">
-              <div className="h-6 w-6 rounded-md flex items-center justify-center text-white flex-shrink-0" style={{ background: "var(--accent-gradient)" }}>
+              <div className="h-6 w-6 rounded-md flex items-center justify-center text-[var(--text-on-accent)] flex-shrink-0" style={{ background: "var(--accent-gradient)" }}>
                 <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                   <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
                 </svg>
               </div>
-              <span className="text-[13px] font-bold tracking-tight" style={{ color: "var(--text-primary)" }}>DMX Academy</span>
+              <span className="text-[13px] font-bold tracking-tight" style={{ color: "var(--text-primary)" }}>Eduvantix</span>
             </div>
           )}
           {isSidebarCollapsed && (
-            <div className="h-6 w-6 rounded-md flex items-center justify-center text-white mx-auto" style={{ background: "var(--accent-gradient)" }}>
+            <div className="h-6 w-6 rounded-md flex items-center justify-center text-[var(--text-on-accent)] mx-auto" style={{ background: "var(--accent-gradient)" }}>
               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                 <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
               </svg>
@@ -216,12 +216,12 @@ export default function StudentLayout({ children }) {
           >
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-2.5">
-                <div className="h-6 w-6 rounded-md flex items-center justify-center text-white" style={{ background: "var(--accent-gradient)" }}>
+                <div className="h-6 w-6 rounded-md flex items-center justify-center text-[var(--text-on-accent)]" style={{ background: "var(--accent-gradient)" }}>
                   <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                     <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
                   </svg>
                 </div>
-                <span className="text-sm font-bold" style={{ color: "var(--text-primary)" }}>DMX Academy</span>
+                <span className="text-sm font-bold" style={{ color: "var(--text-primary)" }}>Eduvantix</span>
               </div>
               <button onClick={() => setIsMobileMenuOpen(false)} className="p-1.5 rounded-lg" style={{ color: "var(--text-secondary)" }}>
                 <X size={16} />
@@ -291,7 +291,7 @@ export default function StudentLayout({ children }) {
                   onMouseEnter={e => e.currentTarget.style.backgroundColor = "var(--bg-hover)"}
                   onMouseLeave={e => e.currentTarget.style.backgroundColor = "transparent"}
                 >
-                  <div className="w-7 h-7 rounded-lg flex items-center justify-center text-[11px] font-bold text-white" style={{ background: "var(--accent-gradient)" }}>
+                  <div className="w-7 h-7 rounded-lg flex items-center justify-center text-[11px] font-bold text-[var(--text-on-accent)]" style={{ background: "var(--accent-gradient)" }}>
                     {studentUser.avatar}
                   </div>
                   <div className="hidden sm:block text-left">
@@ -303,13 +303,13 @@ export default function StudentLayout({ children }) {
                 {isProfileMenuOpen && (
                   <>
                     <div className="fixed inset-0 z-40" onClick={() => setIsProfileMenuOpen(false)} />
-                    <div className="absolute right-0 top-full mt-2 w-64 rounded-xl border shadow-xl z-50 overflow-hidden"
+                    <div className="absolute right-0 top-full mt-2 w-64 rounded-xl border border-[var(--border-primary)] shadow-xl z-50 overflow-hidden"
                       style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
 
                       {/* Profile header */}
                       <div className="p-4 border-b" style={{ borderColor: "var(--border-primary)" }}>
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-xl flex items-center justify-center font-bold text-white" style={{ background: "var(--accent-gradient)" }}>
+                          <div className="w-10 h-10 rounded-xl flex items-center justify-center font-bold text-[var(--text-on-accent)]" style={{ background: "var(--accent-gradient)" }}>
                             {studentUser.avatar}
                           </div>
                           <div>
@@ -378,9 +378,9 @@ export default function StudentLayout({ children }) {
       {/* ── LOGOUT MODAL ─────────────────────────────── */}
       {showLogoutConfirm && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="w-full max-w-sm rounded-2xl p-6 border shadow-2xl text-center space-y-5"
+          <div className="w-full max-w-sm rounded-2xl p-6 border border-[var(--border-primary)] shadow-2xl text-center space-y-5"
             style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
-            <div className="w-11 h-11 rounded-xl bg-rose-500/10 text-rose-500 flex items-center justify-center mx-auto border border-rose-500/20">
+            <div className="w-11 h-11 rounded-xl bg-rose-500/10 text-rose-500 flex items-center justify-center mx-auto border border-[var(--border-primary)] border-rose-500/20">
               <AlertTriangle size={20} />
             </div>
             <div className="space-y-1.5">
@@ -389,7 +389,7 @@ export default function StudentLayout({ children }) {
             </div>
             <div className="flex gap-3">
               <button type="button" onClick={() => setShowLogoutConfirm(false)}
-                className="flex-1 py-2.5 rounded-xl border text-xs font-semibold transition-all cursor-pointer"
+                className="flex-1 py-2.5 rounded-xl border border-[var(--border-primary)] text-xs font-semibold transition-all cursor-pointer"
                 style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}>
                 Cancel
               </button>

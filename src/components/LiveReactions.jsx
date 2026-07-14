@@ -64,7 +64,7 @@ export function ReactionPicker({ onReact }) {
             initial={{ opacity: 0, y: 10, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.9 }}
-            className="absolute bottom-full mb-2 right-0 origin-bottom-right flex items-center gap-1.5 p-2 rounded-2xl bg-slate-900/90 backdrop-blur-md border border-slate-700 shadow-2xl z-50"
+            className="absolute bottom-full mb-2 right-0 origin-bottom-right flex items-center gap-1.5 p-2 rounded-2xl bg-[var(--bg-card)]/90 backdrop-blur-md border border-[var(--border-primary)] border-[var(--border-primary)] shadow-2xl z-50"
           >
             {EMOJIS.map((emoji, idx) => (
               <button
@@ -82,7 +82,7 @@ export function ReactionPicker({ onReact }) {
 
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-[10px] font-bold uppercase tracking-wide transition-all cursor-pointer"
+        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-[var(--border-primary)] text-[10px] font-bold uppercase tracking-wide transition-all cursor-pointer"
         style={{
           backgroundColor: isOpen ? "var(--bg-badge)" : "var(--bg-primary)",
           borderColor: isOpen ? "var(--border-accent)" : "var(--border-primary)",

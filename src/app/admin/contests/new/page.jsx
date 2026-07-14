@@ -266,7 +266,7 @@ export default function CreateContest() {
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="p-4 rounded-2xl border text-xs text-center font-bold bg-emerald-500/10 border-emerald-500/20 text-emerald-500"
+          className="p-4 rounded-2xl border border-[var(--border-primary)] text-xs text-center font-bold bg-emerald-500/10 border-emerald-500/20 text-emerald-500"
         >
           🎉 Contest created successfully! Redirecting...
         </motion.div>
@@ -276,7 +276,7 @@ export default function CreateContest() {
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="p-4 rounded-2xl border text-xs text-center font-bold bg-rose-500/10 border-rose-500/20 text-rose-400"
+          className="p-4 rounded-2xl border border-[var(--border-primary)] text-xs text-center font-bold bg-rose-500/10 border-rose-500/20 text-rose-400"
         >
           ⚠️ {errorMsg}
         </motion.div>
@@ -306,7 +306,7 @@ export default function CreateContest() {
                   placeholder="e.g. Synapse Code Clash #05"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  className="w-full rounded-2xl py-3 px-4 text-xs outline-none border transition-all"
+                  className="w-full rounded-2xl py-3 px-4 text-xs outline-none border border-[var(--border-primary)] transition-all"
                   style={{
                     backgroundColor: "var(--bg-input)",
                     borderColor: "var(--border-primary)",
@@ -327,7 +327,7 @@ export default function CreateContest() {
                   placeholder="synapse-code-clash-05"
                   value={slug}
                   onChange={(e) => setSlug(e.target.value)}
-                  className="w-full rounded-2xl py-3 px-4 text-xs outline-none border transition-all"
+                  className="w-full rounded-2xl py-3 px-4 text-xs outline-none border border-[var(--border-primary)] transition-all"
                   style={{
                     backgroundColor: "var(--bg-input)",
                     borderColor: "var(--border-primary)",
@@ -345,7 +345,7 @@ export default function CreateContest() {
                   Target Cohorts (Batches)
                 </label>
                 <div
-                  className="w-full rounded-2xl p-4 border grid grid-cols-1 sm:grid-cols-2 gap-2"
+                  className="w-full rounded-2xl p-4 border border-[var(--border-primary)] grid grid-cols-1 sm:grid-cols-2 gap-2"
                   style={{
                     backgroundColor: "var(--bg-input)",
                     borderColor: "var(--border-primary)",
@@ -402,7 +402,7 @@ export default function CreateContest() {
                   placeholder="60"
                   value={durationMins}
                   onChange={(e) => setDurationMins(e.target.value)}
-                  className="w-full rounded-2xl py-3 px-4 text-xs outline-none border transition-all"
+                  className="w-full rounded-2xl py-3 px-4 text-xs outline-none border border-[var(--border-primary)] transition-all"
                   style={{
                     backgroundColor: "var(--bg-input)",
                     borderColor: "var(--border-primary)",
@@ -423,7 +423,7 @@ export default function CreateContest() {
                   placeholder="300"
                   value={totalPoints}
                   onChange={(e) => setTotalPoints(e.target.value)}
-                  className="w-full rounded-2xl py-3 px-4 text-xs outline-none border transition-all"
+                  className="w-full rounded-2xl py-3 px-4 text-xs outline-none border border-[var(--border-primary)] transition-all"
                   style={{
                     backgroundColor: "var(--bg-input)",
                     borderColor: "var(--border-primary)",
@@ -445,7 +445,7 @@ export default function CreateContest() {
                 value={desc}
                 onChange={(e) => setDesc(e.target.value)}
                 rows={3}
-                className="w-full rounded-2xl py-3 px-4 text-xs outline-none border transition-all resize-none"
+                className="w-full rounded-2xl py-3 px-4 text-xs outline-none border border-[var(--border-primary)] transition-all resize-none"
                 style={{
                   backgroundColor: "var(--bg-input)",
                   borderColor: "var(--border-primary)",
@@ -472,7 +472,7 @@ export default function CreateContest() {
                   type="date"
                   value={startDate}
                   onChange={(e) => setStartDate(e.target.value)}
-                  className="w-full rounded-2xl py-3 px-4 text-xs outline-none border transition-all"
+                  className="w-full rounded-2xl py-3 px-4 text-xs outline-none border border-[var(--border-primary)] transition-all"
                   style={{
                     backgroundColor: "var(--bg-input)",
                     borderColor: "var(--border-primary)",
@@ -489,7 +489,7 @@ export default function CreateContest() {
                   type="time"
                   value={startTime}
                   onChange={(e) => setStartTime(e.target.value)}
-                  className="w-full rounded-2xl py-3 px-4 text-xs outline-none border transition-all"
+                  className="w-full rounded-2xl py-3 px-4 text-xs outline-none border border-[var(--border-primary)] transition-all"
                   style={{
                     backgroundColor: "var(--bg-input)",
                     borderColor: "var(--border-primary)",
@@ -514,7 +514,7 @@ export default function CreateContest() {
                   type="button"
                   onClick={refreshProblemsList}
                   title="Refresh Problems List"
-                  className="p-2 rounded-xl border transition-all hover:scale-102 cursor-pointer"
+                  className="p-2 rounded-xl border border-[var(--border-primary)] transition-all hover:scale-102 cursor-pointer"
                   style={{
                     backgroundColor: "var(--bg-card)",
                     borderColor: "var(--border-primary)",
@@ -527,7 +527,7 @@ export default function CreateContest() {
                 <button
                   type="button"
                   onClick={() => window.open('/admin/problems/new', '_blank')}
-                  className="px-3 py-2 rounded-xl text-[10px] font-bold text-white shadow-sm flex items-center space-x-1 hover:scale-102 transition-all cursor-pointer"
+                  className="px-3 py-2 rounded-xl text-[10px] font-bold text-[var(--text-on-accent)] shadow-sm flex items-center space-x-1 hover:scale-102 transition-all cursor-pointer"
                   style={{ background: "var(--accent-gradient)" }}
                 >
                   <Plus size={10} />
@@ -563,7 +563,7 @@ export default function CreateContest() {
 
               <div className="max-h-72 overflow-y-auto pr-1 space-y-2">
                 {filteredProblemsForContest.length === 0 ? (
-                  <div className="text-center py-8 text-xs italic text-[var(--text-muted)] border rounded-2xl border-dashed" style={{ borderColor: "var(--border-primary)" }}>
+                  <div className="text-center py-8 text-xs italic text-[var(--text-muted)] border border-[var(--border-primary)] rounded-2xl border-dashed" style={{ borderColor: "var(--border-primary)" }}>
                     No problems found in this scope.
                   </div>
                 ) :
@@ -573,7 +573,7 @@ export default function CreateContest() {
                       <div
                         key={problem.id}
                         onClick={() => toggleProblemSelection(problem.id)}
-                        className="p-3.5 rounded-2xl border flex items-center justify-between cursor-pointer transition-all hover:scale-101"
+                        className="p-3.5 rounded-2xl border border-[var(--border-primary)] flex items-center justify-between cursor-pointer transition-all hover:scale-101"
                         style={{
                           backgroundColor: isSelected ? "var(--bg-badge)" : "var(--bg-primary)",
                           borderColor: isSelected ? "var(--border-accent)" : "var(--border-primary)"
@@ -595,7 +595,7 @@ export default function CreateContest() {
                             type="checkbox"
                             checked={isSelected}
                             readOnly
-                            className="rounded border shadow-sm accent-indigo-500 w-4 h-4"
+                            className="rounded border border-[var(--border-primary)] shadow-sm accent-indigo-500 w-4 h-4"
                           />
                         </div>
                       </div>
@@ -610,7 +610,7 @@ export default function CreateContest() {
               <button
                 type="submit"
                 disabled={submitting || success}
-                className="px-8 py-3.5 rounded-2xl font-bold text-xs text-white shadow-md transition-all flex items-center space-x-2 hover:scale-102 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100"
+                className="px-8 py-3.5 rounded-2xl font-bold text-xs text-[var(--text-on-accent)] shadow-md transition-all flex items-center space-x-2 hover:scale-102 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100"
                 style={{ background: "var(--accent-gradient)", cursor: submitting ? "not-allowed" : "pointer" }}
               >
                 {submitting ? (
@@ -637,7 +637,7 @@ export default function CreateContest() {
 
           {/* Preview Container */}
           <div
-            className="group relative flex flex-col justify-between rounded-3xl p-6 shadow-lg border overflow-hidden transition-all duration-300"
+            className="group relative flex flex-col justify-between rounded-3xl p-6 shadow-lg border border-[var(--border-primary)] overflow-hidden transition-all duration-300"
             style={{
               backgroundColor: "var(--bg-card)",
               borderColor: "var(--border-card)"
@@ -652,14 +652,14 @@ export default function CreateContest() {
             {/* Card Top */}
             <div className="space-y-4 relative z-10">
               <div className="flex justify-between items-center">
-                <span className="text-[9px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded border bg-slate-500/5"
+                <span className="text-[9px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded border border-[var(--border-primary)] bg-slate-500/5"
                   style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}
                 >
                   {category || "Category"}
                 </span>
 
                 {/* Dynamic Tag Pill */}
-                <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md border ${status === "active" ? "text-emerald-500 bg-emerald-500/10 border-emerald-500/20" :
+                <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md border border-[var(--border-primary)] ${status === "active" ? "text-emerald-500 bg-emerald-500/10 border-emerald-500/20" :
                   status === "upcoming" ? "text-zinc-500 bg-zinc-500/10 border-zinc-500/20" :
                     "text-[var(--text-muted)] bg-slate-500/5 border-transparent"
                   }`}>
@@ -679,7 +679,7 @@ export default function CreateContest() {
               </div>
 
               {/* Stats Grid */}
-              <div className="grid grid-cols-2 gap-3 p-3 rounded-2xl border bg-slate-500/5" style={{ borderColor: "var(--border-primary)" }}>
+              <div className="grid grid-cols-2 gap-3 p-3 rounded-2xl border border-[var(--border-primary)] bg-slate-500/5" style={{ borderColor: "var(--border-primary)" }}>
                 <div className="space-y-0.5">
                   <span className="text-[10px] text-[var(--text-muted)] font-bold uppercase">Points</span>
                   <div className="text-sm font-black text-[var(--text-primary)]">{totalPoints} pts</div>
@@ -700,7 +700,7 @@ export default function CreateContest() {
 
               {status === "active" && (
                 <div
-                  className="px-4 py-2 text-xs font-bold text-white rounded-xl shadow-md flex items-center space-x-1"
+                  className="px-4 py-2 text-xs font-bold text-[var(--text-on-accent)] rounded-xl shadow-md flex items-center space-x-1"
                   style={{ background: "var(--accent-gradient)" }}
                 >
                   <span>Enter Arena</span>
@@ -737,7 +737,7 @@ export default function CreateContest() {
           </div>
 
           {/* Quick instructions alert */}
-          <div className="p-4 rounded-2xl border text-[11px] space-y-1.5" style={{ backgroundColor: "var(--bg-badge)", borderColor: "var(--border-accent)", color: "var(--text-secondary)" }}>
+          <div className="p-4 rounded-2xl border border-[var(--border-primary)] text-[11px] space-y-1.5" style={{ backgroundColor: "var(--bg-badge)", borderColor: "var(--border-accent)", color: "var(--text-secondary)" }}>
             <p className="font-bold text-[var(--text-accent)]">Live Synchronization Preview</p>
             <p>Creating this contest will compile your metadata and append it to the lobby registry. It becomes instantly visible to guest students.</p>
           </div>

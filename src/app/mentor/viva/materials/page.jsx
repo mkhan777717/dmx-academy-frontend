@@ -199,13 +199,13 @@ export default function StudyMaterialsPage() {
 
         <div className="flex items-center gap-3">
           <button onClick={() => { setSubjectModalError(""); setNewFolderSubjectName(""); setSubjectModalOpen(true); }}
-                  className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-2xl font-bold text-sm transition-all border hover:scale-105 cursor-pointer"
+                  className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-2xl font-bold text-sm transition-all border border-[var(--border-primary)] hover:scale-105 cursor-pointer"
                   style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}>
             <Plus size={15} className="text-zinc-400" />
             <span>Add Folder</span>
           </button>
           <button onClick={() => setUploadOpen(true)}
-                  className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-2xl font-bold text-sm text-white shadow-md transition-all hover:scale-105 cursor-pointer"
+                  className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-2xl font-bold text-sm text-[var(--text-on-accent)] shadow-md transition-all hover:scale-105 cursor-pointer"
                   style={{ background: "var(--accent-gradient)" }}>
             <Upload size={15} />
             <span>Upload PDF</span>
@@ -214,7 +214,7 @@ export default function StudyMaterialsPage() {
       </div>
 
       {error && (
-        <div className="p-4 rounded-2xl border bg-rose-500/10 border-rose-500/20 flex items-center space-x-3">
+        <div className="p-4 rounded-2xl border border-[var(--border-primary)] bg-rose-500/10 border-rose-500/20 flex items-center space-x-3">
           <AlertCircle size={16} className="text-rose-500 shrink-0" />
           <p className="text-sm font-semibold text-rose-500">{error}</p>
         </div>
@@ -226,7 +226,7 @@ export default function StudyMaterialsPage() {
         <input
           type="text"
           placeholder="Search documents by title or filename..."
-          className="w-full pl-11 pr-4 py-3 rounded-2xl border text-sm outline-none"
+          className="w-full pl-11 pr-4 py-3 rounded-2xl border border-[var(--border-primary)] text-sm outline-none"
           style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-card)", color: "var(--text-primary)" }}
           value={searchQuery}
           onChange={e => setSearchQuery(e.target.value)}
@@ -246,7 +246,7 @@ export default function StudyMaterialsPage() {
           </span>
 
           {subjects.length === 0 ? (
-            <div className="p-12 rounded-3xl border border-dashed text-center space-y-4" style={{ borderColor: "var(--border-primary)" }}>
+            <div className="p-12 rounded-3xl border border-[var(--border-primary)] border-dashed text-center space-y-4" style={{ borderColor: "var(--border-primary)" }}>
               <div className="w-14 h-14 rounded-2xl mx-auto flex items-center justify-center"
                    style={{ backgroundColor: "var(--bg-badge)", color: "var(--text-accent)" }}>
                 <Folder size={28} />
@@ -262,7 +262,7 @@ export default function StudyMaterialsPage() {
                   <button
                     key={subject}
                     onClick={() => setSelectedSubject(subject)}
-                    className="group p-6 rounded-3xl border text-left flex items-start gap-4 transition-all hover:scale-102 hover:shadow-md cursor-pointer"
+                    className="group p-6 rounded-3xl border border-[var(--border-primary)] text-left flex items-start gap-4 transition-all hover:scale-102 hover:shadow-md cursor-pointer"
                     style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-card)" }}
                   >
                     <div className="p-4 rounded-2xl bg-zinc-500/10 text-zinc-500 shrink-0">
@@ -306,13 +306,13 @@ export default function StudyMaterialsPage() {
           </div>
 
           {filteredMaterials.length === 0 ? (
-            <div className="p-8 rounded-3xl border border-dashed text-center" style={{ borderColor: "var(--border-primary)" }}>
+            <div className="p-8 rounded-3xl border border-[var(--border-primary)] border-dashed text-center" style={{ borderColor: "var(--border-primary)" }}>
               <p className="text-sm font-semibold" style={{ color: "var(--text-secondary)" }}>No documents match your query.</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {filteredMaterials.map(m => (
-                <div key={m.id} className="p-5 rounded-3xl border flex flex-col justify-between space-y-4 shadow-sm"
+                <div key={m.id} className="p-5 rounded-3xl border border-[var(--border-primary)] flex flex-col justify-between space-y-4 shadow-sm"
                      style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-card)" }}>
                   <div className="space-y-3">
                     <div className="flex justify-between items-start">
@@ -347,7 +347,7 @@ export default function StudyMaterialsPage() {
                     <div className="flex gap-2">
                       <button
                         onClick={() => handleView(m.id)}
-                        className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-bold border transition-colors cursor-pointer"
+                        className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-bold border border-[var(--border-primary)] transition-colors cursor-pointer"
                         style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}
                       >
                         <ExternalLink size={13} />
@@ -355,7 +355,7 @@ export default function StudyMaterialsPage() {
                       </button>
                       <button
                         onClick={() => handleDownload(m.id)}
-                        className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-bold text-white shadow-sm transition-all hover:scale-102 cursor-pointer"
+                        className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-bold text-[var(--text-on-accent)] shadow-sm transition-all hover:scale-102 cursor-pointer"
                         style={{ background: "var(--accent-gradient)" }}
                       >
                         <Download size={13} />
@@ -373,7 +373,7 @@ export default function StudyMaterialsPage() {
       {/* Subject Folder Creation Modal */}
       {subjectModalOpen && (
         <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="w-full max-w-sm rounded-3xl border shadow-2xl overflow-hidden"
+          <div className="w-full max-w-sm rounded-3xl border border-[var(--border-primary)] shadow-2xl overflow-hidden"
                style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
             <div className="flex items-center justify-between px-6 py-4 border-b" style={{ borderColor: "var(--border-primary)" }}>
               <div className="flex items-center space-x-2">
@@ -388,7 +388,7 @@ export default function StudyMaterialsPage() {
 
             <div className="p-6 space-y-4">
               {subjectModalError && (
-                <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 flex items-center space-x-2">
+                <div className="p-3 rounded-xl bg-rose-500/10 border border-[var(--border-primary)] border-rose-500/20 flex items-center space-x-2">
                   <AlertCircle size={14} className="text-rose-500 shrink-0" />
                   <p className="text-xs font-semibold text-rose-500">{subjectModalError}</p>
                 </div>
@@ -397,7 +397,7 @@ export default function StudyMaterialsPage() {
                 <label className="text-xs font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>
                   Subject Name <span className="text-rose-500">*</span>
                 </label>
-                <input className="w-full p-3 rounded-2xl border text-sm outline-none"
+                <input className="w-full p-3 rounded-2xl border border-[var(--border-primary)] text-sm outline-none"
                        style={{ backgroundColor: "var(--bg-input)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
                        placeholder="e.g. Data Structure and Algorithms"
                        value={newFolderSubjectName}
@@ -407,12 +407,12 @@ export default function StudyMaterialsPage() {
 
             <div className="flex gap-3 px-6 py-4 border-t" style={{ borderColor: "var(--border-primary)" }}>
               <button onClick={() => setSubjectModalOpen(false)}
-                      className="flex-1 py-2.5 rounded-2xl border text-sm font-bold cursor-pointer"
+                      className="flex-1 py-2.5 rounded-2xl border border-[var(--border-primary)] text-sm font-bold cursor-pointer"
                       style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}>
                 Cancel
               </button>
               <button onClick={handleCreateSubjectFolder}
-                      className="flex-1 py-2.5 rounded-2xl text-sm font-bold text-white shadow-md transition-all hover:scale-102 cursor-pointer flex items-center justify-center space-x-2"
+                      className="flex-1 py-2.5 rounded-2xl text-sm font-bold text-[var(--text-on-accent)] shadow-md transition-all hover:scale-102 cursor-pointer flex items-center justify-center space-x-2"
                       style={{ background: "var(--accent-gradient)" }}>
                 <Check size={15} />
                 <span>Create Folder</span>
@@ -425,7 +425,7 @@ export default function StudyMaterialsPage() {
       {/* Upload Modal */}
       {uploadOpen && (
         <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="w-full max-w-md rounded-3xl border shadow-2xl overflow-hidden"
+          <div className="w-full max-w-md rounded-3xl border border-[var(--border-primary)] shadow-2xl overflow-hidden"
                style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
             <div className="flex items-center justify-between px-6 py-4 border-b" style={{ borderColor: "var(--border-primary)" }}>
               <div className="flex items-center space-x-2">
@@ -440,7 +440,7 @@ export default function StudyMaterialsPage() {
 
             <div className="p-6 space-y-4">
               {uploadError && (
-                <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 flex items-center space-x-2">
+                <div className="p-3 rounded-xl bg-rose-500/10 border border-[var(--border-primary)] border-rose-500/20 flex items-center space-x-2">
                   <AlertCircle size={14} className="text-rose-500 shrink-0" />
                   <p className="text-xs font-semibold text-rose-500">{uploadError}</p>
                 </div>
@@ -468,7 +468,7 @@ export default function StudyMaterialsPage() {
                 <label className="text-xs font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>
                   Note Title <span className="text-rose-500">*</span>
                 </label>
-                <input className="w-full p-3 rounded-2xl border text-sm outline-none"
+                <input className="w-full p-3 rounded-2xl border border-[var(--border-primary)] text-sm outline-none"
                        style={{ backgroundColor: "var(--bg-input)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
                        placeholder="e.g. Intro to Arrays"
                        value={uploadTitle}
@@ -480,7 +480,7 @@ export default function StudyMaterialsPage() {
                   Subject Folder <span className="text-rose-500">*</span>
                 </label>
                 <select
-                  className="w-full p-3 rounded-2xl border text-sm outline-none"
+                  className="w-full p-3 rounded-2xl border border-[var(--border-primary)] text-sm outline-none"
                   style={{ backgroundColor: "var(--bg-input)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
                   value={uploadSubject}
                   onChange={e => setUploadSubject(e.target.value)}
@@ -492,7 +492,7 @@ export default function StudyMaterialsPage() {
 
                 {uploadSubject === "__NEW__" && (
                   <input
-                    className="w-full p-3 rounded-2xl border text-sm outline-none mt-2 animate-fade-in"
+                    className="w-full p-3 rounded-2xl border border-[var(--border-primary)] text-sm outline-none mt-2 animate-fade-in"
                     style={{ backgroundColor: "var(--bg-input)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
                     placeholder="Type new subject name..."
                     value={uploadNewSubjectName}
@@ -504,12 +504,12 @@ export default function StudyMaterialsPage() {
 
             <div className="flex gap-3 px-6 py-4 border-t" style={{ borderColor: "var(--border-primary)" }}>
               <button onClick={() => setUploadOpen(false)}
-                      className="flex-1 py-2.5 rounded-2xl border text-sm font-bold cursor-pointer"
+                      className="flex-1 py-2.5 rounded-2xl border border-[var(--border-primary)] text-sm font-bold cursor-pointer"
                       style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}>
                 Cancel
               </button>
               <button onClick={handleUpload} disabled={uploading}
-                      className="flex-1 py-2.5 rounded-2xl text-sm font-bold text-white shadow-md transition-all hover:scale-102 disabled:opacity-50 cursor-pointer flex items-center justify-center space-x-2"
+                      className="flex-1 py-2.5 rounded-2xl text-sm font-bold text-[var(--text-on-accent)] shadow-md transition-all hover:scale-102 disabled:opacity-50 cursor-pointer flex items-center justify-center space-x-2"
                       style={{ background: "var(--accent-gradient)" }}>
                 {uploading ? (
                   <><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /><span>Uploading...</span></>
@@ -525,7 +525,7 @@ export default function StudyMaterialsPage() {
       {/* Delete Modal */}
       {deleteTarget && (
         <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="w-full max-w-sm rounded-3xl border shadow-2xl p-6 space-y-5 text-center"
+          <div className="w-full max-w-sm rounded-3xl border border-[var(--border-primary)] shadow-2xl p-6 space-y-5 text-center"
                style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
             <div className="w-14 h-14 mx-auto rounded-full bg-rose-500/10 flex items-center justify-center">
               <AlertTriangle size={28} className="text-rose-500" />
@@ -538,7 +538,7 @@ export default function StudyMaterialsPage() {
             </div>
             <div className="flex gap-3">
               <button onClick={() => setDeleteTarget(null)} disabled={deleteLoading}
-                      className="flex-1 py-2.5 rounded-2xl border text-sm font-bold cursor-pointer"
+                      className="flex-1 py-2.5 rounded-2xl border border-[var(--border-primary)] text-sm font-bold cursor-pointer"
                       style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}>
                 Cancel
               </button>

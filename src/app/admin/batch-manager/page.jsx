@@ -221,7 +221,7 @@ export default function BatchManagerDashboard() {
           {/* Header section */}
           <section className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 border-b pb-6 shrink-0" style={{ borderColor: "var(--border-primary)" }}>
             <div className="space-y-2">
-              <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border mb-3"
+              <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border border-[var(--border-primary)] mb-3"
                 style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)", backgroundColor: "var(--bg-secondary)" }}>
                 <Layers size={12} className="text-violet-500" />
                 Batch Manager Dashboard
@@ -238,7 +238,7 @@ export default function BatchManagerDashboard() {
             <button
               onClick={loadData}
               title="Refresh Batches"
-              className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl border transition-colors hover:bg-[var(--bg-secondary)] text-xs font-semibold cursor-pointer shrink-0 disabled:opacity-50"
+              className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl border border-[var(--border-primary)] transition-colors hover:bg-[var(--bg-secondary)] text-xs font-semibold cursor-pointer shrink-0 disabled:opacity-50"
               style={{ borderColor: "var(--border-primary)", color: "var(--text-primary)", backgroundColor: "var(--bg-primary)" }}
               disabled={loading}
             >
@@ -255,7 +255,7 @@ export default function BatchManagerDashboard() {
                 <span className="text-xs font-medium" style={{ color: "var(--text-muted)" }}>Fetching roster logs...</span>
               </div>
             ) : batches.length === 0 ? (
-              <div className="flex h-64 flex-col items-center justify-center space-y-4 rounded-2xl border border-dashed" style={{ borderColor: "var(--border-primary)" }}>
+              <div className="flex h-64 flex-col items-center justify-center space-y-4 rounded-2xl border border-[var(--border-primary)] border-dashed" style={{ borderColor: "var(--border-primary)" }}>
                 <div className="p-4 rounded-full bg-[var(--bg-secondary)]">
                   <Layers size={24} className="text-violet-500" />
                 </div>
@@ -277,7 +277,7 @@ export default function BatchManagerDashboard() {
                         setActiveDetailTab("mentors");
                         setActiveView("details");
                       }}
-                      className="rounded-2xl border p-6 space-y-5 transition-colors hover:bg-[var(--bg-secondary)] cursor-pointer flex flex-col justify-between group"
+                      className="rounded-2xl border border-[var(--border-primary)] p-6 space-y-5 transition-colors hover:bg-[var(--bg-secondary)] cursor-pointer flex flex-col justify-between group"
                       style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}
                     >
                       <div className="space-y-2">
@@ -338,7 +338,7 @@ export default function BatchManagerDashboard() {
               {activeDetailTab === "mentors" ? (
                 <button
                   onClick={() => setIsAssignModalOpen(true)}
-                  className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-white text-xs font-semibold transition-transform hover:-translate-y-0.5 cursor-pointer shadow-md shrink-0"
+                  className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-[var(--text-on-accent)] text-xs font-semibold transition-transform hover:-translate-y-0.5 cursor-pointer shadow-md shrink-0"
                   style={{ background: "var(--accent-primary)" }}
                 >
                   <Plus size={14} />
@@ -347,7 +347,7 @@ export default function BatchManagerDashboard() {
               ) : (
                 <button
                   onClick={() => setIsAssignStudentOpen(true)}
-                  className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-white text-xs font-semibold transition-transform hover:-translate-y-0.5 cursor-pointer shadow-md shrink-0"
+                  className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-[var(--text-on-accent)] text-xs font-semibold transition-transform hover:-translate-y-0.5 cursor-pointer shadow-md shrink-0"
                   style={{ background: "var(--accent-primary)" }}
                 >
                   <Plus size={14} />
@@ -359,7 +359,7 @@ export default function BatchManagerDashboard() {
               <button
                 onClick={loadData}
                 title="Refresh Roster"
-                className="p-2.5 rounded-xl border transition-colors hover:bg-[var(--bg-secondary)] flex items-center justify-center cursor-pointer disabled:opacity-50"
+                className="p-2.5 rounded-xl border border-[var(--border-primary)] transition-colors hover:bg-[var(--bg-secondary)] flex items-center justify-center cursor-pointer disabled:opacity-50"
                 style={{ borderColor: "var(--border-primary)", color: "var(--text-primary)", backgroundColor: "var(--bg-primary)" }}
                 disabled={loading}
               >
@@ -369,7 +369,7 @@ export default function BatchManagerDashboard() {
           </section>
 
           {/* Info Banner alert box */}
-          <div className="flex gap-3 p-4 rounded-xl border text-sm font-medium shrink-0" style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)" }}>
+          <div className="flex gap-3 p-4 rounded-xl border border-[var(--border-primary)] text-sm font-medium shrink-0" style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)" }}>
             <ShieldAlert size={16} className="shrink-0 mt-0.5 text-amber-500" />
             <p className="leading-relaxed" style={{ color: "var(--text-secondary)" }}>
               <strong style={{ color: "var(--text-primary)" }}>{(user.role === 'INSTITUTE_ADMIN' || user.role === 'ADMIN') ? "Institute Admin" : "Batch Manager"} Permissions:</strong> You can assign/remove existing mentors and students to this specific batch.
@@ -377,7 +377,7 @@ export default function BatchManagerDashboard() {
           </div>
 
           {/* Roster Tab list */}
-          <div className="flex gap-2 p-1.5 rounded-xl w-fit border shrink-0" style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)" }}>
+          <div className="flex gap-2 p-1.5 rounded-xl w-fit border border-[var(--border-primary)] shrink-0" style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)" }}>
             <button
               onClick={() => setActiveDetailTab("mentors")}
               className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${activeDetailTab === "mentors"
@@ -431,7 +431,7 @@ export default function BatchManagerDashboard() {
                         <td className="px-6 py-4 font-semibold">{member.name}</td>
                         <td className="px-6 py-4" style={{ color: "var(--text-secondary)" }}>{member.email}</td>
                         <td className="px-6 py-4">
-                          <span className={`px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider border ${member.role === "MENTOR"
+                          <span className={`px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider border border-[var(--border-primary)] ${member.role === "MENTOR"
                             ? "bg-amber-500/10 text-amber-600 border-amber-500/20 dark:text-amber-400"
                             : "bg-emerald-500/10 text-emerald-600 border-emerald-500/20 dark:text-emerald-400"
                             }`}>
@@ -471,7 +471,7 @@ export default function BatchManagerDashboard() {
               initial={{ scale: 0.95, opacity: 0, y: 10 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.95, opacity: 0, y: 10 }}
-              className="w-full max-w-md rounded-2xl border shadow-2xl overflow-hidden flex flex-col max-h-[80vh]"
+              className="w-full max-w-md rounded-2xl border border-[var(--border-primary)] shadow-2xl overflow-hidden flex flex-col max-h-[80vh]"
               style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}
             >
               {/* Header */}
@@ -486,7 +486,7 @@ export default function BatchManagerDashboard() {
                 </div>
                 <button
                   onClick={() => setIsAssignModalOpen(false)}
-                  className="p-1.5 rounded-full hover:bg-[var(--bg-primary)] transition-colors cursor-pointer text-[var(--text-muted)] border border-transparent hover:border-[var(--border-primary)]"
+                  className="p-1.5 rounded-full hover:bg-[var(--bg-primary)] transition-colors cursor-pointer text-[var(--text-muted)] border border-[var(--border-primary)] border-transparent hover:border-[var(--border-primary)]"
                 >
                   <X size={16} />
                 </button>
@@ -498,7 +498,7 @@ export default function BatchManagerDashboard() {
                   Available Institute Mentors
                 </span>
                 {availableMentors.length === 0 ? (
-                  <p className="text-xs text-[var(--text-muted)] text-center py-6 border border-dashed rounded-xl" style={{ borderColor: "var(--border-primary)" }}>
+                  <p className="text-xs text-[var(--text-muted)] text-center py-6 border border-[var(--border-primary)] border-dashed rounded-xl" style={{ borderColor: "var(--border-primary)" }}>
                     All mentors have already been assigned to this batch teaching roster.
                   </p>
                 ) : (
@@ -507,14 +507,14 @@ export default function BatchManagerDashboard() {
                       <div
                         key={men.id}
                         onClick={() => handleAddMentorToBatch(men.id)}
-                        className="flex items-center justify-between p-4 rounded-xl border transition-colors hover:bg-[var(--bg-secondary)] cursor-pointer group"
+                        className="flex items-center justify-between p-4 rounded-xl border border-[var(--border-primary)] transition-colors hover:bg-[var(--bg-secondary)] cursor-pointer group"
                         style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}
                       >
                         <div className="flex flex-col space-y-0.5">
                           <span className="text-sm font-semibold">{men.name}</span>
                           <span className="text-xs text-[var(--text-muted)]">{men.email}</span>
                         </div>
-                        <span className="text-xs font-bold px-3 py-1.5 rounded-lg border uppercase tracking-wider transition-colors group-hover:bg-[var(--text-primary)] group-hover:text-[var(--bg-primary)]" style={{ borderColor: "var(--border-primary)", color: "var(--text-primary)" }}>
+                        <span className="text-xs font-bold px-3 py-1.5 rounded-lg border border-[var(--border-primary)] uppercase tracking-wider transition-colors group-hover:bg-[var(--text-primary)] group-hover:text-[var(--bg-primary)]" style={{ borderColor: "var(--border-primary)", color: "var(--text-primary)" }}>
                           Assign
                         </span>
                       </div>
@@ -546,7 +546,7 @@ export default function BatchManagerDashboard() {
               initial={{ scale: 0.95, opacity: 0, y: 10 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.95, opacity: 0, y: 10 }}
-              className="w-full max-w-md rounded-2xl border shadow-2xl overflow-hidden flex flex-col max-h-[80vh]"
+              className="w-full max-w-md rounded-2xl border border-[var(--border-primary)] shadow-2xl overflow-hidden flex flex-col max-h-[80vh]"
               style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}
             >
               {/* Header */}
@@ -561,7 +561,7 @@ export default function BatchManagerDashboard() {
                 </div>
                 <button
                   onClick={() => setIsAssignStudentOpen(false)}
-                  className="p-1.5 rounded-full hover:bg-[var(--bg-primary)] transition-colors cursor-pointer text-[var(--text-muted)] border border-transparent hover:border-[var(--border-primary)]"
+                  className="p-1.5 rounded-full hover:bg-[var(--bg-primary)] transition-colors cursor-pointer text-[var(--text-muted)] border border-[var(--border-primary)] border-transparent hover:border-[var(--border-primary)]"
                 >
                   <X size={16} />
                 </button>
@@ -579,7 +579,7 @@ export default function BatchManagerDashboard() {
                 </div>
 
                 {availableStudents.length === 0 ? (
-                  <p className="text-xs text-[var(--text-muted)] text-center py-6 border border-dashed rounded-xl" style={{ borderColor: "var(--border-primary)" }}>
+                  <p className="text-xs text-[var(--text-muted)] text-center py-6 border border-[var(--border-primary)] border-dashed rounded-xl" style={{ borderColor: "var(--border-primary)" }}>
                     No unassigned students found. All registered students are already mapping to batches.
                   </p>
                 ) : (
@@ -588,14 +588,14 @@ export default function BatchManagerDashboard() {
                       <div
                         key={std.id}
                         onClick={() => handleAddStudentToBatch(std.id)}
-                        className="flex items-center justify-between p-4 rounded-xl border transition-colors hover:bg-[var(--bg-secondary)] cursor-pointer group"
+                        className="flex items-center justify-between p-4 rounded-xl border border-[var(--border-primary)] transition-colors hover:bg-[var(--bg-secondary)] cursor-pointer group"
                         style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}
                       >
                         <div className="flex flex-col space-y-0.5">
                           <span className="text-sm font-semibold">{std.name}</span>
                           <span className="text-xs text-[var(--text-muted)]">{std.email}</span>
                         </div>
-                        <span className="text-xs font-bold px-3 py-1.5 rounded-lg border uppercase tracking-wider transition-colors group-hover:bg-[var(--text-primary)] group-hover:text-[var(--bg-primary)]" style={{ borderColor: "var(--border-primary)", color: "var(--text-primary)" }}>
+                        <span className="text-xs font-bold px-3 py-1.5 rounded-lg border border-[var(--border-primary)] uppercase tracking-wider transition-colors group-hover:bg-[var(--text-primary)] group-hover:text-[var(--bg-primary)]" style={{ borderColor: "var(--border-primary)", color: "var(--text-primary)" }}>
                           Assign
                         </span>
                       </div>

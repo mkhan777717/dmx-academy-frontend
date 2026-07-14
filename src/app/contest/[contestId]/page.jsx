@@ -834,7 +834,7 @@ export default function ContestWorkspace() {
       <div className="flex h-screen flex-col items-center justify-center space-y-4" style={{ backgroundColor: "var(--bg-primary)" }}>
         <h2 className="text-lg font-bold" style={{ color: "var(--text-primary)" }}>Contest Not Found</h2>
         <p className="text-xs" style={{ color: "var(--text-secondary)" }}>The contest you are trying to access does not exist or has been deleted.</p>
-        <Link href="/contest" className="px-4 py-2 text-xs font-bold text-white rounded-xl shadow-md" style={{ background: "var(--accent-gradient)" }}>
+        <Link href="/contest" className="px-4 py-2 text-xs font-bold text-[var(--text-on-accent)] rounded-xl shadow-md" style={{ background: "var(--accent-gradient)" }}>
           Back to Contest Arena
         </Link>
       </div>
@@ -1647,7 +1647,7 @@ export default function ContestWorkspace() {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center space-y-4" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }}>
         <h1 className="text-2xl font-black font-display">Contest Not Found</h1>
-        <Link href="/contest" className="px-5 py-2.5 rounded-full text-xs font-bold text-white shadow-md" style={{ background: "var(--accent-gradient)" }}>
+        <Link href="/contest" className="px-5 py-2.5 rounded-full text-xs font-bold text-[var(--text-on-accent)] shadow-md" style={{ background: "var(--accent-gradient)" }}>
           Back to Lobby
         </Link>
       </div>
@@ -1684,7 +1684,7 @@ export default function ContestWorkspace() {
     if (isLockedTab && !contestEnded) {
       return (
         <div className="flex flex-col items-center justify-center py-20 text-center space-y-3">
-          <div className="h-12 w-12 rounded-2xl flex items-center justify-center bg-slate-500/5 border border-slate-500/10">
+          <div className="h-12 w-12 rounded-2xl flex items-center justify-center bg-slate-500/5 border border-[var(--border-primary)] border-slate-500/10">
             <Lock size={20} className="text-[var(--text-muted)] animate-pulse" />
           </div>
           <h4 className="text-sm font-bold text-[var(--text-primary)]">Tab Content Locked</h4>
@@ -1719,7 +1719,7 @@ export default function ContestWorkspace() {
       return backtickParts.flatMap((part, i) => {
         if (i % 2 === 1) {
           return (
-            <code key={`code-${i}`} className="px-1.5 py-0.5 rounded font-mono text-xs mx-0.5 text-zinc-600 dark:text-zinc-400 bg-zinc-500/5 border border-zinc-500/10 font-semibold">
+            <code key={`code-${i}`} className="px-1.5 py-0.5 rounded font-mono text-xs mx-0.5 text-zinc-600 dark:text-zinc-400 bg-zinc-500/5 border border-[var(--border-primary)] border-zinc-500/10 font-semibold">
               {part}
             </code>
           );
@@ -1798,7 +1798,7 @@ export default function ContestWorkspace() {
       }
       if (block.type === "code") {
         return (
-          <div key={idx} className="my-4 rounded-xl border border-zinc-500/10 dark:border-zinc-500/15 overflow-hidden shadow-[0_4px_12px_rgba(99,102,241,0.02)]">
+          <div key={idx} className="my-4 rounded-xl border border-[var(--border-primary)] border-zinc-500/10 dark:border-zinc-500/15 overflow-hidden shadow-[0_4px_12px_rgba(99,102,241,0.02)]">
             <div className="flex justify-between items-center px-4 py-1.5 border-b border-zinc-500/10 bg-zinc-500/5 text-[10px] text-zinc-400 font-mono font-semibold">
               <span>Example / Code Block</span>
             </div>
@@ -1836,14 +1836,14 @@ export default function ContestWorkspace() {
               initial={{ scale: 0.9, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.9, opacity: 0, y: 20 }}
-              className="w-full max-w-md p-8 rounded-3xl border border-zinc-500/20 shadow-2xl flex flex-col items-center text-center space-y-6"
+              className="w-full max-w-md p-8 rounded-3xl border border-[var(--border-primary)] border-zinc-500/20 shadow-2xl flex flex-col items-center text-center space-y-6"
               style={{
                 background: "linear-gradient(135deg, rgba(20, 20, 25, 0.95), rgba(15, 15, 20, 0.95))",
                 boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 40px rgba(99, 102, 241, 0.15)"
               }}
             >
               {/* Flag Icon */}
-              <div className="h-16 w-16 rounded-full flex items-center justify-center bg-zinc-500/10 border border-zinc-500/20 shadow-lg">
+              <div className="h-16 w-16 rounded-full flex items-center justify-center bg-zinc-500/10 border border-[var(--border-primary)] border-zinc-500/20 shadow-lg">
                 <Flag className="h-8 w-8 text-zinc-500" />
               </div>
 
@@ -1856,7 +1856,7 @@ export default function ContestWorkspace() {
               </div>
 
               {/* Description */}
-              <div className="p-4 w-full rounded-2xl bg-zinc-500/5 border border-zinc-500/10 text-left">
+              <div className="p-4 w-full rounded-2xl bg-zinc-500/5 border border-[var(--border-primary)] border-zinc-500/10 text-left">
                 <p className="text-xs text-zinc-200/80 leading-relaxed">
                   Are you sure you want to finish and submit your contest attempt? Once submitted, you cannot change your code or answer further questions.
                 </p>
@@ -1904,14 +1904,14 @@ export default function ContestWorkspace() {
               initial={{ scale: 0.9, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.9, opacity: 0, y: 20 }}
-              className="w-full max-w-md p-8 rounded-3xl border border-rose-500/20 shadow-2xl flex flex-col items-center text-center space-y-6"
+              className="w-full max-w-md p-8 rounded-3xl border border-[var(--border-primary)] border-rose-500/20 shadow-2xl flex flex-col items-center text-center space-y-6"
               style={{
                 background: "linear-gradient(135deg, rgba(20, 20, 25, 0.95), rgba(15, 15, 20, 0.95))",
                 boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 40px rgba(239, 68, 68, 0.15)"
               }}
             >
               {/* Warning Shield Icon */}
-              <div className="h-16 w-16 rounded-full flex items-center justify-center bg-rose-500/10 border border-rose-500/20 shadow-lg">
+              <div className="h-16 w-16 rounded-full flex items-center justify-center bg-rose-500/10 border border-[var(--border-primary)] border-rose-500/20 shadow-lg">
                 <Flag className="h-8 w-8 text-rose-500" />
               </div>
 
@@ -1924,7 +1924,7 @@ export default function ContestWorkspace() {
               </div>
 
               {/* Description */}
-              <div className="p-4 w-full rounded-2xl bg-rose-500/5 border border-rose-500/10 text-left">
+              <div className="p-4 w-full rounded-2xl bg-rose-500/5 border border-[var(--border-primary)] border-rose-500/10 text-left">
                 <p className="text-sm font-semibold text-rose-200">Reason for warning:</p>
                 <p className="text-xs text-rose-300/80 mt-1 leading-relaxed">{violationReason || "Tab switch or window blur detected."}</p>
               </div>
@@ -2108,7 +2108,7 @@ export default function ContestWorkspace() {
                   className="grid grid-cols-2 gap-3"
                 >
                   <div
-                    className="rounded-2xl p-3.5 border text-center space-y-1"
+                    className="rounded-2xl p-3.5 border border-[var(--border-primary)] text-center space-y-1"
                     style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)" }}
                   >
                     <div className="text-[10px] font-bold uppercase tracking-widest" style={{ color: "var(--text-muted)" }}>Test Cases</div>
@@ -2120,7 +2120,7 @@ export default function ContestWorkspace() {
                     </div>
                   </div>
                   <div
-                    className="rounded-2xl p-3.5 border text-center space-y-1"
+                    className="rounded-2xl p-3.5 border border-[var(--border-primary)] text-center space-y-1"
                     style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)" }}
                   >
                     <div className="text-[10px] font-bold uppercase tracking-widest" style={{ color: "var(--text-muted)" }}>Runtime</div>
@@ -2140,7 +2140,7 @@ export default function ContestWorkspace() {
                 >
                   <button
                     onClick={() => setSubmissionVerdict(null)}
-                    className="flex-1 py-2.5 rounded-xl text-xs font-bold border transition-all hover:opacity-80 cursor-pointer"
+                    className="flex-1 py-2.5 rounded-xl text-xs font-bold border border-[var(--border-primary)] transition-all hover:opacity-80 cursor-pointer"
                     style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)", backgroundColor: "var(--bg-secondary)" }}
                   >
                     Close
@@ -2185,10 +2185,10 @@ export default function ContestWorkspace() {
           <motion.div
             initial={{ scale: 0.96, opacity: 0, y: 15 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
-            className="max-w-xl w-full backdrop-blur-lg bg-white/70 dark:bg-slate-900/70 border border-slate-200/50 dark:border-slate-800/50 shadow-2xl rounded-3xl p-8 space-y-6 relative overflow-hidden transition-all duration-300 hover:shadow-zinc-500/10 hover:border-zinc-500/30"
+            className="max-w-xl w-full backdrop-blur-lg bg-white/70 dark:bg-[var(--bg-card)]/70 border border-[var(--border-primary)] border-slate-200/50 dark:border-[var(--border-primary)]/50 shadow-2xl rounded-3xl p-8 space-y-6 relative overflow-hidden transition-all duration-300 hover:shadow-zinc-500/10 hover:border-zinc-500/30"
           >
             {/* Top gradient indicator */}
-            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-zinc-500 via-slate-500 to-pink-500" />
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-zinc-500 via-slate-500 to-[var(--text-primary)]" />
 
             <div className="h-14 w-14 rounded-2xl flex items-center justify-center text-white shadow-lg bg-gradient-to-tr from-zinc-500 to-slate-600 shadow-zinc-500/20">
               <Trophy size={26} className="animate-pulse" />
@@ -2204,7 +2204,7 @@ export default function ContestWorkspace() {
             </div>
 
             {/* instructions details */}
-            <div className="space-y-4 p-5 rounded-2xl border bg-slate-500/5 backdrop-blur-sm text-xs" style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}>
+            <div className="space-y-4 p-5 rounded-2xl border border-[var(--border-primary)] bg-slate-500/5 backdrop-blur-sm text-xs" style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}>
               <div className="flex items-center space-x-2 text-[var(--text-primary)] font-extrabold text-sm border-b pb-2" style={{ borderColor: "var(--border-primary)" }}>
                 <Clock size={16} className="text-zinc-500" />
                 <span>Contest Rules & Parameters</span>
@@ -2262,13 +2262,13 @@ export default function ContestWorkspace() {
           {/* Contest header */}
           <header className="flex h-14 items-center justify-between px-6 border-b shrink-0 z-30 animate-fade-in shadow-sm" style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)" }}>
             <div className="flex items-center space-x-5">
-              <span className="text-sm font-black text-[var(--text-primary)] tracking-tight font-display bg-gradient-to-r from-zinc-500 via-slate-500 to-pink-500 text-transparent bg-clip-text">
+              <span className="text-sm font-black text-[var(--text-primary)] tracking-tight font-display bg-gradient-to-r from-zinc-500 via-slate-500 to-[var(--text-primary)] text-transparent bg-clip-text">
                 {contest.title}
               </span>
               <span className="h-4 w-px bg-slate-500/20" />
 
               {/* Question list selector pills */}
-              <div className="flex items-center bg-slate-500/5 p-1 rounded-full border space-x-1" style={{ borderColor: "var(--border-primary)" }}>
+              <div className="flex items-center bg-slate-500/5 p-1 rounded-full border border-[var(--border-primary)] space-x-1" style={{ borderColor: "var(--border-primary)" }}>
                 {contest.problems.map((prob, idx) => {
                   const isCurrent = activeQuestionIdx === idx;
                   const isSolved = solvedQuestions.includes(prob.id);
@@ -2277,13 +2277,13 @@ export default function ContestWorkspace() {
                       key={prob.id}
                       onClick={() => changeQuestion(idx)}
                       className={`px-3.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider transition-all duration-200 cursor-pointer flex items-center space-x-1.5 relative ${isCurrent
-                        ? "bg-gradient-to-r from-zinc-500 via-slate-500 to-pink-500 text-white shadow-[0_0_15px_rgba(99,102,241,0.3)] scale-105 hover:scale-110"
+                        ? "bg-gradient-to-r from-zinc-500 via-slate-500 to-[var(--text-primary)] text-white shadow-[0_0_15px_rgba(99,102,241,0.3)] scale-105 hover:scale-110"
                         : "text-[var(--text-secondary)] hover:bg-slate-500/10 hover:text-[var(--text-primary)] hover:scale-102 bg-transparent"
                         }`}
                     >
                       <span>Q{idx + 1}</span>
                       {isSolved && (
-                        <span className="h-2 w-2 rounded-full bg-emerald-500 border border-white dark:border-slate-900 shadow-[0_0_8px_#10b981] animate-pulse" />
+                        <span className="h-2 w-2 rounded-full bg-emerald-500 border border-[var(--border-primary)] border-white dark:border-slate-900 shadow-[0_0_8px_#10b981] animate-pulse" />
                       )}
                     </button>
                   );
@@ -2294,7 +2294,7 @@ export default function ContestWorkspace() {
             {/* Timers and scoring status */}
             <div className="flex items-center space-x-4">
               {/* Sports-scoreboard style countdown timer */}
-              <div className={`flex items-center space-x-2 px-3.5 py-1.5 rounded-full border text-xs font-bold shadow-[0_0_15px_rgba(99,102,241,0.05)] font-mono transition-all duration-300 ${secondsLeft < 120
+              <div className={`flex items-center space-x-2 px-3.5 py-1.5 rounded-full border border-[var(--border-primary)] text-xs font-bold shadow-[0_0_15px_rgba(99,102,241,0.05)] font-mono transition-all duration-300 ${secondsLeft < 120
                 ? "bg-rose-500/10 border-rose-500/30 text-rose-500 shadow-[0_0_15px_rgba(244,63,94,0.15)] animate-pulse"
                 : "bg-zinc-500/10 border-zinc-500/20 text-zinc-500 dark:text-zinc-400"
                 }`}>
@@ -2303,7 +2303,7 @@ export default function ContestWorkspace() {
               </div>
 
               {/* High-end score badge */}
-              <div className="flex items-center space-x-1.5 px-3.5 py-1.5 bg-amber-500/5 rounded-full border border-amber-500/20 text-[11px] font-bold shadow-[0_0_15px_rgba(245,158,11,0.05)]" style={{ color: "var(--text-secondary)" }}>
+              <div className="flex items-center space-x-1.5 px-3.5 py-1.5 bg-amber-500/5 rounded-full border border-[var(--border-primary)] border-amber-500/20 text-[11px] font-bold shadow-[0_0_15px_rgba(245,158,11,0.05)]" style={{ color: "var(--text-secondary)" }}>
                 <Trophy size={13} className="text-amber-500 animate-bounce" />
                 <span>Score:</span>
                 <span className="bg-gradient-to-r from-amber-500 to-orange-500 text-transparent bg-clip-text font-extrabold text-sm px-0.5">{userScore}</span>
@@ -2312,7 +2312,7 @@ export default function ContestWorkspace() {
 
               <button
                 onClick={() => setShowSubmitConfirm(true)}
-                className="flex items-center space-x-1.5 px-4 py-2 rounded-full text-xs font-bold text-white shadow-[0_4px_12px_rgba(239,68,68,0.25)] hover:scale-105 hover:shadow-[0_4px_20px_rgba(239,68,68,0.4)] active:scale-95 transition-all duration-200 cursor-pointer border border-rose-500/30 shadow-red-500/10"
+                className="flex items-center space-x-1.5 px-4 py-2 rounded-full text-xs font-bold text-white shadow-[0_4px_12px_rgba(239,68,68,0.25)] hover:scale-105 hover:shadow-[0_4px_20px_rgba(239,68,68,0.4)] active:scale-95 transition-all duration-200 cursor-pointer border border-[var(--border-primary)] border-rose-500/30 shadow-red-500/10"
                 style={{ background: "linear-gradient(135deg, #f43f5e, #e11d48)" }}
               >
                 <Flag size={12} />
@@ -2355,8 +2355,8 @@ export default function ContestWorkspace() {
                       key={tab.id}
                       onClick={() => setActiveLeftTab(tab.id)}
                       className={`flex items-center space-x-1.5 px-3 py-1.5 text-[11px] font-extrabold cursor-pointer rounded-full transition-all duration-200 whitespace-nowrap hover:-translate-y-0.5 active:translate-y-0 ${isActive
-                        ? "bg-gradient-to-r from-zinc-500/15 to-slate-500/15 text-zinc-500 border border-zinc-500/30 shadow-[0_2px_10px_rgba(99,102,241,0.1)]"
-                        : "text-[var(--text-secondary)] bg-transparent border border-transparent hover:bg-slate-500/5 hover:text-[var(--text-primary)]"
+                        ? "bg-gradient-to-r from-zinc-500/15 to-slate-500/15 text-zinc-500 border border-[var(--border-primary)] border-zinc-500/30 shadow-[0_2px_10px_rgba(99,102,241,0.1)]"
+                        : "text-[var(--text-secondary)] bg-transparent border border-[var(--border-primary)] border-transparent hover:bg-slate-500/5 hover:text-[var(--text-primary)]"
                         }`}
                     >
                       {isLocked ? <Lock size={11} className="text-[var(--text-muted)]" /> : tab.icon}
@@ -2377,7 +2377,7 @@ export default function ContestWorkspace() {
                           <button
                             key={col}
                             onClick={() => setDrawColor(col)}
-                            className={`h-5 w-5 rounded-full border cursor-pointer transition-transform ${drawColor === col ? "scale-110 border-zinc-500 shadow-sm" : "border-slate-500/20"
+                            className={`h-5 w-5 rounded-full border border-[var(--border-primary)] cursor-pointer transition-transform ${drawColor === col ? "scale-110 border-zinc-500 shadow-sm" : "border-slate-500/20"
                               }`}
                             style={{ backgroundColor: col }}
                           />
@@ -2406,7 +2406,7 @@ export default function ContestWorkspace() {
                     </button>
                   </div>
 
-                  <div className="border rounded-2xl overflow-hidden shadow-inner bg-slate-900/5" style={{ borderColor: "var(--border-primary)" }}>
+                  <div className="border border-[var(--border-primary)] rounded-2xl overflow-hidden shadow-inner bg-[var(--bg-card)]/5" style={{ borderColor: "var(--border-primary)" }}>
                     <canvas
                       ref={canvasRef}
                       onMouseDown={startDrawing}
@@ -2426,7 +2426,7 @@ export default function ContestWorkspace() {
             {/* Split Resize bar */}
             <div
               onMouseDown={startResizing}
-              className="w-1.5 hover:w-2 bg-slate-200 dark:bg-slate-800 hover:bg-zinc-500 cursor-col-resize select-none h-full transition-all duration-150 shrink-0 z-20 relative"
+              className="w-1.5 hover:w-2 bg-slate-200 dark:bg-[var(--bg-hover)] hover:bg-zinc-500 cursor-col-resize select-none h-full transition-all duration-150 shrink-0 z-20 relative"
             >
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-8 w-1 rounded-full bg-slate-400" />
             </div>
@@ -2453,7 +2453,7 @@ export default function ContestWorkspace() {
                   <button
                     onClick={handleResetCode}
                     title="Reset code to default template"
-                    className="flex items-center space-x-1 px-2 py-0.5 text-[10px] font-extrabold uppercase rounded border border-red-500/20 hover:border-red-500/40 text-red-400 hover:text-red-300 bg-red-500/5 hover:bg-red-500/10 cursor-pointer transition-all outline-none focus:outline-none ml-2"
+                    className="flex items-center space-x-1 px-2 py-0.5 text-[10px] font-extrabold uppercase rounded border border-[var(--border-primary)] border-red-500/20 hover:border-red-500/40 text-red-400 hover:text-red-300 bg-red-500/5 hover:bg-red-500/10 cursor-pointer transition-all outline-none focus:outline-none ml-2"
                   >
                     <RefreshCw size={10} />
                     <span>Reset Code</span>
@@ -2474,17 +2474,17 @@ export default function ContestWorkspace() {
                 }}
               >
                 {/* Glowing edge accents */}
-                <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-zinc-500/20 via-slate-500/20 to-pink-500/20" />
+                <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-zinc-500/20 via-slate-500/20 to-[var(--text-primary)]/20" />
 
                 <div className="flex items-center space-x-3.5 relative z-10">
                   <button
                     onClick={isSpeaking ? stopSpeaking : () => askVoiceAssistant()}
                     disabled={isListening || assistantTyping}
-                    className={`relative h-9 w-9 rounded-full flex items-center justify-center text-white transition-all border border-transparent outline-none focus:outline-none shadow-md ${isSpeaking
+                    className={`relative h-9 w-9 rounded-full flex items-center justify-center text-white transition-all border border-[var(--border-primary)] border-transparent outline-none focus:outline-none shadow-md ${isSpeaking
                       ? "bg-rose-500 hover:bg-rose-600 cursor-pointer shadow-rose-500/25"
                       : isListening
                         ? "bg-red-500 shadow-red-500/35 scale-105"
-                        : "bg-zinc-600 hover:bg-zinc-700 cursor-pointer shadow-zinc-600/25 hover:scale-105 active:scale-95"
+                        : "bg-[var(--accent-primary)] hover:bg-zinc-700 cursor-pointer shadow-zinc-600/25 hover:scale-105 active:scale-95"
                       }`}
                     title={isSpeaking ? "Stop speaking" : "Start query"}
                   >
@@ -2531,7 +2531,7 @@ export default function ContestWorkspace() {
                   <button
                     onClick={() => askVoiceAssistant()}
                     disabled={isListening || assistantTyping}
-                    className="px-3.5 py-1.8 bg-zinc-600 hover:bg-zinc-700 text-white font-bold rounded-full text-[10px] shadow-md hover:shadow-zinc-600/15 transition-all cursor-pointer disabled:opacity-50 hover:scale-102 active:scale-98"
+                    className="px-3.5 py-1.8 bg-[var(--accent-primary)] hover:bg-zinc-700 text-white font-bold rounded-full text-[10px] shadow-md hover:shadow-zinc-600/15 transition-all cursor-pointer disabled:opacity-50 hover:scale-102 active:scale-98"
                   >
                     Start Query
                   </button>
@@ -2609,7 +2609,7 @@ export default function ContestWorkspace() {
                         key={ctab.id}
                         onClick={() => setActiveConsoleTab(ctab.id)}
                         className={`flex items-center space-x-1 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${activeConsoleTab === ctab.id
-                          ? "bg-slate-500/10 text-zinc-400 border border-slate-500/10"
+                          ? "bg-slate-500/10 text-zinc-400 border border-[var(--border-primary)] border-slate-500/10"
                           : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
                           }`}
                       >
@@ -2623,7 +2623,7 @@ export default function ContestWorkspace() {
                     <button
                       onClick={runCode}
                       disabled={isRunning || isSubmitting}
-                      className="flex items-center space-x-1.5 px-3 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded text-[11px] font-bold border border-slate-700 transition-all cursor-pointer disabled:opacity-50"
+                      className="flex items-center space-x-1.5 px-3 py-1 bg-[var(--bg-hover)] hover:bg-slate-700 text-slate-300 rounded text-[11px] font-bold border border-[var(--border-primary)] border-[var(--border-primary)] transition-all cursor-pointer disabled:opacity-50"
                     >
                       {isRunning ? (
                         <RefreshCw size={10} className="animate-spin" />
@@ -2682,7 +2682,7 @@ export default function ContestWorkspace() {
                                 return copy;
                               });
                             }}
-                            className="w-full border rounded-xl px-4 py-2.5 outline-none font-mono text-xs transition-all duration-200 focus:border-zinc-500/80 focus:shadow-[0_0_12px_rgba(99,102,241,0.15)] bg-slate-500/5 hover:bg-slate-500/10"
+                            className="w-full border border-[var(--border-primary)] rounded-xl px-4 py-2.5 outline-none font-mono text-xs transition-all duration-200 focus:border-zinc-500/80 focus:shadow-[0_0_12px_rgba(99,102,241,0.15)] bg-slate-500/5 hover:bg-slate-500/10"
                             style={{ borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
                           />
                         </div>
@@ -2701,14 +2701,14 @@ export default function ContestWorkspace() {
                         testResults.map((res, idx) => (
                           <div
                             key={idx}
-                            className={`p-4 rounded-2xl border transition-all duration-300 shadow-[0_4px_12px_rgba(0,0,0,0.03)] space-y-3.5 ${res.passed
+                            className={`p-4 rounded-2xl border border-[var(--border-primary)] transition-all duration-300 shadow-[0_4px_12px_rgba(0,0,0,0.03)] space-y-3.5 ${res.passed
                               ? "bg-emerald-500/5 dark:bg-emerald-500/5 border-emerald-500/20 shadow-emerald-500/5 hover:border-emerald-500/40"
                               : "bg-rose-500/5 dark:bg-rose-500/5 border-rose-500/20 shadow-rose-500/5 hover:border-rose-500/40"
                               }`}
                           >
                             <div className="flex justify-between items-center">
                               <span className="font-extrabold uppercase tracking-wider text-[10px]" style={{ color: "var(--text-secondary)" }}>{res.name}</span>
-                              <span className={`font-black text-[10px] px-2.5 py-0.8 rounded-full border uppercase tracking-wider ${res.passed
+                              <span className={`font-black text-[10px] px-2.5 py-0.8 rounded-full border border-[var(--border-primary)] uppercase tracking-wider ${res.passed
                                 ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.15)]"
                                 : "bg-rose-500/10 border-rose-500/30 text-rose-400 shadow-[0_0_10px_rgba(244,63,94,0.15)]"
                                 }`}>
@@ -2716,27 +2716,27 @@ export default function ContestWorkspace() {
                               </span>
                             </div>
 
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-[11px] p-3 rounded-xl border bg-slate-900/30 border-slate-500/10 font-mono">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-[11px] p-3 rounded-xl border border-[var(--border-primary)] bg-[var(--bg-card)]/30 border-slate-500/10 font-mono">
                               <div>
                                 <span className="font-bold text-[9px] uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Input</span>
-                                <pre className="mt-1 p-2 rounded-lg bg-slate-500/5 border border-slate-500/10 overflow-x-auto whitespace-pre-wrap max-h-24 scrollbar-thin" style={{ color: "var(--text-secondary)" }}>{res.input}</pre>
+                                <pre className="mt-1 p-2 rounded-lg bg-slate-500/5 border border-[var(--border-primary)] border-slate-500/10 overflow-x-auto whitespace-pre-wrap max-h-24 scrollbar-thin" style={{ color: "var(--text-secondary)" }}>{res.input}</pre>
                               </div>
                               <div>
                                 <span className="font-bold text-[9px] uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Expected</span>
-                                <pre className="mt-1 p-2 rounded-lg bg-slate-500/5 border border-slate-500/10 overflow-x-auto whitespace-pre-wrap max-h-24 scrollbar-thin" style={{ color: "var(--text-secondary)" }}>{res.expected}</pre>
+                                <pre className="mt-1 p-2 rounded-lg bg-slate-500/5 border border-[var(--border-primary)] border-slate-500/10 overflow-x-auto whitespace-pre-wrap max-h-24 scrollbar-thin" style={{ color: "var(--text-secondary)" }}>{res.expected}</pre>
                               </div>
                               <div className="sm:col-span-2">
                                 <span className="font-bold text-[9px] uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Actual Output</span>
                                 {res.error ? (
-                                  <pre className="mt-1 p-2 rounded-lg bg-rose-500/5 border border-rose-500/10 text-rose-400/90 whitespace-pre-wrap overflow-x-auto max-h-32 scrollbar-thin">{res.error}</pre>
+                                  <pre className="mt-1 p-2 rounded-lg bg-rose-500/5 border border-[var(--border-primary)] border-rose-500/10 text-rose-400/90 whitespace-pre-wrap overflow-x-auto max-h-32 scrollbar-thin">{res.error}</pre>
                                 ) : (
-                                  <pre className={`mt-1 p-2 rounded-lg bg-slate-500/5 border overflow-x-auto whitespace-pre-wrap max-h-24 scrollbar-thin ${res.passed ? "border-emerald-500/20 text-emerald-400/95" : "border-rose-500/20 text-rose-400/95"}`}>{res.actual}</pre>
+                                  <pre className={`mt-1 p-2 rounded-lg bg-slate-500/5 border border-[var(--border-primary)] overflow-x-auto whitespace-pre-wrap max-h-24 scrollbar-thin ${res.passed ? "border-emerald-500/20 text-emerald-400/95" : "border-rose-500/20 text-rose-400/95"}`}>{res.actual}</pre>
                                 )}
                               </div>
                             </div>
 
                             {res.logs && res.logs.length > 0 && (
-                              <div className="mt-1 space-y-1 p-3 rounded-xl border text-[10px] bg-slate-900/40 border-slate-500/10 font-mono" style={{ color: "var(--text-secondary)" }}>
+                              <div className="mt-1 space-y-1 p-3 rounded-xl border border-[var(--border-primary)] text-[10px] bg-[var(--bg-card)]/40 border-slate-500/10 font-mono" style={{ color: "var(--text-secondary)" }}>
                                 <div className="font-bold uppercase tracking-wider text-[9px] mb-1.5" style={{ color: "var(--text-muted)" }}>Standard Console Output</div>
                                 <div className="space-y-0.5 max-h-24 overflow-y-auto whitespace-pre-wrap scrollbar-thin">
                                   {res.logs.map((log, lIdx) => (
@@ -2765,7 +2765,7 @@ export default function ContestWorkspace() {
                           <button
                             onClick={handleRunDebug}
                             disabled={debugRunning}
-                            className="flex items-center space-x-1.5 px-3 py-1 text-xs font-bold rounded-lg text-white bg-zinc-600 hover:bg-zinc-700 transition-all cursor-pointer select-none outline-none focus:outline-none disabled:bg-zinc-600/50"
+                            className="flex items-center space-x-1.5 px-3 py-1 text-xs font-bold rounded-lg text-white bg-[var(--accent-primary)] hover:bg-zinc-700 transition-all cursor-pointer select-none outline-none focus:outline-none disabled:bg-[var(--accent-primary)]/50"
                           >
                             {debugRunning ? (
                               <>
@@ -2785,7 +2785,7 @@ export default function ContestWorkspace() {
                           onChange={(e) => setCustomInput(e.target.value)}
                           placeholder="Type custom testcase inputs here..."
                           rows={6}
-                          className="w-full flex-1 border rounded px-4 py-3 outline-none focus:border-zinc-500 font-mono text-xs leading-relaxed resize-none"
+                          className="w-full flex-1 border border-[var(--border-primary)] rounded px-4 py-3 outline-none focus:border-zinc-500 font-mono text-xs leading-relaxed resize-none"
                           style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
                         />
                       </div>
@@ -2802,7 +2802,7 @@ export default function ContestWorkspace() {
                           <div className="space-y-3 font-mono text-[11px]">
                             {/* Meta information */}
                             <div className="flex items-center gap-2">
-                              <span className={`font-extrabold text-[10px] px-2 py-0.5 rounded border uppercase ${
+                              <span className={`font-extrabold text-[10px] px-2 py-0.5 rounded border border-[var(--border-primary)] uppercase ${
                                 debugResult.status === "SUCCESS" 
                                   ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400" 
                                   : "bg-rose-500/10 border-rose-500/30 text-rose-400"
@@ -2824,7 +2824,7 @@ export default function ContestWorkspace() {
 
                             {/* Compiler / Execution Tracebacks */}
                             {debugResult.error && (
-                              <div className="p-3 rounded-lg border border-rose-500/20 bg-rose-500/5">
+                              <div className="p-3 rounded-lg border border-[var(--border-primary)] border-rose-500/20 bg-rose-500/5">
                                 <div className="font-bold uppercase text-[9px] text-rose-400 mb-1">Runtime / Compile Error:</div>
                                 <pre className="text-rose-400 whitespace-pre-wrap">{debugResult.error}</pre>
                               </div>
@@ -2865,11 +2865,11 @@ export default function ContestWorkspace() {
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              className="max-w-xl w-full rounded-3xl border p-8 shadow-2xl space-y-6"
+              className="max-w-xl w-full rounded-3xl border border-[var(--border-primary)] p-8 shadow-2xl space-y-6"
               style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-accent)" }}
             >
               <div className="text-center space-y-3">
-                <div className="h-16 w-16 mx-auto rounded-2xl flex items-center justify-center text-white shadow-lg bg-zinc-600 shadow-zinc-500/25">
+                <div className="h-16 w-16 mx-auto rounded-2xl flex items-center justify-center text-white shadow-lg bg-[var(--accent-primary)] shadow-zinc-500/25">
                   <Trophy size={36} />
                 </div>
                 <h3 className="text-2xl font-black font-display text-[var(--text-primary)]">Contest Finished!</h3>
@@ -2879,7 +2879,7 @@ export default function ContestWorkspace() {
               </div>
 
               {/* Score breakdown metrics */}
-              <div className="grid grid-cols-2 gap-4 p-4 rounded-2xl border bg-slate-500/5 text-center" style={{ borderColor: "var(--border-primary)" }}>
+              <div className="grid grid-cols-2 gap-4 p-4 rounded-2xl border border-[var(--border-primary)] bg-slate-500/5 text-center" style={{ borderColor: "var(--border-primary)" }}>
                 <div className="space-y-1">
                   <span className="text-[10px] text-[var(--text-muted)] font-bold uppercase">Your Score</span>
                   <div className="text-2xl font-black text-[var(--text-accent)]">{userScore} pts</div>
@@ -2899,7 +2899,7 @@ export default function ContestWorkspace() {
                   {finalScoreboard.map((player) => (
                     <div
                       key={player.rank}
-                      className={`flex justify-between items-center p-2.5 rounded-xl border text-xs ${player.isUser
+                      className={`flex justify-between items-center p-2.5 rounded-xl border border-[var(--border-primary)] text-xs ${player.isUser
                         ? "bg-zinc-500/10 border-zinc-500/30 font-bold"
                         : "bg-slate-500/5 border-transparent"
                         }`}
@@ -2925,7 +2925,7 @@ export default function ContestWorkspace() {
               <div className="flex justify-center pt-2">
                 <Link
                   href="/contest"
-                  className="px-6 py-2.5 text-white font-bold rounded-full text-xs shadow-md flex items-center space-x-1"
+                  className="px-6 py-2.5 text-[var(--text-on-accent)] font-bold rounded-full text-xs shadow-md flex items-center space-x-1"
                   style={{ background: "var(--accent-gradient)" }}
                 >
                   <span>Return to Lobby</span>
@@ -2957,7 +2957,7 @@ export default function ContestWorkspace() {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="max-w-2xl w-full rounded-3xl border p-6 sm:p-8 shadow-2xl space-y-6 text-left max-h-[85vh] overflow-y-auto"
+              className="max-w-2xl w-full rounded-3xl border border-[var(--border-primary)] p-6 sm:p-8 shadow-2xl space-y-6 text-left max-h-[85vh] overflow-y-auto"
               style={{ backgroundColor: "var(--bg-card)", borderColor: submissionVerdict.passed ? "var(--border-accent)" : "rgba(239, 68, 68, 0.3)" }}
               onClick={(e) => e.stopPropagation()}
             >
@@ -2993,7 +2993,7 @@ export default function ContestWorkspace() {
               {submissionVerdict.stderr && (
                 <div className="space-y-2">
                   <span className="text-[10px] font-bold text-rose-400 uppercase tracking-wider block">Execution Error Output:</span>
-                  <pre className="p-4 rounded-2xl bg-slate-950 border border-rose-500/10 text-rose-300 font-mono text-[11px] leading-relaxed overflow-x-auto whitespace-pre-wrap">
+                  <pre className="p-4 rounded-2xl bg-slate-950 border border-[var(--border-primary)] border-rose-500/10 text-rose-300 font-mono text-[11px] leading-relaxed overflow-x-auto whitespace-pre-wrap">
                     {submissionVerdict.stderr}
                   </pre>
                 </div>
@@ -3009,7 +3009,7 @@ export default function ContestWorkspace() {
                       return (
                         <div 
                           key={index}
-                          className="border rounded-2xl p-4 transition-all"
+                          className="border border-[var(--border-primary)] rounded-2xl p-4 transition-all"
                           style={{ 
                             backgroundColor: "var(--bg-primary)", 
                             borderColor: passed ? "rgba(16, 185, 129, 0.15)" : "rgba(239, 68, 68, 0.15)" 
@@ -3020,7 +3020,7 @@ export default function ContestWorkspace() {
                               Test Case #{res.index} {isSample ? <span className="text-zinc-400 text-[10px] ml-1 font-sans">(Sample)</span> : <span className="text-[var(--text-muted)] text-[10px] ml-1 font-sans">(Hidden)</span>}
                             </span>
                             
-                            <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded border uppercase font-mono ${
+                            <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded border border-[var(--border-primary)] uppercase font-mono ${
                               passed 
                                 ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400" 
                                 : "bg-rose-500/10 border-rose-500/30 text-rose-400"
@@ -3145,7 +3145,7 @@ function JudgingOverlayContent({ selectedLanguage, currentCode, user }) {
       animate={{ scale: 1, opacity: 1, y: 0 }}
       exit={{ scale: 0.9, opacity: 0, y: 15 }}
       transition={{ type: "spring", stiffness: 350, damping: 26 }}
-      className="relative w-full max-w-2xl mx-4 rounded-3xl overflow-hidden shadow-2xl border bg-slate-900/90 text-white"
+      className="relative w-full max-w-2xl mx-4 rounded-3xl overflow-hidden shadow-2xl border border-[var(--border-primary)] bg-[var(--bg-card)]/90 text-white"
       style={{
         borderColor: "rgba(255,255,255,0.08)",
         backdropFilter: "blur(20px)",
@@ -3168,7 +3168,7 @@ function JudgingOverlayContent({ selectedLanguage, currentCode, user }) {
         </div>
 
         {/* Status container */}
-        <div className="p-4 rounded-2xl border border-slate-800 bg-slate-950/60 flex items-center space-x-3 shadow-inner">
+        <div className="p-4 rounded-2xl border border-[var(--border-primary)] border-[var(--border-primary)] bg-slate-950/60 flex items-center space-x-3 shadow-inner">
           {/* Animated dot */}
           <div className="relative flex h-3.5 w-3.5 items-center justify-center">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-500 opacity-75"></span>
@@ -3179,7 +3179,7 @@ function JudgingOverlayContent({ selectedLanguage, currentCode, user }) {
 
         {/* Sleek Progress Bar */}
         <div className="space-y-2">
-          <div className="w-full h-2 bg-slate-800/80 rounded-full overflow-hidden shadow-inner">
+          <div className="w-full h-2 bg-[var(--bg-hover)]/80 rounded-full overflow-hidden shadow-inner">
             <div
               className="h-full bg-gradient-to-r from-amber-500 via-orange-500 to-yellow-500 transition-all duration-300 ease-out rounded-full"
               style={{ width: `${progressPercent}%` }}
@@ -3193,13 +3193,13 @@ function JudgingOverlayContent({ selectedLanguage, currentCode, user }) {
         </div>
 
         {/* Code Preview */}
-        <div className="relative rounded-2xl overflow-hidden border border-slate-800 bg-slate-950/90 font-mono text-xs shadow-lg">
-          <div className="flex justify-between items-center px-4 py-2.5 border-b border-slate-800 bg-slate-900/40 text-slate-400 select-none">
+        <div className="relative rounded-2xl overflow-hidden border border-[var(--border-primary)] border-[var(--border-primary)] bg-slate-950/90 font-mono text-xs shadow-lg">
+          <div className="flex justify-between items-center px-4 py-2.5 border-b border-[var(--border-primary)] bg-[var(--bg-card)]/40 text-slate-400 select-none">
             <span>Code | {selectedLanguage === "javascript" ? "JavaScript" : selectedLanguage === "python" ? "Python3" : selectedLanguage.toUpperCase()}</span>
           </div>
           <div className="p-4 max-h-60 overflow-y-auto flex">
             {/* Line numbers */}
-            <div className="text-right pr-4 select-none text-slate-600 border-r border-slate-800/60 min-w-[2.5rem]">
+            <div className="text-right pr-4 select-none text-slate-600 border-r border-[var(--border-primary)]/60 min-w-[2.5rem]">
               {lines.map((_, i) => (
                 <div key={i} className="leading-6 font-semibold">{i + 1}</div>
               ))}
@@ -3317,7 +3317,7 @@ function MockAssessmentSurvey({ onSubmit, onSkip }) {
     <motion.div
       initial={{ scale: 0.95, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
-      className="max-w-xl w-full rounded-3xl border p-8 shadow-2xl space-y-6 text-left relative overflow-hidden"
+      className="max-w-xl w-full rounded-3xl border border-[var(--border-primary)] p-8 shadow-2xl space-y-6 text-left relative overflow-hidden"
       style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-accent)" }}
     >
       {/* Top Gold coin accent */}
@@ -3328,7 +3328,7 @@ function MockAssessmentSurvey({ onSubmit, onSkip }) {
           {/* Spinning / Bouncing Gold Coin */}
           <div className="relative w-16 h-16 rounded-full bg-gradient-to-br from-yellow-300 via-amber-400 to-yellow-600 border-2 border-amber-200 flex items-center justify-center shadow-lg transform group-hover:rotate-[360deg] transition-transform duration-1000 ease-in-out">
             {/* Inner texture lines */}
-            <div className="absolute inset-1.5 rounded-full border border-dashed border-amber-100/50 flex items-center justify-center">
+            <div className="absolute inset-1.5 rounded-full border border-[var(--border-primary)] border-dashed border-amber-100/50 flex items-center justify-center">
               <span className="text-white font-black text-2xl font-display select-none">¢</span>
             </div>
             {/* Gloss reflection shimmer effect */}
@@ -3358,9 +3358,9 @@ function MockAssessmentSurvey({ onSubmit, onSkip }) {
                   key={opt}
                   type="button"
                   onClick={() => setStatus(opt)}
-                  className={`px-5 py-2.5 rounded-full text-xs font-bold border transition-all cursor-pointer select-none active:scale-[0.98] ${
+                  className={`px-5 py-2.5 rounded-full text-xs font-bold border border-[var(--border-primary)] transition-all cursor-pointer select-none active:scale-[0.98] ${
                     isSelected
-                      ? "bg-slate-800 text-white border-slate-800"
+                      ? "bg-[var(--bg-hover)] text-white border-[var(--border-primary)]"
                       : "bg-transparent text-[var(--text-secondary)] border-[var(--border-primary)] hover:bg-slate-500/5"
                   }`}
                 >
@@ -3392,7 +3392,7 @@ function MockAssessmentSurvey({ onSubmit, onSkip }) {
                   // Small timeout to let selectSchool click handle before closing dropdown
                   setTimeout(() => setShowSchoolDropdown(false), 200);
                 }}
-                className="w-full rounded-2xl py-3 px-4 text-xs outline-none border transition-all"
+                className="w-full rounded-2xl py-3 px-4 text-xs outline-none border border-[var(--border-primary)] transition-all"
                 style={{
                   backgroundColor: "var(--bg-input)",
                   borderColor: "var(--border-primary)",
@@ -3401,7 +3401,7 @@ function MockAssessmentSurvey({ onSubmit, onSkip }) {
               />
               {showSchoolDropdown && (
                 <div
-                  className="absolute left-0 right-0 mt-1.5 max-h-48 overflow-y-auto rounded-2xl border shadow-xl z-10 p-1.5 scrollbar-thin"
+                  className="absolute left-0 right-0 mt-1.5 max-h-48 overflow-y-auto rounded-2xl border border-[var(--border-primary)] shadow-xl z-10 p-1.5 scrollbar-thin"
                   style={{
                     backgroundColor: "var(--bg-card)",
                     borderColor: "var(--border-primary)"
@@ -3448,7 +3448,7 @@ function MockAssessmentSurvey({ onSubmit, onSkip }) {
                     <select
                       value={item.company}
                       onChange={(e) => handleUpdateCompany(item.id, e.target.value)}
-                      className="w-full rounded-xl py-2 px-3 text-xs outline-none border bg-transparent text-[var(--text-primary)]"
+                      className="w-full rounded-xl py-2 px-3 text-xs outline-none border border-[var(--border-primary)] bg-transparent text-[var(--text-primary)]"
                       style={{
                         borderColor: "var(--border-primary)",
                         backgroundColor: "var(--bg-input)"
@@ -3471,9 +3471,9 @@ function MockAssessmentSurvey({ onSubmit, onSkip }) {
                           key={stage}
                           type="button"
                           onClick={() => handleToggleStage(item.id, stage)}
-                          className={`px-2.5 py-1.5 rounded-lg text-[10px] font-bold border transition-all cursor-pointer active:scale-[0.98] ${
+                          className={`px-2.5 py-1.5 rounded-lg text-[10px] font-bold border border-[var(--border-primary)] transition-all cursor-pointer active:scale-[0.98] ${
                             isStageSelected
-                              ? "bg-slate-800 text-white border-slate-800"
+                              ? "bg-[var(--bg-hover)] text-white border-[var(--border-primary)]"
                               : "bg-transparent text-[var(--text-secondary)] border-[var(--border-primary)] hover:bg-slate-500/5"
                           }`}
                         >
@@ -3518,7 +3518,7 @@ function MockAssessmentSurvey({ onSubmit, onSkip }) {
         <button
           type="button"
           onClick={handleSubmit}
-          className="px-6 py-2.5 text-white font-bold rounded-xl text-xs shadow-md transition-all cursor-pointer hover:scale-[1.02] active:scale-[0.98]"
+          className="px-6 py-2.5 text-[var(--text-on-accent)] font-bold rounded-xl text-xs shadow-md transition-all cursor-pointer hover:scale-[1.02] active:scale-[0.98]"
           style={{ background: "var(--accent-gradient)" }}
         >
           Submit

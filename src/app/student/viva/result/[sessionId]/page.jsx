@@ -69,7 +69,7 @@ export default function VivaResultPage() {
   if (error || !session) {
     return (
       <div className="max-w-xl mx-auto space-y-4">
-        <div className="p-5 rounded-2xl border bg-rose-500/10 border-rose-500/20 flex items-center space-x-3">
+        <div className="p-5 rounded-2xl border border-[var(--border-primary)] bg-rose-500/10 border-rose-500/20 flex items-center space-x-3">
           <AlertCircle size={20} className="text-rose-500 shrink-0" />
           <p className="text-sm font-semibold text-rose-500">{error || "Session not found."}</p>
         </div>
@@ -116,7 +116,7 @@ export default function VivaResultPage() {
         </Link>
       </div>
       {isDisqualified && (
-        <div className="p-6 rounded-3xl border bg-rose-500/10 border-rose-500/25 flex items-start space-x-4 text-rose-500">
+        <div className="p-6 rounded-3xl border border-[var(--border-primary)] bg-rose-500/10 border-rose-500/25 flex items-start space-x-4 text-rose-500">
           <AlertCircle size={24} className="shrink-0 mt-0.5" />
           <div className="space-y-1">
             <h3 className="text-sm font-black uppercase tracking-wider">Session Disqualified</h3>
@@ -128,7 +128,7 @@ export default function VivaResultPage() {
       )}
 
       {/* Hero Score Card */}
-      <div className="relative p-8 md:p-10 rounded-3xl border shadow-lg overflow-hidden"
+      <div className="relative p-8 md:p-10 rounded-3xl border border-[var(--border-primary)] shadow-lg overflow-hidden"
            style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
         <div className="absolute inset-0 opacity-10 pointer-events-none"
              style={{ background: scoreGradient }} />
@@ -176,7 +176,7 @@ export default function VivaResultPage() {
             { label: "Strengths", value: strengths.length, icon: TrendingUp },
             { label: "To Improve", value: improvements.length, icon: TrendingDown },
           ].map(({ label, value, icon: Icon }) => (
-            <div key={label} className="p-3 rounded-2xl border text-center"
+            <div key={label} className="p-3 rounded-2xl border border-[var(--border-primary)] text-center"
                  style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}>
               <Icon size={16} className="mx-auto mb-1" style={{ color: "var(--text-accent)" }} />
               <div className="text-lg font-black" style={{ color: "var(--text-primary)" }}>{value}</div>
@@ -187,7 +187,7 @@ export default function VivaResultPage() {
 
         {/* Overall Feedback */}
         {session.feedback && (!session.aiSummary || session.feedback !== session.aiSummary.overallRemark) && (
-          <div className="relative z-10 mt-4 p-4 rounded-2xl border text-sm"
+          <div className="relative z-10 mt-4 p-4 rounded-2xl border border-[var(--border-primary)] text-sm"
                style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}>
             <span className="font-bold" style={{ color: "var(--text-primary)" }}>Feedback: </span>
             {session.feedback}
@@ -197,7 +197,7 @@ export default function VivaResultPage() {
 
       {/* AI Session Summary */}
       {session.aiSummary && (
-        <div className="p-6 rounded-3xl border space-y-4"
+        <div className="p-6 rounded-3xl border border-[var(--border-primary)] space-y-4"
              style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
           <div className="flex items-center space-x-2">
             <div className="p-1.5 rounded-lg" style={{ backgroundColor: "var(--bg-badge)", color: "var(--text-accent)" }}>
@@ -215,7 +215,7 @@ export default function VivaResultPage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {session.aiSummary.strongTopics?.length > 0 && (
-              <div className="p-4 rounded-2xl bg-emerald-500/5 border border-emerald-500/20 space-y-2">
+              <div className="p-4 rounded-2xl bg-emerald-500/5 border border-[var(--border-primary)] border-emerald-500/20 space-y-2">
                 <p className="text-[10px] font-black uppercase tracking-wider text-emerald-500">Strong Topics</p>
                 <ul className="space-y-1">
                   {session.aiSummary.strongTopics.map((t, i) => (
@@ -228,7 +228,7 @@ export default function VivaResultPage() {
               </div>
             )}
             {session.aiSummary.weakTopics?.length > 0 && (
-              <div className="p-4 rounded-2xl bg-rose-500/5 border border-rose-500/20 space-y-2">
+              <div className="p-4 rounded-2xl bg-rose-500/5 border border-[var(--border-primary)] border-rose-500/20 space-y-2">
                 <p className="text-[10px] font-black uppercase tracking-wider text-rose-500">Needs Improvement</p>
                 <ul className="space-y-1">
                   {session.aiSummary.weakTopics.map((t, i) => (
@@ -241,7 +241,7 @@ export default function VivaResultPage() {
               </div>
             )}
             {session.aiSummary.missingConcepts?.length > 0 && (
-              <div className="p-4 rounded-2xl bg-amber-500/5 border border-amber-500/20 space-y-2">
+              <div className="p-4 rounded-2xl bg-amber-500/5 border border-[var(--border-primary)] border-amber-500/20 space-y-2">
                 <p className="text-[10px] font-black uppercase tracking-wider text-amber-500">Missing Concepts</p>
                 <ul className="space-y-1">
                   {session.aiSummary.missingConcepts.map((t, i) => (
@@ -254,7 +254,7 @@ export default function VivaResultPage() {
               </div>
             )}
             {session.aiSummary.recommendedStudy?.length > 0 && (
-              <div className="p-4 rounded-2xl bg-zinc-500/5 border border-zinc-500/20 space-y-2 sm:col-span-3">
+              <div className="p-4 rounded-2xl bg-zinc-500/5 border border-[var(--border-primary)] border-zinc-500/20 space-y-2 sm:col-span-3">
                 <p className="text-[10px] font-black uppercase tracking-wider text-zinc-500">Recommended Study</p>
                 <div className="flex flex-wrap gap-2">
                   {session.aiSummary.recommendedStudy.map((t, i) => (
@@ -279,7 +279,7 @@ export default function VivaResultPage() {
         </div>
 
         {answers.length === 0 ? (
-          <div className="p-8 rounded-3xl border border-dashed text-center" style={{ borderColor: "var(--border-primary)" }}>
+          <div className="p-8 rounded-3xl border border-[var(--border-primary)] border-dashed text-center" style={{ borderColor: "var(--border-primary)" }}>
             <p className="text-sm" style={{ color: "var(--text-secondary)" }}>No answers recorded for this session.</p>
           </div>
         ) : (
@@ -287,12 +287,12 @@ export default function VivaResultPage() {
             {answers.map((a, idx) => {
               const isStrong = a.score >= 7;
               return (
-                <div key={a.id ?? idx} className="p-6 rounded-3xl border space-y-4 transition-all"
+                <div key={a.id ?? idx} className="p-6 rounded-3xl border border-[var(--border-primary)] space-y-4 transition-all"
                      style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-card)" }}>
                   {/* Header */}
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex items-start space-x-3 flex-1 min-w-0">
-                      <div className="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-black text-white shrink-0"
+                      <div className="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-black text-[var(--text-on-accent)] shrink-0"
                            style={{ background: "var(--accent-gradient)" }}>
                         {idx + 1}
                       </div>
@@ -334,7 +334,7 @@ export default function VivaResultPage() {
 
                   {/* Feedback */}
                   {a.feedback && (
-                    <div className={`p-3 rounded-2xl border text-xs leading-relaxed ${
+                    <div className={`p-3 rounded-2xl border border-[var(--border-primary)] text-xs leading-relaxed ${
                       isStrong
                         ? "bg-emerald-500/5 border-emerald-500/20 text-emerald-700 dark:text-emerald-400"
                         : "bg-rose-500/5 border-rose-500/20 text-rose-700 dark:text-rose-400"
@@ -355,7 +355,7 @@ export default function VivaResultPage() {
                         const val = a.rubric[key] ?? 0;
                         const pct = (val / max) * 100;
                         return (
-                          <div key={key} className="p-2 rounded-xl border text-center"
+                          <div key={key} className="p-2 rounded-xl border border-[var(--border-primary)] text-center"
                                style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}>
                             <div className="text-sm font-black" style={{ color: "var(--text-primary)" }}>
                               {val}<span className="text-[10px] font-normal">/{max}</span>
@@ -374,7 +374,7 @@ export default function VivaResultPage() {
                   {(a.strengths?.length > 0 || a.weaknesses?.length > 0) && (
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                       {a.strengths?.length > 0 && (
-                        <div className="p-3 rounded-xl bg-emerald-500/5 border border-emerald-500/15 space-y-1">
+                        <div className="p-3 rounded-xl bg-emerald-500/5 border border-[var(--border-primary)] border-emerald-500/15 space-y-1">
                           <p className="text-[10px] font-black uppercase tracking-wider text-emerald-500">Strengths</p>
                           {a.strengths.map((s, i) => (
                             <p key={i} className="text-[11px] flex items-start space-x-1" style={{ color: "var(--text-secondary)" }}>
@@ -385,7 +385,7 @@ export default function VivaResultPage() {
                         </div>
                       )}
                       {a.weaknesses?.length > 0 && (
-                        <div className="p-3 rounded-xl bg-rose-500/5 border border-rose-500/15 space-y-1">
+                        <div className="p-3 rounded-xl bg-rose-500/5 border border-[var(--border-primary)] border-rose-500/15 space-y-1">
                           <p className="text-[10px] font-black uppercase tracking-wider text-rose-500">Weaknesses</p>
                           {a.weaknesses.map((w, i) => (
                             <p key={i} className="text-[11px] flex items-start space-x-1" style={{ color: "var(--text-secondary)" }}>
@@ -402,7 +402,7 @@ export default function VivaResultPage() {
                   {(a.missingConcepts?.length > 0 || a.suggestedRevision?.length > 0) && (
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                       {a.missingConcepts?.length > 0 && (
-                        <div className="p-3 rounded-xl bg-amber-500/5 border border-amber-500/15 space-y-1">
+                        <div className="p-3 rounded-xl bg-amber-500/5 border border-[var(--border-primary)] border-amber-500/15 space-y-1">
                           <p className="text-[10px] font-black uppercase tracking-wider text-amber-500">Missing Concepts</p>
                           {a.missingConcepts.map((c, i) => (
                             <p key={i} className="text-[11px] flex items-start space-x-1" style={{ color: "var(--text-secondary)" }}>
@@ -413,7 +413,7 @@ export default function VivaResultPage() {
                         </div>
                       )}
                       {a.suggestedRevision?.length > 0 && (
-                        <div className="p-3 rounded-xl bg-zinc-500/5 border border-zinc-500/15 space-y-1">
+                        <div className="p-3 rounded-xl bg-zinc-500/5 border border-[var(--border-primary)] border-zinc-500/15 space-y-1">
                           <p className="text-[10px] font-black uppercase tracking-wider text-zinc-500">Revise</p>
                           {a.suggestedRevision.map((r, i) => (
                             <p key={i} className="text-[11px] flex items-start space-x-1" style={{ color: "var(--text-secondary)" }}>
@@ -436,7 +436,7 @@ export default function VivaResultPage() {
 
                   {/* Follow-up question */}
                   {a.followUp && (
-                    <div className="p-3 rounded-xl border flex items-start space-x-2"
+                    <div className="p-3 rounded-xl border border-[var(--border-primary)] flex items-start space-x-2"
                          style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}>
                       <MessageSquare size={13} className="shrink-0 mt-0.5" style={{ color: "var(--text-accent)" }} />
                       <div>
@@ -456,7 +456,7 @@ export default function VivaResultPage() {
       <div className="flex flex-col sm:flex-row gap-4">
         <Link
           href="/student/viva"
-          className="flex-1 flex items-center justify-center space-x-2 py-3 rounded-2xl border font-bold text-sm transition-all hover:scale-102"
+          className="flex-1 flex items-center justify-center space-x-2 py-3 rounded-2xl border border-[var(--border-primary)] font-bold text-sm transition-all hover:scale-102"
           style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)", backgroundColor: "var(--bg-card)" }}
         >
           <Brain size={16} />
@@ -464,7 +464,7 @@ export default function VivaResultPage() {
         </Link>
         <Link
           href="/student/viva/history"
-          className="flex-1 flex items-center justify-center space-x-2 py-3 rounded-2xl font-bold text-sm text-white transition-all hover:scale-102"
+          className="flex-1 flex items-center justify-center space-x-2 py-3 rounded-2xl font-bold text-sm text-[var(--text-on-accent)] transition-all hover:scale-102"
           style={{ background: "var(--accent-gradient)" }}
         >
           <Clock size={16} />

@@ -249,7 +249,7 @@ export default function LivePollCreator({
         /* ── Poll Creation Form ─────────────────────────────────── */
         <div className="flex flex-col gap-3.5 flex-1 overflow-y-auto px-4 pb-4">
           {error && (
-            <div className="px-3 py-2 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-bold">
+            <div className="px-3 py-2 rounded-xl bg-red-500/10 border border-[var(--border-primary)] border-red-500/20 text-red-400 text-xs font-bold">
               {error}
             </div>
           )}
@@ -264,7 +264,7 @@ export default function LivePollCreator({
               value={question}
               onChange={e => setQuestion(e.target.value)}
               placeholder="Enter your poll question..."
-              className="w-full resize-none rounded-xl border px-3 py-2.5 text-sm font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-[var(--border-accent)]"
+              className="w-full resize-none rounded-xl border border-[var(--border-primary)] px-3 py-2.5 text-sm font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-[var(--border-accent)]"
               style={{
                 backgroundColor: "var(--bg-primary)",
                 borderColor: "rgba(148, 163, 184, 0.24)",
@@ -296,7 +296,7 @@ export default function LivePollCreator({
                 </button>
 
                 {/* Option label */}
-                <span className={`w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-black shrink-0 border ${OPTION_COLORS[idx]}`}>
+                <span className={`w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-black shrink-0 border border-[var(--border-primary)] ${OPTION_COLORS[idx]}`}>
                   {OPTION_LABELS[idx]}
                 </span>
 
@@ -306,7 +306,7 @@ export default function LivePollCreator({
                   value={opt}
                   onChange={e => handleOptionChange(idx, e.target.value)}
                   placeholder={`Option ${OPTION_LABELS[idx]}`}
-                  className="flex-1 rounded-xl border px-3 py-2 text-sm font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-[var(--border-accent)]"
+                  className="flex-1 rounded-xl border border-[var(--border-primary)] px-3 py-2 text-sm font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-[var(--border-accent)]"
                   style={{
                     backgroundColor: "var(--bg-primary)",
                     borderColor: correctIdx === idx ? "rgba(34,197,94,0.4)" : "rgba(148, 163, 184, 0.24)",
@@ -348,7 +348,7 @@ export default function LivePollCreator({
                 <button
                   key={t}
                   onClick={() => setTimerSecs(t)}
-                  className={`py-2 rounded-xl border text-xs font-black transition-all cursor-pointer ${timerSecs === t ? "border-[var(--border-accent)] bg-[var(--bg-badge)] text-[var(--text-accent)]" : "hover:border-[var(--border-accent)]"}`}
+                  className={`py-2 rounded-xl border border-[var(--border-primary)] text-xs font-black transition-all cursor-pointer ${timerSecs === t ? "border-[var(--border-accent)] bg-[var(--bg-badge)] text-[var(--text-accent)]" : "hover:border-[var(--border-accent)]"}`}
                   style={timerSecs !== t ? { borderColor: "var(--border-primary)", color: "var(--text-secondary)", backgroundColor: "var(--bg-primary)" } : {}}
                 >
                   {t}s
@@ -361,7 +361,7 @@ export default function LivePollCreator({
           <button
             onClick={handleLaunchPoll}
             disabled={isLaunching}
-            className="flex items-center justify-center gap-2 w-full py-3 rounded-xl text-white text-xs font-extrabold uppercase tracking-wider transition-all hover:scale-[1.01] shadow-lg cursor-pointer mt-auto disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100"
+            className="flex items-center justify-center gap-2 w-full py-3 rounded-xl text-[var(--text-on-accent)] text-xs font-extrabold uppercase tracking-wider transition-all hover:scale-[1.01] shadow-lg cursor-pointer mt-auto disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100"
             style={{ background: "var(--accent-gradient, linear-gradient(135deg, #6366f1, #8b5cf6))" }}
           >
             <Send size={14} />

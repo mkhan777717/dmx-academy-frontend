@@ -152,7 +152,7 @@ function ChatMessage({ message, isOwnMessage, isHost, hostUsername, blockedUsers
           {isHost && !isOwnMessage && message.from?.identity !== hostUsername && (
             <button
               onClick={() => toggleBlock(message.from?.identity)}
-              className="text-[8px] font-bold uppercase transition-colors text-slate-400 hover:text-red-550 cursor-pointer ml-1 flex items-center gap-0.5 border border-transparent hover:border-slate-500/10 rounded px-1 py-0.2"
+              className="text-[8px] font-bold uppercase transition-colors text-slate-400 hover:text-red-550 cursor-pointer ml-1 flex items-center gap-0.5 border border-[var(--border-primary)] border-transparent hover:border-slate-500/10 rounded px-1 py-0.2"
               title={blockedUsers?.includes(message.from?.identity) ? "Unblock Student" : "Block Student"}
             >
               {blockedUsers?.includes(message.from?.identity) ? (
@@ -440,7 +440,7 @@ export default function LiveChat({
     return (
       <button
         onClick={() => setInternalIsOpen(true)}
-        className="relative flex items-center gap-2 px-4 py-3 rounded-xl border transition-all hover:scale-105 cursor-pointer shadow-md"
+        className="relative flex items-center gap-2 px-4 py-3 rounded-xl border border-[var(--border-primary)] transition-all hover:scale-105 cursor-pointer shadow-md"
         style={{
           backgroundColor: "var(--bg-card)",
           borderColor: "var(--border-primary)",
@@ -503,7 +503,7 @@ export default function LiveChat({
 
         {/* Placeholder in the sidebar on the main screen */}
         <div
-          className={`flex flex-col rounded-[1.1rem] border overflow-hidden ${className} h-full`}
+          className={`flex flex-col rounded-[1.1rem] border border-[var(--border-primary)] overflow-hidden ${className} h-full`}
           style={{
             backgroundColor: "var(--bg-card)",
             borderColor: "rgba(148, 163, 184, 0.18)",
@@ -545,7 +545,7 @@ export default function LiveChat({
             </p>
             <button
               onClick={() => setIsPoppedOut(false)}
-              className="px-3.5 py-2 rounded-xl bg-zinc-600 hover:bg-zinc-700 text-white text-xs font-bold transition-all hover:scale-105 shadow-md shadow-zinc-600/20 cursor-pointer"
+              className="px-3.5 py-2 rounded-xl bg-[var(--accent-primary)] hover:bg-zinc-700 text-white text-xs font-bold transition-all hover:scale-105 shadow-md shadow-zinc-600/20 cursor-pointer"
             >
               Merge Chat Back
             </button>
@@ -725,7 +725,7 @@ export default function LiveChat({
                   return (
                     <div
                       key={p.identity}
-                      className="flex flex-col gap-2.5 p-3 rounded-xl border transition-all shrink-0"
+                      className="flex flex-col gap-2.5 p-3 rounded-xl border border-[var(--border-primary)] transition-all shrink-0"
                       style={{
                         backgroundColor: "var(--bg-primary)",
                         borderColor: "var(--border-primary)",
@@ -789,7 +789,7 @@ export default function LiveChat({
                             {isSpeaking && (
                               <button
                                 onClick={() => revokeSpeaker()}
-                                className="px-2 py-1.5 rounded-lg text-[9px] font-extrabold uppercase tracking-wider transition-all cursor-pointer flex items-center gap-1 bg-red-500/10 text-red-500 border border-red-500/20 hover:bg-red-500/20"
+                                className="px-2 py-1.5 rounded-lg text-[9px] font-extrabold uppercase tracking-wider transition-all cursor-pointer flex items-center gap-1 bg-red-500/10 text-red-500 border border-[var(--border-primary)] border-red-500/20 hover:bg-red-500/20"
                                 title="End Stage / Mute Student"
                               >
                                 <MicOff size={10} />
@@ -799,8 +799,8 @@ export default function LiveChat({
                             <button
                               onClick={() => toggleBlock(p.identity)}
                               className={`px-2 py-1.5 rounded-lg text-[9px] font-extrabold uppercase tracking-wider transition-all cursor-pointer flex items-center gap-1 shrink-0 ${isBlocked
-                                  ? "bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 hover:bg-emerald-500/20"
-                                  : "bg-red-500/10 text-red-500 border border-red-500/20 hover:bg-red-500/20"
+                                  ? "bg-emerald-500/10 text-emerald-500 border border-[var(--border-primary)] border-emerald-500/20 hover:bg-emerald-500/20"
+                                  : "bg-red-500/10 text-red-500 border border-[var(--border-primary)] border-red-500/20 hover:bg-red-500/20"
                                 }`}
                               title={isBlocked ? "Unblock Student" : "Block Student"}
                             >
@@ -825,13 +825,13 @@ export default function LiveChat({
                         <div className="flex items-center justify-end gap-1.5 pt-2 border-t" style={{ borderColor: "rgba(148, 163, 184, 0.08)" }}>
                           <button
                             onClick={() => acceptSpeaker(p.identity)}
-                            className="px-2.5 py-1 rounded bg-zinc-600 hover:bg-zinc-700 text-white text-[10px] font-bold transition-all cursor-pointer"
+                            className="px-2.5 py-1 rounded bg-[var(--accent-primary)] hover:bg-zinc-700 text-white text-[10px] font-bold transition-all cursor-pointer"
                           >
                             Accept
                           </button>
                           <button
                             onClick={() => rejectHand(p.identity)}
-                            className="px-2.5 py-1 rounded border hover:bg-red-500/10 text-red-400 text-[10px] font-bold transition-all cursor-pointer"
+                            className="px-2.5 py-1 rounded border border-[var(--border-primary)] hover:bg-red-500/10 text-red-400 text-[10px] font-bold transition-all cursor-pointer"
                             style={{ borderColor: "var(--border-primary)" }}
                           >
                             Dismiss
@@ -839,8 +839,8 @@ export default function LiveChat({
                           <button
                             onClick={() => toggleBlock(p.identity)}
                             className={`px-2.5 py-1 rounded text-[10px] font-bold transition-all cursor-pointer ${isBlocked
-                                ? "bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 hover:bg-emerald-500/20"
-                                : "bg-red-500/10 text-red-500 border border-red-500/20 hover:bg-red-500/20"
+                                ? "bg-emerald-500/10 text-emerald-500 border border-[var(--border-primary)] border-emerald-500/20 hover:bg-emerald-500/20"
+                                : "bg-red-500/10 text-red-500 border border-[var(--border-primary)] border-red-500/20 hover:bg-red-500/20"
                               }`}
                           >
                             {isBlocked ? "Unblock" : "Block"}
@@ -882,8 +882,8 @@ export default function LiveChat({
                     {!activePoll && (
                       <button
                         onClick={() => setShowPollCreator((v) => !v)}
-                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[10px] font-extrabold uppercase tracking-wide transition-all cursor-pointer border ${showPollCreator
-                            ? "bg-zinc-600 border-transparent text-white"
+                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[10px] font-extrabold uppercase tracking-wide transition-all cursor-pointer border border-[var(--border-primary)] ${showPollCreator
+                            ? "bg-[var(--accent-primary)] border-transparent text-white"
                             : "bg-zinc-500/10 border-zinc-500/20 text-zinc-400 hover:bg-zinc-500/20"
                           }`}
                       >
@@ -917,7 +917,7 @@ export default function LiveChat({
                       />
 
                     ) : (
-                      <div className="flex flex-col items-center justify-center p-8 text-center space-y-2 rounded-2xl border border-dashed border-slate-700 flex-1">
+                      <div className="flex flex-col items-center justify-center p-8 text-center space-y-2 rounded-2xl border border-[var(--border-primary)] border-dashed border-[var(--border-primary)] flex-1">
                         <Trophy className="opacity-20 text-slate-400" size={28} />
                         <p className="text-xs text-slate-400">No leaderboard yet.</p>
                         <p className="text-[10px] text-slate-600">Launch a poll to start scoring.</p>
@@ -929,7 +929,7 @@ export default function LiveChat({
                 /* Student View */
                 <div className="space-y-4">
                   {activePoll ? (
-                    <div className="flex flex-col items-center justify-center p-6 text-center space-y-3 rounded-2xl border bg-zinc-500/5 border-zinc-500/20">
+                    <div className="flex flex-col items-center justify-center p-6 text-center space-y-3 rounded-2xl border border-[var(--border-primary)] bg-zinc-500/5 border-zinc-500/20">
                       <div className="w-12 h-12 rounded-full bg-zinc-500/10 flex items-center justify-center text-zinc-400">
                         <BarChart2 className="animate-pulse" size={24} />
                       </div>
@@ -943,7 +943,7 @@ export default function LiveChat({
                   ) : (
                     <>
                       {pollResultData && (
-                        <div className="rounded-2xl border p-4 space-y-3" style={{ borderColor: "var(--border-primary)", backgroundColor: "var(--bg-primary)" }}>
+                        <div className="rounded-2xl border border-[var(--border-primary)] p-4 space-y-3" style={{ borderColor: "var(--border-primary)", backgroundColor: "var(--bg-primary)" }}>
                           <div className="flex items-center justify-between">
                             <span className="px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 text-[9px] font-extrabold uppercase tracking-wider">
                               Last Poll Results
@@ -964,7 +964,7 @@ export default function LiveChat({
                               const myResult = pollResultData.studentResults?.find(r => r.username === user?.username);
                               const myChoice = myResult?.chosenIdx === idx;
                               return (
-                                <div key={idx} className="relative rounded-xl border overflow-hidden"
+                                <div key={idx} className="relative rounded-xl border border-[var(--border-primary)] overflow-hidden"
                                   style={{
                                     borderColor: isCorrect
                                       ? "rgba(16, 185, 129, 0.35)"
@@ -1010,7 +1010,7 @@ export default function LiveChat({
                           compact={true}
                         />
                       ) : (
-                        <div className="flex flex-col items-center justify-center p-6 text-center space-y-2 rounded-2xl border border-dashed border-slate-700">
+                        <div className="flex flex-col items-center justify-center p-6 text-center space-y-2 rounded-2xl border border-[var(--border-primary)] border-dashed border-[var(--border-primary)]">
                           <Trophy className="opacity-20 text-slate-400" size={24} />
                           <p className="text-xs text-slate-400">No leaderboard data yet.</p>
                         </div>
@@ -1030,7 +1030,7 @@ export default function LiveChat({
             style={{ borderColor: "rgba(148, 163, 184, 0.16)" }}
           >
             <div
-              className="flex items-center gap-2 px-3 py-2 rounded-xl border transition-all focus-within:ring-2 focus-within:ring-indigo-500/30"
+              className="flex items-center gap-2 px-3 py-2 rounded-xl border border-[var(--border-primary)] transition-all focus-within:ring-2 focus-within:ring-indigo-500/30"
               style={{
                 backgroundColor: "var(--bg-primary)",
                 borderColor: "var(--border-primary)",

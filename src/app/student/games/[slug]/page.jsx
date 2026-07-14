@@ -39,7 +39,7 @@ export default function GamePageWrapper() {
 
   if (!game) {
     return (
-      <div className="flex h-[60vh] flex-col items-center justify-center space-y-4 text-center text-[#E8E6E1] bg-[#12141C] p-6 rounded-3xl border border-[#2A2D3D]">
+      <div className="flex h-[60vh] flex-col items-center justify-center space-y-4 text-center text-[#E8E6E1] bg-[#12141C] p-6 rounded-3xl border border-[var(--border-primary)] border-[#2A2D3D]">
         <AlertCircle size={40} className="text-[#FF6B6B]" />
         <h2 className="text-lg font-bold text-white">Game Quad Not Found</h2>
         <p className="text-xs text-[#6B7080]">The interactive challenge you are looking for does not exist in our grid.</p>
@@ -55,7 +55,7 @@ export default function GamePageWrapper() {
 
   if (game.status !== "live") {
     return (
-      <div className="flex h-[60vh] flex-col items-center justify-center space-y-4 text-center text-[#E8E6E1] bg-[#12141C] p-6 rounded-3xl border border-[#2A2D3D]">
+      <div className="flex h-[60vh] flex-col items-center justify-center space-y-4 text-center text-[#E8E6E1] bg-[#12141C] p-6 rounded-3xl border border-[var(--border-primary)] border-[#2A2D3D]">
         <AlertCircle size={40} className="text-[#FFB86B]" />
         <h2 className="text-lg font-bold text-white">{game.title} is Offline</h2>
         <p className="text-xs text-[#6B7080]">This level quadrant is currently locked by the Dojo Masters. Check back soon!</p>
@@ -75,13 +75,13 @@ export default function GamePageWrapper() {
     <div className="fixed inset-0 z-[60] bg-gradient-to-br from-[#190C2F] via-[#0E061E] to-[#04010A] overflow-y-auto p-4 md:p-8 text-[#E8E6E1] select-none">
       {/* Immersive Space Ambient Glows */}
       <div className="absolute top-[-10%] left-[-15%] w-[60%] h-[60%] rounded-full bg-slate-600/10 blur-[130px] pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-15%] w-[60%] h-[60%] rounded-full bg-zinc-600/10 blur-[130px] pointer-events-none" />
+      <div className="absolute bottom-[-10%] right-[-15%] w-[60%] h-[60%] rounded-full bg-[var(--accent-primary)]/10 blur-[130px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto space-y-6 relative z-10">
         {/* Back to Hub Nav */}
         <button
           onClick={() => router.push("/student/games")}
-          className="flex items-center space-x-2 px-4 py-2 rounded-full border border-slate-500/20 bg-slate-950/25 text-[#D8B4FE] hover:text-white hover:border-slate-500/40 hover:bg-slate-950/40 hover:scale-102 transition-all cursor-pointer text-xs font-bold font-mono shadow-sm w-fit"
+          className="flex items-center space-x-2 px-4 py-2 rounded-full border border-[var(--border-primary)] border-slate-500/20 bg-slate-950/25 text-[#D8B4FE] hover:text-white hover:border-slate-500/40 hover:bg-slate-950/40 hover:scale-102 transition-all cursor-pointer text-xs font-bold font-mono shadow-sm w-fit"
         >
           <ArrowLeft size={14} className="mr-0.5" />
           <span>Exit to Arcade Lobby</span>

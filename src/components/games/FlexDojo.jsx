@@ -313,15 +313,15 @@ export default function FlexDojo({ onProgressChange, savedProgress }) {
   };
 
   return (
-<div className="grid grid-cols-1 lg:grid-cols-12 gap-6 text-[#E8E6E1] bg-[#24133F]/20 backdrop-blur-md p-3 md:p-6 rounded-3xl border border-slate-500/20 shadow-2xl relative overflow-hidden font-sans">
+<div className="grid grid-cols-1 lg:grid-cols-12 gap-6 text-[#E8E6E1] bg-[#24133F]/20 backdrop-blur-md p-3 md:p-6 rounded-3xl border border-[var(--border-primary)] border-slate-500/20 shadow-2xl relative overflow-hidden font-sans">
       
       {/* Decorative CRT scanline background glow */}
       <div className="absolute inset-0 pointer-events-none opacity-5 bg-[linear-gradient(rgba(18,20,28,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[size:100%_4px,6px_100%] z-50"></div>
 
       {/* Top Arcade/Terminal HUD Info Row */}
-      <div className="lg:col-span-12 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 bg-[#2C184E]/40 p-4 rounded-2xl border border-slate-500/20 z-10">
+      <div className="lg:col-span-12 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 bg-[#2C184E]/40 p-4 rounded-2xl border border-[var(--border-primary)] border-slate-500/20 z-10">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-slate-500/10 border border-slate-500/20 flex items-center justify-center text-slate-400 shadow-[0_0_15px_rgba(168,85,247,0.15)] animate-pulse">
+          <div className="w-10 h-10 rounded-xl bg-slate-500/10 border border-[var(--border-primary)] border-slate-500/20 flex items-center justify-center text-slate-400 shadow-[0_0_15px_rgba(168,85,247,0.15)] animate-pulse">
             <Trophy size={18} />
           </div>
           <div>
@@ -336,7 +336,7 @@ export default function FlexDojo({ onProgressChange, savedProgress }) {
 
         {/* Level Controls */}
         <div className="flex items-center justify-between md:justify-end gap-3 font-mono">
-          <div className="flex items-center gap-1.5 bg-[#341B5C]/35 p-1 rounded-xl border border-slate-500/15">
+          <div className="flex items-center gap-1.5 bg-[#341B5C]/35 p-1 rounded-xl border border-[var(--border-primary)] border-slate-500/15">
             <button
               onClick={handlePrevLevel}
               disabled={currentLevelIdx === 0}
@@ -358,7 +358,7 @@ export default function FlexDojo({ onProgressChange, savedProgress }) {
 
           <button
             onClick={() => setAudioEnabled(!audioEnabled)}
-            className="p-2.5 rounded-xl border border-slate-500/15 bg-[#341B5C]/35 text-slate-300 hover:text-white transition-all cursor-pointer"
+            className="p-2.5 rounded-xl border border-[var(--border-primary)] border-slate-500/15 bg-[#341B5C]/35 text-slate-300 hover:text-white transition-all cursor-pointer"
           >
             {audioEnabled ? <Volume2 size={13} className="text-slate-400" /> : <VolumeX size={13} />}
           </button>
@@ -366,7 +366,7 @@ export default function FlexDojo({ onProgressChange, savedProgress }) {
       </div>
 
       {/* Grid check list map */}
-      <div className="lg:col-span-12 flex flex-wrap gap-2 p-2 bg-[#2C184E]/40 rounded-2xl border border-slate-500/20 z-10">
+      <div className="lg:col-span-12 flex flex-wrap gap-2 p-2 bg-[#2C184E]/40 rounded-2xl border border-[var(--border-primary)] border-slate-500/20 z-10">
         {LEVELS.map((lvl, idx) => {
           const isCompleted = completedLevels.includes(lvl.level);
           const isActive = currentLevelIdx === idx;
@@ -374,12 +374,12 @@ export default function FlexDojo({ onProgressChange, savedProgress }) {
             <button
               key={lvl.level}
               onClick={() => handleSelectLevel(idx)}
-              className={`flex-1 min-w-[36px] py-2 rounded-xl font-mono text-xs font-black tracking-wide border transition-all cursor-pointer text-center ${
+              className={`flex-1 min-w-[36px] py-2 rounded-xl font-mono text-xs font-black tracking-wide border border-[var(--border-primary)] transition-all cursor-pointer text-center ${
                 isActive
                   ? "bg-slate-600 text-white border-slate-400 shadow-[0_0_12px_rgba(168,85,247,0.25)]"
                   : isCompleted
-                  ? "bg-slate-500/20 text-[#A78BFA] border border-slate-500/30 hover:bg-slate-500/30"
-                  : "bg-[#24133F]/35 border border-slate-500/15 text-slate-300/60 hover:text-white"
+                  ? "bg-slate-500/20 text-[#A78BFA] border border-[var(--border-primary)] border-slate-500/30 hover:bg-slate-500/30"
+                  : "bg-[#24133F]/35 border border-[var(--border-primary)] border-slate-500/15 text-slate-300/60 hover:text-white"
               }`}
             >
               {lvl.level}
@@ -391,9 +391,9 @@ export default function FlexDojo({ onProgressChange, savedProgress }) {
       {/* Left Column: Visual IDE Layout */}
       <div className="lg:col-span-6 flex flex-col space-y-6 z-10">
         {/* Level description block */}
-        <div className="bg-[#24133F]/40 p-5 rounded-2xl border border-slate-500/20 relative overflow-hidden space-y-2.5 backdrop-blur-md">
+        <div className="bg-[#24133F]/40 p-5 rounded-2xl border border-[var(--border-primary)] border-slate-500/20 relative overflow-hidden space-y-2.5 backdrop-blur-md">
           <div className="absolute top-0 right-0 w-24 h-24 bg-slate-500/5 rounded-full blur-2xl pointer-events-none"></div>
-          <span className="text-[9px] font-mono font-extrabold uppercase tracking-widest text-[#7CFFB2] bg-[#7CFFB2]/10 border border-[#7CFFB2]/20 px-2 py-0.5 rounded-md">
+          <span className="text-[9px] font-mono font-extrabold uppercase tracking-widest text-[#7CFFB2] bg-[#7CFFB2]/10 border border-[var(--border-primary)] border-[#7CFFB2]/20 px-2 py-0.5 rounded-md">
             Quadrant Objective
           </span>
           <h3 className="font-display font-black text-white text-base">
@@ -405,7 +405,7 @@ export default function FlexDojo({ onProgressChange, savedProgress }) {
         </div>
 
         {/* IDE mockup editor workspace */}
-        <div className="bg-[#24133F]/45 rounded-2xl border border-slate-500/20 overflow-hidden flex flex-col relative shadow-lg backdrop-blur-md">
+        <div className="bg-[#24133F]/45 rounded-2xl border border-[var(--border-primary)] border-slate-500/20 overflow-hidden flex flex-col relative shadow-lg backdrop-blur-md">
           
           {/* File explorer navigation header */}
           <div className="bg-[#150B25] border-b border-slate-500/10 flex items-center justify-between px-4 py-2.5">
@@ -446,7 +446,7 @@ export default function FlexDojo({ onProgressChange, savedProgress }) {
                   <span>WORKSPACE</span>
                 </span>
                 <div className="space-y-1 pl-1">
-                  <div className="text-[10px] text-white bg-[#341B5C]/50 px-2 py-1 rounded-md flex items-center gap-1.5 cursor-pointer font-bold border border-slate-500/15">
+                  <div className="text-[10px] text-white bg-[#341B5C]/50 px-2 py-1 rounded-md flex items-center gap-1.5 cursor-pointer font-bold border border-[var(--border-primary)] border-slate-500/15">
                     <FileCode size={10} className="text-slate-400" />
                     <span className="truncate">dojo.css</span>
                   </div>
@@ -481,7 +481,7 @@ export default function FlexDojo({ onProgressChange, savedProgress }) {
                 </div>
                 <div className="text-slate-400/70 pl-4 font-bold select-none flex items-center gap-2">
                   display: flex;
-                  <span className="text-[9px] font-mono font-normal text-slate-400 bg-[#341B5C]/35 border border-slate-500/10 px-1.5 rounded-md uppercase">system default</span>
+                  <span className="text-[9px] font-mono font-normal text-slate-400 bg-[#341B5C]/35 border border-[var(--border-primary)] border-slate-500/10 px-1.5 rounded-md uppercase">system default</span>
                 </div>
                 <textarea
                   ref={editorRef}
@@ -518,7 +518,7 @@ export default function FlexDojo({ onProgressChange, savedProgress }) {
               <button
                 key={s}
                 onClick={() => handleInsertSuggestion(s + "\n")}
-                className="px-2 py-1 rounded-lg border border-slate-500/20 bg-[#341B5C]/35 hover:bg-slate-900/40 hover:border-slate-500/35 text-slate-300 text-[10px] font-mono tracking-tight transition-all cursor-pointer"
+                className="px-2 py-1 rounded-lg border border-[var(--border-primary)] border-slate-500/20 bg-[#341B5C]/35 hover:bg-[var(--bg-card)]/40 hover:border-slate-500/35 text-slate-300 text-[10px] font-mono tracking-tight transition-all cursor-pointer"
               >
                 {s.replace(";", "")}
               </button>
@@ -582,7 +582,7 @@ export default function FlexDojo({ onProgressChange, savedProgress }) {
                 <p className="text-[#E8E6E1] leading-relaxed">
                   Apply this alignment code into the workspace CSS:
                 </p>
-                <code className="block font-mono text-[10px] select-all bg-[#0B0415]/90 p-2.5 rounded-lg border border-slate-500/20 text-[#7CFFB2] font-black">
+                <code className="block font-mono text-[10px] select-all bg-[#0B0415]/90 p-2.5 rounded-lg border border-[var(--border-primary)] border-slate-500/20 text-[#7CFFB2] font-black">
                   {currentLevel.hint}
                 </code>
               </motion.div>
@@ -595,11 +595,11 @@ export default function FlexDojo({ onProgressChange, savedProgress }) {
             initial={{ opacity: 0, scale: 0.96 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.96 }}
-            className="bg-[#7CFFB2]/5 border border-[#7CFFB2]/20 p-5 rounded-2xl flex items-center justify-between gap-4 shadow-[0_0_20px_rgba(124,255,178,0.06)] relative overflow-hidden"
+            className="bg-[#7CFFB2]/5 border border-[var(--border-primary)] border-[#7CFFB2]/20 p-5 rounded-2xl flex items-center justify-between gap-4 shadow-[0_0_20px_rgba(124,255,178,0.06)] relative overflow-hidden"
           >
             <div className="absolute inset-0 bg-[#7CFFB2]/2 animate-pulse pointer-events-none"></div>
             <div className="flex items-center gap-3 relative z-10">
-              <div className="w-8 h-8 rounded-full bg-[#7CFFB2]/10 border border-[#7CFFB2]/20 flex items-center justify-center text-[#7CFFB2]">
+              <div className="w-8 h-8 rounded-full bg-[#7CFFB2]/10 border border-[var(--border-primary)] border-[#7CFFB2]/20 flex items-center justify-center text-[#7CFFB2]">
                 <CheckCircle2 size={16} />
               </div>
               <div>
@@ -618,7 +618,7 @@ export default function FlexDojo({ onProgressChange, savedProgress }) {
                 Next Quad
               </button>
             ) : (
-              <div className="px-4 py-2 border border-[#7CFFB2]/30 bg-[#7CFFB2]/10 rounded-xl text-[10px] font-mono font-black text-[#7CFFB2] uppercase tracking-widest relative z-10">
+              <div className="px-4 py-2 border border-[var(--border-primary)] border-[#7CFFB2]/30 bg-[#7CFFB2]/10 rounded-xl text-[10px] font-mono font-black text-[#7CFFB2] uppercase tracking-widest relative z-10">
                 🏆 Master Dojo Complete!
               </div>
             )}
@@ -643,7 +643,7 @@ export default function FlexDojo({ onProgressChange, savedProgress }) {
         </div>
 
         {/* Visual Arena Workspace */}
-        <div className="flex-grow min-h-[300px] md:min-h-[380px] bg-[#120721]/95 border border-slate-500/20 rounded-2xl relative overflow-hidden flex flex-col items-stretch">
+        <div className="flex-grow min-h-[300px] md:min-h-[380px] bg-[#120721]/95 border border-[var(--border-primary)] border-slate-500/20 rounded-2xl relative overflow-hidden flex flex-col items-stretch">
           
           {/* Target Container */}
           <div 
@@ -673,7 +673,7 @@ export default function FlexDojo({ onProgressChange, savedProgress }) {
             {currentLevel.items.map((item, i) => (
               <div 
                 key={item.id} 
-                className="dojo-item w-12 h-12 bg-slate-600 border border-slate-400 text-white rounded-xl flex items-center justify-center text-lg font-black shadow-lg animate-float"
+                className="dojo-item w-12 h-12 bg-slate-600 border border-[var(--border-primary)] border-slate-400 text-white rounded-xl flex items-center justify-center text-lg font-black shadow-lg animate-float"
                 style={{ animationDelay: `${i * 0.2}s` }}
               >
                 {item.emoji}
@@ -683,9 +683,9 @@ export default function FlexDojo({ onProgressChange, savedProgress }) {
         </div>
 
         {/* Snapping progress bar */}
-        <div className="bg-[#1C0F32]/50 border border-slate-500/20 rounded-xl p-3 flex items-center gap-3">
+        <div className="bg-[#1C0F32]/50 border border-[var(--border-primary)] border-slate-500/20 rounded-xl p-3 flex items-center gap-3">
           <span className="text-[9px] font-mono text-slate-300 uppercase tracking-wider shrink-0">SNAPPING MATCH:</span>
-          <div className="flex-1 h-2 bg-slate-950/40 border border-slate-950 rounded-full overflow-hidden">
+          <div className="flex-1 h-2 bg-slate-950/40 border border-[var(--border-primary)] border-slate-950 rounded-full overflow-hidden">
             <div 
               className={`h-full transition-all duration-300 ${
                 isSuccess ? "bg-[#7CFFB2] shadow-[0_0_10px_rgba(124,255,178,0.5)]" : "bg-slate-500"

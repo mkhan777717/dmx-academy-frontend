@@ -281,7 +281,7 @@ export default function InstitutesPage() {
       {/* Header section */}
       <section className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 border-b pb-6 shrink-0" style={{ borderColor: "var(--border-primary)" }}>
         <div className="space-y-2">
-          <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border mb-3"
+          <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border border-[var(--border-primary)] mb-3"
             style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)", backgroundColor: "var(--bg-secondary)" }}>
             <ShieldAlert size={12} className="text-violet-500" />
             Control Panel
@@ -300,7 +300,7 @@ export default function InstitutesPage() {
             setModalSuccess("");
             setIsModalOpen(true);
           }}
-          className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-white text-xs font-semibold transition-transform hover:-translate-y-0.5 cursor-pointer shadow-md shrink-0"
+          className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-[var(--text-on-accent)] text-xs font-semibold transition-transform hover:-translate-y-0.5 cursor-pointer shadow-md shrink-0"
           style={{ background: "var(--accent-primary)" }}
         >
           <Plus size={14} />
@@ -309,7 +309,7 @@ export default function InstitutesPage() {
       </section>
 
       {/* Main Table view */}
-      <div className="flex-1 min-h-0 overflow-y-auto rounded-2xl border pb-12" style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}>
+      <div className="flex-1 min-h-0 overflow-y-auto rounded-2xl border border-[var(--border-primary)] pb-12" style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}>
         {loading ? (
           <div className="flex h-64 items-center justify-center">
             <div className="text-center space-y-4">
@@ -325,7 +325,7 @@ export default function InstitutesPage() {
             <p className="text-sm font-semibold" style={{ color: "var(--text-muted)" }}>{errorMsg}</p>
             <button
               onClick={fetchAdmins}
-              className="px-4 py-2 text-xs font-semibold rounded-lg border hover:bg-[var(--bg-secondary)] transition-colors mt-2"
+              className="px-4 py-2 text-xs font-semibold rounded-lg border border-[var(--border-primary)] hover:bg-[var(--bg-secondary)] transition-colors mt-2"
               style={{ borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
             >
               Retry
@@ -370,17 +370,17 @@ export default function InstitutesPage() {
                     </td>
                     <td className="px-6 py-4">
                       {adm.institute?.isBlocked ? (
-                        <span className="px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider bg-rose-500/10 text-rose-600 border border-rose-500/20 dark:text-rose-400 flex items-center gap-1 w-fit">
+                        <span className="px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider bg-rose-500/10 text-rose-600 border border-[var(--border-primary)] border-rose-500/20 dark:text-rose-400 flex items-center gap-1 w-fit">
                           <Ban size={10} /> Blocked
                         </span>
                       ) : (
-                        <span className="px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 dark:text-emerald-400 flex items-center gap-1 w-fit">
+                        <span className="px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-600 border border-[var(--border-primary)] border-emerald-500/20 dark:text-emerald-400 flex items-center gap-1 w-fit">
                           <CheckCircle2 size={10} /> Active
                         </span>
                       )}
                     </td>
                     <td className="px-6 py-4">
-                      <span className="px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider bg-neutral-500/10 text-neutral-600 border border-neutral-500/20 dark:text-neutral-400">
+                      <span className="px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider bg-neutral-500/10 text-neutral-600 border border-[var(--border-primary)] border-neutral-500/20 dark:text-neutral-400">
                         {adm.role === "INSTITUTE_ADMIN" ? "INST. ADMIN" : adm.role}
                       </span>
                     </td>
@@ -440,7 +440,7 @@ export default function InstitutesPage() {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="w-full max-w-md rounded-3xl border shadow-2xl overflow-hidden"
+              className="w-full max-w-md rounded-3xl border border-[var(--border-primary)] shadow-2xl overflow-hidden"
               style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}
             >
               {/* Modal Header */}
@@ -455,7 +455,7 @@ export default function InstitutesPage() {
                 </div>
                 <button
                   onClick={() => setIsModalOpen(false)}
-                  className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                  className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-[var(--bg-hover)] transition-colors cursor-pointer"
                   style={{ color: "var(--text-muted)" }}
                 >
                   <X size={16} />
@@ -465,13 +465,13 @@ export default function InstitutesPage() {
               {/* Form */}
               <form onSubmit={handleAddAdminSubmit} className="p-6 space-y-4">
                 {modalError && (
-                  <div className="flex items-center gap-2 p-3.5 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-500 text-xs font-semibold">
+                  <div className="flex items-center gap-2 p-3.5 rounded-2xl bg-rose-500/10 border border-[var(--border-primary)] border-rose-500/20 text-rose-500 text-xs font-semibold">
                     <AlertCircle size={14} className="shrink-0" />
                     <span>{modalError}</span>
                   </div>
                 )}
                 {modalSuccess && (
-                  <div className="flex items-center gap-2 p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-xs font-semibold">
+                  <div className="flex items-center gap-2 p-3.5 rounded-2xl bg-emerald-500/10 border border-[var(--border-primary)] border-emerald-500/20 text-emerald-500 text-xs font-semibold">
                     <CheckCircle2 size={14} className="shrink-0" />
                     <span>{modalSuccess}</span>
                   </div>
@@ -489,7 +489,7 @@ export default function InstitutesPage() {
                       value={username}
                       onChange={(e) => setUsername(e.target.value)}
                       placeholder="e.g. iitd_admin"
-                      className="w-full bg-[var(--bg-primary)] border rounded-2xl px-4 py-3 text-xs font-semibold focus:outline-none focus:border-[var(--border-accent)] transition-all placeholder:text-[var(--text-muted)]"
+                      className="w-full bg-[var(--bg-primary)] border border-[var(--border-primary)] rounded-2xl px-4 py-3 text-xs font-semibold focus:outline-none focus:border-[var(--border-accent)] transition-all placeholder:text-[var(--text-muted)]"
                       style={{ borderColor: "var(--border-primary)" }}
                     />
                   </div>
@@ -507,7 +507,7 @@ export default function InstitutesPage() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="e.g. admin@iitd.ac.in"
-                      className="w-full bg-[var(--bg-primary)] border rounded-2xl px-4 py-3 text-xs font-semibold focus:outline-none focus:border-[var(--border-accent)] transition-all placeholder:text-[var(--text-muted)]"
+                      className="w-full bg-[var(--bg-primary)] border border-[var(--border-primary)] rounded-2xl px-4 py-3 text-xs font-semibold focus:outline-none focus:border-[var(--border-accent)] transition-all placeholder:text-[var(--text-muted)]"
                       style={{ borderColor: "var(--border-primary)" }}
                     />
                   </div>
@@ -525,7 +525,7 @@ export default function InstitutesPage() {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full bg-[var(--bg-primary)] border rounded-2xl px-4 py-3 pr-11 text-xs font-semibold focus:outline-none focus:border-[var(--border-accent)] transition-all placeholder:text-[var(--text-muted)]"
+                      className="w-full bg-[var(--bg-primary)] border border-[var(--border-primary)] rounded-2xl px-4 py-3 pr-11 text-xs font-semibold focus:outline-none focus:border-[var(--border-accent)] transition-all placeholder:text-[var(--text-muted)]"
                       style={{ borderColor: "var(--border-primary)" }}
                     />
                     <button type="button" onClick={() => setShowPassword(v => !v)}
@@ -547,7 +547,7 @@ export default function InstitutesPage() {
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full bg-[var(--bg-primary)] border rounded-2xl px-4 py-3 pr-11 text-xs font-semibold focus:outline-none focus:border-[var(--border-accent)] transition-all placeholder:text-[var(--text-muted)]"
+                      className="w-full bg-[var(--bg-primary)] border border-[var(--border-primary)] rounded-2xl px-4 py-3 pr-11 text-xs font-semibold focus:outline-none focus:border-[var(--border-accent)] transition-all placeholder:text-[var(--text-muted)]"
                       style={{ borderColor: confirmPassword && confirmPassword !== password ? "var(--rose-500, #f43f5e)" : "var(--border-primary)" }}
                     />
                     <button type="button" onClick={() => setShowConfirmPassword(v => !v)}
@@ -572,7 +572,7 @@ export default function InstitutesPage() {
                       value={instituteName}
                       onChange={(e) => setInstituteName(e.target.value)}
                       placeholder="e.g. IIT Delhi"
-                      className="w-full bg-[var(--bg-primary)] border rounded-2xl px-4 py-3 text-xs font-semibold focus:outline-none focus:border-[var(--border-accent)] transition-all placeholder:text-[var(--text-muted)]"
+                      className="w-full bg-[var(--bg-primary)] border border-[var(--border-primary)] rounded-2xl px-4 py-3 text-xs font-semibold focus:outline-none focus:border-[var(--border-accent)] transition-all placeholder:text-[var(--text-muted)]"
                       style={{ borderColor: "var(--border-primary)" }}
                     />
                   </div>
@@ -583,7 +583,7 @@ export default function InstitutesPage() {
                   <button
                     type="button"
                     onClick={() => setIsModalOpen(false)}
-                    className="px-4 py-2.5 rounded-2xl border text-xs font-bold transition-all hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer"
+                    className="px-4 py-2.5 rounded-2xl border border-[var(--border-primary)] text-xs font-bold transition-all hover:bg-slate-50 dark:hover:bg-[var(--bg-hover)] cursor-pointer"
                     style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}
                   >
                     Cancel
@@ -610,7 +610,7 @@ export default function InstitutesPage() {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="w-full max-w-md rounded-3xl border shadow-2xl overflow-hidden"
+              className="w-full max-w-md rounded-3xl border border-[var(--border-primary)] shadow-2xl overflow-hidden"
               style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}
             >
               {/* Modal Header */}
@@ -625,7 +625,7 @@ export default function InstitutesPage() {
                 </div>
                 <button
                   onClick={() => setIsEditModalOpen(false)}
-                  className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                  className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-[var(--bg-hover)] transition-colors cursor-pointer"
                   style={{ color: "var(--text-muted)" }}
                 >
                   <X size={16} />
@@ -635,13 +635,13 @@ export default function InstitutesPage() {
               {/* Form */}
               <form onSubmit={handleEditAdminSubmit} className="p-6 space-y-4">
                 {modalError && (
-                  <div className="flex items-center gap-2 p-3.5 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-500 text-xs font-semibold">
+                  <div className="flex items-center gap-2 p-3.5 rounded-2xl bg-rose-500/10 border border-[var(--border-primary)] border-rose-500/20 text-rose-500 text-xs font-semibold">
                     <AlertCircle size={14} className="shrink-0" />
                     <span>{modalError}</span>
                   </div>
                 )}
                 {modalSuccess && (
-                  <div className="flex items-center gap-2 p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-xs font-semibold">
+                  <div className="flex items-center gap-2 p-3.5 rounded-2xl bg-emerald-500/10 border border-[var(--border-primary)] border-emerald-500/20 text-emerald-500 text-xs font-semibold">
                     <CheckCircle2 size={14} className="shrink-0" />
                     <span>{modalSuccess}</span>
                   </div>
@@ -659,7 +659,7 @@ export default function InstitutesPage() {
                       value={editUsername}
                       onChange={(e) => setEditUsername(e.target.value)}
                       placeholder="e.g. iitd_admin"
-                      className="w-full bg-[var(--bg-primary)] border rounded-2xl px-4 py-3 text-xs font-semibold focus:outline-none focus:border-[var(--border-accent)] transition-all placeholder:text-[var(--text-muted)]"
+                      className="w-full bg-[var(--bg-primary)] border border-[var(--border-primary)] rounded-2xl px-4 py-3 text-xs font-semibold focus:outline-none focus:border-[var(--border-accent)] transition-all placeholder:text-[var(--text-muted)]"
                       style={{ borderColor: "var(--border-primary)" }}
                     />
                   </div>
@@ -677,7 +677,7 @@ export default function InstitutesPage() {
                       value={editEmail}
                       onChange={(e) => setEditEmail(e.target.value)}
                       placeholder="e.g. admin@iitd.ac.in"
-                      className="w-full bg-[var(--bg-primary)] border rounded-2xl px-4 py-3 text-xs font-semibold focus:outline-none focus:border-[var(--border-accent)] transition-all placeholder:text-[var(--text-muted)]"
+                      className="w-full bg-[var(--bg-primary)] border border-[var(--border-primary)] rounded-2xl px-4 py-3 text-xs font-semibold focus:outline-none focus:border-[var(--border-accent)] transition-all placeholder:text-[var(--text-muted)]"
                       style={{ borderColor: "var(--border-primary)" }}
                     />
                   </div>
@@ -694,7 +694,7 @@ export default function InstitutesPage() {
                       value={editPassword}
                       onChange={(e) => setEditPassword(e.target.value)}
                       placeholder="Leave blank to keep current password"
-                      className="w-full bg-[var(--bg-primary)] border rounded-2xl px-4 py-3 pr-11 text-xs font-semibold focus:outline-none focus:border-[var(--border-accent)] transition-all placeholder:text-[var(--text-muted)]"
+                      className="w-full bg-[var(--bg-primary)] border border-[var(--border-primary)] rounded-2xl px-4 py-3 pr-11 text-xs font-semibold focus:outline-none focus:border-[var(--border-accent)] transition-all placeholder:text-[var(--text-muted)]"
                       style={{ borderColor: "var(--border-primary)" }}
                     />
                     <button type="button" onClick={() => setShowPassword(v => !v)}
@@ -717,7 +717,7 @@ export default function InstitutesPage() {
                         value={editConfirmPassword}
                         onChange={(e) => setEditConfirmPassword(e.target.value)}
                         placeholder="••••••••"
-                        className="w-full bg-[var(--bg-primary)] border rounded-2xl px-4 py-3 pr-11 text-xs font-semibold focus:outline-none focus:border-[var(--border-accent)] transition-all placeholder:text-[var(--text-muted)]"
+                        className="w-full bg-[var(--bg-primary)] border border-[var(--border-primary)] rounded-2xl px-4 py-3 pr-11 text-xs font-semibold focus:outline-none focus:border-[var(--border-accent)] transition-all placeholder:text-[var(--text-muted)]"
                         style={{ borderColor: editConfirmPassword && editConfirmPassword !== editPassword ? "var(--rose-500, #f43f5e)" : "var(--border-primary)" }}
                       />
                       <button type="button" onClick={() => setShowConfirmPassword(v => !v)}
@@ -743,7 +743,7 @@ export default function InstitutesPage() {
                       value={editInstituteName}
                       onChange={(e) => setEditInstituteName(e.target.value)}
                       placeholder="e.g. IIT Delhi"
-                      className="w-full bg-[var(--bg-primary)] border rounded-2xl px-4 py-3 text-xs font-semibold focus:outline-none focus:border-[var(--border-accent)] transition-all placeholder:text-[var(--text-muted)]"
+                      className="w-full bg-[var(--bg-primary)] border border-[var(--border-primary)] rounded-2xl px-4 py-3 text-xs font-semibold focus:outline-none focus:border-[var(--border-accent)] transition-all placeholder:text-[var(--text-muted)]"
                       style={{ borderColor: "var(--border-primary)" }}
                     />
                   </div>
@@ -754,7 +754,7 @@ export default function InstitutesPage() {
                   <button
                     type="button"
                     onClick={() => setIsEditModalOpen(false)}
-                    className="px-4 py-2.5 rounded-2xl border text-xs font-bold transition-all hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer"
+                    className="px-4 py-2.5 rounded-2xl border border-[var(--border-primary)] text-xs font-bold transition-all hover:bg-slate-50 dark:hover:bg-[var(--bg-hover)] cursor-pointer"
                     style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}
                   >
                     Cancel
@@ -781,7 +781,7 @@ export default function InstitutesPage() {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="w-full max-w-sm rounded-3xl border shadow-2xl overflow-hidden p-6 text-center space-y-4"
+              className="w-full max-w-sm rounded-3xl border border-[var(--border-primary)] shadow-2xl overflow-hidden p-6 text-center space-y-4"
               style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}
             >
               <div className="w-12 h-12 rounded-2xl bg-rose-500/10 text-rose-500 flex items-center justify-center mx-auto">
@@ -799,7 +799,7 @@ export default function InstitutesPage() {
                 <button
                   type="button"
                   onClick={() => setDeleteModalOpen(false)}
-                  className="px-4 py-2.5 rounded-2xl border text-xs font-bold transition-all hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer"
+                  className="px-4 py-2.5 rounded-2xl border border-[var(--border-primary)] text-xs font-bold transition-all hover:bg-slate-50 dark:hover:bg-[var(--bg-hover)] cursor-pointer"
                   style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}
                 >
                   Cancel

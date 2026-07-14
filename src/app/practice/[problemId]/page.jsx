@@ -842,7 +842,7 @@ export default function PracticeWorkspace() {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center space-y-4" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }}>
         <h1 className="text-2xl font-black font-display">Practice Task Not Found</h1>
-        <Link href="/practice" className="px-5 py-2.5 rounded-full text-xs font-bold text-white shadow-md transition-all" style={{ background: "var(--accent-gradient)" }}>
+        <Link href="/practice" className="px-5 py-2.5 rounded-full text-xs font-bold text-[var(--text-on-accent)] shadow-md transition-all" style={{ background: "var(--accent-gradient)" }}>
           Back to Catalog
         </Link>
       </div>
@@ -888,7 +888,7 @@ export default function PracticeWorkspace() {
       return backtickParts.flatMap((part, i) => {
         if (i % 2 === 1) {
           return (
-            <code key={`code-${i}`} className="px-1.5 py-0.5 rounded font-mono text-xs mx-0.5 text-pink-500 font-semibold bg-slate-500/10 border border-slate-500/20">
+            <code key={`code-${i}`} className="px-1.5 py-0.5 rounded font-mono text-xs mx-0.5 text-[var(--text-primary)] font-semibold bg-slate-500/10 border border-[var(--border-primary)] border-slate-500/20">
               {part}
             </code>
           );
@@ -968,8 +968,8 @@ export default function PracticeWorkspace() {
       }
       if (block.type === "code") {
         return (
-          <div key={idx} className="my-4 rounded-xl border border-slate-800/80 overflow-hidden shadow-2xl">
-            <div className="flex justify-between items-center px-4 py-1.5 border-b border-slate-800/80 bg-[#161b27] text-[10px] text-slate-400 font-mono font-semibold">
+          <div key={idx} className="my-4 rounded-xl border border-[var(--border-primary)] border-[var(--border-primary)]/80 overflow-hidden shadow-2xl">
+            <div className="flex justify-between items-center px-4 py-1.5 border-b border-[var(--border-primary)]/80 bg-[#161b27] text-[10px] text-slate-400 font-mono font-semibold">
               <span>Code Block</span>
             </div>
             <pre className="p-4 overflow-x-auto text-xs font-mono text-slate-200 bg-[#0d1117] leading-relaxed whitespace-pre">
@@ -1004,7 +1004,7 @@ export default function PracticeWorkspace() {
         <div className="flex items-center space-x-3">
           <button 
             onClick={() => setVoiceEnabled(!voiceEnabled)}
-            className={`flex items-center space-x-1 px-3 py-1.5 rounded-full text-xs font-bold transition-all border cursor-pointer ${
+            className={`flex items-center space-x-1 px-3 py-1.5 rounded-full text-xs font-bold transition-all border border-[var(--border-primary)] cursor-pointer ${
               voiceEnabled 
                 ? "bg-zinc-500/10 text-zinc-500 border-zinc-500/20" 
                 : "bg-slate-500/5 text-[var(--text-muted)] border-transparent"
@@ -1026,7 +1026,7 @@ export default function PracticeWorkspace() {
           <button 
             onClick={submitCode}
             disabled={isSubmitting}
-            className="flex items-center space-x-1 px-4 py-1.5 rounded-full text-xs font-bold text-white hover:shadow-md transition-all cursor-pointer disabled:opacity-50"
+            className="flex items-center space-x-1 px-4 py-1.5 rounded-full text-xs font-bold text-[var(--text-on-accent)] hover:shadow-md transition-all cursor-pointer disabled:opacity-50"
             style={{ background: "var(--accent-gradient)" }}
           >
             <Send size={12} />
@@ -1089,7 +1089,7 @@ export default function PracticeWorkspace() {
                       <button
                         key={col}
                         onClick={() => setDrawColor(col)}
-                        className={`h-5 w-5 rounded-full border cursor-pointer transition-transform ${
+                        className={`h-5 w-5 rounded-full border border-[var(--border-primary)] cursor-pointer transition-transform ${
                           drawColor === col ? "scale-110 border-zinc-500 shadow-sm" : "border-slate-500/20"
                         }`}
                         style={{ backgroundColor: col }}
@@ -1119,7 +1119,7 @@ export default function PracticeWorkspace() {
                 </button>
               </div>
 
-              <div className="border rounded-2xl overflow-hidden shadow-inner bg-slate-900/5" style={{ borderColor: "var(--border-primary)" }}>
+              <div className="border border-[var(--border-primary)] rounded-2xl overflow-hidden shadow-inner bg-[var(--bg-card)]/5" style={{ borderColor: "var(--border-primary)" }}>
                 <canvas
                   ref={canvasRef}
                   onMouseDown={startDrawing}
@@ -1139,7 +1139,7 @@ export default function PracticeWorkspace() {
         {/* Resizing divider bar */}
         <div 
           onMouseDown={startResizing}
-          className="w-1.5 hover:w-2 bg-slate-200 dark:bg-slate-800 hover:bg-zinc-500 cursor-col-resize select-none h-full transition-all duration-150 shrink-0 z-20 relative"
+          className="w-1.5 hover:w-2 bg-slate-200 dark:bg-[var(--bg-hover)] hover:bg-zinc-500 cursor-col-resize select-none h-full transition-all duration-150 shrink-0 z-20 relative"
         >
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-8 w-1 rounded-full bg-slate-400" />
         </div>
@@ -1166,7 +1166,7 @@ export default function PracticeWorkspace() {
               <button
                 onClick={handleResetCode}
                 title="Reset code to default template"
-                className="flex items-center space-x-1 px-2 py-0.5 text-[10px] font-extrabold uppercase rounded border border-red-500/20 hover:border-red-500/40 text-red-400 hover:text-red-300 bg-red-500/5 hover:bg-red-500/10 cursor-pointer transition-all outline-none focus:outline-none ml-2"
+                className="flex items-center space-x-1 px-2 py-0.5 text-[10px] font-extrabold uppercase rounded border border-[var(--border-primary)] border-red-500/20 hover:border-red-500/40 text-red-400 hover:text-red-300 bg-red-500/5 hover:bg-red-500/10 cursor-pointer transition-all outline-none focus:outline-none ml-2"
               >
                 <RefreshCw size={10} />
                 <span>Reset Code</span>
@@ -1184,12 +1184,12 @@ export default function PracticeWorkspace() {
               <button
                 onClick={isSpeaking ? stopSpeaking : () => askVoiceAssistant()}
                 disabled={isListening || assistantTyping}
-                className={`relative h-8 w-8 rounded-full flex items-center justify-center text-white shadow-sm transition-all border border-transparent outline-none focus:outline-none ${
+                className={`relative h-8 w-8 rounded-full flex items-center justify-center text-white shadow-sm transition-all border border-[var(--border-primary)] border-transparent outline-none focus:outline-none ${
                   isSpeaking 
                     ? "bg-rose-600 hover:bg-rose-700 cursor-pointer" 
                     : isListening 
                       ? "bg-red-500" 
-                      : "bg-zinc-600 hover:bg-zinc-700 cursor-pointer"
+                      : "bg-[var(--accent-primary)] hover:bg-zinc-700 cursor-pointer"
                 }`}
                 title={isSpeaking ? "Stop speaking" : "Start query"}
               >
@@ -1199,7 +1199,7 @@ export default function PracticeWorkspace() {
                   <Mic size={14} className={isListening ? "animate-pulse" : ""} />
                 )}
                 {isListening && (
-                  <span className="absolute -top-0.5 -right-0.5 h-3.5 w-3.5 rounded-full bg-red-400 border border-white animate-ping" />
+                  <span className="absolute -top-0.5 -right-0.5 h-3.5 w-3.5 rounded-full bg-red-400 border border-[var(--border-primary)] border-white animate-ping" />
                 )}
               </button>
               <div>
@@ -1230,7 +1230,7 @@ export default function PracticeWorkspace() {
               <button
                 onClick={() => askVoiceAssistant()}
                 disabled={isListening || assistantTyping}
-                className="px-3 py-1.5 bg-zinc-600 hover:bg-zinc-700 text-white font-bold rounded-lg text-[10px] shadow-sm transition-all cursor-pointer disabled:opacity-50"
+                className="px-3 py-1.5 bg-[var(--accent-primary)] hover:bg-zinc-700 text-white font-bold rounded-lg text-[10px] shadow-sm transition-all cursor-pointer disabled:opacity-50"
               >
                 Start Query
               </button>
@@ -1294,7 +1294,7 @@ export default function PracticeWorkspace() {
                     onClick={() => setActiveConsoleTab(ctab.id)}
                     className={`flex items-center space-x-1 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                       activeConsoleTab === ctab.id 
-                        ? "bg-slate-500/10 text-zinc-500 border border-slate-500/10" 
+                        ? "bg-slate-500/10 text-zinc-500 border border-[var(--border-primary)] border-slate-500/10" 
                         : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
                     }`}
                   >
@@ -1339,7 +1339,7 @@ export default function PracticeWorkspace() {
                             return copy;
                           });
                         }}
-                        className="w-full border rounded px-3 py-2 outline-none focus:border-zinc-500 font-mono"
+                        className="w-full border border-[var(--border-primary)] rounded px-3 py-2 outline-none focus:border-zinc-500 font-mono"
                         style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
                       />
                     </div>
@@ -1359,7 +1359,7 @@ export default function PracticeWorkspace() {
                       <div key={idx} className="border-b pb-3 space-y-2 last:border-b-0 last:pb-0" style={{ borderColor: "var(--border-primary)" }}>
                         <div className="flex justify-between items-center">
                           <span className="font-bold uppercase tracking-wider text-[10px]" style={{ color: "var(--text-secondary)" }}>{res.name}</span>
-                          <span className={`font-extrabold text-[10px] px-2 py-0.5 rounded border uppercase ${
+                          <span className={`font-extrabold text-[10px] px-2 py-0.5 rounded border border-[var(--border-primary)] uppercase ${
                             res.passed 
                               ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400" 
                               : "bg-rose-500/10 border-rose-500/30 text-rose-400"
@@ -1390,7 +1390,7 @@ export default function PracticeWorkspace() {
 
                         {/* console logs */}
                         {res.logs && res.logs.length > 0 && (
-                          <div className="mt-1 space-y-0.5 p-2 rounded border text-[10px]" style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}>
+                          <div className="mt-1 space-y-0.5 p-2 rounded border border-[var(--border-primary)] text-[10px]" style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}>
                             <div className="font-bold uppercase text-[9px] mb-1" style={{ color: "var(--text-muted)" }}>Standard Console Output:</div>
                             {res.logs.map((log, lIdx) => (
                               <div key={lIdx}>{log}</div>
@@ -1416,7 +1416,7 @@ export default function PracticeWorkspace() {
                       <button
                         onClick={handleRunDebug}
                         disabled={debugRunning}
-                        className="flex items-center space-x-1.5 px-3 py-1 text-xs font-bold rounded-lg text-white bg-zinc-600 hover:bg-zinc-700 transition-all cursor-pointer select-none outline-none focus:outline-none disabled:bg-zinc-600/50"
+                        className="flex items-center space-x-1.5 px-3 py-1 text-xs font-bold rounded-lg text-white bg-[var(--accent-primary)] hover:bg-zinc-700 transition-all cursor-pointer select-none outline-none focus:outline-none disabled:bg-[var(--accent-primary)]/50"
                       >
                         {debugRunning ? (
                           <>
@@ -1436,7 +1436,7 @@ export default function PracticeWorkspace() {
                       onChange={(e) => setCustomInput(e.target.value)}
                       placeholder="Type custom testcase inputs here..."
                       rows={6}
-                      className="w-full flex-1 border rounded px-4 py-3 outline-none focus:border-zinc-500 font-mono text-xs leading-relaxed resize-none"
+                      className="w-full flex-1 border border-[var(--border-primary)] rounded px-4 py-3 outline-none focus:border-zinc-500 font-mono text-xs leading-relaxed resize-none"
                       style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
                     />
                   </div>
@@ -1453,7 +1453,7 @@ export default function PracticeWorkspace() {
                       <div className="space-y-3 font-mono text-[11px]">
                         {/* Meta information */}
                         <div className="flex items-center gap-2">
-                          <span className={`font-extrabold text-[10px] px-2 py-0.5 rounded border uppercase ${
+                          <span className={`font-extrabold text-[10px] px-2 py-0.5 rounded border border-[var(--border-primary)] uppercase ${
                             debugResult.status === "SUCCESS" 
                               ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400" 
                               : "bg-rose-500/10 border-rose-500/30 text-rose-400"
@@ -1475,7 +1475,7 @@ export default function PracticeWorkspace() {
 
                         {/* Compiler / Execution Tracebacks */}
                         {debugResult.error && (
-                          <div className="p-3 rounded-lg border border-rose-500/20 bg-rose-500/5">
+                          <div className="p-3 rounded-lg border border-[var(--border-primary)] border-rose-500/20 bg-rose-500/5">
                             <div className="font-bold uppercase text-[9px] text-rose-400 mb-1">Runtime / Compile Error:</div>
                             <pre className="text-rose-400 whitespace-pre-wrap">{debugResult.error}</pre>
                           </div>
@@ -1510,7 +1510,7 @@ export default function PracticeWorkspace() {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="max-w-2xl w-full rounded-3xl border p-6 sm:p-8 shadow-2xl space-y-6 text-left max-h-[85vh] overflow-y-auto"
+              className="max-w-2xl w-full rounded-3xl border border-[var(--border-primary)] p-6 sm:p-8 shadow-2xl space-y-6 text-left max-h-[85vh] overflow-y-auto"
               style={{ backgroundColor: "var(--bg-card)", borderColor: submissionReport.verdict === "ACCEPTED" ? "var(--border-accent)" : "rgba(239, 68, 68, 0.3)" }}
             >
               <div className="flex items-center justify-between border-b pb-4" style={{ borderColor: "var(--border-primary)" }}>
@@ -1545,7 +1545,7 @@ export default function PracticeWorkspace() {
               {submissionReport.stderr && (
                 <div className="space-y-2">
                   <span className="text-[10px] font-bold text-rose-400 uppercase tracking-wider block">Execution Error Output:</span>
-                  <pre className="p-4 rounded-2xl bg-slate-950 border border-rose-500/10 text-rose-300 font-mono text-[11px] leading-relaxed overflow-x-auto whitespace-pre-wrap">
+                  <pre className="p-4 rounded-2xl bg-slate-950 border border-[var(--border-primary)] border-rose-500/10 text-rose-300 font-mono text-[11px] leading-relaxed overflow-x-auto whitespace-pre-wrap">
                     {submissionReport.stderr}
                   </pre>
                 </div>
@@ -1561,7 +1561,7 @@ export default function PracticeWorkspace() {
                       return (
                         <div 
                           key={index}
-                          className="border rounded-2xl p-4 transition-all"
+                          className="border border-[var(--border-primary)] rounded-2xl p-4 transition-all"
                           style={{ 
                             backgroundColor: "var(--bg-primary)", 
                             borderColor: passed ? "rgba(16, 185, 129, 0.15)" : "rgba(239, 68, 68, 0.15)" 
@@ -1572,7 +1572,7 @@ export default function PracticeWorkspace() {
                               Test Case #{res.index} {isSample ? <span className="text-zinc-400 text-[10px] ml-1 font-sans">(Sample)</span> : <span className="text-[var(--text-muted)] text-[10px] ml-1 font-sans">(Hidden)</span>}
                             </span>
                             
-                            <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded border uppercase font-mono ${
+                            <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded border border-[var(--border-primary)] uppercase font-mono ${
                               passed 
                                 ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400" 
                                 : "bg-rose-500/10 border-rose-500/30 text-rose-400"
@@ -1626,7 +1626,7 @@ export default function PracticeWorkspace() {
                 {submissionReport.verdict === "ACCEPTED" && (
                   <Link
                     href="/practice"
-                    className="px-5 py-2.5 text-white font-bold rounded-full text-xs shadow-md cursor-pointer flex items-center space-x-1 hover:shadow-lg transition-all"
+                    className="px-5 py-2.5 text-[var(--text-on-accent)] font-bold rounded-full text-xs shadow-md cursor-pointer flex items-center space-x-1 hover:shadow-lg transition-all"
                     style={{ background: "var(--accent-gradient)" }}
                   >
                     <span>Next Challenge</span>

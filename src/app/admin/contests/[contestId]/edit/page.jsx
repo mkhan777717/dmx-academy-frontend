@@ -282,7 +282,7 @@ export default function EditContest() {
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="p-4 rounded-2xl border text-xs text-center font-bold bg-emerald-500/10 border-emerald-500/20 text-emerald-500"
+          className="p-4 rounded-2xl border border-[var(--border-primary)] text-xs text-center font-bold bg-emerald-500/10 border-emerald-500/20 text-emerald-500"
         >
           🎉 Contest updated successfully! Redirecting back...
         </motion.div>
@@ -292,7 +292,7 @@ export default function EditContest() {
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="p-4 rounded-2xl border text-xs text-center font-bold bg-rose-500/10 border-rose-500/20 text-rose-400"
+          className="p-4 rounded-2xl border border-[var(--border-primary)] text-xs text-center font-bold bg-rose-500/10 border-rose-500/20 text-rose-400"
         >
           ⚠️ {errorMsg}
         </motion.div>
@@ -322,7 +322,7 @@ export default function EditContest() {
                   placeholder="e.g. Synapse Code Clash #05"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  className="w-full rounded-2xl py-3 px-4 text-xs outline-none border transition-all"
+                  className="w-full rounded-2xl py-3 px-4 text-xs outline-none border border-[var(--border-primary)] transition-all"
                   style={{
                     backgroundColor: "var(--bg-input)",
                     borderColor: "var(--border-primary)",
@@ -343,7 +343,7 @@ export default function EditContest() {
                   placeholder="synapse-code-clash-05"
                   value={slug}
                   disabled
-                  className="w-full rounded-2xl py-3 px-4 text-xs border bg-slate-500/5 cursor-not-allowed"
+                  className="w-full rounded-2xl py-3 px-4 text-xs border border-[var(--border-primary)] bg-slate-500/5 cursor-not-allowed"
                   style={{
                     borderColor: "var(--border-primary)",
                     color: "var(--text-muted)"
@@ -359,7 +359,7 @@ export default function EditContest() {
                 <select
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
-                  className="w-full rounded-2xl py-3 px-4 text-xs outline-none border transition-all"
+                  className="w-full rounded-2xl py-3 px-4 text-xs outline-none border border-[var(--border-primary)] transition-all"
                   style={{
                     backgroundColor: "var(--bg-input)",
                     borderColor: "var(--border-primary)",
@@ -385,7 +385,7 @@ export default function EditContest() {
                   placeholder="60"
                   value={durationMins}
                   onChange={(e) => setDurationMins(e.target.value)}
-                  className="w-full rounded-2xl py-3 px-4 text-xs outline-none border transition-all"
+                  className="w-full rounded-2xl py-3 px-4 text-xs outline-none border border-[var(--border-primary)] transition-all"
                   style={{
                     backgroundColor: "var(--bg-input)",
                     borderColor: "var(--border-primary)",
@@ -406,7 +406,7 @@ export default function EditContest() {
                   placeholder="300"
                   value={totalPoints}
                   onChange={(e) => setTotalPoints(e.target.value)}
-                  className="w-full rounded-2xl py-3 px-4 text-xs outline-none border transition-all"
+                  className="w-full rounded-2xl py-3 px-4 text-xs outline-none border border-[var(--border-primary)] transition-all"
                   style={{
                     backgroundColor: "var(--bg-input)",
                     borderColor: "var(--border-primary)",
@@ -428,7 +428,7 @@ export default function EditContest() {
                 value={desc}
                 onChange={(e) => setDesc(e.target.value)}
                 rows={3}
-                className="w-full rounded-2xl py-3 px-4 text-xs outline-none border transition-all resize-none"
+                className="w-full rounded-2xl py-3 px-4 text-xs outline-none border border-[var(--border-primary)] transition-all resize-none"
                 style={{
                   backgroundColor: "var(--bg-input)",
                   borderColor: "var(--border-primary)",
@@ -455,7 +455,7 @@ export default function EditContest() {
                   type="date"
                   value={startDate}
                   onChange={(e) => setStartDate(e.target.value)}
-                  className="w-full rounded-2xl py-3 px-4 text-xs outline-none border transition-all"
+                  className="w-full rounded-2xl py-3 px-4 text-xs outline-none border border-[var(--border-primary)] transition-all"
                   style={{
                     backgroundColor: "var(--bg-input)",
                     borderColor: "var(--border-primary)",
@@ -472,7 +472,7 @@ export default function EditContest() {
                   type="time"
                   value={startTime}
                   onChange={(e) => setStartTime(e.target.value)}
-                  className="w-full rounded-2xl py-3 px-4 text-xs outline-none border transition-all"
+                  className="w-full rounded-2xl py-3 px-4 text-xs outline-none border border-[var(--border-primary)] transition-all"
                   style={{
                     backgroundColor: "var(--bg-input)",
                     borderColor: "var(--border-primary)",
@@ -497,7 +497,7 @@ export default function EditContest() {
                   type="button"
                   onClick={refreshProblemsList}
                   title="Refresh Problems List"
-                  className="p-2 rounded-xl border transition-all hover:scale-102 cursor-pointer"
+                  className="p-2 rounded-xl border border-[var(--border-primary)] transition-all hover:scale-102 cursor-pointer"
                   style={{
                     backgroundColor: "var(--bg-card)",
                     borderColor: "var(--border-primary)",
@@ -510,7 +510,7 @@ export default function EditContest() {
                 <button
                   type="button"
                   onClick={() => window.open('/admin/problems/new', '_blank')}
-                  className="px-3 py-2 rounded-xl text-[10px] font-bold text-white shadow-sm flex items-center space-x-1 hover:scale-102 transition-all cursor-pointer"
+                  className="px-3 py-2 rounded-xl text-[10px] font-bold text-[var(--text-on-accent)] shadow-sm flex items-center space-x-1 hover:scale-102 transition-all cursor-pointer"
                   style={{ background: "var(--accent-gradient)" }}
                 >
                   <Plus size={10} />
@@ -549,7 +549,7 @@ export default function EditContest() {
 
             <div className="max-h-72 overflow-y-auto pr-1 space-y-2">
               {filteredProblemsForContest.length === 0 ? (
-                <div className="text-center py-8 text-xs italic text-[var(--text-muted)] border rounded-2xl border-dashed" style={{ borderColor: "var(--border-primary)" }}>
+                <div className="text-center py-8 text-xs italic text-[var(--text-muted)] border border-[var(--border-primary)] rounded-2xl border-dashed" style={{ borderColor: "var(--border-primary)" }}>
                   No problems found in this scope.
                 </div>
               ) :
@@ -559,7 +559,7 @@ export default function EditContest() {
                     <div
                       key={problem.id}
                       onClick={() => toggleProblemSelection(problem.id)}
-                      className="p-3.5 rounded-2xl border flex items-center justify-between cursor-pointer transition-all hover:scale-101"
+                      className="p-3.5 rounded-2xl border border-[var(--border-primary)] flex items-center justify-between cursor-pointer transition-all hover:scale-101"
                       style={{
                         backgroundColor: isSelected ? "var(--bg-badge)" : "var(--bg-primary)",
                         borderColor: isSelected ? "var(--border-accent)" : "var(--border-primary)"
@@ -581,7 +581,7 @@ export default function EditContest() {
                           type="checkbox"
                           checked={isSelected}
                           readOnly
-                          className="rounded border shadow-sm accent-indigo-500 w-4 h-4"
+                          className="rounded border border-[var(--border-primary)] shadow-sm accent-indigo-500 w-4 h-4"
                         />
                       </div>
                     </div>
@@ -596,7 +596,7 @@ export default function EditContest() {
             <button
               type="submit"
               disabled={submitting || success}
-              className="px-8 py-3.5 rounded-2xl font-bold text-xs text-white shadow-md transition-all flex items-center space-x-2 hover:scale-102 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100"
+              className="px-8 py-3.5 rounded-2xl font-bold text-xs text-[var(--text-on-accent)] shadow-md transition-all flex items-center space-x-2 hover:scale-102 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100"
               style={{ background: "var(--accent-gradient)", cursor: submitting ? "not-allowed" : "pointer" }}
             >
               {submitting ? (
@@ -623,7 +623,7 @@ export default function EditContest() {
 
           {/* Preview Container */}
           <div
-            className="group relative flex flex-col justify-between rounded-3xl p-6 shadow-lg border overflow-hidden transition-all duration-300"
+            className="group relative flex flex-col justify-between rounded-3xl p-6 shadow-lg border border-[var(--border-primary)] overflow-hidden transition-all duration-300"
             style={{
               backgroundColor: "var(--bg-card)",
               borderColor: "var(--border-card)"

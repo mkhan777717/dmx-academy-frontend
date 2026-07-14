@@ -366,7 +366,7 @@ export function AuthProvider({ children }) {
       {/* Cross-Device Single Session Countdown Overlay */}
       {sessionConflict && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-lg p-4 font-sans select-none pointer-events-auto">
-          <div className="w-full max-w-sm rounded-3xl border border-rose-500/20 bg-slate-900/90 p-8 text-center space-y-6 shadow-2xl shadow-rose-950/20">
+          <div className="w-full max-w-sm rounded-3xl border border-[var(--border-primary)] border-rose-500/20 bg-[var(--bg-card)]/90 p-8 text-center space-y-6 shadow-2xl shadow-rose-950/20">
             <div className="w-16 h-16 rounded-2xl bg-rose-500/10 text-rose-500 flex items-center justify-center mx-auto animate-bounce">
               <AlertTriangle size={32} />
             </div>

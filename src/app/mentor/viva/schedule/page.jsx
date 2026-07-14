@@ -165,7 +165,7 @@ export default function ScheduleVivaPage() {
         {/* Header */}
         <section className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b pb-6" style={{ borderColor: "var(--border-primary)" }}>
           <div>
-            <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border mb-3"
+            <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border border-[var(--border-primary)] mb-3"
               style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)", backgroundColor: "var(--bg-secondary)" }}>
               <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: "var(--accent-primary)" }} />
               Viva Administration
@@ -181,7 +181,7 @@ export default function ScheduleVivaPage() {
             {view === "list" ? (
               <button
                 onClick={() => setView("create")}
-                className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-xs text-white shadow-md transition-transform hover:-translate-y-0.5 cursor-pointer"
+                className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-xs text-[var(--text-on-accent)] shadow-md transition-transform hover:-translate-y-0.5 cursor-pointer"
                 style={{ background: "var(--accent-primary)" }}
               >
                 <Plus className="w-4 h-4" /> Schedule New Viva
@@ -189,7 +189,7 @@ export default function ScheduleVivaPage() {
             ) : (
               <button
                 onClick={() => setView("list")}
-                className="flex items-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-xs border transition-colors hover:bg-[var(--bg-secondary)] cursor-pointer"
+                className="flex items-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-xs border border-[var(--border-primary)] transition-colors hover:bg-[var(--bg-secondary)] cursor-pointer"
                 style={{ borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
               >
                 <ArrowLeft className="w-4 h-4" /> Back to List
@@ -221,7 +221,7 @@ export default function ScheduleVivaPage() {
                 <p className="text-xs font-medium uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Loading scheduled Vivas...</p>
               </div>
             ) : vivas.length === 0 ? (
-              <div className="border rounded-2xl p-12 text-center max-w-xl mx-auto space-y-4" style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)" }}>
+              <div className="border border-[var(--border-primary)] rounded-2xl p-12 text-center max-w-xl mx-auto space-y-4" style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)" }}>
                 <Calendar className="w-10 h-10 mx-auto" style={{ color: "var(--text-muted)" }} />
                 <h3 className="text-lg font-serif" style={{ color: "var(--text-primary)" }}>No Vivas Scheduled</h3>
                 <p className="text-xs" style={{ color: "var(--text-secondary)" }}>
@@ -235,7 +235,7 @@ export default function ScheduleVivaPage() {
                   return (
                     <div
                       key={viva.id}
-                      className="border rounded-2xl p-6 transition-all duration-300 hover:shadow-lg flex flex-col justify-between group"
+                      className="border border-[var(--border-primary)] rounded-2xl p-6 transition-all duration-300 hover:shadow-lg flex flex-col justify-between group"
                       style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}
                     >
                       <div className="space-y-4">
@@ -244,7 +244,7 @@ export default function ScheduleVivaPage() {
                             style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}>
                             {viva.subject}
                           </span>
-                          <span className={`px-2.5 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider border ${status.color}`}>
+                          <span className={`px-2.5 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider border border-[var(--border-primary)] ${status.color}`}>
                             {status.label}
                           </span>
                         </div>
@@ -293,7 +293,7 @@ export default function ScheduleVivaPage() {
         {view === "create" && (
           <form onSubmit={handleCreateSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Form Fields */}
-            <div className="lg:col-span-2 space-y-6 border rounded-2xl p-6 md:p-8" style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}>
+            <div className="lg:col-span-2 space-y-6 border border-[var(--border-primary)] rounded-2xl p-6 md:p-8" style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}>
               <h2 className="text-xl font-serif flex items-center gap-2 pb-4 border-b" style={{ color: "var(--text-primary)", borderColor: "var(--border-primary)" }}>
                 <Calendar className="w-5 h-5" style={{ color: "var(--text-muted)" }} />
                 Viva Details
@@ -308,7 +308,7 @@ export default function ScheduleVivaPage() {
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     placeholder="e.g. JavaScript Closures Final Exam"
-                    className="w-full border rounded-xl px-4 py-2.5 text-sm transition-colors outline-none focus:border-[var(--text-primary)]"
+                    className="w-full border border-[var(--border-primary)] rounded-xl px-4 py-2.5 text-sm transition-colors outline-none focus:border-[var(--text-primary)]"
                     style={{ backgroundColor: "var(--bg-input)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
                   />
                 </div>
@@ -319,7 +319,7 @@ export default function ScheduleVivaPage() {
                     <select
                       value={subject}
                       onChange={(e) => setSubject(e.target.value)}
-                      className="w-full border rounded-xl px-4 py-2.5 text-sm transition-colors outline-none focus:border-[var(--text-primary)] cursor-pointer"
+                      className="w-full border border-[var(--border-primary)] rounded-xl px-4 py-2.5 text-sm transition-colors outline-none focus:border-[var(--text-primary)] cursor-pointer"
                       style={{ backgroundColor: "var(--bg-input)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
                     >
                       <option value="">Select Subject</option>
@@ -337,7 +337,7 @@ export default function ScheduleVivaPage() {
                       placeholder="Or type a new subject"
                       value={subject}
                       onChange={(e) => setSubject(e.target.value)}
-                      className="w-full border rounded-xl px-4 py-2.5 text-sm transition-colors outline-none focus:border-[var(--text-primary)]"
+                      className="w-full border border-[var(--border-primary)] rounded-xl px-4 py-2.5 text-sm transition-colors outline-none focus:border-[var(--text-primary)]"
                       style={{ backgroundColor: "var(--bg-input)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
                     />
                   </div>
@@ -350,7 +350,7 @@ export default function ScheduleVivaPage() {
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     placeholder="Provide short instructions for students..."
-                    className="w-full border rounded-xl px-4 py-2.5 text-sm transition-colors outline-none resize-none focus:border-[var(--text-primary)]"
+                    className="w-full border border-[var(--border-primary)] rounded-xl px-4 py-2.5 text-sm transition-colors outline-none resize-none focus:border-[var(--text-primary)]"
                     style={{ backgroundColor: "var(--bg-input)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
                   />
                 </div>
@@ -363,7 +363,7 @@ export default function ScheduleVivaPage() {
                       required
                       value={startTime}
                       onChange={(e) => setStartTime(e.target.value)}
-                      className="w-full border rounded-xl px-4 py-2.5 text-sm transition-colors outline-none focus:border-[var(--text-primary)]"
+                      className="w-full border border-[var(--border-primary)] rounded-xl px-4 py-2.5 text-sm transition-colors outline-none focus:border-[var(--text-primary)]"
                       style={{ backgroundColor: "var(--bg-input)", borderColor: "var(--border-primary)", color: "var(--text-primary)", colorScheme: "dark" }}
                     />
                   </div>
@@ -374,7 +374,7 @@ export default function ScheduleVivaPage() {
                       type="datetime-local"
                       value={endTime}
                       onChange={(e) => setEndTime(e.target.value)}
-                      className="w-full border rounded-xl px-4 py-2.5 text-sm transition-colors outline-none focus:border-[var(--text-primary)]"
+                      className="w-full border border-[var(--border-primary)] rounded-xl px-4 py-2.5 text-sm transition-colors outline-none focus:border-[var(--text-primary)]"
                       style={{ backgroundColor: "var(--bg-input)", borderColor: "var(--border-primary)", color: "var(--text-primary)", colorScheme: "dark" }}
                     />
                   </div>
@@ -383,7 +383,7 @@ export default function ScheduleVivaPage() {
             </div>
 
             {/* Question Selector Sidebar */}
-            <div className="space-y-6 border rounded-2xl p-6 flex flex-col h-[650px]" style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)" }}>
+            <div className="space-y-6 border border-[var(--border-primary)] rounded-2xl p-6 flex flex-col h-[650px]" style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)" }}>
               <div>
                 <h2 className="text-lg font-serif flex items-center justify-between pb-4 border-b" style={{ color: "var(--text-primary)", borderColor: "var(--border-primary)" }}>
                   <span className="flex items-center gap-2">
@@ -401,7 +401,7 @@ export default function ScheduleVivaPage() {
                     placeholder="Filter by subject..."
                     value={subjectFilter}
                     onChange={(e) => setSubjectFilter(e.target.value)}
-                    className="w-full border rounded-xl px-3 py-2 text-xs transition-colors outline-none focus:border-[var(--text-primary)]"
+                    className="w-full border border-[var(--border-primary)] rounded-xl px-3 py-2 text-xs transition-colors outline-none focus:border-[var(--text-primary)]"
                     style={{ backgroundColor: "var(--bg-input)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
                   />
                 </div>
@@ -424,7 +424,7 @@ export default function ScheduleVivaPage() {
                         <div
                           key={q.id}
                           onClick={() => toggleQuestionSelection(q.id)}
-                          className={`p-3.5 border rounded-xl cursor-pointer transition-colors text-left select-none ${
+                          className={`p-3.5 border border-[var(--border-primary)] rounded-xl cursor-pointer transition-colors text-left select-none ${
                             isSelected ? "border-[var(--text-primary)]" : "hover:border-[var(--text-muted)]"
                           }`}
                           style={{
@@ -433,7 +433,7 @@ export default function ScheduleVivaPage() {
                           }}
                         >
                           <div className="flex justify-between items-start gap-2">
-                            <span className="text-[9px] px-2 py-0.5 border rounded text-xs font-bold uppercase tracking-wider" style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}>
+                            <span className="text-[9px] px-2 py-0.5 border border-[var(--border-primary)] rounded text-xs font-bold uppercase tracking-wider" style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}>
                               {q.subject}
                             </span>
                             <span className={`text-[9px] uppercase font-bold ${
@@ -455,7 +455,7 @@ export default function ScheduleVivaPage() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-xs text-white transition-all hover:scale-101 shadow-md disabled:opacity-50 cursor-pointer"
+                  className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-xs text-[var(--text-on-accent)] transition-all hover:scale-101 shadow-md disabled:opacity-50 cursor-pointer"
                   style={{ background: "var(--accent-primary)" }}
                 >
                   {submitting ? (

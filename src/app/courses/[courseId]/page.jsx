@@ -611,7 +611,7 @@ export default function DynamicCoursePage() {
       <div className="flex min-h-screen flex-col items-center justify-center space-y-4" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }}>
         <h1 className="text-2xl font-black font-display">Course Not Found</h1>
         <p className="text-sm" style={{ color: "var(--text-secondary)" }}>The requested course could not be located in our registry.</p>
-        <a href="/courses" className="px-5 py-2.5 rounded-full text-xs font-bold text-white shadow-md transition-all" style={{ background: "var(--accent-gradient)" }}>
+        <a href="/courses" className="px-5 py-2.5 rounded-full text-xs font-bold text-[var(--text-on-accent)] shadow-md transition-all" style={{ background: "var(--accent-gradient)" }}>
           Back to Catalog
         </a>
       </div>
@@ -631,10 +631,10 @@ export default function DynamicCoursePage() {
         {/* Sidebar Header */}
         <div className="flex h-16 items-center justify-between px-5" style={{ borderBottom: "1px solid var(--border-primary)" }}>
           <a href="/" className="flex items-center space-x-2 text-lg font-bold font-display" style={{ color: "var(--text-primary)" }}>
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg text-white shadow-md" style={{ background: "var(--accent-gradient)" }}>
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg text-[var(--text-on-accent)] shadow-md" style={{ background: "var(--accent-gradient)" }}>
               <Sparkles size={16} />
             </div>
-            <span>DMX Academy</span>
+            <span>Eduvantix</span>
           </a>
           <button 
             onClick={() => setIsSidebarOpen(false)}
@@ -862,7 +862,7 @@ export default function DynamicCoursePage() {
                         href={item.link}
                         target="_blank"
                         rel="noreferrer"
-                        className="block p-2 rounded-lg transition-all border group"
+                        className="block p-2 rounded-lg transition-all border border-[var(--border-primary)] group"
                         style={{ backgroundColor: "var(--bg-hover)", borderColor: "var(--border-primary)" }}
                       >
                         <div className="flex items-center justify-between mb-0.5">
@@ -1008,7 +1008,7 @@ export default function DynamicCoursePage() {
                     <button
                       onClick={handleNext}
                       disabled={!hasNext()}
-                      className="flex items-center space-x-1.5 rounded-lg px-4 py-2.5 text-xs font-semibold text-white shadow-sm transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                      className="flex items-center space-x-1.5 rounded-lg px-4 py-2.5 text-xs font-semibold text-[var(--text-on-accent)] shadow-sm transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
                       style={{ background: "var(--accent-gradient)" }}
                     >
                       <span>Next Lesson</span>
@@ -1048,7 +1048,7 @@ export default function DynamicCoursePage() {
 
                   <div className="grid grid-cols-1 gap-4 pt-4">
                     {glossary.map((g, idx) => (
-                      <div key={idx} className="p-4 rounded-xl border shadow-sm hover:shadow-md transition-shadow animate-fade-in" style={{ backgroundColor: "var(--bg-hover)", borderColor: "var(--border-primary)" }}>
+                      <div key={idx} className="p-4 rounded-xl border border-[var(--border-primary)] shadow-sm hover:shadow-md transition-shadow animate-fade-in" style={{ backgroundColor: "var(--bg-hover)", borderColor: "var(--border-primary)" }}>
                         <h3 className="font-bold text-sm mb-1" style={{ color: "var(--text-accent)" }}>{g.term}</h3>
                         <p className="text-xs leading-relaxed" style={{ color: "var(--text-secondary)" }}>{g.def}</p>
                       </div>
@@ -1087,7 +1087,7 @@ export default function DynamicCoursePage() {
                               href={item.link}
                               target="_blank"
                               rel="noreferrer"
-                              className="flex flex-col justify-between p-4 rounded-xl border shadow-sm hover:shadow-md transition-all group"
+                              className="flex flex-col justify-between p-4 rounded-xl border border-[var(--border-primary)] shadow-sm hover:shadow-md transition-all group"
                               style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}
                             >
                               <div className="space-y-1">

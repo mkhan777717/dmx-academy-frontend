@@ -24,7 +24,7 @@ const footerLinks = [
   {
     title: "Company",
     links: [
-      { name: "About DMX", href: "#" },
+      { name: "About Eduvantix", href: "#" },
       { name: "Academy Blog", href: "#" },
       { name: "Student Work", href: "#" },
       { name: "Careers", href: "#" },
@@ -67,7 +67,7 @@ export default function Footer() {
             className="text-[clamp(4rem,10vw,9rem)] font-black tracking-[-0.06em] leading-none select-none"
             style={{ color: "var(--border-card)", letterSpacing: "-0.05em" }}
           >
-            DMX Academy
+            Eduvantix
           </div>
         </div>
 
@@ -127,7 +127,7 @@ export default function Footer() {
         {/* Bottom bar */}
         <div className="pt-10 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-[11px]" style={{ color: "var(--text-muted)" }}>
-            © {new Date().getFullYear()} DMX Academy Inc. All rights reserved.
+            © {new Date().getFullYear()} Eduvantix Inc. All rights reserved.
           </p>
 
           <div className="flex items-center gap-4 text-[11px]" style={{ color: "var(--text-muted)" }}>

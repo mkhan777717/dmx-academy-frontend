@@ -198,7 +198,7 @@ export default function ResumeForm({ data, onChange }) {
             </div>
           ))}
           {(!data.experience || data.experience.length === 0) && (
-            <p className="text-sm text-[var(--text-muted)] text-center py-4 bg-[var(--bg-hover)] rounded-xl border border-dashed border-[var(--border-primary)]">No work experience added yet.</p>
+            <p className="text-sm text-[var(--text-muted)] text-center py-4 bg-[var(--bg-hover)] rounded-xl border border-[var(--border-primary)] border-dashed border-[var(--border-primary)]">No work experience added yet.</p>
           )}
         </div>
       </section>
@@ -245,7 +245,7 @@ export default function ResumeForm({ data, onChange }) {
             </div>
           ))}
           {(!data.education || data.education.length === 0) && (
-            <p className="text-sm text-[var(--text-muted)] text-center py-4 bg-[var(--bg-hover)] rounded-xl border border-dashed border-[var(--border-primary)]">No education added yet.</p>
+            <p className="text-sm text-[var(--text-muted)] text-center py-4 bg-[var(--bg-hover)] rounded-xl border border-[var(--border-primary)] border-dashed border-[var(--border-primary)]">No education added yet.</p>
           )}
         </div>
       </section>
@@ -296,7 +296,7 @@ export default function ResumeForm({ data, onChange }) {
             </div>
           ))}
           {(!data.projects || data.projects.length === 0) && (
-            <p className="text-sm text-[var(--text-muted)] text-center py-4 bg-[var(--bg-hover)] rounded-xl border border-dashed border-[var(--border-primary)]">No projects added yet.</p>
+            <p className="text-sm text-[var(--text-muted)] text-center py-4 bg-[var(--bg-hover)] rounded-xl border border-[var(--border-primary)] border-dashed border-[var(--border-primary)]">No projects added yet.</p>
           )}
         </div>
       </section>

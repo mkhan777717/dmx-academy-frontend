@@ -60,14 +60,14 @@ export default function GamesHubPage() {
       {/* Top Arcade Navigation Bar */}
       <section className="flex flex-col gap-2 border-b pb-6 shrink-0 mb-8" style={{ borderColor: "var(--border-primary)" }}>
         <div className="flex items-center justify-between">
-          <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border mb-3 w-fit"
+          <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border border-[var(--border-primary)] mb-3 w-fit"
             style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)", backgroundColor: "var(--bg-secondary)" }}>
             <Gamepad2 size={12} className="text-violet-500" />
             Arcade
           </div>
           <button
             onClick={() => router.push("/student/dashboard")}
-            className="flex items-center space-x-2 px-4 py-2 border rounded-xl font-semibold text-sm transition-colors shadow-sm cursor-pointer hover:bg-[var(--bg-secondary)]"
+            className="flex items-center space-x-2 px-4 py-2 border border-[var(--border-primary)] rounded-xl font-semibold text-sm transition-colors shadow-sm cursor-pointer hover:bg-[var(--bg-secondary)]"
             style={{ 
               backgroundColor: "var(--bg-primary)", 
               borderColor: "var(--border-primary)",
@@ -87,7 +87,7 @@ export default function GamesHubPage() {
 
       <div className="space-y-8 relative z-10">
         {/* Filters Toolbar */}
-        <div className="flex flex-wrap items-center justify-between gap-4 p-4 rounded-2xl border shadow-sm" style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}>
+        <div className="flex flex-wrap items-center justify-between gap-4 p-4 rounded-2xl border border-[var(--border-primary)] shadow-sm" style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}>
           {/* Track Filters */}
           <div className="flex flex-wrap items-center gap-1.5">
             <span className="text-[10px] font-bold uppercase tracking-wider mr-2" style={{ color: "var(--text-muted)" }}>
@@ -97,7 +97,7 @@ export default function GamesHubPage() {
               <button
                 key={track}
                 onClick={() => setFilterTrack(track)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer border ${
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer border border-[var(--border-primary)] ${
                   filterTrack === track
                     ? "bg-[var(--text-primary)] text-[var(--bg-primary)] border-[var(--text-primary)]"
                     : "bg-transparent text-[var(--text-secondary)] border-[var(--border-primary)] hover:bg-[var(--bg-secondary)]"
@@ -117,7 +117,7 @@ export default function GamesHubPage() {
               <button
                 key={diff}
                 onClick={() => setFilterDifficulty(diff)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer border ${
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer border border-[var(--border-primary)] ${
                   filterDifficulty === diff
                     ? "bg-[var(--text-primary)] text-[var(--bg-primary)] border-[var(--text-primary)]"
                     : "bg-transparent text-[var(--text-secondary)] border-[var(--border-primary)] hover:bg-[var(--bg-secondary)]"
@@ -149,7 +149,7 @@ export default function GamesHubPage() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.95 }}
                   transition={{ delay: idx * 0.05 }}
-                  className="rounded-2xl border p-6 flex flex-col justify-between space-y-6 transition-all hover:shadow-md bg-[var(--bg-primary)] hover:bg-[var(--bg-secondary)]"
+                  className="rounded-2xl border border-[var(--border-primary)] p-6 flex flex-col justify-between space-y-6 transition-all hover:shadow-md bg-[var(--bg-primary)] hover:bg-[var(--bg-secondary)]"
                   style={{ borderColor: "var(--border-primary)" }}
                 >
                   {/* Top Details */}
@@ -158,7 +158,7 @@ export default function GamesHubPage() {
                       <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "var(--text-secondary)" }}>
                         {game.track}
                       </span>
-                      <span className={`text-[9px] font-extrabold uppercase px-2 py-0.5 rounded-md border ${
+                      <span className={`text-[9px] font-extrabold uppercase px-2 py-0.5 rounded-md border border-[var(--border-primary)] ${
                         game.difficulty === "Beginner" ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-500" :
                         game.difficulty === "Intermediate" ? "border-amber-500/30 bg-amber-500/10 text-amber-500" :
                         "border-rose-500/30 bg-rose-500/10 text-rose-500"
@@ -206,14 +206,14 @@ export default function GamesHubPage() {
                     {isLive ? (
                       <button
                         onClick={() => router.push(`/student/games/${game.slug}`)}
-                        className="px-4 py-2 rounded-xl font-semibold text-xs text-white transition-transform hover:-translate-y-0.5 shadow-md cursor-pointer flex items-center gap-1.5"
+                        className="px-4 py-2 rounded-xl font-semibold text-xs text-[var(--text-on-accent)] transition-transform hover:-translate-y-0.5 shadow-md cursor-pointer flex items-center gap-1.5"
                         style={{ background: "var(--accent-primary)" }}
                       >
                         <span>Start</span>
                         <ArrowRight size={13} />
                       </button>
                     ) : (
-                      <span className="px-3 py-1.5 rounded-lg font-bold text-xs border cursor-not-allowed select-none"
+                      <span className="px-3 py-1.5 rounded-lg font-bold text-xs border border-[var(--border-primary)] cursor-not-allowed select-none"
                         style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)", color: "var(--text-muted)" }}>
                         Locked
                       </span>

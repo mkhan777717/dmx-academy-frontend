@@ -143,7 +143,7 @@ export default function AntiCheatShield({
               <motion.div
                 animate={{ scale: [1, 1.05, 1] }}
                 transition={{ repeat: Infinity, duration: 2 }}
-                className="w-20 h-20 bg-rose-500/10 rounded-full flex items-center justify-center border border-rose-500/30 mb-6"
+                className="w-20 h-20 bg-rose-500/10 rounded-full flex items-center justify-center border border-[var(--border-primary)] border-rose-500/30 mb-6"
               >
                 <Maximize2 size={36} className="text-rose-500" />
               </motion.div>
@@ -175,9 +175,9 @@ export default function AntiCheatShield({
                 initial={{ scale: 0.95, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.95, opacity: 0 }}
-                className="w-full max-w-md bg-slate-900 border border-slate-800 rounded-3xl p-8 space-y-6 shadow-2xl text-white"
+                className="w-full max-w-md bg-[var(--bg-card)] border border-[var(--border-primary)] border-[var(--border-primary)] rounded-3xl p-8 space-y-6 shadow-2xl text-white"
               >
-                <div className="w-16 h-16 mx-auto rounded-full bg-rose-500/10 flex items-center justify-center border border-rose-500/30">
+                <div className="w-16 h-16 mx-auto rounded-full bg-rose-500/10 flex items-center justify-center border border-[var(--border-primary)] border-rose-500/30">
                   <ShieldAlert size={30} className="text-rose-500 animate-bounce" />
                 </div>
 
@@ -194,7 +194,7 @@ export default function AntiCheatShield({
                 </div>
 
                 {/* Warnings counter indicator */}
-                <div className="p-4 rounded-2xl bg-slate-950/50 border border-slate-800 flex items-center justify-between">
+                <div className="p-4 rounded-2xl bg-slate-950/50 border border-[var(--border-primary)] border-[var(--border-primary)] flex items-center justify-between">
                   <div className="flex items-center space-x-3">
                     <AlertTriangle className="text-amber-500" size={18} />
                     <span className="text-xs font-bold text-slate-300">Integrity Warnings</span>
@@ -205,7 +205,7 @@ export default function AntiCheatShield({
                 </div>
 
                 {violations >= maxViolations - 1 ? (
-                  <div className="flex items-start space-x-2 text-rose-400 text-left p-3.5 bg-rose-950/20 rounded-xl border border-rose-900/30">
+                  <div className="flex items-start space-x-2 text-rose-400 text-left p-3.5 bg-rose-950/20 rounded-xl border border-[var(--border-primary)] border-rose-900/30">
                     <XOctagon size={16} className="shrink-0 mt-0.5" />
                     <p className="text-[10px] font-bold leading-normal">
                       CAUTION: The next violation will result in immediate disqualification and your exam will be auto-submitted.

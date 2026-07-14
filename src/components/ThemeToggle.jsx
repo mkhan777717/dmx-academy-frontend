@@ -36,7 +36,7 @@ export default function ThemeToggle() {
       aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
       id="theme-toggle-btn"
       suppressHydrationWarning
-      className="relative flex h-9 w-16 items-center rounded-full border transition-colors duration-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)]"
+      className="relative flex h-9 w-16 items-center rounded-full border border-[var(--border-primary)] transition-colors duration-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)]"
       style={{
         backgroundColor: isDark ? "var(--bg-card)" : "var(--bg-hover)",
         borderColor: "var(--border-primary)",

@@ -52,7 +52,7 @@ export function PromptPlayground() {
   };
 
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+    <div className="rounded-xl border border-[var(--border-primary)] border-slate-200 bg-white p-5 shadow-sm">
       <div className="flex items-center space-x-2 border-b border-slate-100 pb-3 mb-4">
         <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-zinc-50 text-zinc-600">
           <Sparkles size={16} />
@@ -65,7 +65,7 @@ export function PromptPlayground() {
           <label className="block text-xs font-semibold text-slate-500 mb-1">1. Role / Persona ("Act as a...")</label>
           <input
             type="text"
-            className="w-full rounded-lg border border-slate-200 px-3 py-1.5 text-xs text-slate-700 focus:border-zinc-500 focus:outline-none"
+            className="w-full rounded-lg border border-[var(--border-primary)] border-slate-200 px-3 py-1.5 text-xs text-slate-700 focus:border-zinc-500 focus:outline-none"
             value={role}
             onChange={(e) => setRole(e.target.value)}
             placeholder="e.g., Senior JavaScript Developer, Pirate Captain, etc."
@@ -75,7 +75,7 @@ export function PromptPlayground() {
         <div>
           <label className="block text-xs font-semibold text-slate-500 mb-1">2. Context / Background (The scenario)</label>
           <textarea
-            className="w-full rounded-lg border border-slate-200 px-3 py-1.5 text-xs text-slate-700 focus:border-zinc-500 focus:outline-none h-14 resize-none"
+            className="w-full rounded-lg border border-[var(--border-primary)] border-slate-200 px-3 py-1.5 text-xs text-slate-700 focus:border-zinc-500 focus:outline-none h-14 resize-none"
             value={context}
             onChange={(e) => setContext(e.target.value)}
             placeholder="Describe the product or situation..."
@@ -87,7 +87,7 @@ export function PromptPlayground() {
             <label className="block text-xs font-semibold text-slate-500 mb-1">3. Specific Task (What to do)</label>
             <input
               type="text"
-              className="w-full rounded-lg border border-slate-200 px-3 py-1.5 text-xs text-slate-700 focus:border-zinc-500 focus:outline-none"
+              className="w-full rounded-lg border border-[var(--border-primary)] border-slate-200 px-3 py-1.5 text-xs text-slate-700 focus:border-zinc-500 focus:outline-none"
               value={task}
               onChange={(e) => setTask(e.target.value)}
               placeholder="e.g., Write a product email, slogan, etc."
@@ -97,7 +97,7 @@ export function PromptPlayground() {
             <label className="block text-xs font-semibold text-slate-500 mb-1">4. Format & Constraints</label>
             <input
               type="text"
-              className="w-full rounded-lg border border-slate-200 px-3 py-1.5 text-xs text-slate-700 focus:border-zinc-500 focus:outline-none"
+              className="w-full rounded-lg border border-[var(--border-primary)] border-slate-200 px-3 py-1.5 text-xs text-slate-700 focus:border-zinc-500 focus:outline-none"
               value={format}
               onChange={(e) => setFormat(e.target.value)}
               placeholder="e.g., 3 bullet points, under 100 words..."
@@ -108,7 +108,7 @@ export function PromptPlayground() {
         <button
           onClick={testPrompt}
           disabled={isGenerating}
-          className="flex w-full items-center justify-center space-x-1.5 rounded-lg bg-zinc-600 px-4 py-2 text-xs font-semibold text-white hover:bg-zinc-700 transition-colors disabled:bg-slate-300"
+          className="flex w-full items-center justify-center space-x-1.5 rounded-lg bg-[var(--accent-primary)] px-4 py-2 text-xs font-semibold text-white hover:bg-zinc-700 transition-colors disabled:bg-slate-300"
         >
           {isGenerating ? (
             <>
@@ -124,7 +124,7 @@ export function PromptPlayground() {
         </button>
 
         {response && (
-          <div className="mt-4 rounded-lg bg-slate-50 p-4 border border-slate-100 space-y-3">
+          <div className="mt-4 rounded-lg bg-slate-50 p-4 border border-[var(--border-primary)] border-slate-100 space-y-3">
             <div className="flex items-center justify-between text-xs border-b border-slate-200/50 pb-2">
               <span className="font-semibold text-slate-600">Prompt Score:</span>
               <div className="flex items-center space-x-2">
@@ -132,7 +132,7 @@ export function PromptPlayground() {
                 <span className="text-[10px] text-slate-400">(Role, Context, Task, Format)</span>
               </div>
             </div>
-            <pre className="whitespace-pre-wrap text-[11px] font-mono text-slate-700 bg-white border border-slate-200/50 p-3 rounded-md overflow-x-auto max-h-48 leading-relaxed">
+            <pre className="whitespace-pre-wrap text-[11px] font-mono text-slate-700 bg-white border border-[var(--border-primary)] border-slate-200/50 p-3 rounded-md overflow-x-auto max-h-48 leading-relaxed">
               {response}
             </pre>
             <div className="flex items-start space-x-1.5 text-[10px] text-slate-500">
@@ -174,7 +174,7 @@ export function TokenVisualizer() {
     const colors = [
       "bg-zinc-100 text-zinc-800 border-zinc-200",
       "bg-violet-100 text-violet-800 border-violet-200",
-      "bg-pink-100 text-pink-800 border-pink-200",
+      "bg-[var(--text-primary)] text-[var(--text-primary)] border-[var(--border-primary)]",
       "bg-emerald-100 text-emerald-800 border-emerald-200",
       "bg-sky-100 text-sky-800 border-sky-200",
       "bg-amber-100 text-amber-800 border-amber-200"
@@ -211,7 +211,7 @@ export function TokenVisualizer() {
   };
 
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+    <div className="rounded-xl border border-[var(--border-primary)] border-slate-200 bg-white p-5 shadow-sm">
       <div className="flex items-center space-x-2 border-b border-slate-100 pb-3 mb-4">
         <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-violet-50 text-violet-600">
           <Layers size={16} />
@@ -225,7 +225,7 @@ export function TokenVisualizer() {
           <textarea
             value={text}
             onChange={(e) => setText(e.target.value)}
-            className="w-full rounded-lg border border-slate-200 p-2.5 text-xs text-slate-700 focus:border-zinc-500 focus:outline-none h-20 resize-none leading-relaxed"
+            className="w-full rounded-lg border border-[var(--border-primary)] border-slate-200 p-2.5 text-xs text-slate-700 focus:border-zinc-500 focus:outline-none h-20 resize-none leading-relaxed"
             placeholder="Type your sentences here..."
           />
         </div>
@@ -272,14 +272,14 @@ export function TokenVisualizer() {
         {/* Token Highlights Box */}
         <div>
           <label className="block text-xs font-semibold text-slate-500 mb-2">Tokenized View (Alternating Colors):</label>
-          <div className="flex flex-wrap gap-1 rounded-lg border border-slate-150 p-3 bg-slate-50 min-h-[50px]">
+          <div className="flex flex-wrap gap-1 rounded-lg border border-[var(--border-primary)] border-slate-150 p-3 bg-slate-50 min-h-[50px]">
             {tokens.length === 0 ? (
               <span className="text-xs text-slate-400 italic">No input to show.</span>
             ) : (
               tokens.map((tok, idx) => (
                 <span
                   key={idx}
-                  className={`inline-block px-1.5 py-0.5 rounded text-[10px] font-mono border ${tok.color}`}
+                  className={`inline-block px-1.5 py-0.5 rounded text-[10px] font-mono border border-[var(--border-primary)] ${tok.color}`}
                 >
                   {tok.text}
                 </span>
@@ -289,7 +289,7 @@ export function TokenVisualizer() {
         </div>
 
         {/* Context Window Capacity Meter */}
-        <div className="space-y-1 bg-slate-50 p-3 rounded-lg border border-slate-100">
+        <div className="space-y-1 bg-slate-50 p-3 rounded-lg border border-[var(--border-primary)] border-slate-100">
           <div className="flex items-center justify-between text-[10px]">
             <span className="font-semibold text-slate-500">Context Window Occupied (4,000 Token Cap):</span>
             <span className="font-bold text-slate-600">{((stats.tokensCount / 4000) * 100).toFixed(2)}%</span>
@@ -376,7 +376,7 @@ export function ClassifierSandbox() {
   };
 
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+    <div className="rounded-xl border border-[var(--border-primary)] border-slate-200 bg-white p-5 shadow-sm">
       <div className="flex items-center space-x-2 border-b border-slate-100 pb-3 mb-4">
         <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600">
           <Cpu size={16} />
@@ -386,7 +386,7 @@ export function ClassifierSandbox() {
 
       <div className="space-y-4">
         {/* Model State & Training Action */}
-        <div className="flex flex-col sm:flex-row items-center justify-between bg-slate-50 p-3 rounded-lg border border-slate-100 gap-3">
+        <div className="flex flex-col sm:flex-row items-center justify-between bg-slate-50 p-3 rounded-lg border border-[var(--border-primary)] border-slate-100 gap-3">
           <div className="space-y-1 text-center sm:text-left">
             <div className="text-xs font-bold text-slate-700 flex items-center justify-center sm:justify-start gap-1">
               <span>Model Status:</span>
@@ -409,7 +409,7 @@ export function ClassifierSandbox() {
         {/* Dataset Table */}
         <div>
           <label className="block text-xs font-semibold text-slate-500 mb-2">Training / Inference Dataset:</label>
-          <div className="overflow-x-auto rounded-lg border border-slate-200">
+          <div className="overflow-x-auto rounded-lg border border-[var(--border-primary)] border-slate-200">
             <table className="min-w-full divide-y divide-slate-150 text-left text-[11px]">
               <thead className="bg-slate-50 text-slate-500 font-semibold uppercase">
                 <tr>
@@ -423,13 +423,13 @@ export function ClassifierSandbox() {
                   <tr key={idx}>
                     <td className="px-3 py-2 max-w-[200px] truncate">{e.text}</td>
                     <td className="px-3 py-2">
-                      <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold ${e.actual === "Spam" ? "bg-red-50 text-red-700 border border-red-100" : "bg-slate-100 text-slate-700 border border-slate-200"}`}>
+                      <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold ${e.actual === "Spam" ? "bg-red-50 text-red-700 border border-[var(--border-primary)] border-red-100" : "bg-slate-100 text-slate-700 border border-[var(--border-primary)] border-slate-200"}`}>
                         {e.actual}
                       </span>
                     </td>
                     <td className="px-3 py-2">
                       {e.pred ? (
-                        <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold ${e.pred === "Spam" ? "bg-red-100 text-red-800 border border-red-200" : "bg-emerald-100 text-emerald-800 border border-emerald-200"}`}>
+                        <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold ${e.pred === "Spam" ? "bg-red-100 text-red-800 border border-[var(--border-primary)] border-red-200" : "bg-emerald-100 text-emerald-800 border border-[var(--border-primary)] border-emerald-200"}`}>
                           {e.pred} ({e.conf}%)
                         </span>
                       ) : (
@@ -450,14 +450,14 @@ export function ClassifierSandbox() {
             <div className="flex gap-2">
               <input
                 type="text"
-                className="flex-grow rounded-lg border border-slate-200 px-3 py-2 text-xs text-slate-700 focus:border-zinc-500 focus:outline-none"
+                className="flex-grow rounded-lg border border-[var(--border-primary)] border-slate-200 px-3 py-2 text-xs text-slate-700 focus:border-zinc-500 focus:outline-none"
                 placeholder="Type something like: You won a cash reward..."
                 value={customText}
                 onChange={(e) => setCustomText(e.target.value)}
               />
               <button
                 onClick={handleCustomPredict}
-                className="flex items-center space-x-1 rounded-lg bg-zinc-600 px-3.5 py-2 text-xs font-semibold text-white hover:bg-zinc-700 transition-colors"
+                className="flex items-center space-x-1 rounded-lg bg-[var(--accent-primary)] px-3.5 py-2 text-xs font-semibold text-white hover:bg-zinc-700 transition-colors"
               >
                 <Send size={12} />
                 <span>Predict</span>
@@ -465,9 +465,9 @@ export function ClassifierSandbox() {
             </div>
 
             {customPred && (
-              <div className="rounded-lg bg-slate-50 p-2.5 border border-slate-100 flex items-center justify-between text-xs">
+              <div className="rounded-lg bg-slate-50 p-2.5 border border-[var(--border-primary)] border-slate-100 flex items-center justify-between text-xs">
                 <span className="font-semibold text-slate-600">Prediction Results:</span>
-                <span className={`px-2 py-0.5 rounded font-bold ${customPred.label === "Spam" ? "bg-red-100 text-red-800 border border-red-200" : "bg-emerald-100 text-emerald-800 border border-emerald-200"}`}>
+                <span className={`px-2 py-0.5 rounded font-bold ${customPred.label === "Spam" ? "bg-red-100 text-red-800 border border-[var(--border-primary)] border-red-200" : "bg-emerald-100 text-emerald-800 border border-[var(--border-primary)] border-emerald-200"}`}>
                   {customPred.label} ({customPred.conf.toFixed(0)}% Confidence)
                 </span>
               </div>
