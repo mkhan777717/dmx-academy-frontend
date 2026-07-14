@@ -79,6 +79,65 @@ function highlightCode(code, lang) {
       if (number) return `<span class="text-purple-400 font-mono">${number}</span>`;
       return m;
     });
+  } else if (lang === "typescript") {
+    const tokenRegex = /(\/\/.*)|("[^"]*"|'[^']*'|`[^`]*`)|\b(while|for|if|else|function|return|let|const|var|new|type|interface|class|extends|implements|import|export|from|async|await|void|string|number|boolean|null|undefined|any|never|enum)\b|\b(console\.log|console\.error|alert|parseInt|parseFloat)\b|\b(\d+)\b/g;
+    html = html.replace(tokenRegex, (m, comment, string, keyword, builtin, number) => {
+      if (comment) return `<span class="text-emerald-500 italic font-mono">${comment}</span>`;
+      if (string) return `<span class="text-rose-400 font-mono">${string}</span>`;
+      if (keyword) return `<span class="text-blue-400 font-bold font-mono">${keyword}</span>`;
+      if (builtin) return `<span class="text-amber-400 font-semibold font-mono">${builtin}</span>`;
+      if (number) return `<span class="text-purple-400 font-mono">${number}</span>`;
+      return m;
+    });
+  } else if (lang === "c") {
+    const tokenRegex = /(\/\/.*|\/\*[\s\S]*?\*\/)|("[^"]*"|'[^']*')|\b(int|float|double|char|void|if|else|for|while|do|switch|case|default|return|struct|union|typedef|const|static|extern|include|define)\b|\b(printf|scanf|malloc|free|strlen|strcpy|strcmp)\b|\b(\d+)\b/g;
+    html = html.replace(tokenRegex, (m, comment, string, keyword, builtin, number) => {
+      if (comment) return `<span class="text-emerald-500 italic font-mono">${comment}</span>`;
+      if (string) return `<span class="text-rose-400 font-mono">${string}</span>`;
+      if (keyword) return `<span class="text-blue-400 font-bold font-mono">${keyword}</span>`;
+      if (builtin) return `<span class="text-amber-400 font-semibold font-mono">${builtin}</span>`;
+      if (number) return `<span class="text-purple-400 font-mono">${number}</span>`;
+      return m;
+    });
+  } else if (lang === "csharp") {
+    const tokenRegex = /(\/\/.*|\/\*[\s\S]*?\*\/)|("[^"]*"|'[^']*')|\b(class|interface|using|namespace|public|private|protected|static|void|int|double|float|bool|string|char|if|else|for|while|do|switch|case|default|return|new|var|async|await|try|catch|throw|finally)\b|\b(Console\.WriteLine|Console\.ReadLine|Math\.Max|Math\.Min|List|Dictionary)\b|\b(\d+)\b/g;
+    html = html.replace(tokenRegex, (m, comment, string, keyword, builtin, number) => {
+      if (comment) return `<span class="text-emerald-500 italic font-mono">${comment}</span>`;
+      if (string) return `<span class="text-rose-400 font-mono">${string}</span>`;
+      if (keyword) return `<span class="text-blue-400 font-bold font-mono">${keyword}</span>`;
+      if (builtin) return `<span class="text-amber-400 font-semibold font-mono">${builtin}</span>`;
+      if (number) return `<span class="text-purple-400 font-mono">${number}</span>`;
+      return m;
+    });
+  } else if (lang === "rust") {
+    const tokenRegex = /(\/\/.*)|("[^"]*"|'[^']*')|\b(fn|let|mut|const|use|pub|mod|struct|enum|impl|trait|if|else|for|while|loop|match|return|self|super|async|await|move|where|type|in|ref|dyn|Box|Vec|String|Option|Result)\b|\b(println!|print!|eprintln!|format!|vec!|panic!)\b|\b(\d+)\b/g;
+    html = html.replace(tokenRegex, (m, comment, string, keyword, builtin, number) => {
+      if (comment) return `<span class="text-emerald-500 italic font-mono">${comment}</span>`;
+      if (string) return `<span class="text-rose-400 font-mono">${string}</span>`;
+      if (keyword) return `<span class="text-blue-400 font-bold font-mono">${keyword}</span>`;
+      if (builtin) return `<span class="text-amber-400 font-semibold font-mono">${builtin}</span>`;
+      if (number) return `<span class="text-purple-400 font-mono">${number}</span>`;
+      return m;
+    });
+  } else if (lang === "ruby") {
+    const tokenRegex = /(#.*)|("[^"]*"|'[^']*')|\b(def|end|class|module|if|elsif|else|unless|while|for|do|return|require|include|extend|puts|print|attr_reader|attr_writer|attr_accessor|nil|true|false|self)\b|\b(\d+)\b/g;
+    html = html.replace(tokenRegex, (m, comment, string, keyword, builtin, number) => {
+      if (comment) return `<span class="text-emerald-500 italic font-mono">${comment}</span>`;
+      if (string) return `<span class="text-rose-400 font-mono">${string}</span>`;
+      if (keyword) return `<span class="text-blue-400 font-bold font-mono">${keyword}</span>`;
+      if (number) return `<span class="text-purple-400 font-mono">${number}</span>`;
+      return m;
+    });
+  } else if (lang === "kotlin") {
+    const tokenRegex = /(\/\/.*)|("[^"]*"|'[^']*')|\b(fun|val|var|class|object|interface|if|else|for|while|do|when|return|import|package|override|open|data|sealed|companion|suspend|null|true|false|in|is|as|by|it)\b|\b(println|print|readLine|listOf|mapOf|setOf)\b|\b(\d+)\b/g;
+    html = html.replace(tokenRegex, (m, comment, string, keyword, builtin, number) => {
+      if (comment) return `<span class="text-emerald-500 italic font-mono">${comment}</span>`;
+      if (string) return `<span class="text-rose-400 font-mono">${string}</span>`;
+      if (keyword) return `<span class="text-blue-400 font-bold font-mono">${keyword}</span>`;
+      if (builtin) return `<span class="text-amber-400 font-semibold font-mono">${builtin}</span>`;
+      if (number) return `<span class="text-purple-400 font-mono">${number}</span>`;
+      return m;
+    });
   }
   return html;
 }
@@ -339,7 +398,20 @@ export default function ContestWorkspace() {
                   python: dbProb.templatePython || `# Solve: ${dbProb.title}\ndef solution():\n    # Write your code here\n    pass`,
                   go: dbProb.templateGo || `package main\n\nimport "fmt"\n\n// Solve: ${dbProb.title}\nfunc solution() {\n    // Write your code here\n    fmt.Println(0)\n}\n\nfunc main() {\n    solution()\n}`,
                   cpp: dbProb.templateCPP || `// Solve: ${dbProb.title}\n#include <iostream>\n#include <vector>\n#include <string>\n\nusing namespace std;\n\nint main() {\n    // Write your code here\n    return 0;\n}`,
-                  java: dbProb.templateJava || `// Solve: ${dbProb.title}\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        // Write your code here\n    }\n}`
+                  java: dbProb.templateJava || `// Solve: ${dbProb.title}\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        // Write your code here\n    }\n}`,
+                  typescript: `// Solve: ${dbProb.title}\nfunction solution(): void {\n    // Write your code here\n}`,
+                  c: `// Solve: ${dbProb.title}\n#include <stdio.h>\n#include <stdlib.h>\n\nint main() {\n    // Write your code here\n    return 0;\n}`,
+                  csharp: `// Solve: ${dbProb.title}\nusing System;\nusing System.Collections.Generic;\n\nclass Solution {\n    static void Main(string[] args) {\n        // Write your code here\n    }\n}`,
+                  kotlin: `// Solve: ${dbProb.title}\nfun main() {\n    // Write your code here\n}`,
+                  swift: `// Solve: ${dbProb.title}\nimport Foundation\n\nfunc solution() {\n    // Write your code here\n}\n\nsolution()`,
+                  rust: `// Solve: ${dbProb.title}\nuse std::io::{self, BufRead};\n\nfn main() {\n    let stdin = io::stdin();\n    for line in stdin.lock().lines() {\n        let line = line.unwrap();\n        // Write your code here\n        println!("{}", line);\n    }\n}`,
+                  ruby: `# Solve: ${dbProb.title}\ndef solution(input)\n    # Write your code here\nend\n\ninput = $stdin.read.strip\nputs solution(input)`,
+                  php: `<?php\n// Solve: ${dbProb.title}\n$input = trim(fgets(STDIN));\n// Write your code here\necho $input . PHP_EOL;\n?>`,
+                  dart: `// Solve: ${dbProb.title}\nimport 'dart:io';\n\nvoid main() {\n    String? input = stdin.readLineSync();\n    // Write your code here\n    print(input);\n}`,
+                  scala: `// Solve: ${dbProb.title}\nobject Solution {\n    def main(args: Array[String]): Unit = {\n        val input = scala.io.StdIn.readLine()\n        // Write your code here\n        println(input)\n    }\n}`,
+                  elixir: `# Solve: ${dbProb.title}\ninput = IO.read(:line) |> String.trim()\n# Write your code here\nIO.puts(input)`,
+                  erlang: `% Solve: ${dbProb.title}\n-module(main).\n-export([main/0]).\n\nmain() ->\n    {ok, Input} = io:fread("", "~s"),\n    % Write your code here\n    io:format("~s~n", [Input]).`,
+                  racket: `; Solve: ${dbProb.title}\n#lang racket\n\n(define input (read-line))\n; Write your code here\n(displayln input)`
                 },
                 defaultLanguage: "python"
               };
@@ -2448,6 +2520,19 @@ export default function ContestWorkspace() {
                     {activeQuestion && activeQuestion.editorTemplates.go && <option value="go">Go</option>}
                     {activeQuestion && activeQuestion.editorTemplates.cpp && <option value="cpp">C++</option>}
                     {activeQuestion && activeQuestion.editorTemplates.java && <option value="java">Java</option>}
+                    {activeQuestion && activeQuestion.editorTemplates.typescript && <option value="typescript">TypeScript</option>}
+                    {activeQuestion && activeQuestion.editorTemplates.c && <option value="c">C</option>}
+                    {activeQuestion && activeQuestion.editorTemplates.csharp && <option value="csharp">C#</option>}
+                    {activeQuestion && activeQuestion.editorTemplates.kotlin && <option value="kotlin">Kotlin</option>}
+                    {activeQuestion && activeQuestion.editorTemplates.swift && <option value="swift">Swift</option>}
+                    {activeQuestion && activeQuestion.editorTemplates.rust && <option value="rust">Rust</option>}
+                    {activeQuestion && activeQuestion.editorTemplates.ruby && <option value="ruby">Ruby</option>}
+                    {activeQuestion && activeQuestion.editorTemplates.php && <option value="php">PHP</option>}
+                    {activeQuestion && activeQuestion.editorTemplates.dart && <option value="dart">Dart</option>}
+                    {activeQuestion && activeQuestion.editorTemplates.scala && <option value="scala">Scala</option>}
+                    {activeQuestion && activeQuestion.editorTemplates.elixir && <option value="elixir">Elixir</option>}
+                    {activeQuestion && activeQuestion.editorTemplates.erlang && <option value="erlang">Erlang</option>}
+                    {activeQuestion && activeQuestion.editorTemplates.racket && <option value="racket">Racket</option>}
                   </select>
 
                   <button
