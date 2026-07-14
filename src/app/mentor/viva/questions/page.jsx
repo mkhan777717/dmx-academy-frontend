@@ -1248,7 +1248,7 @@ export default function AIAllInOneVivaPage() {
                   <div className={`p-2 rounded-lg bg-zinc-500/10 text-[var(--text-muted)] shrink-0`}><Icon size={16} /></div>
                   <div>
                     <p className="text-xl font-black">{value}</p>
-                    <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">{label}</p>
+                    <p className="text-[10px] font-semibold uppercase tracking-wider text-[var(--text-secondary)]">{label}</p>
                   </div>
                 </div>
               ))}
@@ -1276,8 +1276,8 @@ export default function AIAllInOneVivaPage() {
 
             {/* Folder Grid */}
             <div className="space-y-4">
-              <h2 className="text-lg font-bold flex items-center gap-2 text-zinc-300">
-                <Folder className="w-5 h-5 text-[var(--text-muted)]" />
+              <h2 className="text-lg font-bold flex items-center gap-2" style={{ color: "var(--text-primary)" }}>
+                <Folder className="w-5 h-5" style={{ color: "var(--text-muted)" }} />
                 Question Bank Subjects
               </h2>
 
@@ -1286,7 +1286,7 @@ export default function AIAllInOneVivaPage() {
                   <Loader2 className="w-6 h-6 animate-spin text-zinc-500" />
                 </div>
               ) : subjectNames.length === 0 ? (
-                <div className="p-8 rounded-xl border border-[var(--border-primary)] border-dashed border-[var(--border-primary)] text-center text-slate-500">
+                <div className="p-8 rounded-xl border border-dashed border-[var(--border-primary)] text-center" style={{ color: "var(--text-secondary)" }}>
                   No questions found. Add folder or create questions to begin.
                 </div>
               ) : (
@@ -1301,20 +1301,20 @@ export default function AIAllInOneVivaPage() {
                           setSelectedSubject(subject);
                           setQuestionPage(1);
                         }}
-                        className="group flex items-center justify-between gap-4 p-5 rounded-xl border border-[var(--border-primary)] hover:border-zinc-500/40 text-left transition-all cursor-pointer outline-none font-sans"
+                        className="group p-6 rounded-2xl border border-[var(--border-primary)] text-left flex items-start gap-4 transition-colors hover:bg-[var(--bg-secondary)] shadow-sm cursor-pointer"
+                        style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}
                       >
-                        <div className="flex items-center gap-3 min-w-0">
-                          <div className="p-2 rounded-lg bg-zinc-500/10 text-[var(--text-muted)] shrink-0">
-                            <Folder className="w-4 h-4" />
-                          </div>
-                          <div className="min-w-0">
-                            <p className="text-sm font-bold truncate text-slate-200">{subject}</p>
-                            <p className="text-[11px] font-semibold text-slate-500">
-                              {count} question{count !== 1 ? "s" : ""}
-                            </p>
-                          </div>
+                        <div className="p-4 rounded-xl bg-violet-500/10 text-violet-500 shrink-0">
+                          <Folder size={24} className="fill-current" />
                         </div>
-                        <ChevronRight className="w-4 h-4 text-slate-600 group-hover:text-[var(--text-muted)] transition-colors" />
+                        <div className="space-y-1 min-w-0">
+                          <h3 className="text-base font-semibold truncate group-hover:text-violet-500 transition-colors" style={{ color: "var(--text-primary)" }}>
+                            {subject}
+                          </h3>
+                          <p className="text-[11px] font-medium text-violet-500 pt-1">
+                            {count} question{count !== 1 ? "s" : ""}
+                          </p>
+                        </div>
                       </button>
                     );
                   })}

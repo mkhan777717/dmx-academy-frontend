@@ -7,87 +7,87 @@ import { motion, useInView } from "framer-motion";
 const PathIllustration = () => (
   <svg viewBox="0 0 280 200" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
     {/* Forking path diagram */}
-    <line x1="40" y1="100" x2="100" y2="100" stroke="#6366f1" strokeWidth="1" strokeOpacity="0.4"/>
-    <circle cx="40" cy="100" r="5" fill="#6366f1" fillOpacity="0.6"/>
-    <line x1="100" y1="100" x2="160" y2="60" stroke="#6366f1" strokeWidth="0.8" strokeOpacity="0.5"/>
-    <line x1="100" y1="100" x2="160" y2="100" stroke="#6366f1" strokeWidth="0.8" strokeOpacity="0.3"/>
-    <line x1="100" y1="100" x2="160" y2="140" stroke="#6366f1" strokeWidth="0.8" strokeOpacity="0.2"/>
-    <circle cx="100" cy="100" r="4" fill="#6366f1" fillOpacity="0.8"/>
+    <line x1="40" y1="100" x2="100" y2="100" stroke="#4f46e5" strokeWidth="1" strokeOpacity="1.00"/>
+    <circle cx="40" cy="100" r="5" fill="#4f46e5" fillOpacity="1.00"/>
+    <line x1="100" y1="100" x2="160" y2="60" stroke="#4f46e5" strokeWidth="0.8" strokeOpacity="1.00"/>
+    <line x1="100" y1="100" x2="160" y2="100" stroke="#4f46e5" strokeWidth="0.8" strokeOpacity="0.75"/>
+    <line x1="100" y1="100" x2="160" y2="140" stroke="#4f46e5" strokeWidth="0.8" strokeOpacity="0.50"/>
+    <circle cx="100" cy="100" r="4" fill="#4f46e5" fillOpacity="1.00"/>
     {[60,100,140].map((y,i) => (
       <g key={y}>
-        <rect x="160" y={y-20} width="80" height="38" rx="6" fill="#6366f1" fillOpacity={0.04 + i*0.03} stroke="#6366f1" strokeWidth="0.4" strokeOpacity="0.4"/>
-        <text x="200" y={y+4} textAnchor="middle" fontSize="9" fill="#6366f1" fillOpacity="0.7">
+        <rect x="160" y={y-20} width="80" height="38" rx="6" fill="#4f46e5" fillOpacity={0.04 + i*0.03} stroke="#4f46e5" strokeWidth="0.4" strokeOpacity="1.00"/>
+        <text x="200" y={y+4} textAnchor="middle" fontSize="9" fill="#4f46e5" fillOpacity="1.00">
           {["AI Track","Frontend","DevOps"][i]}
         </text>
       </g>
     ))}
-    <text x="40" y="125" fontSize="9" fill="#6366f1" fillOpacity="0.3">Start</text>
+    <text x="40" y="125" fontSize="9" fill="#4f46e5" fillOpacity="0.75">Start</text>
   </svg>
 );
 
 const SandboxIllustration = () => (
   <svg viewBox="0 0 280 200" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
     {/* Browser window */}
-    <rect x="20" y="20" width="240" height="160" rx="8" stroke="#06b6d4" strokeWidth="0.5" strokeOpacity="0.4"/>
+    <rect x="20" y="20" width="240" height="160" rx="8" stroke="#0891b2" strokeWidth="0.5" strokeOpacity="1.00"/>
     {/* Browser bar */}
-    <rect x="20" y="20" width="240" height="28" rx="8" fill="#06b6d4" fillOpacity="0.06"/>
-    <circle cx="38" cy="34" r="4" fill="#ef4444" fillOpacity="0.5"/>
-    <circle cx="52" cy="34" r="4" fill="#f59e0b" fillOpacity="0.5"/>
-    <circle cx="66" cy="34" r="4" fill="#22c55e" fillOpacity="0.5"/>
-    <rect x="82" y="28" width="140" height="12" rx="6" fill="#06b6d4" fillOpacity="0.08" stroke="#06b6d4" strokeWidth="0.3" strokeOpacity="0.3"/>
+    <rect x="20" y="20" width="240" height="28" rx="8" fill="#0891b2" fillOpacity="0.15"/>
+    <circle cx="38" cy="34" r="4" fill="#ef4444" fillOpacity="1.00"/>
+    <circle cx="52" cy="34" r="4" fill="#f59e0b" fillOpacity="1.00"/>
+    <circle cx="66" cy="34" r="4" fill="#22c55e" fillOpacity="1.00"/>
+    <rect x="82" y="28" width="140" height="12" rx="6" fill="#0891b2" fillOpacity="0.20" stroke="#0891b2" strokeWidth="0.3" strokeOpacity="0.75"/>
     {/* Code + Preview split */}
-    <line x1="150" y1="48" x2="150" y2="180" stroke="#06b6d4" strokeWidth="0.3" strokeOpacity="0.3"/>
+    <line x1="150" y1="48" x2="150" y2="180" stroke="#0891b2" strokeWidth="0.3" strokeOpacity="0.75"/>
     {/* Code lines left */}
     {[55,63,71,79,87,95].map((y,i)=>(
-      <rect key={y} x="28" y={y} width={[60,45,70,50,65,40][i]} height="3" rx="1.5" fill="#06b6d4" fillOpacity={0.3-i*0.03}/>
+      <rect key={y} x="28" y={y} width={[60,45,70,50,65,40][i]} height="3" rx="1.5" fill="#0891b2" fillOpacity={0.3-i*0.03}/>
     ))}
     {/* Canvas right */}
-    <circle cx="205" cy="110" r="28" fill="#06b6d4" fillOpacity="0.07" stroke="#06b6d4" strokeWidth="0.4" strokeOpacity="0.4"/>
-    <rect x="188" y="102" width="34" height="3" rx="1.5" fill="#06b6d4" fillOpacity="0.4"/>
-    <rect x="192" y="109" width="26" height="3" rx="1.5" fill="#06b6d4" fillOpacity="0.3"/>
-    <text x="205" y="145" textAnchor="middle" fontSize="8" fill="#06b6d4" fillOpacity="0.4">Live Preview</text>
+    <circle cx="205" cy="110" r="28" fill="#0891b2" fillOpacity="0.18" stroke="#0891b2" strokeWidth="0.4" strokeOpacity="1.00"/>
+    <rect x="188" y="102" width="34" height="3" rx="1.5" fill="#0891b2" fillOpacity="1.00"/>
+    <rect x="192" y="109" width="26" height="3" rx="1.5" fill="#0891b2" fillOpacity="0.75"/>
+    <text x="205" y="145" textAnchor="middle" fontSize="8" fill="#0891b2" fillOpacity="1.00">Live Preview</text>
   </svg>
 );
 
 const AIIllustration = () => (
   <svg viewBox="0 0 280 200" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
     {/* Code block */}
-    <rect x="20" y="30" width="130" height="100" rx="6" fill="#10b981" fillOpacity="0.04" stroke="#10b981" strokeWidth="0.4" strokeOpacity="0.4"/>
+    <rect x="20" y="30" width="130" height="100" rx="6" fill="#059669" fillOpacity="0.10" stroke="#059669" strokeWidth="0.4" strokeOpacity="1.00"/>
     {[40,52,64,76,88,100].map((y,i)=>(
-      <rect key={y} x="30" y={y} width={[80,60,90,50,70,65][i]} height="3" rx="1.5" fill="#10b981" fillOpacity={0.25-i*0.02}/>
+      <rect key={y} x="30" y={y} width={[80,60,90,50,70,65][i]} height="3" rx="1.5" fill="#059669" fillOpacity={0.25-i*0.02}/>
     ))}
     {/* AI feedback arrow */}
-    <path d="M155 80 L200 80" stroke="#10b981" strokeWidth="0.8" strokeOpacity="0.5" markerEnd="url(#arrow)"/>
+    <path d="M155 80 L200 80" stroke="#059669" strokeWidth="0.8" strokeOpacity="1.00" markerEnd="url(#arrow)"/>
     <defs>
       <marker id="arrow" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
-        <path d="M0 0 L6 3 L0 6 Z" fill="#10b981" fillOpacity="0.6"/>
+        <path d="M0 0 L6 3 L0 6 Z" fill="#059669" fillOpacity="1.00"/>
       </marker>
     </defs>
     {/* AI response bubble */}
-    <rect x="205" y="50" width="60" height="60" rx="8" fill="#10b981" fillOpacity="0.07" stroke="#10b981" strokeWidth="0.4" strokeOpacity="0.5"/>
-    <text x="235" y="72" textAnchor="middle" fontSize="7" fill="#10b981" fillOpacity="0.6">Suggest</text>
-    <text x="235" y="83" textAnchor="middle" fontSize="7" fill="#10b981" fillOpacity="0.6">Refactor</text>
-    <text x="235" y="94" textAnchor="middle" fontSize="7" fill="#10b981" fillOpacity="0.6">Review</text>
+    <rect x="205" y="50" width="60" height="60" rx="8" fill="#059669" fillOpacity="0.18" stroke="#059669" strokeWidth="0.4" strokeOpacity="1.00"/>
+    <text x="235" y="72" textAnchor="middle" fontSize="7" fill="#059669" fillOpacity="1.00">Suggest</text>
+    <text x="235" y="83" textAnchor="middle" fontSize="7" fill="#059669" fillOpacity="1.00">Refactor</text>
+    <text x="235" y="94" textAnchor="middle" fontSize="7" fill="#059669" fillOpacity="1.00">Review</text>
     {/* Pulse rings */}
-    <circle cx="235" cy="80" r="40" stroke="#10b981" strokeWidth="0.2" strokeOpacity="0.2" strokeDasharray="2 4"/>
+    <circle cx="235" cy="80" r="40" stroke="#059669" strokeWidth="0.2" strokeOpacity="0.50" strokeDasharray="2 4"/>
   </svg>
 );
 
 const CertIllustration = () => (
   <svg viewBox="0 0 280 200" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
     {/* Certificate */}
-    <rect x="40" y="30" width="200" height="140" rx="8" fill="#d946ef" fillOpacity="0.04" stroke="#d946ef" strokeWidth="0.4" strokeOpacity="0.4"/>
-    <rect x="55" y="45" width="170" height="1" fill="#d946ef" fillOpacity="0.3"/>
-    <rect x="55" y="160" width="170" height="1" fill="#d946ef" fillOpacity="0.3"/>
-    <circle cx="140" cy="100" r="28" fill="#d946ef" fillOpacity="0.06" stroke="#d946ef" strokeWidth="0.5" strokeOpacity="0.5"/>
-    <text x="140" y="95" textAnchor="middle" fontSize="18" fill="#d946ef" fillOpacity="0.5">✦</text>
-    <text x="140" y="110" textAnchor="middle" fontSize="8" fill="#d946ef" fillOpacity="0.6">Verified</text>
-    <rect x="90" y="130" width="100" height="4" rx="2" fill="#d946ef" fillOpacity="0.2"/>
-    <rect x="108" y="140" width="64" height="3" rx="1.5" fill="#d946ef" fillOpacity="0.12"/>
+    <rect x="40" y="30" width="200" height="140" rx="8" fill="#a21caf" fillOpacity="0.10" stroke="#a21caf" strokeWidth="0.4" strokeOpacity="1.00"/>
+    <rect x="55" y="45" width="170" height="1" fill="#a21caf" fillOpacity="0.75"/>
+    <rect x="55" y="160" width="170" height="1" fill="#a21caf" fillOpacity="0.75"/>
+    <circle cx="140" cy="100" r="28" fill="#a21caf" fillOpacity="0.15" stroke="#a21caf" strokeWidth="0.5" strokeOpacity="1.00"/>
+    <text x="140" y="95" textAnchor="middle" fontSize="18" fill="#a21caf" fillOpacity="1.00">✦</text>
+    <text x="140" y="110" textAnchor="middle" fontSize="8" fill="#a21caf" fillOpacity="1.00">Verified</text>
+    <rect x="90" y="130" width="100" height="4" rx="2" fill="#a21caf" fillOpacity="0.50"/>
+    <rect x="108" y="140" width="64" height="3" rx="1.5" fill="#a21caf" fillOpacity="0.30"/>
     {/* Chain links */}
-    <path d="M60 55 Q50 55 50 65 L50 75 Q50 85 60 85" stroke="#d946ef" strokeWidth="0.4" strokeOpacity="0.4" fill="none"/>
-    <path d="M220 55 Q230 55 230 65 L230 75 Q230 85 220 85" stroke="#d946ef" strokeWidth="0.4" strokeOpacity="0.4" fill="none"/>
-    <text x="140" y="175" textAnchor="middle" fontSize="7" fill="#d946ef" fillOpacity="0.3" fontFamily="monospace">0x4f3...a8c2</text>
+    <path d="M60 55 Q50 55 50 65 L50 75 Q50 85 60 85" stroke="#a21caf" strokeWidth="0.4" strokeOpacity="1.00" fill="none"/>
+    <path d="M220 55 Q230 55 230 65 L230 75 Q230 85 220 85" stroke="#a21caf" strokeWidth="0.4" strokeOpacity="1.00" fill="none"/>
+    <text x="140" y="175" textAnchor="middle" fontSize="7" fill="#a21caf" fillOpacity="0.75" fontFamily="monospace">0x4f3...a8c2</text>
   </svg>
 );
 
@@ -97,7 +97,7 @@ const steps = [
     title: "Choose Your Path",
     desc: "Take a diagnostic assessment. A counselor maps your background, goals, and pace to the right learning track — Frontend, AI, Cloud, or Creative Tech.",
     details: ["Tailored diagnostic test", "Dedicated path counselors", "Lifetime syllabus updates"],
-    accent: "#6366f1",
+    accent: "#4f46e5",
     illustration: <PathIllustration />,
   },
   {
@@ -105,7 +105,7 @@ const steps = [
     title: "Build in Browser Sandboxes",
     desc: "Write code and see it render live — split-screen editor + preview. No environment setup. Autosaved checkpoints keep your progress permanent.",
     details: ["Split-screen live rendering", "Autosaved checkpoints", "Hot module reloading"],
-    accent: "#06b6d4",
+    accent: "#0891b2",
     illustration: <SandboxIllustration />,
   },
   {
@@ -113,7 +113,7 @@ const steps = [
     title: "AI Co-Pilot Review",
     desc: "Custom LLM agents review your code in real time — catching errors, suggesting refactors, and explaining performance tradeoffs in plain language.",
     details: ["24/7 code explanation", "Performance analysis", "Refactoring suggestions"],
-    accent: "#10b981",
+    accent: "#059669",
     illustration: <AIIllustration />,
   },
   {
@@ -121,7 +121,7 @@ const steps = [
     title: "Earn On-Chain Credentials",
     desc: "Publish your project portfolio. Receive verified peer reviews. Earn cryptographically signed certificates — immutable proof of your skill level.",
     details: ["Custom portfolio link", "Cryptographic signature", "Recruiter referrals"],
-    accent: "#d946ef",
+    accent: "#a21caf",
     illustration: <CertIllustration />,
   },
 ];
@@ -145,7 +145,7 @@ function StepRow({ step, index }) {
         <div className="flex items-center gap-4">
           <span
             className="text-[80px] font-black leading-none select-none"
-            style={{ color: step.accent, opacity: 0.12 }}
+            style={{ color: step.accent, opacity: 0.35 }}
           >
             {step.number}
           </span>

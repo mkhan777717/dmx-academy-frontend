@@ -109,43 +109,38 @@ function PlanCard({ plan, isAnnual, index }) {
       transition={{ duration: 0.7, delay: index * 0.12, ease: [0.25, 0.46, 0.45, 0.94] }}
       className={`relative flex flex-col rounded-2xl p-8 ${plan.featured ? "mt-0 lg:-mt-6" : "mt-0 lg:mt-6"}`}
       style={{
-        backgroundColor: plan.featured ? "var(--accent-primary)" : "var(--bg-card)",
-        border: plan.featured ? "none" : "1px solid var(--border-card)",
-        color: plan.featured ? "#ffffff" : "var(--text-primary)",
+        backgroundColor: "var(--bg-card)",
+        border: plan.featured ? "2px solid var(--accent-primary)" : "1px solid var(--border-card)",
+        boxShadow: plan.featured ? "0 20px 40px -15px var(--accent-glow)" : "none",
+        color: "var(--text-primary)",
       }}
     >
-      {/* Featured accent stripe */}
-      {plan.featured && (
-        <div
-          className="absolute top-0 left-0 right-0 h-0.5 rounded-t-2xl"
-          style={{ background: "linear-gradient(to right, #818cf8, #a78bfa)" }}
-        />
-      )}
+
 
       {/* Plan header */}
       <div className="space-y-1 mb-8">
         <div className="flex items-center justify-between">
           <span
             className="text-[10px] font-bold uppercase tracking-[0.2em]"
-            style={{ color: plan.featured ? "rgba(255,255,255,0.7)" : "var(--text-muted)" }}
+            style={{ color: "var(--text-muted)" }}
           >
             {plan.tagline}
           </span>
           {plan.featured && (
-            <span className="text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full bg-white/15">
+            <span className="text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full" style={{ backgroundColor: "var(--accent-glow)", color: "var(--accent-primary)" }}>
               Most Popular
             </span>
           )}
         </div>
         <h3
           className="text-2xl font-black tracking-[-0.02em]"
-          style={{ color: plan.featured ? "#ffffff" : "var(--text-primary)" }}
+          style={{ color: "var(--text-primary)" }}
         >
           {plan.name}
         </h3>
         <p
           className="text-sm"
-          style={{ color: plan.featured ? "rgba(255,255,255,0.6)" : "var(--text-muted)" }}
+          style={{ color: "var(--text-muted)" }}
         >
           {plan.desc}
         </p>
@@ -157,7 +152,7 @@ function PlanCard({ plan, isAnnual, index }) {
         {isAnnual && plan.priceMonthly > 0 && (
           <div
             className="text-[11px] mt-1"
-            style={{ color: plan.featured ? "rgba(255,255,255,0.5)" : "var(--text-muted)" }}
+            style={{ color: "var(--text-muted)" }}
           >
             billed annually · saves ${(plan.priceMonthly - plan.priceAnnually) * 12}/yr
           </div>
@@ -169,25 +164,24 @@ function PlanCard({ plan, isAnnual, index }) {
         href={plan.ctaHref}
         className="block w-full rounded-xl py-3.5 text-sm font-bold text-center mb-8 transition-all duration-200"
         style={plan.featured
-          ? { backgroundColor: "rgba(255,255,255,0.18)", color: "#ffffff", backdropFilter: "blur(8px)" }
-          : { backgroundColor: "var(--accent-primary)", color: "#ffffff" }
+          ? { backgroundColor: "var(--accent-primary)", color: "#ffffff", border: "1px solid var(--border-accent)" }
+          : { backgroundColor: "var(--bg-input)", color: "var(--text-primary)", border: "1px solid var(--border-card)" }
         }
         onMouseEnter={e => {
-          if (plan.featured) e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.25)";
-          else e.currentTarget.style.opacity = "0.9";
+          if (plan.featured) e.currentTarget.style.opacity = "0.9";
+          else e.currentTarget.style.backgroundColor = "var(--border-primary)";
         }}
         onMouseLeave={e => {
-          if (plan.featured) e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.18)";
-          else e.currentTarget.style.opacity = "1";
+          if (plan.featured) e.currentTarget.style.opacity = "1";
+          else e.currentTarget.style.backgroundColor = "var(--bg-input)";
         }}
       >
         {plan.ctaText}
       </a>
 
-      {/* Divider */}
       <div
         className="h-px mb-6"
-        style={{ background: plan.featured ? "rgba(255,255,255,0.15)" : "var(--border-primary)" }}
+        style={{ background: "var(--border-primary)" }}
       />
 
       {/* Features */}
@@ -197,12 +191,12 @@ function PlanCard({ plan, isAnnual, index }) {
             <svg
               className="flex-shrink-0 mt-0.5"
               width="14" height="14" viewBox="0 0 24 24" fill="none"
-              stroke={plan.featured ? "rgba(255,255,255,0.8)" : "var(--accent-primary)"}
+              stroke="var(--accent-primary)"
               strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
             >
               <polyline points="20 6 9 17 4 12"/>
             </svg>
-            <span style={{ color: plan.featured ? "rgba(255,255,255,0.85)" : "var(--text-secondary)" }}>
+            <span style={{ color: "var(--text-secondary)" }}>
               {f}
             </span>
           </div>
@@ -212,7 +206,7 @@ function PlanCard({ plan, isAnnual, index }) {
             <svg
               className="flex-shrink-0 mt-0.5"
               width="14" height="14" viewBox="0 0 24 24" fill="none"
-              stroke={plan.featured ? "rgba(255,255,255,0.5)" : "var(--text-muted)"}
+              stroke="var(--text-muted)"
               strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
             >
               <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>

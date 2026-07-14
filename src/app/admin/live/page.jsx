@@ -1443,8 +1443,11 @@ export default function AdminLivePage() {
   // ─── Pre-Session Form (Setup) ──────────────────────────────────────
   if (!session || !livekitToken) {
     return (
-      <>
-        <div className="max-w-2xl mx-auto space-y-8 animate-fade-in px-0 sm:px-6">
+      <div className="h-full w-full overflow-y-auto pb-32 pt-6">
+        <div className="max-w-7xl mx-auto space-y-12 lg:space-y-0 lg:grid lg:grid-cols-[1.3fr_1fr] lg:gap-12 animate-fade-in px-4 sm:px-6 lg:px-8">
+          
+          {/* Left Column: Setup Form */}
+          <div className="space-y-8 max-w-2xl w-full">
         {/* Page Header */}
         <section className="flex flex-col gap-2 border-b pb-6 shrink-0" style={{ borderColor: "var(--border-primary)" }}>
           <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border border-[var(--border-primary)] mb-3 w-fit"
@@ -1721,9 +1724,12 @@ export default function AdminLivePage() {
           <Sparkles size={12} style={{ color: "var(--text-accent)" }} />
           Powered by LiveKit — Students will see your camera, microphone, and screen share in real-time.
         </div>
+          </div>
 
+          {/* Right Column: Past Broadcasts */}
+          <div className="w-full lg:sticky lg:top-0 lg:h-max">
         {/* Past Broadcasts List */}
-        <div className="space-y-4 pt-4">
+        <div className="space-y-4">
           <div className="space-y-1">
             <h2 className="text-xl font-serif" style={{ color: "var(--text-primary)" }}>
               Past Broadcasts
@@ -1820,7 +1826,8 @@ export default function AdminLivePage() {
             </div>
           )}
         </div>
-      </div>
+          </div>
+        </div>
 
       {/* Recording Prompt Modal Overlay */}
       <AnimatePresence>
@@ -2001,7 +2008,7 @@ export default function AdminLivePage() {
             </div>
           </div>
         )}
-      </>
+      </div>
     );
   }
 

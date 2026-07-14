@@ -6,7 +6,6 @@ import Testimonials from "@/components/Testimonials";
 import Pricing from "@/components/Pricing";
 import CTA from "@/components/CTA";
 import Footer from "@/components/Footer";
-import LiveBanner from "@/components/LiveBanner";
 import CinematicCursor from "@/components/CinematicCursor";
 import ScrollProgress from "@/components/ScrollProgress";
 
@@ -23,9 +22,6 @@ export default function Home() {
       {/* Page content */}
       <main className="flex-grow">
         <Hero />
-
-        {/* Live Session Banner */}
-        <LiveBanner />
 
         <Tracks />
         <Process />
