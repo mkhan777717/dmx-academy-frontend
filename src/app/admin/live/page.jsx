@@ -751,8 +751,8 @@ function BroadcastPanel({ session, onEndSession, authToken, shouldRecord }) {
             ) : (
               <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-950">
                 <div className="text-center space-y-4">
-                  <div className="w-20 h-20 rounded-3xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center mx-auto shadow-inner">
-                    <Radio size={40} className="text-indigo-400 animate-pulse" />
+                  <div className="w-20 h-20 rounded-3xl bg-zinc-500/10 border border-zinc-500/20 flex items-center justify-center mx-auto shadow-inner">
+                    <Radio size={40} className="text-zinc-400 animate-pulse" />
                   </div>
                   <div className="space-y-1">
                     <h3 className="text-sm font-black uppercase tracking-wider text-slate-200">
@@ -880,7 +880,7 @@ function BroadcastPanel({ session, onEndSession, authToken, shouldRecord }) {
                 }}
                 className={`flex items-center gap-1.5 px-3 py-2 rounded-xl border text-[10px] font-bold uppercase tracking-wide transition-all hover:scale-105 cursor-pointer shadow-sm ${
                   activeTab === "polls" || activePoll
-                    ? "bg-indigo-600 border-transparent text-white animate-pulse"
+                    ? "bg-zinc-600 border-transparent text-white animate-pulse"
                     : "bg-[var(--bg-primary)] border-[var(--border-primary)] text-[var(--text-primary)]"
                 }`}
                 id="poll-tab-btn"
@@ -896,7 +896,7 @@ function BroadcastPanel({ session, onEndSession, authToken, shouldRecord }) {
                 onClick={() => setIsChatOpen((prev) => !prev)}
                 className={`flex items-center gap-1.5 px-3 py-2 rounded-xl border text-[10px] font-bold uppercase tracking-wide transition-all hover:scale-105 cursor-pointer shadow-sm ${
                   isChatOpen
-                    ? "bg-indigo-600 border-transparent text-white"
+                    ? "bg-zinc-600 border-transparent text-white"
                     : "bg-[var(--bg-primary)] border-[var(--border-primary)] text-[var(--text-primary)]"
                 }`}
                 title={isChatOpen ? "Hide Live Chat" : "Show Live Chat"}
@@ -1287,27 +1287,23 @@ export default function AdminLivePage() {
   if (!session || !livekitToken) {
     return (
       <>
-        <div className="max-w-2xl mx-auto space-y-8 animate-fade-in">
+        <div className="max-w-2xl mx-auto space-y-8 animate-fade-in px-0 sm:px-6">
         {/* Page Header */}
-        <div className="space-y-2">
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-xl" style={{ backgroundColor: "var(--bg-badge)", color: "var(--text-accent)" }}>
-              <Radio size={20} />
-            </div>
-            <div>
-              <h1 className="text-2xl font-black" style={{ color: "var(--text-primary)" }}>
-                Go Live
-              </h1>
-              <p className="text-xs font-medium" style={{ color: "var(--text-secondary)" }}>
-                Start a live session for your students
-              </p>
-            </div>
+        <section className="flex flex-col gap-2 border-b pb-6 shrink-0" style={{ borderColor: "var(--border-primary)" }}>
+          <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border mb-3 w-fit"
+            style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)", backgroundColor: "var(--bg-secondary)" }}>
+            <Radio size={12} className="text-rose-500 animate-pulse" />
+            Live Broadcast
           </div>
-        </div>
+          <h1 className="text-4xl font-serif tracking-tight" style={{ color: "var(--text-primary)" }}>Go Live</h1>
+          <p className="text-sm max-w-xl" style={{ color: "var(--text-secondary)" }}>
+            Start a live session for your students in real-time.
+          </p>
+        </section>
 
         {/* Setup Form */}
-        <div className="rounded-2xl border p-6 space-y-6 shadow-xl"
-          style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}
+        <div className="rounded-2xl border p-6 space-y-6 shadow-sm"
+          style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}
         >
           {/* Title */}
           <div className="space-y-2">
@@ -1319,9 +1315,9 @@ export default function AdminLivePage() {
               value={formState.title}
               onChange={(e) => setFormState((p) => ({ ...p, title: e.target.value }))}
               placeholder="e.g. DSA Masterclass — Trees & Graphs"
-              className="w-full px-4 py-3 rounded-xl border text-sm font-semibold outline-none transition-all focus:ring-2 focus:ring-indigo-500/30"
+              className="w-full px-4 py-3 rounded-xl border text-sm font-medium outline-none transition-colors focus:border-[var(--text-muted)]"
               style={{
-                backgroundColor: "var(--bg-primary)",
+                backgroundColor: "var(--bg-secondary)",
                 borderColor: "var(--border-primary)",
                 color: "var(--text-primary)",
               }}
@@ -1339,9 +1335,9 @@ export default function AdminLivePage() {
               onChange={(e) => setFormState((p) => ({ ...p, description: e.target.value }))}
               placeholder="Brief description of what you'll cover..."
               rows={3}
-              className="w-full px-4 py-3 rounded-xl border text-sm font-semibold outline-none transition-all focus:ring-2 focus:ring-indigo-500/30 resize-none"
+              className="w-full px-4 py-3 rounded-xl border text-sm font-medium outline-none transition-colors focus:border-[var(--text-muted)] resize-none"
               style={{
-                backgroundColor: "var(--bg-primary)",
+                backgroundColor: "var(--bg-secondary)",
                 borderColor: "var(--border-primary)",
                 color: "var(--text-primary)",
               }}
@@ -1362,7 +1358,7 @@ export default function AdminLivePage() {
             <div className="flex items-start gap-4">
               <label
                 htmlFor="thumbnail-upload"
-                className="flex flex-col items-center justify-center w-40 h-24 rounded-xl border-2 border-dashed cursor-pointer transition-all hover:border-indigo-500/50 hover:bg-indigo-500/5 p-2 text-center"
+                className="flex flex-col items-center justify-center w-40 h-24 rounded-xl border-2 border-dashed cursor-pointer transition-all hover:border-zinc-500/50 hover:bg-zinc-500/5 p-2 text-center"
                 style={{ borderColor: "var(--border-primary)" }}
               >
                 {formState.thumbnailPreview ? (
@@ -1404,7 +1400,7 @@ export default function AdminLivePage() {
             <div 
               className="w-full rounded-xl p-4 border grid grid-cols-1 sm:grid-cols-2 gap-2"
               style={{
-                backgroundColor: "var(--bg-primary)",
+                backgroundColor: "var(--bg-secondary)",
                 borderColor: "var(--border-primary)",
               }}
             >
@@ -1458,10 +1454,9 @@ export default function AdminLivePage() {
           <button
             onClick={handleStartSession}
             disabled={isStarting || !formState.title.trim()}
-            className="w-full flex items-center justify-center gap-3 px-6 py-4 rounded-xl text-white text-sm font-extrabold uppercase tracking-wider transition-all hover:scale-[1.02] shadow-xl disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+            className="w-full flex items-center justify-center gap-3 px-6 py-4 rounded-xl text-white text-sm font-bold uppercase tracking-wider transition-transform hover:-translate-y-0.5 shadow-md disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             style={{
-              background: "linear-gradient(135deg, #ef4444, #dc2626)",
-              boxShadow: "0 8px 32px rgba(239, 68, 68, 0.3)",
+              background: "var(--accent-primary)",
             }}
             id="go-live-btn"
           >
@@ -1490,11 +1485,11 @@ export default function AdminLivePage() {
         {/* Past Broadcasts List */}
         <div className="space-y-4 pt-4">
           <div className="space-y-1">
-            <h2 className="text-lg font-black" style={{ color: "var(--text-primary)" }}>
+            <h2 className="text-xl font-serif" style={{ color: "var(--text-primary)" }}>
               Past Broadcasts
             </h2>
-            <p className="text-xs font-medium" style={{ color: "var(--text-secondary)" }}>
-              Manage and delete your previously ended live sessions
+            <p className="text-xs" style={{ color: "var(--text-secondary)" }}>
+              Manage and delete your previously ended live sessions.
             </p>
           </div>
 
@@ -1516,9 +1511,9 @@ export default function AdminLivePage() {
               {pastSessions.map((past) => (
                 <div
                   key={past.id}
-                  className="flex items-center justify-between p-4 rounded-2xl border transition-all"
+                  className="flex items-center justify-between p-4 rounded-2xl border transition-colors hover:bg-[var(--bg-secondary)]"
                   style={{
-                    backgroundColor: "var(--bg-card)",
+                    backgroundColor: "var(--bg-primary)",
                     borderColor: "var(--border-primary)",
                   }}
                 >
@@ -1557,12 +1552,12 @@ export default function AdminLivePage() {
                           const url = past.recordingUrl.startsWith('/') ? `${API_BASE}${past.recordingUrl}` : past.recordingUrl;
                           setSelectedVideoUrl(url);
                         }}
-                        className="px-3 py-1.5 rounded-xl bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-500 text-[10px] font-extrabold uppercase tracking-wider transition-all border border-indigo-500/10 hover:scale-[1.02] cursor-pointer text-center shrink-0"
+                        className="px-3 py-1.5 rounded-xl bg-zinc-500/10 hover:bg-zinc-500/20 text-zinc-500 text-[10px] font-extrabold uppercase tracking-wider transition-all border border-zinc-500/10 hover:scale-[1.02] cursor-pointer text-center shrink-0"
                       >
                         Watch
                       </button>
                     ) : (past.egressSegments || (past.endedAt && (new Date() - new Date(past.endedAt)) < 180000)) ? (
-                      <span className="text-[9px] font-extrabold text-blue-500 bg-blue-500/10 px-2 py-1.5 rounded border border-blue-500/20 animate-pulse shrink-0">
+                      <span className="text-[9px] font-extrabold text-neutral-500 bg-neutral-500/10 px-2 py-1.5 rounded border border-neutral-500/20 animate-pulse shrink-0">
                         Processing...
                       </span>
                     ) : (

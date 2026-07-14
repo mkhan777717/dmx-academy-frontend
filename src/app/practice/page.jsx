@@ -31,13 +31,13 @@ const getIcon = (category) => {
     case "Security":
       return <ShieldAlert size={20} className="text-emerald-500" />;
     case "Algorithms":
-      return <Terminal size={20} className="text-blue-500" />;
+      return <Terminal size={20} className="text-neutral-500" />;
     case "Frontend":
       return <Code size={20} className="text-amber-500" />;
     case "System Design":
       return <Sparkles size={20} className="text-rose-500" />;
     default:
-      return <BookOpen size={20} className="text-indigo-500" />;
+      return <BookOpen size={20} className="text-zinc-500" />;
   }
 };
 
@@ -144,7 +144,7 @@ export default function PracticeCatalogPage() {
   return (
     <div className="relative flex min-h-screen flex-col overflow-hidden animate-fade-in" style={{ backgroundColor: "var(--bg-primary)" }}>
       {/* Background ambient lighting */}
-      <div className="absolute top-0 left-0 right-0 h-[450px] bg-gradient-to-b from-indigo-100/30 via-transparent to-transparent pointer-events-none z-0" />
+      <div className="absolute top-0 left-0 right-0 h-[450px] bg-gradient-to-b from-zinc-100/30 via-transparent to-transparent pointer-events-none z-0" />
       
       <Navbar />
 
@@ -186,7 +186,7 @@ export default function PracticeCatalogPage() {
           >
             <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto">
               {/* Category tabs */}
-              <div className="flex flex-wrap gap-1 items-center bg-slate-500/5 p-1 rounded-full border" style={{ borderColor: "var(--border-primary)" }}>
+              <div className="flex flex-wrap gap-1 items-center p-1 rounded-full border" style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)" }}>
                 {categories.map(cat => (
                   <button
                     key={cat}
@@ -210,7 +210,7 @@ export default function PracticeCatalogPage() {
               </div>
 
               {/* Difficulty Select */}
-              <div className="flex flex-wrap gap-1 items-center bg-slate-500/5 p-1 rounded-full border" style={{ borderColor: "var(--border-primary)" }}>
+              <div className="flex flex-wrap gap-1 items-center p-1 rounded-full border" style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)" }}>
                 {difficulties.map(diff => (
                   <button
                     key={diff}

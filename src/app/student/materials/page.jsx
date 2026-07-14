@@ -77,20 +77,19 @@ export default function StudentMaterialsPage() {
   };
 
   return (
-    <div className="space-y-6 animate-fade-in pb-12">
+    <div className="space-y-6 animate-fade-in pb-12 px-0 sm:px-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div className="space-y-1">
-          <div className="flex items-center space-x-2">
-            <div className="p-1.5 rounded-lg" style={{ backgroundColor: "var(--bg-badge)", color: "var(--text-accent)" }}>
-              <FileText size={16} />
-            </div>
-            <span className="text-xs font-bold uppercase tracking-widest" style={{ color: "var(--text-accent)" }}>Class Notes Center</span>
-          </div>
-          <h1 className="text-2xl font-black font-display" style={{ color: "var(--text-primary)" }}>Study Materials</h1>
-          <p className="text-sm" style={{ color: "var(--text-secondary)" }}>Access class notes and documents taught in your batches.</p>
+      <section className="flex flex-col gap-2 border-b pb-6 shrink-0" style={{ borderColor: "var(--border-primary)" }}>
+        <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border mb-3 w-fit"
+          style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)", backgroundColor: "var(--bg-secondary)" }}>
+          <FileText size={12} className="text-violet-500" />
+          Class Notes Center
         </div>
-      </div>
+        <h1 className="text-4xl font-serif tracking-tight" style={{ color: "var(--text-primary)" }}>Study Materials</h1>
+        <p className="text-sm max-w-xl" style={{ color: "var(--text-secondary)" }}>
+          Access class notes and documents taught in your batches.
+        </p>
+      </section>
 
       {error && (
         <div className="p-4 rounded-2xl border bg-rose-500/10 border-rose-500/20 flex items-center space-x-3">
@@ -105,8 +104,8 @@ export default function StudentMaterialsPage() {
         <input
           type="text"
           placeholder="Search documents by title or filename..."
-          className="w-full pl-11 pr-4 py-3 rounded-2xl border text-sm outline-none"
-          style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-card)", color: "var(--text-primary)" }}
+          className="w-full pl-11 pr-4 py-3 rounded-xl border text-sm font-medium outline-none transition-colors focus:border-[var(--text-muted)]"
+          style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
           value={searchQuery}
           onChange={e => setSearchQuery(e.target.value)}
         />
@@ -127,12 +126,12 @@ export default function StudentMaterialsPage() {
           </div>
 
           {subjects.length === 0 ? (
-            <div className="p-12 rounded-3xl border border-dashed text-center space-y-4" style={{ borderColor: "var(--border-primary)" }}>
-              <div className="w-14 h-14 rounded-2xl mx-auto flex items-center justify-center"
-                   style={{ backgroundColor: "var(--bg-badge)", color: "var(--text-accent)" }}>
-                <Folder size={28} />
+            <div className="p-12 rounded-2xl border border-dashed text-center space-y-4 shadow-sm" style={{ borderColor: "var(--border-primary)", backgroundColor: "var(--bg-primary)" }}>
+              <div className="w-14 h-14 rounded-2xl mx-auto flex items-center justify-center border"
+                   style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)" }}>
+                <Folder size={24} className="text-violet-500" />
               </div>
-              <p className="font-bold" style={{ color: "var(--text-primary)" }}>No subjects or notes found</p>
+              <p className="font-semibold" style={{ color: "var(--text-primary)" }}>No subjects or notes found</p>
               <p className="text-sm" style={{ color: "var(--text-secondary)" }}>Notes uploaded by batch managers will appear here.</p>
             </div>
           ) : (
@@ -143,20 +142,20 @@ export default function StudentMaterialsPage() {
                   <button
                     key={subject}
                     onClick={() => setSelectedSubject(subject)}
-                    className="group p-6 rounded-3xl border text-left flex items-start gap-4 transition-all hover:scale-102 hover:shadow-md cursor-pointer"
-                    style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-card)" }}
+                    className="group p-6 rounded-2xl border text-left flex items-start gap-4 transition-colors hover:bg-[var(--bg-secondary)] shadow-sm cursor-pointer"
+                    style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}
                   >
-                    <div className="p-4 rounded-2xl bg-indigo-500/10 text-indigo-500 shrink-0">
-                      <Folder size={28} className="fill-current" />
+                    <div className="p-4 rounded-xl bg-violet-500/10 text-violet-500 shrink-0">
+                      <Folder size={24} className="fill-current" />
                     </div>
                     <div className="space-y-1 min-w-0">
-                      <h3 className="text-base font-black truncate group-hover:text-indigo-400 transition-colors" style={{ color: "var(--text-primary)" }}>
+                      <h3 className="text-base font-semibold truncate group-hover:text-violet-500 transition-colors" style={{ color: "var(--text-primary)" }}>
                         {subject}
                       </h3>
                       <p className="text-xs" style={{ color: "var(--text-secondary)" }}>
                         Polaris School Of Technology
                       </p>
-                      <p className="text-[11px] font-semibold text-indigo-400">
+                      <p className="text-[11px] font-medium text-violet-500 pt-1">
                         {count} note{count !== 1 ? "s" : ""} available
                       </p>
                     </div>
@@ -172,12 +171,12 @@ export default function StudentMaterialsPage() {
           <div className="flex items-center space-x-3">
             <button
               onClick={() => setSelectedSubject("")}
-              className="p-2 rounded-xl hover:bg-slate-500/10 cursor-pointer text-indigo-400 flex items-center justify-center"
+              className="p-2 rounded-xl hover:bg-slate-500/10 cursor-pointer text-zinc-400 flex items-center justify-center"
             >
               <ArrowLeft size={16} />
             </button>
             <div>
-              <h2 className="text-lg font-black font-display" style={{ color: "var(--text-primary)" }}>
+              <h2 className="text-2xl font-serif tracking-tight" style={{ color: "var(--text-primary)" }}>
                 {selectedSubject}
               </h2>
               <p className="text-xs" style={{ color: "var(--text-muted)" }}>
@@ -193,11 +192,11 @@ export default function StudentMaterialsPage() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {filteredMaterials.map(m => (
-                <div key={m.id} className="p-5 rounded-3xl border flex flex-col justify-between space-y-4 shadow-sm"
-                     style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-card)" }}>
+                <div key={m.id} className="p-5 rounded-2xl border flex flex-col justify-between space-y-4 shadow-sm hover:bg-[var(--bg-secondary)] transition-colors"
+                     style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}>
                   <div className="space-y-3">
                     <div className="flex justify-between items-start">
-                      <span className="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-500">
+                      <span className="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-zinc-500/10 text-zinc-500">
                         {m.subject}
                       </span>
                       <span className="text-[10px] flex items-center gap-1.5" style={{ color: "var(--text-muted)" }}>
@@ -207,7 +206,7 @@ export default function StudentMaterialsPage() {
                     </div>
 
                     <div className="space-y-1">
-                      <h3 className="text-sm font-black truncate" style={{ color: "var(--text-primary)" }}>
+                      <h3 className="text-sm font-semibold truncate" style={{ color: "var(--text-primary)" }}>
                         {m.title}
                       </h3>
                       <p className="text-xs truncate font-mono" style={{ color: "var(--text-secondary)" }}>
@@ -219,7 +218,7 @@ export default function StudentMaterialsPage() {
                   <div className="flex items-center justify-end pt-2 border-t gap-2" style={{ borderColor: "var(--border-primary)" }}>
                     <button
                       onClick={() => handleView(m.id)}
-                      className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-bold border transition-colors cursor-pointer"
+                      className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-semibold border transition-colors cursor-pointer hover:bg-[var(--bg-secondary)]"
                       style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}
                     >
                       <ExternalLink size={13} />
@@ -227,8 +226,8 @@ export default function StudentMaterialsPage() {
                     </button>
                     <button
                       onClick={() => handleDownload(m.id)}
-                      className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-bold text-white shadow-sm transition-all hover:scale-102 cursor-pointer"
-                      style={{ background: "var(--accent-gradient)" }}
+                      className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-semibold text-white shadow-sm transition-transform hover:-translate-y-0.5 cursor-pointer"
+                      style={{ background: "var(--accent-primary)" }}
                     >
                       <Download size={13} />
                       <span>Download</span>

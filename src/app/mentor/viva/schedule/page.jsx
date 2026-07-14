@@ -154,23 +154,26 @@ export default function ScheduleVivaPage() {
     const start = new Date(viva.startTime);
     const end = viva.endTime ? new Date(viva.endTime) : null;
 
-    if (now < start) return { label: "Upcoming", color: "bg-blue-500/10 text-blue-400 border-blue-500/20" };
+    if (now < start) return { label: "Upcoming", color: "bg-neutral-500/10 text-neutral-400 border-neutral-500/20" };
     if (end && now > end) return { label: "Ended", color: "bg-neutral-500/10 text-neutral-400 border-neutral-500/20" };
     return { label: "Active", color: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20 animate-pulse" };
   };
 
   return (
-    <div className="min-h-screen bg-[#0B0F19] text-white p-6 md:p-10 font-sans">
-      <div className="max-w-7xl mx-auto space-y-8">
+    <div className="space-y-8 animate-in fade-in duration-500 pb-12">
         
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-slate-800 pb-6">
+        <section className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b pb-6" style={{ borderColor: "var(--border-primary)" }}>
           <div>
-            <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent flex items-center gap-3">
-              <Brain className="w-8 h-8 text-indigo-400" />
-              Viva Scheduling & Management
+            <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border mb-3"
+              style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)", backgroundColor: "var(--bg-secondary)" }}>
+              <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: "var(--accent-primary)" }} />
+              Viva Administration
+            </div>
+            <h1 className="text-4xl font-serif tracking-tight" style={{ color: "var(--text-primary)" }}>
+              Scheduling & Management
             </h1>
-            <p className="text-slate-400 mt-2">
+            <p className="text-sm mt-2" style={{ color: "var(--text-secondary)" }}>
               Create, view, and manage scheduled Viva sessions for your institute.
             </p>
           </div>
@@ -178,33 +181,33 @@ export default function ScheduleVivaPage() {
             {view === "list" ? (
               <button
                 onClick={() => setView("create")}
-                className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 font-medium text-white shadow-lg shadow-indigo-500/25 transition-all duration-200 transform hover:-translate-y-0.5"
+                className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-xs text-white shadow-md transition-transform hover:-translate-y-0.5 cursor-pointer"
+                style={{ background: "var(--accent-primary)" }}
               >
-                <Plus className="w-5 h-5" />
-                Schedule New Viva
+                <Plus className="w-4 h-4" /> Schedule New Viva
               </button>
             ) : (
               <button
                 onClick={() => setView("list")}
-                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 font-medium text-slate-300 transition-all"
+                className="flex items-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-xs border transition-colors hover:bg-[var(--bg-secondary)] cursor-pointer"
+                style={{ borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
               >
-                <ArrowLeft className="w-4 h-4" />
-                Back to List
+                <ArrowLeft className="w-4 h-4" /> Back to List
               </button>
             )}
           </div>
-        </div>
+        </section>
 
         {error && (
-          <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 flex items-center gap-3">
-            <AlertCircle className="w-5 h-5 flex-shrink-0" />
+          <div className="p-4 rounded-xl text-xs font-semibold flex items-center gap-3 border" style={{ backgroundColor: "rgba(239, 68, 68, 0.1)", borderColor: "rgba(239, 68, 68, 0.2)", color: "#ef4444" }}>
+            <AlertCircle className="w-4 h-4 shrink-0" />
             <p>{error}</p>
           </div>
         )}
 
         {success && (
-          <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center gap-3">
-            <CheckCircle2 className="w-5 h-5 flex-shrink-0" />
+          <div className="p-4 rounded-xl text-xs font-semibold flex items-center gap-3 border" style={{ backgroundColor: "rgba(16, 185, 129, 0.1)", borderColor: "rgba(16, 185, 129, 0.2)", color: "#10b981" }}>
+            <CheckCircle2 className="w-4 h-4 shrink-0" />
             <p>{success}</p>
           </div>
         )}
@@ -214,14 +217,14 @@ export default function ScheduleVivaPage() {
           <div className="space-y-6">
             {vivasLoading ? (
               <div className="flex flex-col items-center justify-center py-20 gap-3">
-                <Loader2 className="w-8 h-8 animate-spin text-indigo-500" />
-                <p className="text-slate-400">Loading scheduled Vivas...</p>
+                <Loader2 className="w-6 h-6 animate-spin" style={{ color: "var(--accent-primary)" }} />
+                <p className="text-xs font-medium uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Loading scheduled Vivas...</p>
               </div>
             ) : vivas.length === 0 ? (
-              <div className="bg-slate-900/40 border border-slate-800/80 rounded-2xl p-12 text-center max-w-xl mx-auto space-y-4">
-                <Calendar className="w-12 h-12 text-slate-500 mx-auto" />
-                <h3 className="text-lg font-semibold text-slate-300">No Vivas Scheduled</h3>
-                <p className="text-slate-400 text-sm">
+              <div className="border rounded-2xl p-12 text-center max-w-xl mx-auto space-y-4" style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)" }}>
+                <Calendar className="w-10 h-10 mx-auto" style={{ color: "var(--text-muted)" }} />
+                <h3 className="text-lg font-serif" style={{ color: "var(--text-primary)" }}>No Vivas Scheduled</h3>
+                <p className="text-xs" style={{ color: "var(--text-secondary)" }}>
                   You haven't scheduled any Vivas yet. Click "Schedule New Viva" to get started.
                 </p>
               </div>
@@ -232,48 +235,50 @@ export default function ScheduleVivaPage() {
                   return (
                     <div
                       key={viva.id}
-                      className="bg-gradient-to-b from-slate-900 to-[#121826] border border-slate-800/80 hover:border-indigo-500/30 rounded-2xl p-6 transition-all duration-300 hover:shadow-xl hover:shadow-indigo-500/5 flex flex-col justify-between group"
+                      className="border rounded-2xl p-6 transition-all duration-300 hover:shadow-lg flex flex-col justify-between group"
+                      style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}
                     >
                       <div className="space-y-4">
                         <div className="flex items-center justify-between">
-                          <span className="px-3 py-1 rounded-full text-xs font-semibold bg-indigo-500/10 text-indigo-300 border border-indigo-500/20">
+                          <span className="px-3 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider border"
+                            style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}>
                             {viva.subject}
                           </span>
-                          <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium border ${status.color}`}>
+                          <span className={`px-2.5 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider border ${status.color}`}>
                             {status.label}
                           </span>
                         </div>
 
                         <div>
-                          <h3 className="text-xl font-bold group-hover:text-indigo-400 transition-colors duration-200">
+                          <h3 className="text-xl font-serif leading-tight transition-colors" style={{ color: "var(--text-primary)" }}>
                             {viva.title}
                           </h3>
                           {viva.description && (
-                            <p className="text-slate-400 text-sm mt-1 line-clamp-2">
+                            <p className="text-xs mt-2 line-clamp-2" style={{ color: "var(--text-secondary)" }}>
                               {viva.description}
                             </p>
                           )}
                         </div>
 
-                        <div className="space-y-2 border-t border-slate-800/80 pt-4">
-                          <div className="flex items-center gap-2 text-xs text-slate-400">
-                            <Clock className="w-4 h-4 text-indigo-400" />
+                        <div className="space-y-2.5 border-t pt-4" style={{ borderColor: "var(--border-primary)" }}>
+                          <div className="flex items-center gap-2 text-xs" style={{ color: "var(--text-muted)" }}>
+                            <Clock className="w-3.5 h-3.5" style={{ color: "var(--text-primary)" }} />
                             <span>Start: {new Date(viva.startTime).toLocaleString()}</span>
                           </div>
                           {viva.endTime && (
-                            <div className="flex items-center gap-2 text-xs text-slate-400">
-                              <Clock className="w-4 h-4 text-rose-400" />
+                            <div className="flex items-center gap-2 text-xs" style={{ color: "var(--text-muted)" }}>
+                              <Clock className="w-3.5 h-3.5" style={{ color: "#ef4444" }} />
                               <span>End: {new Date(viva.endTime).toLocaleString()}</span>
                             </div>
                           )}
-                          <div className="flex items-center gap-2 text-xs text-slate-400">
-                            <BookOpen className="w-4 h-4 text-purple-400" />
+                          <div className="flex items-center gap-2 text-xs" style={{ color: "var(--text-muted)" }}>
+                            <BookOpen className="w-3.5 h-3.5" style={{ color: "var(--accent-primary)" }} />
                             <span>Questions: {viva.questions?.length || 0}</span>
                           </div>
                         </div>
                       </div>
 
-                      <div className="mt-6 pt-4 border-t border-slate-800/80 flex justify-between items-center text-xs text-slate-500">
+                      <div className="mt-6 pt-4 border-t flex justify-between items-center text-[10px] font-bold uppercase tracking-wider" style={{ borderColor: "var(--border-primary)", color: "var(--text-muted)" }}>
                         <span>By {viva.creator?.username || "Mentor"}</span>
                       </div>
                     </div>
@@ -288,32 +293,34 @@ export default function ScheduleVivaPage() {
         {view === "create" && (
           <form onSubmit={handleCreateSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Form Fields */}
-            <div className="lg:col-span-2 space-y-6 bg-slate-900/30 border border-slate-800/80 rounded-2xl p-6 md:p-8 backdrop-blur-sm">
-              <h2 className="text-xl font-bold flex items-center gap-2 text-indigo-300">
-                <Calendar className="w-5 h-5" />
+            <div className="lg:col-span-2 space-y-6 border rounded-2xl p-6 md:p-8" style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}>
+              <h2 className="text-xl font-serif flex items-center gap-2 pb-4 border-b" style={{ color: "var(--text-primary)", borderColor: "var(--border-primary)" }}>
+                <Calendar className="w-5 h-5" style={{ color: "var(--text-muted)" }} />
                 Viva Details
               </h2>
               
-              <div className="space-y-4">
+              <div className="space-y-5">
                 <div>
-                  <label className="block text-sm font-medium text-slate-300 mb-1.5">Viva Title *</label>
+                  <label className="block text-xs font-bold uppercase tracking-wider mb-2" style={{ color: "var(--text-secondary)" }}>Viva Title *</label>
                   <input
                     type="text"
                     required
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
-                    placeholder="e.g. JavaScript Closures & Async Final Exam"
-                    className="w-full bg-[#161B2B] border border-slate-800 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 rounded-xl px-4 py-2.5 text-white placeholder-slate-500 transition-all outline-none"
+                    placeholder="e.g. JavaScript Closures Final Exam"
+                    className="w-full border rounded-xl px-4 py-2.5 text-sm transition-colors outline-none focus:border-[var(--text-primary)]"
+                    style={{ backgroundColor: "var(--bg-input)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
                   />
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <div>
-                    <label className="block text-sm font-medium text-slate-300 mb-1.5">Subject *</label>
+                    <label className="block text-xs font-bold uppercase tracking-wider mb-2" style={{ color: "var(--text-secondary)" }}>Subject *</label>
                     <select
                       value={subject}
                       onChange={(e) => setSubject(e.target.value)}
-                      className="w-full bg-[#161B2B] border border-slate-800 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 rounded-xl px-4 py-2.5 text-white transition-all outline-none"
+                      className="w-full border rounded-xl px-4 py-2.5 text-sm transition-colors outline-none focus:border-[var(--text-primary)] cursor-pointer"
+                      style={{ backgroundColor: "var(--bg-input)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
                     >
                       <option value="">Select Subject</option>
                       {subjectsList.map(sub => (
@@ -324,47 +331,51 @@ export default function ScheduleVivaPage() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-slate-300 mb-1.5">New Subject (Optional)</label>
+                    <label className="block text-xs font-bold uppercase tracking-wider mb-2" style={{ color: "var(--text-secondary)" }}>New Subject (Optional)</label>
                     <input
                       type="text"
                       placeholder="Or type a new subject"
                       value={subject}
                       onChange={(e) => setSubject(e.target.value)}
-                      className="w-full bg-[#161B2B] border border-slate-800 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 rounded-xl px-4 py-2.5 text-white placeholder-slate-500 transition-all outline-none"
+                      className="w-full border rounded-xl px-4 py-2.5 text-sm transition-colors outline-none focus:border-[var(--text-primary)]"
+                      style={{ backgroundColor: "var(--bg-input)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-slate-300 mb-1.5">Description (Optional)</label>
+                  <label className="block text-xs font-bold uppercase tracking-wider mb-2" style={{ color: "var(--text-secondary)" }}>Description (Optional)</label>
                   <textarea
                     rows={3}
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     placeholder="Provide short instructions for students..."
-                    className="w-full bg-[#161B2B] border border-slate-800 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 rounded-xl px-4 py-2.5 text-white placeholder-slate-500 transition-all outline-none resize-none"
+                    className="w-full border rounded-xl px-4 py-2.5 text-sm transition-colors outline-none resize-none focus:border-[var(--text-primary)]"
+                    style={{ backgroundColor: "var(--bg-input)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
                   />
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <div>
-                    <label className="block text-sm font-medium text-slate-300 mb-1.5">Start Time *</label>
+                    <label className="block text-xs font-bold uppercase tracking-wider mb-2" style={{ color: "var(--text-secondary)" }}>Start Time *</label>
                     <input
                       type="datetime-local"
                       required
                       value={startTime}
                       onChange={(e) => setStartTime(e.target.value)}
-                      className="w-full bg-[#161B2B] border border-slate-800 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 rounded-xl px-4 py-2.5 text-white transition-all outline-none"
+                      className="w-full border rounded-xl px-4 py-2.5 text-sm transition-colors outline-none focus:border-[var(--text-primary)]"
+                      style={{ backgroundColor: "var(--bg-input)", borderColor: "var(--border-primary)", color: "var(--text-primary)", colorScheme: "dark" }}
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-slate-300 mb-1.5">End Time (Optional)</label>
+                    <label className="block text-xs font-bold uppercase tracking-wider mb-2" style={{ color: "var(--text-secondary)" }}>End Time (Optional)</label>
                     <input
                       type="datetime-local"
                       value={endTime}
                       onChange={(e) => setEndTime(e.target.value)}
-                      className="w-full bg-[#161B2B] border border-slate-800 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 rounded-xl px-4 py-2.5 text-white transition-all outline-none"
+                      className="w-full border rounded-xl px-4 py-2.5 text-sm transition-colors outline-none focus:border-[var(--text-primary)]"
+                      style={{ backgroundColor: "var(--bg-input)", borderColor: "var(--border-primary)", color: "var(--text-primary)", colorScheme: "dark" }}
                     />
                   </div>
                 </div>
@@ -372,14 +383,14 @@ export default function ScheduleVivaPage() {
             </div>
 
             {/* Question Selector Sidebar */}
-            <div className="space-y-6 bg-slate-900/30 border border-slate-800/80 rounded-2xl p-6 backdrop-blur-sm flex flex-col h-[600px]">
+            <div className="space-y-6 border rounded-2xl p-6 flex flex-col h-[650px]" style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)" }}>
               <div>
-                <h2 className="text-xl font-bold flex items-center justify-between text-purple-300">
+                <h2 className="text-lg font-serif flex items-center justify-between pb-4 border-b" style={{ color: "var(--text-primary)", borderColor: "var(--border-primary)" }}>
                   <span className="flex items-center gap-2">
-                    <BookOpen className="w-5 h-5" />
-                    Select Questions *
+                    <BookOpen className="w-4 h-4" style={{ color: "var(--text-muted)" }} />
+                    Question Bank *
                   </span>
-                  <span className="text-xs bg-purple-500/10 text-purple-400 border border-purple-500/20 px-2 py-0.5 rounded-full">
+                  <span className="text-[10px] font-bold uppercase px-2 py-1 rounded-md border" style={{ color: "var(--text-primary)", backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}>
                     {selectedQuestions.length} Selected
                   </span>
                 </h2>
@@ -390,19 +401,20 @@ export default function ScheduleVivaPage() {
                     placeholder="Filter by subject..."
                     value={subjectFilter}
                     onChange={(e) => setSubjectFilter(e.target.value)}
-                    className="w-full bg-[#161B2B] border border-slate-800 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 rounded-xl px-3 py-2 text-sm text-white placeholder-slate-500 transition-all outline-none"
+                    className="w-full border rounded-xl px-3 py-2 text-xs transition-colors outline-none focus:border-[var(--text-primary)]"
+                    style={{ backgroundColor: "var(--bg-input)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
                   />
                 </div>
               </div>
 
-              <div className="flex-1 overflow-y-auto space-y-3 pr-2 scrollbar-thin scrollbar-thumb-slate-800 scrollbar-track-transparent">
+              <div className="flex-1 overflow-y-auto space-y-2 pr-2 custom-scrollbar">
                 {questionsLoading ? (
                   <div className="flex flex-col items-center justify-center py-20 gap-3">
-                    <Loader2 className="w-6 h-6 animate-spin text-purple-500" />
-                    <p className="text-slate-500 text-xs">Loading questions...</p>
+                    <Loader2 className="w-5 h-5 animate-spin" style={{ color: "var(--text-muted)" }} />
+                    <p className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Loading questions...</p>
                   </div>
                 ) : questions.length === 0 ? (
-                  <p className="text-slate-500 text-center py-10 text-sm">No questions in bank.</p>
+                  <p className="text-center py-10 text-xs font-semibold" style={{ color: "var(--text-muted)" }}>No questions in bank.</p>
                 ) : (
                   questions
                     .filter(q => !subjectFilter || q.subject.toLowerCase().includes(subjectFilter.toLowerCase()))
@@ -412,23 +424,25 @@ export default function ScheduleVivaPage() {
                         <div
                           key={q.id}
                           onClick={() => toggleQuestionSelection(q.id)}
-                          className={`p-3.5 border rounded-xl cursor-pointer transition-all duration-200 text-left select-none ${
-                            isSelected
-                              ? "bg-purple-500/10 border-purple-500/40 hover:bg-purple-500/15"
-                              : "bg-[#121624] border-slate-800 hover:border-slate-700"
+                          className={`p-3.5 border rounded-xl cursor-pointer transition-colors text-left select-none ${
+                            isSelected ? "border-[var(--text-primary)]" : "hover:border-[var(--text-muted)]"
                           }`}
+                          style={{
+                            backgroundColor: isSelected ? "var(--bg-secondary)" : "var(--bg-primary)",
+                            borderColor: isSelected ? "var(--text-primary)" : "var(--border-primary)"
+                          }}
                         >
                           <div className="flex justify-between items-start gap-2">
-                            <span className="text-xs px-2 py-0.5 bg-slate-800 rounded text-slate-300 uppercase font-medium">
+                            <span className="text-[9px] px-2 py-0.5 border rounded text-xs font-bold uppercase tracking-wider" style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}>
                               {q.subject}
                             </span>
-                            <span className={`text-[10px] uppercase font-bold ${
-                              q.difficulty === "EASY" ? "text-emerald-400" : q.difficulty === "MEDIUM" ? "text-amber-400" : "text-rose-400"
+                            <span className={`text-[9px] uppercase font-bold ${
+                              q.difficulty === "EASY" ? "text-emerald-500" : q.difficulty === "MEDIUM" ? "text-amber-500" : "text-rose-500"
                             }`}>
                               {q.difficulty}
                             </span>
                           </div>
-                          <p className="text-slate-200 text-sm mt-2 font-medium line-clamp-2">
+                          <p className="text-xs mt-2 font-medium line-clamp-2" style={{ color: "var(--text-primary)" }}>
                             {q.questionText}
                           </p>
                         </div>
@@ -437,21 +451,22 @@ export default function ScheduleVivaPage() {
                 )}
               </div>
 
-              <div className="pt-4 border-t border-slate-800/80">
+              <div className="pt-4 border-t" style={{ borderColor: "var(--border-primary)" }}>
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-purple-500/20"
+                  className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-xs text-white transition-all hover:scale-101 shadow-md disabled:opacity-50 cursor-pointer"
+                  style={{ background: "var(--accent-primary)" }}
                 >
                   {submitting ? (
                     <>
-                      <Loader2 className="w-5 h-5 animate-spin" />
+                      <Loader2 className="w-4 h-4 animate-spin" />
                       Scheduling...
                     </>
                   ) : (
                     <>
-                      <Sparkles className="w-5 h-5" />
-                      Create & Publish Viva
+                      <Sparkles className="w-4 h-4" />
+                      Publish Viva
                     </>
                   )}
                 </button>
@@ -460,7 +475,6 @@ export default function ScheduleVivaPage() {
           </form>
         )}
 
-      </div>
     </div>
   );
 }

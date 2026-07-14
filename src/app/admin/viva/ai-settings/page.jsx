@@ -102,20 +102,19 @@ export default function AISettingsPage() {
   const isHealthy = health?.available && health?.modelAvailable;
 
   return (
-    <div className="space-y-6 animate-fade-in pb-12 max-w-2xl">
+    <div className="space-y-6 animate-fade-in pb-12 max-w-2xl px-0 sm:px-6">
       {/* Header */}
-      <div className="space-y-1">
-        <div className="flex items-center space-x-2">
-          <div className="p-1.5 rounded-lg" style={{ backgroundColor: "var(--bg-badge)", color: "var(--text-accent)" }}>
-            <Brain size={16} />
-          </div>
-          <span className="text-xs font-bold uppercase tracking-widest" style={{ color: "var(--text-accent)" }}>AI Viva</span>
+      <section className="flex flex-col gap-2 border-b pb-6 shrink-0" style={{ borderColor: "var(--border-primary)" }}>
+        <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border mb-3 w-fit"
+          style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)", backgroundColor: "var(--bg-secondary)" }}>
+          <Brain size={12} className="text-violet-500" />
+          AI Viva
         </div>
-        <h1 className="text-2xl font-black font-display" style={{ color: "var(--text-primary)" }}>AI Settings</h1>
-        <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
+        <h1 className="text-4xl font-serif tracking-tight" style={{ color: "var(--text-primary)" }}>AI Settings</h1>
+        <p className="text-sm max-w-xl" style={{ color: "var(--text-secondary)" }}>
           Configure the local LLM used for answer evaluation and session summaries.
         </p>
-      </div>
+      </section>
 
       {/* Status banner */}
       <div className={`flex items-center justify-between p-4 rounded-2xl border ${
@@ -164,10 +163,10 @@ export default function AISettingsPage() {
       )}
 
       {/* Settings form */}
-      <div className="p-6 rounded-3xl border space-y-5" style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
-        <div className="flex items-center space-x-2 pb-1 border-b" style={{ borderColor: "var(--border-primary)" }}>
-          <Settings size={15} style={{ color: "var(--text-accent)" }} />
-          <h2 className="text-sm font-black" style={{ color: "var(--text-primary)" }}>Configuration</h2>
+      <div className="p-6 rounded-2xl border space-y-6 shadow-sm" style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}>
+        <div className="flex items-center space-x-2 pb-2 border-b" style={{ borderColor: "var(--border-primary)" }}>
+          <Settings size={16} className="text-violet-500" />
+          <h2 className="text-sm font-semibold uppercase tracking-wider" style={{ color: "var(--text-primary)" }}>Configuration</h2>
         </div>
 
         <div className="flex items-center justify-between">
@@ -179,17 +178,17 @@ export default function AISettingsPage() {
           </div>
           <button
             onClick={() => setSettings(s => ({ ...s, enabled: !s.enabled }))}
-            className={`relative w-12 h-6 rounded-full transition-all cursor-pointer ${settings.enabled ? "bg-indigo-500" : "bg-slate-600"}`}>
+            className={`relative w-12 h-6 rounded-full transition-all cursor-pointer ${settings.enabled ? "bg-zinc-500" : "bg-slate-600"}`}>
             <span className={`absolute top-1 w-4 h-4 rounded-full bg-white shadow transition-all ${settings.enabled ? "left-7" : "left-1"}`} />
           </button>
         </div>
 
-        <div className="space-y-1.5">
+        <div className="space-y-2">
           <label className="text-xs font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Model</label>
           <div className="flex gap-2">
             <select
-              className="flex-1 p-3 rounded-2xl border text-sm font-semibold outline-none"
-              style={{ backgroundColor: "var(--bg-input)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
+              className="flex-1 p-3 rounded-xl border text-sm font-medium outline-none focus:border-[var(--text-muted)] transition-colors"
+              style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
               value={PRESET_MODELS.find(m => m.value === settings.model) ? settings.model : "custom"}
               onChange={e => { if (e.target.value !== "custom") setSettings(s => ({ ...s, model: e.target.value })); }}
             >
@@ -200,49 +199,49 @@ export default function AISettingsPage() {
             </select>
           </div>
           <input
-            className="w-full p-2 rounded-xl border text-sm outline-none font-mono"
-            style={{ backgroundColor: "var(--bg-input)", borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}
+            className="w-full p-3 rounded-xl border text-sm font-medium outline-none focus:border-[var(--text-muted)] transition-colors font-mono"
+            style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
             placeholder="Or type any model name..."
             value={settings.model}
             onChange={e => setSettings(s => ({ ...s, model: e.target.value }))}
           />
         </div>
 
-        <div className="space-y-1.5">
+        <div className="space-y-2">
           <label className="text-xs font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Ollama Endpoint</label>
           <input
-            className="w-full p-3 rounded-2xl border text-sm outline-none font-mono"
-            style={{ backgroundColor: "var(--bg-input)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
+            className="w-full p-3 rounded-xl border text-sm font-medium outline-none focus:border-[var(--text-muted)] transition-colors font-mono"
+            style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
             value={settings.endpoint}
             onChange={e => setSettings(s => ({ ...s, endpoint: e.target.value }))}
           />
         </div>
 
-        <div className="space-y-1.5">
+        <div className="space-y-2">
           <label className="text-xs font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Timeout (ms)</label>
           <input type="number"
-            className="w-full p-3 rounded-2xl border text-sm outline-none"
-            style={{ backgroundColor: "var(--bg-input)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
+            className="w-full p-3 rounded-xl border text-sm font-medium outline-none focus:border-[var(--text-muted)] transition-colors"
+            style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
             value={settings.timeout}
             onChange={e => setSettings(s => ({ ...s, timeout: parseInt(e.target.value) || 60000 }))}
           />
           <p className="text-xs" style={{ color: "var(--text-muted)" }}>60000ms recommended.</p>
         </div>
 
-        <div className="pt-1 border-t space-y-3" style={{ borderColor: "var(--border-primary)" }}>
+        <div className="pt-2 border-t space-y-4" style={{ borderColor: "var(--border-primary)" }}>
           <p className="text-xs font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Sampling Parameters</p>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-4">
             {[
               { key: "temperature", label: "Temperature (0=deterministic)", step: "0.05", min: 0, max: 1 },
               { key: "top_p", label: "Top-P", step: "0.05", min: 0, max: 1 },
               { key: "top_k", label: "Top-K", min: 1, max: 100 },
               { key: "repeat_penalty", label: "Repeat Penalty", step: "0.05", min: 1, max: 2 },
             ].map(({ key, label, step, min, max }) => (
-              <div key={key} className="space-y-1">
+              <div key={key} className="space-y-1.5">
                 <label className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>{label}</label>
                 <input type="number" step={step} min={min} max={max}
-                  className="w-full p-2.5 rounded-xl border text-sm outline-none"
-                  style={{ backgroundColor: "var(--bg-input)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
+                  className="w-full p-2.5 rounded-xl border text-sm font-medium outline-none focus:border-[var(--text-muted)] transition-colors"
+                  style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
                   value={settings[key]}
                   onChange={e => setSettings(s => ({ ...s, [key]: parseFloat(e.target.value) || s[key] }))}
                 />
@@ -251,15 +250,15 @@ export default function AISettingsPage() {
           </div>
         </div>
 
-        <div className="flex gap-3 pt-2">
+        <div className="flex gap-3 pt-4">
           <button onClick={handleTest} disabled={testing}
-                  className="flex items-center space-x-2 px-4 py-2.5 rounded-2xl border text-sm font-bold cursor-pointer transition-all hover:scale-102 disabled:opacity-50"
+                  className="flex items-center justify-center space-x-2 px-5 py-2.5 rounded-xl border text-sm font-semibold cursor-pointer transition-colors hover:bg-[var(--bg-secondary)] disabled:opacity-50"
                   style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}>
             {testing ? <><div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" /><span>Testing...</span></> : <><Zap size={14} /><span>Test Connection</span></>}
           </button>
           <button onClick={handleSave} disabled={saving}
-                  className="flex-1 flex items-center justify-center space-x-2 py-2.5 rounded-2xl text-sm font-bold text-white cursor-pointer transition-all hover:scale-102 disabled:opacity-50"
-                  style={{ background: "var(--accent-gradient)" }}>
+                  className="flex-1 flex items-center justify-center space-x-2 py-2.5 rounded-xl text-sm font-semibold text-white cursor-pointer transition-transform hover:-translate-y-0.5 disabled:opacity-50 shadow-md"
+                  style={{ background: "var(--accent-primary)" }}>
             {saving ? <><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /><span>Saving...</span></> : saved ? <><CheckCircle2 size={14} /><span>Saved!</span></> : <><Save size={14} /><span>Save Settings</span></>}
           </button>
         </div>
@@ -273,16 +272,16 @@ export default function AISettingsPage() {
       )}
 
       {health?.available && health?.models?.length > 0 && (
-        <div className="p-5 rounded-2xl border space-y-3" style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
-          <div className="flex items-center space-x-2">
-            <Cpu size={14} style={{ color: "var(--text-accent)" }} />
-            <p className="text-xs font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Pulled Models on this Machine</p>
+        <div className="p-6 rounded-2xl border space-y-4 shadow-sm" style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}>
+          <div className="flex items-center space-x-2 pb-2 border-b" style={{ borderColor: "var(--border-primary)" }}>
+            <Cpu size={14} className="text-violet-500" />
+            <p className="text-sm font-semibold uppercase tracking-wider" style={{ color: "var(--text-primary)" }}>Pulled Models on this Machine</p>
           </div>
           <div className="flex flex-wrap gap-2">
             {health.models.map(m => (
               <button key={m} onClick={() => setSettings(s => ({ ...s, model: m.replace(/:latest$/, '') }))}
-                      className="text-xs font-bold px-2.5 py-1 rounded-lg cursor-pointer transition-all hover:scale-105"
-                      style={{ backgroundColor: "var(--bg-badge)", color: "var(--text-accent)" }}>
+                      className="text-xs font-semibold px-3 py-1.5 rounded-lg cursor-pointer transition-colors hover:bg-[var(--bg-primary)] border"
+                      style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}>
                 {m}
               </button>
             ))}

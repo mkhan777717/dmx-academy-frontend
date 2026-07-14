@@ -39,54 +39,43 @@ export default function Navbar() {
     <motion.header
       initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.8, ease: "easeOut" }}
-      className="fixed top-0 left-0 right-0 z-50 px-4 py-4 md:px-8"
+      transition={{ duration: 0.7, ease: "easeOut" }}
+      className="fixed top-0 left-0 right-0 z-50 px-6 py-0 md:px-12"
+      style={{ backgroundColor: "var(--glass-bg)", backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)", borderBottom: "1px solid var(--border-subtle)" }}
     >
-      <div className="mx-auto max-w-7xl">
+      <div className="mx-auto max-w-[1400px]">
         <nav
-          className="relative flex items-center justify-between rounded-full border px-6 py-3 shadow-[0_8px_30px_rgb(0,0,0,0.06)] backdrop-blur-md"
-          style={{
-            backgroundColor: "var(--glass-bg)",
-            borderColor: "var(--border-primary)",
-          }}
+          className="relative flex items-center justify-between h-16"
         >
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2 text-xl font-bold font-display tracking-tight group"
+          <Link href="/" className="flex items-center gap-2.5 group"
             style={{ color: "var(--text-primary)" }}
           >
-            <motion.div
-              whileHover={{ rotate: 180, scale: 1.1 }}
-              transition={{ type: "spring", stiffness: 200, damping: 10 }}
-              className="flex h-9 w-9 items-center justify-center rounded-xl text-white shadow-[0_4px_15px_rgba(99,102,241,0.35)]"
+            <div
+              className="flex h-7 w-7 items-center justify-center rounded-lg text-white"
               style={{ background: "var(--accent-gradient)" }}
             >
-              <Sparkles size={18} />
-            </motion.div>
-            <span className="text-2xl" style={{ color: "var(--text-primary)" }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+              </svg>
+            </div>
+            <span className="text-[15px] font-bold tracking-[-0.02em]" style={{ color: "var(--text-primary)" }}>
               DMX Academy
             </span>
           </Link>
 
           {/* Desktop Nav Items */}
-          <ul className="hidden md:flex items-center space-x-1">
+          <ul className="hidden md:flex items-center gap-1">
             {navItems.map((item, index) => (
               <li key={item.name} className="relative">
                 <a
                   href={item.href}
-                  onMouseEnter={() => setHoveredIndex(index)}
-                  onMouseLeave={() => setHoveredIndex(null)}
-                  className="relative block px-4 py-2 text-sm font-medium transition-colors"
-                  style={{ color: hoveredIndex === index ? "var(--text-accent)" : "var(--text-secondary)" }}
+                  className="block px-3 py-2 text-sm font-medium transition-colors duration-200 underline-draw"
+                  style={{ color: "var(--text-secondary)" }}
+                  onMouseEnter={e => e.currentTarget.style.color = "var(--text-primary)"}
+                  onMouseLeave={e => e.currentTarget.style.color = "var(--text-secondary)"}
                 >
-                  {hoveredIndex === index && (
-                    <motion.span
-                      layoutId="navHover"
-                      transition={{ type: "spring", stiffness: 350, damping: 25 }}
-                      className="absolute inset-0 z-0 rounded-full"
-                      style={{ backgroundColor: "var(--bg-badge)", border: "1px solid var(--border-accent)" }}
-                    />
-                  )}
-                  <span className="relative z-10">{item.name}</span>
+                  {item.name}
                 </a>
               </li>
             ))}
@@ -179,9 +168,8 @@ export default function Navbar() {
             </li>
           </ul>
 
-          {/* Right: Theme Toggle + CTA */}
+          {/* Right: CTA */}
           <div className="hidden md:flex items-center gap-3">
-            <ThemeToggle />
 
             {/* Auth User Panel / Sign In Dropdown */}
             {user ? (
@@ -273,7 +261,7 @@ export default function Navbar() {
                           className="flex items-center gap-3 rounded-xl px-3 py-2 hover:bg-slate-500/5 transition-all"
                           onClick={() => setIsSignInDropdownOpen(false)}
                         >
-                          <div className="p-2 rounded-lg bg-indigo-500/10 text-indigo-500 shrink-0">
+                          <div className="p-2 rounded-lg bg-zinc-500/10 text-zinc-500 shrink-0">
                             <User size={15} />
                           </div>
                           <div>
@@ -286,6 +274,13 @@ export default function Navbar() {
                           </div>
                         </Link>
                       )}
+
+                      <div className="border-t my-1" style={{ borderColor: "var(--border-primary)" }} />
+
+                      <div className="px-3 py-2 flex items-center justify-between">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Theme</span>
+                        <ThemeToggle />
+                      </div>
 
                       <div className="border-t my-1" style={{ borderColor: "var(--border-primary)" }} />
 
@@ -347,7 +342,7 @@ export default function Navbar() {
                         className="flex items-center gap-3 rounded-xl px-3 py-2.5 hover:bg-slate-500/5 transition-all"
                         onClick={() => setIsSignInDropdownOpen(false)}
                       >
-                        <div className="p-2 rounded-lg bg-indigo-500/10 text-indigo-500 shrink-0">
+                        <div className="p-2 rounded-lg bg-zinc-500/10 text-zinc-500 shrink-0">
                           <User size={15} />
                         </div>
                         <div>
@@ -397,6 +392,13 @@ export default function Navbar() {
                           </div>
                         </div>
                       </Link>
+
+                      <div className="border-t my-1" style={{ borderColor: "var(--border-primary)" }} />
+
+                      <div className="px-3 py-2 flex items-center justify-between">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Theme</span>
+                        <ThemeToggle />
+                      </div>
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -436,10 +438,11 @@ export default function Navbar() {
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3 }}
-            className="absolute left-4 right-4 top-24 z-40 overflow-hidden rounded-2xl border p-6 shadow-2xl backdrop-blur-lg md:hidden"
+            className="absolute left-0 right-0 top-16 z-40 overflow-hidden border-b p-6 shadow-xl md:hidden"
             style={{
-              backgroundColor: "var(--bg-card)",
+              backgroundColor: "var(--bg-secondary)",
               borderColor: "var(--border-primary)",
+              backdropFilter: "blur(16px)",
             }}
           >
             <ul className="flex flex-col space-y-4">
@@ -538,11 +541,15 @@ export default function Navbar() {
                         className="flex items-center gap-2.5 text-sm font-bold pl-2 transition-colors hover:text-[var(--text-accent)]"
                         style={{ color: "var(--text-secondary)" }}
                       >
-                        <User size={14} className="text-indigo-500" />
+                        <User size={14} className="text-zinc-500" />
                         <span>Student Portal</span>
                       </Link>
                     </li>
                   )}
+                  <li className="pt-2 flex justify-between items-center border-t" style={{ borderColor: "var(--border-primary)", marginTop: "8px", paddingTop: "8px" }}>
+                    <span className="text-sm font-bold pl-2" style={{ color: "var(--text-secondary)" }}>Theme</span>
+                    <ThemeToggle />
+                  </li>
                   <li className="pt-2">
                     <button
                       onClick={() => {
@@ -568,7 +575,7 @@ export default function Navbar() {
                       className="flex items-center gap-2.5 text-sm font-bold pl-2 transition-colors hover:text-[var(--text-accent)]"
                       style={{ color: "var(--text-secondary)" }}
                     >
-                      <User size={14} className="text-indigo-500" />
+                      <User size={14} className="text-zinc-500" />
                       <span>Student Portal</span>
                     </Link>
                   </li>
@@ -610,10 +617,6 @@ export default function Navbar() {
                   </a>
                 </li>
               )}
-              {/* Theme Toggle in mobile too */}
-              <li className="pt-2 flex justify-center">
-                <ThemeToggle />
-              </li>
             </ul>
           </motion.div>
         )}

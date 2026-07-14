@@ -1006,7 +1006,7 @@ export default function PracticeWorkspace() {
             onClick={() => setVoiceEnabled(!voiceEnabled)}
             className={`flex items-center space-x-1 px-3 py-1.5 rounded-full text-xs font-bold transition-all border cursor-pointer ${
               voiceEnabled 
-                ? "bg-indigo-500/10 text-indigo-500 border-indigo-500/20" 
+                ? "bg-zinc-500/10 text-zinc-500 border-zinc-500/20" 
                 : "bg-slate-500/5 text-[var(--text-muted)] border-transparent"
             }`}
           >
@@ -1067,7 +1067,7 @@ export default function PracticeWorkspace() {
                 onClick={() => setActiveLeftTab(tab.id)}
                 className={`flex items-center space-x-1 px-4 py-2 text-xs font-semibold cursor-pointer border-b-2 transition-all whitespace-nowrap ${
                   activeLeftTab === tab.id 
-                    ? "border-indigo-500 text-indigo-500" 
+                    ? "border-zinc-500 text-zinc-500" 
                     : "border-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
                 }`}
               >
@@ -1090,7 +1090,7 @@ export default function PracticeWorkspace() {
                         key={col}
                         onClick={() => setDrawColor(col)}
                         className={`h-5 w-5 rounded-full border cursor-pointer transition-transform ${
-                          drawColor === col ? "scale-110 border-indigo-500 shadow-sm" : "border-slate-500/20"
+                          drawColor === col ? "scale-110 border-zinc-500 shadow-sm" : "border-slate-500/20"
                         }`}
                         style={{ backgroundColor: col }}
                       />
@@ -1139,7 +1139,7 @@ export default function PracticeWorkspace() {
         {/* Resizing divider bar */}
         <div 
           onMouseDown={startResizing}
-          className="w-1.5 hover:w-2 bg-slate-200 dark:bg-slate-800 hover:bg-indigo-500 cursor-col-resize select-none h-full transition-all duration-150 shrink-0 z-20 relative"
+          className="w-1.5 hover:w-2 bg-slate-200 dark:bg-slate-800 hover:bg-zinc-500 cursor-col-resize select-none h-full transition-all duration-150 shrink-0 z-20 relative"
         >
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-8 w-1 rounded-full bg-slate-400" />
         </div>
@@ -1189,7 +1189,7 @@ export default function PracticeWorkspace() {
                     ? "bg-rose-600 hover:bg-rose-700 cursor-pointer" 
                     : isListening 
                       ? "bg-red-500" 
-                      : "bg-indigo-600 hover:bg-indigo-700 cursor-pointer"
+                      : "bg-zinc-600 hover:bg-zinc-700 cursor-pointer"
                 }`}
                 title={isSpeaking ? "Stop speaking" : "Start query"}
               >
@@ -1217,7 +1217,7 @@ export default function PracticeWorkspace() {
                   {[1, 2, 3, 4, 5].map(bar => (
                     <span 
                       key={bar} 
-                      className="w-0.5 bg-indigo-500 rounded-full animate-waveform-bar"
+                      className="w-0.5 bg-zinc-500 rounded-full animate-waveform-bar"
                       style={{ 
                         animationDelay: `${bar * 0.15}s`,
                         height: "100%"
@@ -1230,7 +1230,7 @@ export default function PracticeWorkspace() {
               <button
                 onClick={() => askVoiceAssistant()}
                 disabled={isListening || assistantTyping}
-                className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg text-[10px] shadow-sm transition-all cursor-pointer disabled:opacity-50"
+                className="px-3 py-1.5 bg-zinc-600 hover:bg-zinc-700 text-white font-bold rounded-lg text-[10px] shadow-sm transition-all cursor-pointer disabled:opacity-50"
               >
                 Start Query
               </button>
@@ -1278,7 +1278,7 @@ export default function PracticeWorkspace() {
             {/* Drag Handle */}
             <div 
               onMouseDown={startConsoleResizing}
-              className="absolute top-0 left-0 right-0 h-1.5 cursor-row-resize hover:bg-indigo-500/50 transition-colors z-30"
+              className="absolute top-0 left-0 right-0 h-1.5 cursor-row-resize hover:bg-zinc-500/50 transition-colors z-30"
               style={{ transform: "translateY(-50%)" }}
             />
             {/* Console headers */}
@@ -1294,7 +1294,7 @@ export default function PracticeWorkspace() {
                     onClick={() => setActiveConsoleTab(ctab.id)}
                     className={`flex items-center space-x-1 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                       activeConsoleTab === ctab.id 
-                        ? "bg-slate-500/10 text-indigo-500 border border-slate-500/10" 
+                        ? "bg-slate-500/10 text-zinc-500 border border-slate-500/10" 
                         : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
                     }`}
                   >
@@ -1339,7 +1339,7 @@ export default function PracticeWorkspace() {
                             return copy;
                           });
                         }}
-                        className="w-full border rounded px-3 py-2 outline-none focus:border-indigo-500 font-mono"
+                        className="w-full border rounded px-3 py-2 outline-none focus:border-zinc-500 font-mono"
                         style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
                       />
                     </div>
@@ -1350,7 +1350,7 @@ export default function PracticeWorkspace() {
               {activeConsoleTab === "result" && (
                 <div className="space-y-3">
                   {isRunning ? (
-                    <div className="flex items-center space-x-2 text-indigo-400 py-2">
+                    <div className="flex items-center space-x-2 text-zinc-400 py-2">
                       <RefreshCw size={14} className="animate-spin" />
                       <span>Executing code test blocks...</span>
                     </div>
@@ -1416,7 +1416,7 @@ export default function PracticeWorkspace() {
                       <button
                         onClick={handleRunDebug}
                         disabled={debugRunning}
-                        className="flex items-center space-x-1.5 px-3 py-1 text-xs font-bold rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 transition-all cursor-pointer select-none outline-none focus:outline-none disabled:bg-indigo-600/50"
+                        className="flex items-center space-x-1.5 px-3 py-1 text-xs font-bold rounded-lg text-white bg-zinc-600 hover:bg-zinc-700 transition-all cursor-pointer select-none outline-none focus:outline-none disabled:bg-zinc-600/50"
                       >
                         {debugRunning ? (
                           <>
@@ -1436,7 +1436,7 @@ export default function PracticeWorkspace() {
                       onChange={(e) => setCustomInput(e.target.value)}
                       placeholder="Type custom testcase inputs here..."
                       rows={6}
-                      className="w-full flex-1 border rounded px-4 py-3 outline-none focus:border-indigo-500 font-mono text-xs leading-relaxed resize-none"
+                      className="w-full flex-1 border rounded px-4 py-3 outline-none focus:border-zinc-500 font-mono text-xs leading-relaxed resize-none"
                       style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
                     />
                   </div>
@@ -1445,7 +1445,7 @@ export default function PracticeWorkspace() {
                   <div className="flex flex-col space-y-2 overflow-y-auto">
                     <span className="font-bold text-[10px] text-slate-500 uppercase tracking-wide">Debug Output:</span>
                     {debugRunning ? (
-                      <div className="flex items-center space-x-2 text-indigo-400 py-3 font-mono">
+                      <div className="flex items-center space-x-2 text-zinc-400 py-3 font-mono">
                         <RefreshCw size={14} className="animate-spin" />
                         <span>Executing debugger run...</span>
                       </div>
@@ -1569,7 +1569,7 @@ export default function PracticeWorkspace() {
                         >
                           <div className="flex items-center justify-between">
                             <span className="text-[11px] font-bold text-[var(--text-primary)] font-mono">
-                              Test Case #{res.index} {isSample ? <span className="text-indigo-400 text-[10px] ml-1 font-sans">(Sample)</span> : <span className="text-[var(--text-muted)] text-[10px] ml-1 font-sans">(Hidden)</span>}
+                              Test Case #{res.index} {isSample ? <span className="text-zinc-400 text-[10px] ml-1 font-sans">(Sample)</span> : <span className="text-[var(--text-muted)] text-[10px] ml-1 font-sans">(Hidden)</span>}
                             </span>
                             
                             <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded border uppercase font-mono ${

@@ -34,9 +34,9 @@ function highlightCode(code, lang) {
     html = html.replace(tokenRegex, (m, comment, string, keyword, builtin, number) => {
       if (comment) return `<span class="text-emerald-500 italic font-mono">${comment}</span>`;
       if (string) return `<span class="text-rose-400 font-mono">${string}</span>`;
-      if (keyword) return `<span class="text-blue-400 font-bold font-mono">${keyword}</span>`;
+      if (keyword) return `<span class="text-neutral-400 font-bold font-mono">${keyword}</span>`;
       if (builtin) return `<span class="text-amber-400 font-semibold font-mono">${builtin}</span>`;
-      if (number) return `<span class="text-purple-400 font-mono">${number}</span>`;
+      if (number) return `<span class="text-slate-400 font-mono">${number}</span>`;
       return m;
     });
   } else if (lang === "python") {
@@ -44,9 +44,9 @@ function highlightCode(code, lang) {
     html = html.replace(tokenRegex, (m, comment, string, keyword, builtin, number) => {
       if (comment) return `<span class="text-emerald-500 italic font-mono">${comment}</span>`;
       if (string) return `<span class="text-rose-400 font-mono">${string}</span>`;
-      if (keyword) return `<span class="text-blue-400 font-bold font-mono">${keyword}</span>`;
+      if (keyword) return `<span class="text-neutral-400 font-bold font-mono">${keyword}</span>`;
       if (builtin) return `<span class="text-amber-400 font-semibold font-mono">${builtin}</span>`;
-      if (number) return `<span class="text-purple-400 font-mono">${number}</span>`;
+      if (number) return `<span class="text-slate-400 font-mono">${number}</span>`;
       return m;
     });
   } else if (lang === "go") {
@@ -54,9 +54,9 @@ function highlightCode(code, lang) {
     html = html.replace(tokenRegex, (m, comment, string, keyword, builtin, number) => {
       if (comment) return `<span class="text-emerald-500 italic font-mono">${comment}</span>`;
       if (string) return `<span class="text-rose-400 font-mono">${string}</span>`;
-      if (keyword) return `<span class="text-blue-400 font-bold font-mono">${keyword}</span>`;
+      if (keyword) return `<span class="text-neutral-400 font-bold font-mono">${keyword}</span>`;
       if (builtin) return `<span class="text-amber-400 font-semibold font-mono">${builtin}</span>`;
-      if (number) return `<span class="text-purple-400 font-mono">${number}</span>`;
+      if (number) return `<span class="text-slate-400 font-mono">${number}</span>`;
       return m;
     });
   } else if (lang === "cpp") {
@@ -64,9 +64,9 @@ function highlightCode(code, lang) {
     html = html.replace(tokenRegex, (m, comment, string, keyword, builtin, number) => {
       if (comment) return `<span class="text-emerald-500 italic font-mono">${comment}</span>`;
       if (string) return `<span class="text-rose-400 font-mono">${string}</span>`;
-      if (keyword) return `<span class="text-blue-400 font-bold font-mono">${keyword}</span>`;
+      if (keyword) return `<span class="text-neutral-400 font-bold font-mono">${keyword}</span>`;
       if (builtin) return `<span class="text-amber-400 font-semibold font-mono">${builtin}</span>`;
-      if (number) return `<span class="text-purple-400 font-mono">${number}</span>`;
+      if (number) return `<span class="text-slate-400 font-mono">${number}</span>`;
       return m;
     });
   } else if (lang === "java") {
@@ -74,9 +74,9 @@ function highlightCode(code, lang) {
     html = html.replace(tokenRegex, (m, comment, string, keyword, builtin, number) => {
       if (comment) return `<span class="text-emerald-500 italic font-mono">${comment}</span>`;
       if (string) return `<span class="text-rose-400 font-mono">${string}</span>`;
-      if (keyword) return `<span class="text-blue-400 font-bold font-mono">${keyword}</span>`;
+      if (keyword) return `<span class="text-neutral-400 font-bold font-mono">${keyword}</span>`;
       if (builtin) return `<span class="text-amber-400 font-semibold font-mono">${builtin}</span>`;
-      if (number) return `<span class="text-purple-400 font-mono">${number}</span>`;
+      if (number) return `<span class="text-slate-400 font-mono">${number}</span>`;
       return m;
     });
   }
@@ -1719,7 +1719,7 @@ export default function ContestWorkspace() {
       return backtickParts.flatMap((part, i) => {
         if (i % 2 === 1) {
           return (
-            <code key={`code-${i}`} className="px-1.5 py-0.5 rounded font-mono text-xs mx-0.5 text-indigo-600 dark:text-indigo-400 bg-indigo-500/5 border border-indigo-500/10 font-semibold">
+            <code key={`code-${i}`} className="px-1.5 py-0.5 rounded font-mono text-xs mx-0.5 text-zinc-600 dark:text-zinc-400 bg-zinc-500/5 border border-zinc-500/10 font-semibold">
               {part}
             </code>
           );
@@ -1776,14 +1776,14 @@ export default function ContestWorkspace() {
       }
       if (block.type === "h3") {
         return (
-          <h3 key={idx} className="text-base font-extrabold font-display mt-6 mb-3 text-[var(--text-primary)] border-l-4 border-indigo-500 pl-3 pb-0.5 tracking-tight flex items-center">
+          <h3 key={idx} className="text-base font-extrabold font-display mt-6 mb-3 text-[var(--text-primary)] border-l-4 border-zinc-500 pl-3 pb-0.5 tracking-tight flex items-center">
             {block.content}
           </h3>
         );
       }
       if (block.type === "h4") {
         return (
-          <h4 key={idx} className="text-xs font-black uppercase mt-5 mb-2 text-[var(--text-primary)] tracking-wider border-l-2 border-indigo-500/60 pl-2">
+          <h4 key={idx} className="text-xs font-black uppercase mt-5 mb-2 text-[var(--text-primary)] tracking-wider border-l-2 border-zinc-500/60 pl-2">
             {block.content}
           </h4>
         );
@@ -1791,18 +1791,18 @@ export default function ContestWorkspace() {
       if (block.type === "bullet") {
         return (
           <div key={idx} className="flex items-start pl-4 space-x-2 my-1.5 text-xs sm:text-sm text-[var(--text-secondary)]">
-            <span className="text-indigo-500 mt-1.5 text-[8px]">•</span>
+            <span className="text-zinc-500 mt-1.5 text-[8px]">•</span>
             <span className="flex-1">{processInline(block.content)}</span>
           </div>
         );
       }
       if (block.type === "code") {
         return (
-          <div key={idx} className="my-4 rounded-xl border border-indigo-500/10 dark:border-indigo-500/15 overflow-hidden shadow-[0_4px_12px_rgba(99,102,241,0.02)]">
-            <div className="flex justify-between items-center px-4 py-1.5 border-b border-indigo-500/10 bg-indigo-500/5 text-[10px] text-indigo-400 font-mono font-semibold">
+          <div key={idx} className="my-4 rounded-xl border border-zinc-500/10 dark:border-zinc-500/15 overflow-hidden shadow-[0_4px_12px_rgba(99,102,241,0.02)]">
+            <div className="flex justify-between items-center px-4 py-1.5 border-b border-zinc-500/10 bg-zinc-500/5 text-[10px] text-zinc-400 font-mono font-semibold">
               <span>Example / Code Block</span>
             </div>
-            <pre className="p-4 overflow-x-auto text-xs font-mono text-indigo-500 dark:text-indigo-400 bg-indigo-500/5 leading-relaxed whitespace-pre">
+            <pre className="p-4 overflow-x-auto text-xs font-mono text-zinc-500 dark:text-zinc-400 bg-zinc-500/5 leading-relaxed whitespace-pre">
               <code>{block.content}</code>
             </pre>
           </div>
@@ -1836,28 +1836,28 @@ export default function ContestWorkspace() {
               initial={{ scale: 0.9, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.9, opacity: 0, y: 20 }}
-              className="w-full max-w-md p-8 rounded-3xl border border-indigo-500/20 shadow-2xl flex flex-col items-center text-center space-y-6"
+              className="w-full max-w-md p-8 rounded-3xl border border-zinc-500/20 shadow-2xl flex flex-col items-center text-center space-y-6"
               style={{
                 background: "linear-gradient(135deg, rgba(20, 20, 25, 0.95), rgba(15, 15, 20, 0.95))",
                 boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 40px rgba(99, 102, 241, 0.15)"
               }}
             >
               {/* Flag Icon */}
-              <div className="h-16 w-16 rounded-full flex items-center justify-center bg-indigo-500/10 border border-indigo-500/20 shadow-lg">
-                <Flag className="h-8 w-8 text-indigo-500" />
+              <div className="h-16 w-16 rounded-full flex items-center justify-center bg-zinc-500/10 border border-zinc-500/20 shadow-lg">
+                <Flag className="h-8 w-8 text-zinc-500" />
               </div>
 
               {/* Title */}
               <div className="space-y-2">
                 <h3 className="text-xl font-bold tracking-tight text-white">Submit Contest?</h3>
-                <p className="text-xs font-semibold text-indigo-400/95 uppercase tracking-wider">
+                <p className="text-xs font-semibold text-zinc-400/95 uppercase tracking-wider">
                   Confirmation Required
                 </p>
               </div>
 
               {/* Description */}
-              <div className="p-4 w-full rounded-2xl bg-indigo-500/5 border border-indigo-500/10 text-left">
-                <p className="text-xs text-indigo-200/80 leading-relaxed">
+              <div className="p-4 w-full rounded-2xl bg-zinc-500/5 border border-zinc-500/10 text-left">
+                <p className="text-xs text-zinc-200/80 leading-relaxed">
                   Are you sure you want to finish and submit your contest attempt? Once submitted, you cannot change your code or answer further questions.
                 </p>
               </div>
@@ -1876,7 +1876,7 @@ export default function ContestWorkspace() {
                     setShowSubmitConfirm(false);
                     await finishContest();
                   }}
-                  className="flex-1 py-3 font-bold rounded-2xl text-xs text-white shadow-lg shadow-indigo-950/20 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
+                  className="flex-1 py-3 font-bold rounded-2xl text-xs text-white shadow-lg shadow-zinc-950/20 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
                   style={{
                     background: "linear-gradient(135deg, #6366f1, #4f46e5)"
                   }}
@@ -2175,22 +2175,22 @@ export default function ContestWorkspace() {
       {!contestStarted ? (
         <div className="flex-1 flex flex-col justify-center items-center p-6 relative bg-slate-50/50 dark:bg-[#0b0f19]/30">
           {/* Futuristic grid and glow backdrop */}
-          <div className="absolute top-0 left-0 right-0 h-[400px] bg-gradient-to-b from-indigo-500/5 via-purple-500/5 to-transparent pointer-events-none" />
+          <div className="absolute top-0 left-0 right-0 h-[400px] bg-gradient-to-b from-zinc-500/5 via-slate-500/5 to-transparent pointer-events-none" />
           <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(99,102,241,0.02)_1px,transparent_1px),linear-gradient(to_bottom,rgba(99,102,241,0.02)_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none" />
 
           {/* Glowing backdrop blobs */}
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-indigo-500/10 dark:bg-indigo-500/15 rounded-full blur-[100px] pointer-events-none" />
-          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/10 dark:bg-purple-500/15 rounded-full blur-[100px] pointer-events-none" />
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-zinc-500/10 dark:bg-zinc-500/15 rounded-full blur-[100px] pointer-events-none" />
+          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-slate-500/10 dark:bg-slate-500/15 rounded-full blur-[100px] pointer-events-none" />
 
           <motion.div
             initial={{ scale: 0.96, opacity: 0, y: 15 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
-            className="max-w-xl w-full backdrop-blur-lg bg-white/70 dark:bg-slate-900/70 border border-slate-200/50 dark:border-slate-800/50 shadow-2xl rounded-3xl p-8 space-y-6 relative overflow-hidden transition-all duration-300 hover:shadow-indigo-500/10 hover:border-indigo-500/30"
+            className="max-w-xl w-full backdrop-blur-lg bg-white/70 dark:bg-slate-900/70 border border-slate-200/50 dark:border-slate-800/50 shadow-2xl rounded-3xl p-8 space-y-6 relative overflow-hidden transition-all duration-300 hover:shadow-zinc-500/10 hover:border-zinc-500/30"
           >
             {/* Top gradient indicator */}
-            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500" />
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-zinc-500 via-slate-500 to-pink-500" />
 
-            <div className="h-14 w-14 rounded-2xl flex items-center justify-center text-white shadow-lg bg-gradient-to-tr from-indigo-500 to-purple-600 shadow-indigo-500/20">
+            <div className="h-14 w-14 rounded-2xl flex items-center justify-center text-white shadow-lg bg-gradient-to-tr from-zinc-500 to-slate-600 shadow-zinc-500/20">
               <Trophy size={26} className="animate-pulse" />
             </div>
 
@@ -2206,20 +2206,20 @@ export default function ContestWorkspace() {
             {/* instructions details */}
             <div className="space-y-4 p-5 rounded-2xl border bg-slate-500/5 backdrop-blur-sm text-xs" style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}>
               <div className="flex items-center space-x-2 text-[var(--text-primary)] font-extrabold text-sm border-b pb-2" style={{ borderColor: "var(--border-primary)" }}>
-                <Clock size={16} className="text-indigo-500" />
+                <Clock size={16} className="text-zinc-500" />
                 <span>Contest Rules & Parameters</span>
               </div>
               <ul className="space-y-2.5 leading-relaxed text-[var(--text-secondary)]">
                 <li className="flex items-start space-x-2">
-                  <span className="text-indigo-500 mt-1">•</span>
+                  <span className="text-zinc-500 mt-1">•</span>
                   <span>Duration: <strong>{contest.durationMins} minutes</strong> (countdown timer begins immediately and cannot be paused).</span>
                 </li>
                 <li className="flex items-start space-x-2">
-                  <span className="text-indigo-500 mt-1">•</span>
+                  <span className="text-zinc-500 mt-1">•</span>
                   <span>Submission Metrics: Your final rank is calculated based on total points and submission speed.</span>
                 </li>
                 <li className="flex items-start space-x-2">
-                  <span className="text-indigo-500 mt-1">•</span>
+                  <span className="text-zinc-500 mt-1">•</span>
                   <span>Auto-Lock: Editorial/solution tabs are hidden during active contest. Editor locks at `00:00`.</span>
                 </li>
                 <li className="flex items-start space-x-2 text-rose-500">
@@ -2262,7 +2262,7 @@ export default function ContestWorkspace() {
           {/* Contest header */}
           <header className="flex h-14 items-center justify-between px-6 border-b shrink-0 z-30 animate-fade-in shadow-sm" style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)" }}>
             <div className="flex items-center space-x-5">
-              <span className="text-sm font-black text-[var(--text-primary)] tracking-tight font-display bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-transparent bg-clip-text">
+              <span className="text-sm font-black text-[var(--text-primary)] tracking-tight font-display bg-gradient-to-r from-zinc-500 via-slate-500 to-pink-500 text-transparent bg-clip-text">
                 {contest.title}
               </span>
               <span className="h-4 w-px bg-slate-500/20" />
@@ -2277,7 +2277,7 @@ export default function ContestWorkspace() {
                       key={prob.id}
                       onClick={() => changeQuestion(idx)}
                       className={`px-3.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider transition-all duration-200 cursor-pointer flex items-center space-x-1.5 relative ${isCurrent
-                        ? "bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white shadow-[0_0_15px_rgba(99,102,241,0.3)] scale-105 hover:scale-110"
+                        ? "bg-gradient-to-r from-zinc-500 via-slate-500 to-pink-500 text-white shadow-[0_0_15px_rgba(99,102,241,0.3)] scale-105 hover:scale-110"
                         : "text-[var(--text-secondary)] hover:bg-slate-500/10 hover:text-[var(--text-primary)] hover:scale-102 bg-transparent"
                         }`}
                     >
@@ -2296,9 +2296,9 @@ export default function ContestWorkspace() {
               {/* Sports-scoreboard style countdown timer */}
               <div className={`flex items-center space-x-2 px-3.5 py-1.5 rounded-full border text-xs font-bold shadow-[0_0_15px_rgba(99,102,241,0.05)] font-mono transition-all duration-300 ${secondsLeft < 120
                 ? "bg-rose-500/10 border-rose-500/30 text-rose-500 shadow-[0_0_15px_rgba(244,63,94,0.15)] animate-pulse"
-                : "bg-indigo-500/10 border-indigo-500/20 text-indigo-500 dark:text-indigo-400"
+                : "bg-zinc-500/10 border-zinc-500/20 text-zinc-500 dark:text-zinc-400"
                 }`}>
-                <Clock size={14} className={secondsLeft < 120 ? "animate-pulse text-rose-500" : "text-indigo-500"} />
+                <Clock size={14} className={secondsLeft < 120 ? "animate-pulse text-rose-500" : "text-zinc-500"} />
                 <span>{formatTimer()}</span>
               </div>
 
@@ -2355,7 +2355,7 @@ export default function ContestWorkspace() {
                       key={tab.id}
                       onClick={() => setActiveLeftTab(tab.id)}
                       className={`flex items-center space-x-1.5 px-3 py-1.5 text-[11px] font-extrabold cursor-pointer rounded-full transition-all duration-200 whitespace-nowrap hover:-translate-y-0.5 active:translate-y-0 ${isActive
-                        ? "bg-gradient-to-r from-indigo-500/15 to-purple-500/15 text-indigo-500 border border-indigo-500/30 shadow-[0_2px_10px_rgba(99,102,241,0.1)]"
+                        ? "bg-gradient-to-r from-zinc-500/15 to-slate-500/15 text-zinc-500 border border-zinc-500/30 shadow-[0_2px_10px_rgba(99,102,241,0.1)]"
                         : "text-[var(--text-secondary)] bg-transparent border border-transparent hover:bg-slate-500/5 hover:text-[var(--text-primary)]"
                         }`}
                     >
@@ -2377,7 +2377,7 @@ export default function ContestWorkspace() {
                           <button
                             key={col}
                             onClick={() => setDrawColor(col)}
-                            className={`h-5 w-5 rounded-full border cursor-pointer transition-transform ${drawColor === col ? "scale-110 border-indigo-500 shadow-sm" : "border-slate-500/20"
+                            className={`h-5 w-5 rounded-full border cursor-pointer transition-transform ${drawColor === col ? "scale-110 border-zinc-500 shadow-sm" : "border-slate-500/20"
                               }`}
                             style={{ backgroundColor: col }}
                           />
@@ -2426,7 +2426,7 @@ export default function ContestWorkspace() {
             {/* Split Resize bar */}
             <div
               onMouseDown={startResizing}
-              className="w-1.5 hover:w-2 bg-slate-200 dark:bg-slate-800 hover:bg-indigo-500 cursor-col-resize select-none h-full transition-all duration-150 shrink-0 z-20 relative"
+              className="w-1.5 hover:w-2 bg-slate-200 dark:bg-slate-800 hover:bg-zinc-500 cursor-col-resize select-none h-full transition-all duration-150 shrink-0 z-20 relative"
             >
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-8 w-1 rounded-full bg-slate-400" />
             </div>
@@ -2474,7 +2474,7 @@ export default function ContestWorkspace() {
                 }}
               >
                 {/* Glowing edge accents */}
-                <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-indigo-500/20 via-purple-500/20 to-pink-500/20" />
+                <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-zinc-500/20 via-slate-500/20 to-pink-500/20" />
 
                 <div className="flex items-center space-x-3.5 relative z-10">
                   <button
@@ -2484,7 +2484,7 @@ export default function ContestWorkspace() {
                       ? "bg-rose-500 hover:bg-rose-600 cursor-pointer shadow-rose-500/25"
                       : isListening
                         ? "bg-red-500 shadow-red-500/35 scale-105"
-                        : "bg-indigo-600 hover:bg-indigo-700 cursor-pointer shadow-indigo-600/25 hover:scale-105 active:scale-95"
+                        : "bg-zinc-600 hover:bg-zinc-700 cursor-pointer shadow-zinc-600/25 hover:scale-105 active:scale-95"
                       }`}
                     title={isSpeaking ? "Stop speaking" : "Start query"}
                   >
@@ -2501,7 +2501,7 @@ export default function ContestWorkspace() {
                   <div>
                     <div className="text-xs font-black tracking-wider text-[var(--text-primary)] flex items-center space-x-1.5">
                       <span>VOICE AI DEVELOPER ASSISTANT</span>
-                      <span className="h-1.5 w-1.5 rounded-full bg-indigo-500 animate-pulse" />
+                      <span className="h-1.5 w-1.5 rounded-full bg-zinc-500 animate-pulse" />
                     </div>
                     <div className="text-[10px] text-[var(--text-secondary)] font-semibold mt-0.5">
                       {isListening ? "Listening to query..." : assistantTyping ? "AI typing hints..." : isSpeaking ? "Speaking... (Click speaker icon to stop)" : "Locked on explaining security & algorithms."}
@@ -2516,7 +2516,7 @@ export default function ContestWorkspace() {
                       {[1, 2, 3, 4, 5, 6].map(bar => (
                         <span
                           key={bar}
-                          className="w-0.75 bg-gradient-to-t from-indigo-500 to-purple-500 rounded-full animate-waveform-bar"
+                          className="w-0.75 bg-gradient-to-t from-zinc-500 to-slate-500 rounded-full animate-waveform-bar"
                           style={{
                             animationDelay: `${bar * 0.1}s`,
                             animationDuration: `${0.6 + (bar % 3) * 0.2}s`,
@@ -2531,7 +2531,7 @@ export default function ContestWorkspace() {
                   <button
                     onClick={() => askVoiceAssistant()}
                     disabled={isListening || assistantTyping}
-                    className="px-3.5 py-1.8 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-full text-[10px] shadow-md hover:shadow-indigo-600/15 transition-all cursor-pointer disabled:opacity-50 hover:scale-102 active:scale-98"
+                    className="px-3.5 py-1.8 bg-zinc-600 hover:bg-zinc-700 text-white font-bold rounded-full text-[10px] shadow-md hover:shadow-zinc-600/15 transition-all cursor-pointer disabled:opacity-50 hover:scale-102 active:scale-98"
                   >
                     Start Query
                   </button>
@@ -2594,7 +2594,7 @@ export default function ContestWorkspace() {
                 {/* Drag Handle */}
                 <div 
                   onMouseDown={startConsoleResizing}
-                  className="absolute top-0 left-0 right-0 h-1.5 cursor-row-resize hover:bg-indigo-500/50 transition-colors z-30"
+                  className="absolute top-0 left-0 right-0 h-1.5 cursor-row-resize hover:bg-zinc-500/50 transition-colors z-30"
                   style={{ transform: "translateY(-50%)" }}
                 />
                 {/* Console tabs headers */}
@@ -2609,7 +2609,7 @@ export default function ContestWorkspace() {
                         key={ctab.id}
                         onClick={() => setActiveConsoleTab(ctab.id)}
                         className={`flex items-center space-x-1 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${activeConsoleTab === ctab.id
-                          ? "bg-slate-500/10 text-indigo-400 border border-slate-500/10"
+                          ? "bg-slate-500/10 text-zinc-400 border border-slate-500/10"
                           : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
                           }`}
                       >
@@ -2682,7 +2682,7 @@ export default function ContestWorkspace() {
                                 return copy;
                               });
                             }}
-                            className="w-full border rounded-xl px-4 py-2.5 outline-none font-mono text-xs transition-all duration-200 focus:border-indigo-500/80 focus:shadow-[0_0_12px_rgba(99,102,241,0.15)] bg-slate-500/5 hover:bg-slate-500/10"
+                            className="w-full border rounded-xl px-4 py-2.5 outline-none font-mono text-xs transition-all duration-200 focus:border-zinc-500/80 focus:shadow-[0_0_12px_rgba(99,102,241,0.15)] bg-slate-500/5 hover:bg-slate-500/10"
                             style={{ borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
                           />
                         </div>
@@ -2693,7 +2693,7 @@ export default function ContestWorkspace() {
                   {activeConsoleTab === "result" && (
                     <div className="space-y-4">
                       {isRunning ? (
-                        <div className="flex items-center space-x-2.5 text-indigo-400 py-3 font-semibold">
+                        <div className="flex items-center space-x-2.5 text-zinc-400 py-3 font-semibold">
                           <RefreshCw size={14} className="animate-spin" />
                           <span>Running dynamic assertions checks...</span>
                         </div>
@@ -2749,7 +2749,7 @@ export default function ContestWorkspace() {
                         ))
                       ) : (
                         <div className="text-center py-8 text-xs font-semibold" style={{ color: "var(--text-muted)" }}>
-                          <Terminal size={24} className="mx-auto mb-2 text-indigo-500/40" />
+                          <Terminal size={24} className="mx-auto mb-2 text-zinc-500/40" />
                           <span>No tests executed yet. Click &quot;Run Testcases&quot; above.</span>
                         </div>
                       )}
@@ -2765,7 +2765,7 @@ export default function ContestWorkspace() {
                           <button
                             onClick={handleRunDebug}
                             disabled={debugRunning}
-                            className="flex items-center space-x-1.5 px-3 py-1 text-xs font-bold rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 transition-all cursor-pointer select-none outline-none focus:outline-none disabled:bg-indigo-600/50"
+                            className="flex items-center space-x-1.5 px-3 py-1 text-xs font-bold rounded-lg text-white bg-zinc-600 hover:bg-zinc-700 transition-all cursor-pointer select-none outline-none focus:outline-none disabled:bg-zinc-600/50"
                           >
                             {debugRunning ? (
                               <>
@@ -2785,7 +2785,7 @@ export default function ContestWorkspace() {
                           onChange={(e) => setCustomInput(e.target.value)}
                           placeholder="Type custom testcase inputs here..."
                           rows={6}
-                          className="w-full flex-1 border rounded px-4 py-3 outline-none focus:border-indigo-500 font-mono text-xs leading-relaxed resize-none"
+                          className="w-full flex-1 border rounded px-4 py-3 outline-none focus:border-zinc-500 font-mono text-xs leading-relaxed resize-none"
                           style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
                         />
                       </div>
@@ -2794,7 +2794,7 @@ export default function ContestWorkspace() {
                       <div className="flex flex-col space-y-2 overflow-y-auto">
                         <span className="font-bold text-[10px] text-slate-500 uppercase tracking-wide">Debug Output:</span>
                         {debugRunning ? (
-                          <div className="flex items-center space-x-2 text-indigo-400 py-3 font-mono">
+                          <div className="flex items-center space-x-2 text-zinc-400 py-3 font-mono">
                             <RefreshCw size={14} className="animate-spin" />
                             <span>Executing debugger run...</span>
                           </div>
@@ -2869,7 +2869,7 @@ export default function ContestWorkspace() {
               style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-accent)" }}
             >
               <div className="text-center space-y-3">
-                <div className="h-16 w-16 mx-auto rounded-2xl flex items-center justify-center text-white shadow-lg bg-indigo-600 shadow-indigo-500/25">
+                <div className="h-16 w-16 mx-auto rounded-2xl flex items-center justify-center text-white shadow-lg bg-zinc-600 shadow-zinc-500/25">
                   <Trophy size={36} />
                 </div>
                 <h3 className="text-2xl font-black font-display text-[var(--text-primary)]">Contest Finished!</h3>
@@ -2900,7 +2900,7 @@ export default function ContestWorkspace() {
                     <div
                       key={player.rank}
                       className={`flex justify-between items-center p-2.5 rounded-xl border text-xs ${player.isUser
-                        ? "bg-indigo-500/10 border-indigo-500/30 font-bold"
+                        ? "bg-zinc-500/10 border-zinc-500/30 font-bold"
                         : "bg-slate-500/5 border-transparent"
                         }`}
                     >
@@ -3017,7 +3017,7 @@ export default function ContestWorkspace() {
                         >
                           <div className="flex items-center justify-between">
                             <span className="text-[11px] font-bold text-[var(--text-primary)] font-mono">
-                              Test Case #{res.index} {isSample ? <span className="text-indigo-400 text-[10px] ml-1 font-sans">(Sample)</span> : <span className="text-[var(--text-muted)] text-[10px] ml-1 font-sans">(Hidden)</span>}
+                              Test Case #{res.index} {isSample ? <span className="text-zinc-400 text-[10px] ml-1 font-sans">(Sample)</span> : <span className="text-[var(--text-muted)] text-[10px] ml-1 font-sans">(Hidden)</span>}
                             </span>
                             
                             <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded border uppercase font-mono ${
@@ -3498,7 +3498,7 @@ function MockAssessmentSurvey({ onSubmit, onSkip }) {
             <button
               type="button"
               onClick={handleAddInterview}
-              className="text-xs font-bold text-indigo-500 hover:text-indigo-600 transition-colors flex items-center gap-1 cursor-pointer"
+              className="text-xs font-bold text-zinc-500 hover:text-zinc-600 transition-colors flex items-center gap-1 cursor-pointer"
             >
               + Add another company
             </button>

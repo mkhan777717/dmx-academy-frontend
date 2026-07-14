@@ -101,7 +101,7 @@ export default function ResumePreview({ data }) {
                   <div className="flex justify-between items-baseline mb-1">
                     <h3 className="font-bold text-[11pt] text-gray-900 flex items-center gap-2">
                       {proj.name}
-                      {proj.link && <span className="text-[9pt] font-normal text-blue-600 underline">({proj.link})</span>}
+                      {proj.link && <span className="text-[9pt] font-normal text-neutral-600 underline">({proj.link})</span>}
                     </h3>
                   </div>
                   {proj.tools && <div className="text-[10pt] font-medium text-gray-700 mb-1">Technologies: {proj.tools}</div>}

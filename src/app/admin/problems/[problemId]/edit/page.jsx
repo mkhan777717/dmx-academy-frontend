@@ -19,12 +19,12 @@ function renderMarkdown(md) {
   html = html.replace(/```([\w]*)\n([\s\S]*?)```/g, (_, _lang, code) =>
     `<div class="bg-[#0d1117] border border-slate-800/80 text-slate-200 p-4 rounded-xl font-mono text-[11px] my-3 overflow-x-auto leading-relaxed"><pre class="whitespace-pre"><code>${code}</code></pre></div>`
   );
-  html = html.replace(/`([^`]+)`/g, '<code class="bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-[11px] px-1.5 py-0.5 rounded font-mono font-semibold mx-0.5">$1</code>');
-  html = html.replace(/^### (.*$)/gim, '<h4 class="text-[11px] font-extrabold uppercase tracking-wider mt-4 mb-2 text-indigo-400">$1</h4>');
+  html = html.replace(/`([^`]+)`/g, '<code class="bg-zinc-500/10 border border-zinc-500/20 text-zinc-400 text-[11px] px-1.5 py-0.5 rounded font-mono font-semibold mx-0.5">$1</code>');
+  html = html.replace(/^### (.*$)/gim, '<h4 class="text-[11px] font-extrabold uppercase tracking-wider mt-4 mb-2 text-zinc-400">$1</h4>');
   html = html.replace(/^## (.*$)/gim, '<h3 class="text-sm font-black mt-5 mb-2 text-white">$1</h3>');
   html = html.replace(/^# (.*$)/gim, '<h2 class="text-base font-black mt-6 mb-3 pb-1 border-b border-white/10 text-white">$1</h2>');
   html = html.replace(/\*\*([^*]+)\*\*/g, '<strong class="font-bold text-white">$1</strong>');
-  html = html.replace(/^[*-] (.*$)/gim, '<li class="flex items-start gap-2 my-1 text-xs text-slate-300"><span class="text-indigo-400">◆</span><span>$1</span></li>');
+  html = html.replace(/^[*-] (.*$)/gim, '<li class="flex items-start gap-2 my-1 text-xs text-slate-300"><span class="text-zinc-400">◆</span><span>$1</span></li>');
   return `<div class="space-y-1 text-xs leading-relaxed text-slate-300 whitespace-pre-wrap">${html}</div>`;
 }
 
@@ -64,10 +64,10 @@ function MdToolbar({ taRef, setValue }) {
       <button type="button" onClick={() => insertMd(taRef, setValue, "italic")} className="p-1 rounded hover:bg-white/10 text-slate-400 hover:text-white cursor-pointer"><Italic size={10} /></button>
       <div className="w-px h-3 bg-white/10 mx-1" />
       {b("H2", "heading")}
-      {b("`c`", "inline", "font-mono text-purple-400")}
+      {b("`c`", "inline", "font-mono text-slate-400")}
       <div className="w-px h-3 bg-white/10 mx-1" />
       {b("js", "block-js", "text-amber-400")}
-      {b("py", "block-py", "text-blue-400")}
+      {b("py", "block-py", "text-neutral-400")}
       {b("go", "block-go", "text-emerald-400")}
       <div className="w-px h-3 bg-white/10 mx-1" />
       <button type="button" onClick={() => insertMd(taRef, setValue, "list")} className="p-1 rounded hover:bg-white/10 text-slate-400 hover:text-white cursor-pointer"><List size={10} /></button>
@@ -106,10 +106,10 @@ function CodePanel({ lang, value, onChange, rows = 10 }) {
 }
 
 function DarkInput({ style, ...props }) {
-  return <input {...props} style={style} className="w-full rounded-xl px-4 py-3 text-sm bg-[#111827] border border-white/10 text-white placeholder:text-slate-600 outline-none focus:border-indigo-500/60 focus:ring-1 focus:ring-indigo-500/30 transition-all font-medium" />;
+  return <input {...props} style={style} className="w-full rounded-xl px-4 py-3 text-sm bg-[#111827] border border-white/10 text-white placeholder:text-slate-600 outline-none focus:border-zinc-500/60 focus:ring-1 focus:ring-indigo-500/30 transition-all font-medium" />;
 }
 function DarkSelect({ children, ...props }) {
-  return <select {...props} className="w-full rounded-xl px-4 py-3 text-sm bg-[#111827] border border-white/10 text-white outline-none focus:border-indigo-500/60 focus:ring-1 focus:ring-indigo-500/30 transition-all font-medium cursor-pointer">{children}</select>;
+  return <select {...props} className="w-full rounded-xl px-4 py-3 text-sm bg-[#111827] border border-white/10 text-white outline-none focus:border-zinc-500/60 focus:ring-1 focus:ring-indigo-500/30 transition-all font-medium cursor-pointer">{children}</select>;
 }
 function DarkTextarea({ style, onPaste, ...props }) {
   const handlePaste = (e) => {
@@ -145,7 +145,7 @@ function DarkTextarea({ style, onPaste, ...props }) {
       {...props}
       onPaste={handlePaste}
       style={style}
-      className="w-full rounded-xl px-4 py-3 text-sm bg-[#111827] border border-white/10 text-white placeholder:text-slate-600 outline-none focus:border-indigo-500/60 focus:ring-1 focus:ring-indigo-500/30 transition-all font-mono resize-none leading-relaxed"
+      className="w-full rounded-xl px-4 py-3 text-sm bg-[#111827] border border-white/10 text-white placeholder:text-slate-600 outline-none focus:border-zinc-500/60 focus:ring-1 focus:ring-indigo-500/30 transition-all font-mono resize-none leading-relaxed"
     />
   );
 }
@@ -413,7 +413,7 @@ export default function CreateProblem() {
   if (loadingProblem) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-3" style={{ background: "var(--bg-primary)" }}>
-        <RefreshCw className="animate-spin text-indigo-400" size={32} />
+        <RefreshCw className="animate-spin text-zinc-400" size={32} />
         <p className="text-slate-400 text-xs font-semibold">Loading problem data...</p>
       </div>
     );
@@ -458,7 +458,7 @@ export default function CreateProblem() {
               <ArrowLeft size={13} /> Back to Problems
             </button>
             <h1 className="text-2xl sm:text-3xl font-black tracking-tight flex items-center gap-3">
-              <span className="bg-gradient-to-r from-indigo-400 via-violet-400 to-pink-400 text-transparent bg-clip-text">Edit Coding Problem</span>
+              <span className="bg-gradient-to-r from-zinc-400 via-violet-400 to-pink-400 text-transparent bg-clip-text">Edit Coding Problem</span>
               <Sparkles size={20} className="text-amber-400 animate-pulse" />
             </h1>
           </div>
@@ -476,15 +476,15 @@ export default function CreateProblem() {
                 const done = stepDone[step.id];
                 return (
                   <button key={step.id} onClick={() => setActiveTab(step.id)}
-                    className={`w-full flex items-center gap-3 px-4 py-3.5 transition-all cursor-pointer text-left ${isActive ? "bg-gradient-to-r from-indigo-600/20 to-violet-600/10 border-l-2 border-indigo-500" : "hover:bg-white/5 border-l-2 border-transparent"} ${i < STEPS.length - 1 ? "border-b border-white/5" : ""}`}>
-                    <div className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 text-[11px] font-black transition-all ${done ? "bg-emerald-500/20 border border-emerald-500/40 text-emerald-400" : isActive ? "bg-indigo-500/20 border border-indigo-500/60 text-indigo-300" : "bg-white/5 border border-white/10 text-slate-600"}`}>
+                    className={`w-full flex items-center gap-3 px-4 py-3.5 transition-all cursor-pointer text-left ${isActive ? "bg-gradient-to-r from-zinc-600/20 to-violet-600/10 border-l-2 border-zinc-500" : "hover:bg-white/5 border-l-2 border-transparent"} ${i < STEPS.length - 1 ? "border-b border-white/5" : ""}`}>
+                    <div className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 text-[11px] font-black transition-all ${done ? "bg-emerald-500/20 border border-emerald-500/40 text-emerald-400" : isActive ? "bg-zinc-500/20 border border-zinc-500/60 text-zinc-300" : "bg-white/5 border border-white/10 text-slate-600"}`}>
                       {done ? <Check size={12} /> : step.num}
                     </div>
                     <div className="min-w-0">
                       <p className={`text-xs font-bold truncate transition-colors ${isActive ? "text-white" : done ? "text-slate-300" : "text-slate-500"}`}>{step.label}</p>
                       <p className="text-[10px] text-slate-600 truncate">{step.desc}</p>
                     </div>
-                    {isActive && <ChevronRight size={12} className="ml-auto text-indigo-400 shrink-0" />}
+                    {isActive && <ChevronRight size={12} className="ml-auto text-zinc-400 shrink-0" />}
                   </button>
                 );
               })}
@@ -501,7 +501,7 @@ export default function CreateProblem() {
             <div className="rounded-2xl border p-3 space-y-2" style={{ background: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
               <p className="text-[10px] font-extrabold uppercase tracking-widest text-slate-600">Demo Templates</p>
               <div className="grid grid-cols-2 gap-1.5">
-                <button onClick={() => loadDemo("fizzbuzz")} className="py-2 rounded-xl text-[10px] font-bold bg-indigo-500/10 text-indigo-400 hover:bg-indigo-500/20 transition-all border border-indigo-500/20 cursor-pointer">FizzBuzz</button>
+                <button onClick={() => loadDemo("fizzbuzz")} className="py-2 rounded-xl text-[10px] font-bold bg-zinc-500/10 text-zinc-400 hover:bg-zinc-500/20 transition-all border border-zinc-500/20 cursor-pointer">FizzBuzz</button>
                 <button onClick={() => loadDemo("clear")} className="py-2 rounded-xl text-[10px] font-bold bg-rose-500/10 text-rose-400 hover:bg-rose-500/20 transition-all border border-rose-500/20 cursor-pointer">Clear All</button>
               </div>
             </div>
@@ -512,7 +512,7 @@ export default function CreateProblem() {
             {/* Panel header */}
             <div className="px-6 py-4 border-b flex items-center justify-between" style={{ borderColor: "var(--border-primary)", background: "var(--bg-secondary)" }}>
               <div className="flex items-center gap-3">
-                {(() => { const s = STEPS.find(s => s.id === activeTab); const I = s?.icon; return I ? <I size={16} className="text-indigo-400" /> : null; })()}
+                {(() => { const s = STEPS.find(s => s.id === activeTab); const I = s?.icon; return I ? <I size={16} className="text-zinc-400" /> : null; })()}
                 <div>
                   <h2 className="text-sm font-black text-white">{STEPS.find(s => s.id === activeTab)?.label}</h2>
                   <p className="text-[10px] text-slate-500">{STEPS.find(s => s.id === activeTab)?.desc}</p>
@@ -586,7 +586,7 @@ export default function CreateProblem() {
                   <motion.div key="statement" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} className="space-y-5">
                     <div className="flex gap-2 flex-wrap items-center">
                       {[
-                        { id: "desc",   label: "Description",  cls: "text-indigo-400 bg-indigo-500/15 border-indigo-500/40" },
+                        { id: "desc",   label: "Description",  cls: "text-zinc-400 bg-zinc-500/15 border-zinc-500/40" },
                         { id: "input",  label: "Input Format", cls: "text-violet-400 bg-violet-500/15 border-violet-500/40" },
                         { id: "output", label: "Output Format",cls: "text-cyan-400 bg-cyan-500/15 border-cyan-500/40" },
                         { id: "constr", label: "Constraints",  cls: "text-amber-400 bg-amber-500/15 border-amber-500/40" },
@@ -607,7 +607,7 @@ export default function CreateProblem() {
                         {statSub === "desc" && (
                           <>
                             <div className="flex items-center justify-between flex-wrap gap-2">
-                              <label className="text-[11px] font-extrabold uppercase tracking-widest text-indigo-400">Problem Description *</label>
+                              <label className="text-[11px] font-extrabold uppercase tracking-widest text-zinc-400">Problem Description *</label>
                               <MdToolbar taRef={descRef} setValue={setDesc} />
                             </div>
                             <DarkTextarea ref={descRef} placeholder={"Describe the problem in markdown…\n\n### Example\nFor N = 5, output 1 2 3 4 5"} value={desc} onChange={e => setDesc(e.target.value)} rows={14} />
@@ -652,7 +652,7 @@ export default function CreateProblem() {
                             <h3 className="text-lg font-black text-white">{title || "Untitled Problem"}</h3>
                             <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${difficulty === "EASY" ? "bg-emerald-500/20 text-emerald-400" : difficulty === "HARD" ? "bg-rose-500/20 text-rose-400" : "bg-amber-500/20 text-amber-400"}`}>{difficulty}</span>
                           </div>
-                          {desc     && <div><p className="text-[11px] font-extrabold uppercase tracking-widest text-indigo-400 mb-2">Problem Statement</p><div dangerouslySetInnerHTML={{ __html: renderMarkdown(desc) }} /></div>}
+                          {desc     && <div><p className="text-[11px] font-extrabold uppercase tracking-widest text-zinc-400 mb-2">Problem Statement</p><div dangerouslySetInnerHTML={{ __html: renderMarkdown(desc) }} /></div>}
                           {inputFmt && <div><p className="text-[11px] font-extrabold uppercase tracking-widest text-violet-400 mb-2">Input Format</p><div dangerouslySetInnerHTML={{ __html: renderMarkdown(inputFmt) }} /></div>}
                           {outputFmt&& <div><p className="text-[11px] font-extrabold uppercase tracking-widest text-cyan-400 mb-2">Output Format</p><div dangerouslySetInnerHTML={{ __html: renderMarkdown(outputFmt) }} /></div>}
                           {constr   && <div><p className="text-[11px] font-extrabold uppercase tracking-widest text-amber-400 mb-2">Constraints</p><div dangerouslySetInnerHTML={{ __html: renderMarkdown(constr) }} /></div>}
@@ -661,8 +661,8 @@ export default function CreateProblem() {
                       )}
                     </div>
 
-                    <div className="rounded-xl border border-indigo-500/20 bg-indigo-500/5 p-3.5 text-[11px] text-slate-500 flex items-center gap-2 flex-wrap">
-                      <Info size={11} className="text-indigo-400 shrink-0" />
+                    <div className="rounded-xl border border-zinc-500/20 bg-zinc-500/5 p-3.5 text-[11px] text-slate-500 flex items-center gap-2 flex-wrap">
+                      <Info size={11} className="text-zinc-400 shrink-0" />
                       Markdown: <code className="text-slate-600">## Heading</code> · <code className="text-slate-600">**bold**</code> · <code className="text-slate-600">`inline`</code> · <code className="text-slate-600">- list</code> · triple backticks for code blocks
                     </div>
                   </motion.div>
@@ -671,8 +671,8 @@ export default function CreateProblem() {
                 {/* ─── Step 3: Templates ───────────────────────────── */}
                 {activeTab === "templates" && (
                   <motion.div key="templates" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} className="space-y-5">
-                    <div className="rounded-xl border border-blue-500/20 bg-blue-500/5 p-4 text-xs text-slate-400 flex items-start gap-3">
-                      <Info size={14} className="text-blue-400 shrink-0 mt-0.5" />
+                    <div className="rounded-xl border border-neutral-500/20 bg-neutral-500/5 p-4 text-xs text-slate-400 flex items-start gap-3">
+                      <Info size={14} className="text-neutral-400 shrink-0 mt-0.5" />
                       <span>These templates are pre-loaded in the code editor when students open this problem. Write complete starter functions that match the judge wrapper signature.</span>
                     </div>
                     <div className="flex gap-2 flex-wrap">
@@ -680,7 +680,7 @@ export default function CreateProblem() {
                         { id: "javascript", label: "JavaScript", cls: "text-amber-400 bg-amber-500/15 border-amber-500/40" },
                         { id: "cpp",        label: "C++",        cls: "text-rose-400   bg-rose-500/15   border-rose-500/40" },
                         { id: "java",       label: "Java",       cls: "text-cyan-400   bg-cyan-500/15   border-cyan-500/40" },
-                        { id: "python",     label: "Python 3",   cls: "text-blue-400   bg-blue-500/15   border-blue-500/40" },
+                        { id: "python",     label: "Python 3",   cls: "text-neutral-400   bg-neutral-500/15   border-neutral-500/40" },
                         { id: "go",         label: "Go",         cls: "text-emerald-400 bg-emerald-500/15 border-emerald-500/40" },
                       ].map(l => (
                         <button key={l.id} type="button" onClick={() => setActiveTmpl(l.id)}
@@ -763,7 +763,7 @@ export default function CreateProblem() {
                     </div>
 
                     <button type="button" onClick={() => setTestCases([...testCases, { input: "", expectedOutput: "", isSample: false }])}
-                      className="w-full py-3.5 rounded-2xl border border-dashed border-indigo-500/30 text-indigo-400 hover:bg-indigo-500/5 text-xs font-bold flex items-center justify-center gap-2 transition-all cursor-pointer hover:border-indigo-500/50">
+                      className="w-full py-3.5 rounded-2xl border border-dashed border-zinc-500/30 text-zinc-400 hover:bg-zinc-500/5 text-xs font-bold flex items-center justify-center gap-2 transition-all cursor-pointer hover:border-zinc-500/50">
                       <Plus size={14} /> Add Test Case
                     </button>
                   </motion.div>
@@ -778,7 +778,7 @@ export default function CreateProblem() {
                     </div>
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                       {[
-                        { id: "followup",   label: "Followup",   icon: "💬", cls: "text-indigo-400 bg-indigo-500/15 border-indigo-500/40" },
+                        { id: "followup",   label: "Followup",   icon: "💬", cls: "text-zinc-400 bg-zinc-500/15 border-zinc-500/40" },
                         { id: "editorial",  label: "Editorial",  icon: "📖", cls: "text-violet-400 bg-violet-500/15 border-violet-500/40" },
                         { id: "solution",   label: "Solution",   icon: "✅", cls: "text-emerald-400 bg-emerald-500/15 border-emerald-500/40" },
                         { id: "evaluation", label: "Evaluation", icon: "🎯", cls: "text-amber-400 bg-amber-500/15 border-amber-500/40" },
@@ -794,13 +794,13 @@ export default function CreateProblem() {
                         <motion.div key="followup" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="grid grid-cols-1 lg:grid-cols-2 gap-5">
                           <div className="space-y-2">
                             <div className="flex items-center justify-between flex-wrap gap-2">
-                              <label className="text-[11px] font-extrabold uppercase tracking-widest text-indigo-400">Followup Questions *</label>
+                              <label className="text-[11px] font-extrabold uppercase tracking-widest text-zinc-400">Followup Questions *</label>
                               <MdToolbar taRef={followupRef} setValue={setFollowup} />
                             </div>
                             <DarkTextarea ref={followupRef} placeholder="Write in markdown…" value={followup} onChange={e => setFollowup(e.target.value)} rows={14} />
                             {errors.followup && <p className="text-[10px] text-rose-400 flex items-center gap-1"><AlertCircle size={10} />{errors.followup}</p>}
                           </div>
-                          <div className="rounded-2xl border p-5 overflow-auto text-xs border-indigo-500/20 bg-indigo-500/5" style={{ minHeight: "14rem" }}
+                          <div className="rounded-2xl border p-5 overflow-auto text-xs border-zinc-500/20 bg-zinc-500/5" style={{ minHeight: "14rem" }}
                             dangerouslySetInnerHTML={{ __html: renderMarkdown(followup || "*Preview will appear here…*") }} />
                         </motion.div>
                       )}

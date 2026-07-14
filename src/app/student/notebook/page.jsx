@@ -10,26 +10,32 @@ export default function NotebookPage() {
   ]);
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6">
-      <div className="flex items-center justify-between mb-8">
-        <div className="flex items-center space-x-3">
-          <div className="p-3 rounded-2xl bg-blue-500/10 text-blue-500">
-            <FileText size={24} />
+    <div className="max-w-6xl mx-auto space-y-6 animate-fade-in px-0 sm:px-6 pb-12">
+      <section className="flex flex-col gap-2 border-b pb-6 shrink-0" style={{ borderColor: "var(--border-primary)" }}>
+        <div className="flex items-center justify-between">
+          <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border mb-3 w-fit"
+            style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)", backgroundColor: "var(--bg-secondary)" }}>
+            <FileText size={12} className="text-violet-500" />
+            Notebook
           </div>
-          <h1 className="text-2xl font-black text-[var(--text-primary)]">My Notebook</h1>
+          <button className="flex items-center space-x-2 px-4 py-2.5 rounded-xl font-semibold text-sm text-white transition-transform hover:-translate-y-0.5 shadow-md"
+            style={{ background: "var(--accent-primary)" }}>
+            <Plus size={16} />
+            <span>New Note</span>
+          </button>
         </div>
-        
-        <button className="flex items-center space-x-2 px-4 py-2.5 rounded-xl font-bold text-sm text-white bg-blue-500 hover:bg-blue-600 transition-colors shadow-md">
-          <Plus size={16} />
-          <span>New Note</span>
-        </button>
-      </div>
+        <h1 className="text-4xl font-serif tracking-tight" style={{ color: "var(--text-primary)" }}>My Notebook</h1>
+        <p className="text-sm max-w-xl" style={{ color: "var(--text-secondary)" }}>
+          Store your important algorithms, ideas, and notes.
+        </p>
+      </section>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-2">
         {notes.map(note => (
-          <div key={note.id} className="p-6 rounded-3xl border shadow-sm cursor-pointer hover:shadow-md transition-all hover:scale-[1.02]" style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-card)" }}>
-            <h3 className="text-sm font-bold text-[var(--text-primary)] mb-2">{note.title}</h3>
-            <p className="text-xs text-[var(--text-muted)] line-clamp-3">{note.snippet}</p>
+          <div key={note.id} className="p-6 rounded-2xl border shadow-sm cursor-pointer transition-colors hover:bg-[var(--bg-secondary)]" 
+               style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}>
+            <h3 className="text-sm font-semibold mb-2" style={{ color: "var(--text-primary)" }}>{note.title}</h3>
+            <p className="text-xs line-clamp-3" style={{ color: "var(--text-secondary)" }}>{note.snippet}</p>
           </div>
         ))}
       </div>

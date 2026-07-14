@@ -59,8 +59,8 @@ export default function ResetPasswordPage() {
   return (
     <div className="relative flex min-h-screen flex-col overflow-hidden" style={{ backgroundColor: "var(--bg-primary)" }}>
       {/* Ambient backgrounds */}
-      <div className="absolute top-0 left-0 right-0 h-[450px] bg-gradient-to-b from-indigo-100/30 via-transparent to-transparent pointer-events-none z-0" />
-      <div className="absolute -top-[20%] -right-[10%] w-[50%] h-[50%] rounded-full bg-indigo-500/5 blur-[120px] pointer-events-none" />
+      <div className="absolute top-0 left-0 right-0 h-[450px] bg-gradient-to-b from-zinc-100/30 via-transparent to-transparent pointer-events-none z-0" />
+      <div className="absolute -top-[20%] -right-[10%] w-[50%] h-[50%] rounded-full bg-zinc-500/5 blur-[120px] pointer-events-none" />
       <div className="absolute -bottom-[20%] -left-[10%] w-[50%] h-[50%] rounded-full bg-violet-500/5 blur-[120px] pointer-events-none" />
 
       <Navbar />

@@ -5,7 +5,7 @@ import { Trophy, Clock, CheckCircle, XCircle, Medal, Crown, Minus } from "lucide
 
 const OPTION_LABELS = ["A", "B", "C", "D"];
 const OPTION_COLORS = [
-  { bg: "bg-blue-500/15", border: "border-blue-500/30", text: "text-blue-400", fill: "bg-blue-500" },
+  { bg: "bg-neutral-500/15", border: "border-neutral-500/30", text: "text-neutral-400", fill: "bg-neutral-500" },
   { bg: "bg-violet-500/15", border: "border-violet-500/30", text: "text-violet-400", fill: "bg-violet-500" },
   { bg: "bg-amber-500/15", border: "border-amber-500/30", text: "text-amber-400", fill: "bg-amber-500" },
   { bg: "bg-rose-500/15", border: "border-rose-500/30", text: "text-rose-400", fill: "bg-rose-500" },

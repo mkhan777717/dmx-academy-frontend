@@ -201,7 +201,7 @@ export default function StudyMaterialsPage() {
           <button onClick={() => { setSubjectModalError(""); setNewFolderSubjectName(""); setSubjectModalOpen(true); }}
                   className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-2xl font-bold text-sm transition-all border hover:scale-105 cursor-pointer"
                   style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}>
-            <Plus size={15} className="text-indigo-400" />
+            <Plus size={15} className="text-zinc-400" />
             <span>Add Folder</span>
           </button>
           <button onClick={() => setUploadOpen(true)}
@@ -265,17 +265,17 @@ export default function StudyMaterialsPage() {
                     className="group p-6 rounded-3xl border text-left flex items-start gap-4 transition-all hover:scale-102 hover:shadow-md cursor-pointer"
                     style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-card)" }}
                   >
-                    <div className="p-4 rounded-2xl bg-indigo-500/10 text-indigo-500 shrink-0">
+                    <div className="p-4 rounded-2xl bg-zinc-500/10 text-zinc-500 shrink-0">
                       <Folder size={28} className="fill-current" />
                     </div>
                     <div className="space-y-1 min-w-0">
-                      <h3 className="text-base font-black truncate group-hover:text-indigo-400 transition-colors" style={{ color: "var(--text-primary)" }}>
+                      <h3 className="text-base font-black truncate group-hover:text-zinc-400 transition-colors" style={{ color: "var(--text-primary)" }}>
                         {subject}
                       </h3>
                       <p className="text-xs" style={{ color: "var(--text-secondary)" }}>
                         Polaris School Of Technology
                       </p>
-                      <p className="text-[11px] font-semibold text-indigo-400">
+                      <p className="text-[11px] font-semibold text-zinc-400">
                         {count} note{count !== 1 ? "s" : ""} available
                       </p>
                     </div>
@@ -291,7 +291,7 @@ export default function StudyMaterialsPage() {
           <div className="flex items-center space-x-3">
             <button
               onClick={() => setSelectedSubject("")}
-              className="p-2 rounded-xl hover:bg-slate-500/10 cursor-pointer text-indigo-400 flex items-center justify-center animate-fade-in"
+              className="p-2 rounded-xl hover:bg-slate-500/10 cursor-pointer text-zinc-400 flex items-center justify-center animate-fade-in"
             >
               <ArrowLeft size={16} />
             </button>
@@ -316,7 +316,7 @@ export default function StudyMaterialsPage() {
                      style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-card)" }}>
                   <div className="space-y-3">
                     <div className="flex justify-between items-start">
-                      <span className="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-500">
+                      <span className="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-zinc-500/10 text-zinc-500">
                         {m.subject}
                       </span>
                       <span className="text-[10px] flex items-center gap-1.5" style={{ color: "var(--text-muted)" }}>

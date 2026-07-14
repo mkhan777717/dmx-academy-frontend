@@ -157,64 +157,43 @@ export default function AdminProblemsPage() {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 p-0 sm:p-6 min-h-0 flex flex-col flex-1 animate-in fade-in duration-500" style={{ color: "var(--text-primary)" }}>
       {/* Page Header */}
-      <div
-        className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 md:p-8 rounded-3xl border relative overflow-hidden"
-        style={{
-          backgroundColor: "var(--glass-bg)",
-          borderColor: "var(--border-primary)",
-          backgroundImage:
-            "linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(16, 185, 129, 0.05) 100%)",
-        }}
-      >
-        <div className="space-y-1 relative z-10">
-          <div className="flex items-center space-x-2">
-            <Code size={16} className="text-indigo-400" />
-            <span className="text-[10px] font-extrabold uppercase tracking-wider text-indigo-400">
-              Problem Registry
-            </span>
+      <section className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 border-b pb-6 shrink-0" style={{ borderColor: "var(--border-primary)" }}>
+        <div className="space-y-2">
+          <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border mb-3"
+            style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)", backgroundColor: "var(--bg-secondary)" }}>
+            <Code size={12} className="text-violet-500" />
+            Problem Registry
           </div>
-          <h1
-            className="text-2xl md:text-3xl font-black font-display tracking-tight"
-            style={{ color: "var(--text-primary)" }}
-          >
+          <h1 className="text-4xl font-serif tracking-tight" style={{ color: "var(--text-primary)" }}>
             Manage Problems
           </h1>
-          <p className="text-xs" style={{ color: "var(--text-secondary)" }}>
+          <p className="text-sm max-w-xl" style={{ color: "var(--text-secondary)" }}>
             Review, publish, and manage all coding challenges in the system.
           </p>
         </div>
-        <div className="flex items-center gap-3 relative z-10">
+        <div className="flex items-center gap-3 shrink-0">
           <button
             onClick={loadProblems}
-            className="p-2.5 rounded-xl border transition-all cursor-pointer hover:bg-slate-500/10"
-            style={{
-              backgroundColor: "var(--bg-card)",
-              borderColor: "var(--border-primary)",
-            }}
+            className="p-2.5 rounded-xl border transition-colors hover:bg-[var(--bg-secondary)] flex items-center justify-center cursor-pointer"
+            style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}
             title="Refresh"
           >
-            <RefreshCw
-              size={14}
-              className={loading ? "animate-spin" : ""}
-              style={{ color: "var(--text-secondary)" }}
-            />
+            <RefreshCw size={14} className={loading ? "animate-spin text-violet-500" : "text-[var(--text-secondary)]"} />
           </button>
           {!(activeTab === "global" && user?.role !== "ADMIN") && (
             <button
               onClick={() => router.push("/admin/problems/new")}
-              className="px-5 py-3 rounded-2xl font-bold text-xs text-white shadow-md transition-all cursor-pointer flex items-center space-x-1.5 hover:scale-102"
-              style={{
-                background: "linear-gradient(135deg, #6366f1 0%, #10b981 100%)",
-              }}
+              className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-white text-xs font-semibold transition-transform hover:-translate-y-0.5 cursor-pointer shadow-md"
+              style={{ background: "var(--accent-primary)" }}
             >
               <Plus size={14} />
               <span>Create Problem</span>
             </button>
           )}
         </div>
-      </div>
+      </section>
 
       {/* Notification toast */}
       <AnimatePresence>
@@ -234,207 +213,136 @@ export default function AdminProblemsPage() {
       </AnimatePresence>
 
       {/* Stats overview cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 shrink-0">
         {[
-          { key: "all", label: "Total Problems", color: "text-slate-400", bg: "bg-slate-500/10", icon: Code },
-          { key: "easy", label: "Easy", color: "text-emerald-500", bg: "bg-emerald-500/10", icon: CheckCircle2 },
-          { key: "medium", label: "Medium", color: "text-amber-500", bg: "bg-amber-500/10", icon: BarChart2 },
-          { key: "hard", label: "Hard", color: "text-rose-500", bg: "bg-rose-500/10", icon: AlertCircle },
+          { key: "all", label: "Total Problems", color: "text-[var(--text-primary)]", bg: "bg-[var(--bg-secondary)]", icon: Code },
+          { key: "easy", label: "Easy", color: "text-emerald-500", bg: "bg-emerald-50 dark:bg-emerald-950/50", icon: CheckCircle2 },
+          { key: "medium", label: "Medium", color: "text-amber-500", bg: "bg-amber-50 dark:bg-amber-950/50", icon: BarChart2 },
+          { key: "hard", label: "Hard", color: "text-rose-500", bg: "bg-rose-50 dark:bg-rose-950/50", icon: AlertCircle },
         ].map(({ key, label, color, bg, icon: Icon }) => (
           <button
             key={key}
             onClick={() => setFilterDiff(key)}
-            className={`p-4 rounded-2xl border text-left transition-all cursor-pointer ${filterDiff === key
-              ? "ring-1 ring-current"
-              : "hover:bg-slate-500/5"
-              } ${color}`}
-            style={{
-              backgroundColor: "var(--bg-card)",
-              borderColor: "var(--border-card)",
-            }}
+            className={`p-5 rounded-2xl border text-left transition-all cursor-pointer group ${filterDiff === key
+              ? "ring-2 ring-[var(--accent-primary)] border-transparent bg-[var(--bg-secondary)]"
+              : "hover:bg-[var(--bg-secondary)] bg-[var(--bg-card)]"
+              }`}
+            style={{ borderColor: filterDiff === key ? "transparent" : "var(--border-primary)" }}
           >
-            <div className={`p-2 rounded-xl ${bg} ${color} w-fit mb-3`}>
-              <Icon size={14} />
+            <div className={`p-2.5 rounded-xl ${bg} ${color} w-fit mb-4 transition-transform group-hover:scale-110`}>
+              <Icon size={16} />
             </div>
-            <div className="text-xl font-black" style={{ color: "var(--text-primary)" }}>
+            <div className="text-2xl font-serif" style={{ color: "var(--text-primary)" }}>
               {counts[key]}
             </div>
-            <div className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>
+            <div className="text-xs font-medium mt-1" style={{ color: "var(--text-muted)" }}>
               {label}
             </div>
           </button>
         ))}
       </div>
 
-      {/* Scope Tabs */}
-      {user?.role !== "ADMIN" && (
-        <div className="flex border-b" style={{ borderColor: "var(--border-primary)" }}>
-          <button
-            onClick={() => {
-              setActiveTab("institute");
-              setFilterDiff("all");
-            }}
-            className={`px-6 py-3.5 text-xs font-black uppercase tracking-wider transition-all border-b-2 -mb-[2px] cursor-pointer ${activeTab === "institute"
-              ? "border-[var(--accent-primary)] text-[var(--accent-primary)]"
-              : "border-transparent text-[var(--text-muted)] hover:text-[var(--text-primary)]"
-              }`}
-          >
-            Your Institute Problems
-          </button>
-          <button
-            onClick={() => {
-              setActiveTab("global");
-              setFilterDiff("all");
-            }}
-            className={`px-6 py-3.5 text-xs font-black uppercase tracking-wider transition-all border-b-2 -mb-[2px] cursor-pointer ${activeTab === "global"
-              ? "border-[var(--accent-primary)] text-[var(--accent-primary)]"
-              : "border-transparent text-[var(--text-muted)] hover:text-[var(--text-primary)]"
-              }`}
-          >
-            Global Problems
-          </button>
-        </div>
-      )}
-
-      {/* Search */}
-      <div className="relative">
-        <Search
-          size={14}
-          className="absolute left-4 top-1/2 -translate-y-1/2"
-          style={{ color: "var(--text-muted)" }}
-        />
-        <input
-          type="text"
-          placeholder="Search by title, slug, or category..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-full rounded-2xl py-3 pl-11 pr-4 text-xs outline-none border transition-all"
-          style={{
-            backgroundColor: "var(--bg-input, var(--bg-card))",
-            borderColor: "var(--border-primary)",
-            color: "var(--text-primary)",
-          }}
-        />
-        {search && (
-          <button
-            onClick={() => setSearch("")}
-            className="absolute right-4 top-1/2 -translate-y-1/2"
-            style={{ color: "var(--text-muted)" }}
-          >
-            <X size={13} />
-          </button>
-        )}
-      </div>
-
-      {/* Problems Table */}
-      <div
-        className="rounded-3xl border overflow-hidden shadow-sm"
-        style={{
-          backgroundColor: "var(--bg-card)",
-          borderColor: "var(--border-card)",
-        }}
-      >
-        {/* Table Header row */}
-        <div
-          className="flex items-center justify-between px-6 py-4 border-b"
-          style={{ borderColor: "var(--border-primary)" }}
-        >
-          <div className="flex items-center space-x-2">
-            <Code size={15} style={{ color: "var(--text-accent)" }} />
-            <h2 className="text-sm font-bold" style={{ color: "var(--text-primary)" }}>
-              {filterDiff === "all"
-                ? "All Problems"
-                : `${filterDiff.charAt(0).toUpperCase() + filterDiff.slice(1)} Problems`}
-            </h2>
-            <span
-              className="text-[10px] font-bold px-2 py-0.5 rounded-full border"
-              style={{
-                backgroundColor: "var(--bg-badge)",
-                borderColor: "var(--border-accent)",
-                color: "var(--text-accent)",
-              }}
-            >
-              {filteredProblems.length}
-            </span>
-          </div>
-          {error && (
-            <span className="text-[10px] text-amber-400 font-semibold flex items-center space-x-1">
-              <AlertCircle size={11} />
-              <span>{error}</span>
-            </span>
-          )}
-        </div>
-
-        {loading ? (
-          <div className="flex items-center justify-center py-20 space-x-2">
-            <RefreshCw
-              size={16}
-              className="animate-spin"
-              style={{ color: "var(--text-accent)" }}
-            />
-            <span
-              className="text-xs font-semibold"
-              style={{ color: "var(--text-secondary)" }}
-            >
-              Loading problems...
-            </span>
-          </div>
-        ) : filteredProblems.length === 0 ? (
-          <div className="py-20 text-center space-y-3">
-            <Code
-              size={40}
-              className="mx-auto opacity-20"
-              style={{ color: "var(--text-secondary)" }}
-            />
-            <p
-              className="text-sm font-bold"
-              style={{ color: "var(--text-primary)" }}
-            >
-              No problems found
-            </p>
-            <p className="text-xs" style={{ color: "var(--text-secondary)" }}>
-              {search
-                ? "Try adjusting your search or filter."
-                : "Create your first problem to get started."}
-            </p>
+      {/* Scope Tabs & Search */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 shrink-0">
+        {user?.role !== "ADMIN" ? (
+          <div className="flex gap-2 p-1.5 rounded-2xl w-fit border shrink-0 bg-[var(--bg-secondary)]" style={{ borderColor: "var(--border-primary)" }}>
             <button
-              onClick={() => router.push("/admin/problems/new")}
-              className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl border text-xs font-bold transition-all cursor-pointer hover:bg-slate-500/10"
-              style={{
-                borderColor: "var(--border-primary)",
-                color: "var(--text-accent)",
+              onClick={() => {
+                setActiveTab("institute");
+                setFilterDiff("all");
               }}
+              className={`px-4 py-2 rounded-xl text-xs font-semibold transition-colors cursor-pointer ${activeTab === "institute"
+                ? "bg-[var(--bg-primary)] text-[var(--text-primary)] shadow-sm border border-[var(--border-primary)]"
+                : "text-[var(--text-muted)] hover:text-[var(--text-secondary)] border border-transparent"
+                }`}
             >
-              <Plus size={12} />
-              <span>Create Problem</span>
+              Your Institute
+            </button>
+            <button
+              onClick={() => {
+                setActiveTab("global");
+                setFilterDiff("all");
+              }}
+              className={`px-4 py-2 rounded-xl text-xs font-semibold transition-colors cursor-pointer ${activeTab === "global"
+                ? "bg-[var(--bg-primary)] text-[var(--text-primary)] shadow-sm border border-[var(--border-primary)]"
+                : "text-[var(--text-muted)] hover:text-[var(--text-secondary)] border border-transparent"
+                }`}
+            >
+              Global Problems
             </button>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs border-collapse">
+          <div /> // Placeholder to keep search on the right
+        )}
+
+        <div className="relative w-full sm:w-64">
+          <input
+            type="text"
+            placeholder="Search problems..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full bg-[var(--bg-secondary)] border rounded-xl px-4 py-2 text-sm font-medium focus:outline-none focus:border-[var(--text-muted)] transition-colors placeholder:text-[var(--text-muted)]"
+            style={{ borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
+          />
+          {search && (
+            <button
+              onClick={() => setSearch("")}
+              className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-md hover:bg-[var(--bg-primary)] transition-colors"
+              style={{ color: "var(--text-muted)" }}
+            >
+              <X size={14} />
+            </button>
+          )}
+        </div>
+      </div>
+
+      <div className="flex-1 min-h-0 overflow-y-auto rounded-2xl border pb-12" style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}>
+        {loading ? (
+          <div className="flex items-center justify-center py-20 space-x-2">
+            <RefreshCw size={16} className="animate-spin text-violet-500" />
+            <span className="text-xs font-medium" style={{ color: "var(--text-muted)" }}>
+              Fetching problems...
+            </span>
+          </div>
+        ) : filteredProblems.length === 0 ? (
+          <div className="flex h-64 flex-col items-center justify-center space-y-4">
+            <div className="p-4 rounded-full bg-[var(--bg-secondary)]">
+              <Code size={24} className="text-violet-500" />
+            </div>
+            <div className="text-center space-y-1">
+              <h3 className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>
+                No problems found
+              </h3>
+              <p className="text-xs max-w-xs" style={{ color: "var(--text-muted)" }}>
+                {search ? "Try adjusting your search or filter." : "Create your first problem."}
+              </p>
+            </div>
+            {!search && (
+              <button
+                onClick={() => router.push("/admin/problems/new")}
+                className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-lg border text-xs font-semibold transition-colors cursor-pointer hover:bg-[var(--bg-secondary)] mt-2"
+                style={{ borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
+              >
+                <Plus size={14} />
+                <span>Create Problem</span>
+              </button>
+            )}
+          </div>
+        ) : (
+          <div className="w-full overflow-x-auto min-w-0">
+            <table className="w-full text-left text-sm border-collapse">
               <thead>
-                <tr
-                  className="font-bold uppercase tracking-wider border-b"
-                  style={{
-                    backgroundColor: "var(--bg-primary)",
-                    borderColor: "var(--border-primary)",
-                    color: "var(--text-muted)",
-                    fontSize: "10px",
-                  }}
-                >
-                  <th className="px-6 py-3">#</th>
-                  <th className="px-6 py-3">Problem</th>
-                  <th className="px-6 py-3">Slug</th>
-                  <th className="px-6 py-3">Difficulty</th>
-                  <th className="px-6 py-3">Category</th>
-                  <th className="px-6 py-3 text-center">Test Cases</th>
-                  <th className="px-6 py-3 text-right">Actions</th>
+                <tr className="border-b bg-[var(--bg-secondary)] text-xs font-semibold uppercase tracking-wider select-none" style={{ borderColor: "var(--border-primary)", color: "var(--text-muted)" }}>
+                  <th className="px-6 py-4">#</th>
+                  <th className="px-6 py-4">Problem</th>
+                  <th className="px-6 py-4">Slug</th>
+                  <th className="px-6 py-4">Difficulty</th>
+                  <th className="px-6 py-4">Category</th>
+                  <th className="px-6 py-4 text-center">Test Cases</th>
+                  <th className="px-6 py-4 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody
-                className="divide-y"
-                style={{ borderColor: "var(--border-primary)" }}
-              >
+              <tbody className="divide-y font-medium" style={{ divideColor: "var(--border-primary)" }}>
                 <AnimatePresence>
                   {filteredProblems.map((problem, idx) => {
                     const { cls, label } = getDifficultyStyle(problem.difficulty);
@@ -445,129 +353,66 @@ export default function AdminProblemsPage() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0 }}
                         transition={{ delay: idx * 0.02 }}
-                        className="hover:bg-slate-500/5 transition-colors"
+                        className="hover:bg-[var(--bg-secondary)] transition-colors group"
                       >
-                        {/* Index */}
-                        <td
-                          className="px-6 py-4 font-bold text-[11px]"
-                          style={{ color: "var(--text-muted)" }}
-                        >
+                        <td className="px-6 py-4 text-xs tabular-nums text-[var(--text-muted)]">
                           {idx + 1}
                         </td>
-
-                        {/* Title */}
                         <td className="px-6 py-4">
-                          <div className="space-y-0.5">
-                            <p
-                              className="font-bold max-w-[220px] truncate"
-                              style={{ color: "var(--text-primary)" }}
-                            >
+                          <div className="space-y-1">
+                            <p className="font-semibold text-[var(--text-primary)] max-w-[220px] truncate">
                               {problem.title}
                             </p>
                             {problem.isStatic && (
-                              <p
-                                className="text-[9px]"
-                                style={{ color: "var(--text-muted)" }}
-                              >
+                              <p className="text-[10px]" style={{ color: "var(--text-muted)" }}>
                                 Static — not in DB
                               </p>
                             )}
                           </div>
                         </td>
-
-                        {/* Slug */}
                         <td className="px-6 py-4">
-                          <span
-                            className="font-mono text-[10px] px-2 py-0.5 rounded-md bg-slate-500/5 border"
-                            style={{
-                              borderColor: "var(--border-primary)",
-                              color: "var(--text-secondary)",
-                            }}
-                          >
+                          <span className="font-mono text-xs px-2 py-1 rounded-md bg-[var(--bg-secondary)] border"
+                            style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}>
                             {problem.slug || problem.id || "—"}
                           </span>
                         </td>
-
-                        {/* Difficulty */}
                         <td className="px-6 py-4">
-                          <span
-                            className={`text-[9px] font-extrabold uppercase px-2 py-0.5 rounded-md border ${cls}`}
-                          >
+                          <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-md border ${cls}`}>
                             {label}
                           </span>
                         </td>
-
-                        {/* Category */}
-                        <td
-                          className="px-6 py-4"
-                          style={{ color: "var(--text-secondary)" }}
-                        >
-                          <span className="text-[10px] font-semibold">
-                            {problem.category || "Algorithms"}
-                          </span>
+                        <td className="px-6 py-4 text-xs" style={{ color: "var(--text-secondary)" }}>
+                          {problem.category || "Algorithms"}
                         </td>
-
-                        {/* Test Cases */}
                         <td className="px-6 py-4 text-center">
-                          <span
-                            className="font-extrabold"
-                            style={{ color: "var(--text-primary)" }}
-                          >
-                            {problem.testCasesCount ??
-                              problem.testCases?.length ??
-                              problem.tests?.length ??
-                              "—"}
+                          <span className="font-semibold text-[var(--text-primary)]">
+                            {problem.testCasesCount ?? problem.testCases?.length ?? problem.tests?.length ?? "—"}
                           </span>
                         </td>
-
-                        {/* Actions */}
                         <td className="px-6 py-4 text-right">
-                          <div className="flex items-center justify-end space-x-2">
+                          <div className="flex items-center justify-end space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
                             <button
-                              onClick={() =>
-                                router.push(
-                                  `/practice/${problem.slug || problem.id}`
-                                )
-                              }
-                              className="p-1.5 rounded-lg border transition-all cursor-pointer hover:bg-slate-500/10"
-                              style={{ borderColor: "var(--border-primary)" }}
+                              onClick={() => router.push(`/practice/${problem.slug || problem.id}`)}
+                              className="p-2 rounded-lg text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-primary)] transition-colors cursor-pointer"
                               title="View Problem"
                             >
-                              <Eye
-                                size={12}
-                                style={{ color: "var(--text-secondary)" }}
-                              />
+                              <Eye size={16} />
                             </button>
                             {canDeleteProblem(problem) && (
                               <>
                                 <button
-                                  onClick={() =>
-                                    router.push(
-                                      `/admin/problems/${problem.id}/edit`
-                                    )
-                                  }
-                                  className="p-1.5 rounded-lg border transition-all cursor-pointer hover:bg-slate-500/10"
-                                  style={{ borderColor: "var(--border-primary)" }}
+                                  onClick={() => router.push(`/admin/problems/${problem.id}/edit`)}
+                                  className="p-2 rounded-lg text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-950/50 transition-colors cursor-pointer"
                                   title="Edit Problem"
                                 >
-                                  <Edit3
-                                    size={12}
-                                    style={{ color: "var(--text-secondary)" }}
-                                  />
+                                  <Edit3 size={16} />
                                 </button>
                                 <button
-                                  onClick={() =>
-                                    setDeletingId({
-                                      id: problem.id,
-                                      slug: problem.slug,
-                                      isDb: true,
-                                    })
-                                  }
-                                  className="p-1.5 rounded-lg border transition-all cursor-pointer hover:bg-rose-500/10 hover:border-rose-500/20"
-                                  style={{ borderColor: "var(--border-primary)" }}
+                                  onClick={() => setDeletingId({ id: problem.id, slug: problem.slug, isDb: true })}
+                                  className="p-2 rounded-lg text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/50 transition-colors cursor-pointer"
                                   title="Delete Problem"
                                 >
-                                  <Trash2 size={12} className="text-rose-400" />
+                                  <Trash2 size={16} />
                                 </button>
                               </>
                             )}
@@ -583,66 +428,44 @@ export default function AdminProblemsPage() {
         )}
       </div>
 
-      {/* Delete Confirm Modal */}
       <AnimatePresence>
         {deletingId && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4"
-            style={{ backgroundColor: "rgba(0,0,0,0.6)" }}
-          >
+          <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-md p-4">
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
               className="p-8 rounded-3xl border shadow-2xl max-w-sm w-full space-y-6 text-center"
-              style={{
-                backgroundColor: "var(--bg-card)",
-                borderColor: "var(--border-primary)",
-              }}
+              style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}
             >
               <div className="space-y-2">
-                <div className="inline-flex p-3 rounded-2xl bg-rose-500/10 text-rose-400 mx-auto">
-                  <Trash2 size={22} />
+                <div className="inline-flex p-3 rounded-full bg-rose-500/10 text-rose-500 mx-auto mb-2">
+                  <Trash2 size={24} />
                 </div>
-                <h3
-                  className="text-base font-black"
-                  style={{ color: "var(--text-primary)" }}
-                >
+                <h3 className="text-xl font-serif" style={{ color: "var(--text-primary)" }}>
                   Delete Problem?
                 </h3>
-                <p
-                  className="text-xs"
-                  style={{ color: "var(--text-secondary)" }}
-                >
-                  This will permanently delete this problem and all associated
-                  test cases and submissions. This cannot be undone.
+                <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
+                  This will permanently delete this problem and all associated test cases and submissions. This cannot be undone.
                 </p>
               </div>
               <div className="flex justify-center gap-3">
                 <button
                   onClick={() => setDeletingId(null)}
-                  className="px-5 py-2.5 rounded-xl border text-xs font-bold transition-all cursor-pointer hover:bg-slate-500/10"
-                  style={{
-                    borderColor: "var(--border-primary)",
-                    color: "var(--text-secondary)",
-                  }}
+                  className="px-5 py-2.5 rounded-xl border text-sm font-semibold transition-colors cursor-pointer hover:bg-[var(--bg-secondary)]"
+                  style={{ borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
                 >
                   Cancel
                 </button>
                 <button
-                  onClick={() =>
-                    handleDelete(deletingId.id, deletingId.isDb, deletingId.slug)
-                  }
-                  className="px-5 py-2.5 rounded-xl font-bold text-xs text-white transition-all cursor-pointer hover:scale-102 bg-rose-500 hover:bg-rose-600"
+                  onClick={() => handleDelete(deletingId.id, deletingId.isDb, deletingId.slug)}
+                  className="px-5 py-2.5 rounded-xl font-semibold text-sm text-white transition-transform hover:-translate-y-0.5 cursor-pointer bg-rose-600 hover:bg-rose-700 shadow-md"
                 >
                   Yes, Delete
                 </button>
               </div>
             </motion.div>
-          </motion.div>
+          </div>
         )}
       </AnimatePresence>
     </div>

@@ -759,7 +759,7 @@ const exitToLobby = () => {
 if (loadingInitial) {
   return (
     <div className="flex items-center justify-center h-64">
-      <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+      <div className="w-8 h-8 border-4 border-zinc-500 border-t-transparent rounded-full animate-spin"></div>
     </div>
   );
 }
@@ -770,33 +770,25 @@ const formatTime = (seconds) => {
   return `${m}:${s < 10 ? '0' : ''}${s}`;
 };
 
-return (
-  <div className="space-y-8 animate-fade-in pb-12">
-
-    {/* ── LOBBY VIEW ── */}
-    {view === "lobby" && (
-      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
-        {/* Hero Card */}
-        <div className="relative p-8 rounded-3xl border overflow-hidden shadow-sm"
-          style={{ backgroundColor: "var(--glass-bg)", borderColor: "var(--border-primary)" }}>
-          <div className="absolute top-0 right-0 p-12 opacity-5 pointer-events-none">
-            <Brain size={200} />
-          </div>
-          <div className="relative z-10 max-w-2xl space-y-4">
-            <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full text-xs font-bold border"
-              style={{ backgroundColor: "var(--bg-badge)", borderColor: "var(--border-accent)", color: "var(--text-accent)" }}>
-              <Sparkles size={14} className="animate-pulse" />
-              <span>Next-Gen Assessment Engine</span>
+  return (
+    <div className="space-y-8 animate-fade-in pb-12 px-0 sm:px-6">
+      {/* ── LOBBY VIEW ── */}
+      {view === "lobby" && (
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
+          {/* Hero Card */}
+          <section className="flex flex-col gap-2 border-b pb-6 shrink-0 relative" style={{ borderColor: "var(--border-primary)" }}>
+            <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border mb-3 w-fit"
+              style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)", backgroundColor: "var(--bg-secondary)" }}>
+              <Sparkles size={12} className="text-violet-500 animate-pulse" />
+              Next-Gen Assessment Engine
             </div>
-            <h1 className="text-3xl sm:text-4xl font-black font-display tracking-tight" style={{ color: "var(--text-primary)" }}>
-              AI Viva System
-            </h1>
-            <p className="text-sm leading-relaxed" style={{ color: "var(--text-secondary)" }}>
+            <h1 className="text-4xl font-serif tracking-tight" style={{ color: "var(--text-primary)" }}>AI Viva System</h1>
+            <p className="text-sm max-w-xl" style={{ color: "var(--text-secondary)" }}>
               Test your theoretical knowledge in a spoken viva session. Read each question, then answer verbally — your speech is transcribed live, AI-corrected for technical accuracy, and evaluated intelligently.
             </p>
 
             {lobbyError && (
-              <div className="bg-rose-500/10 border border-rose-500/20 text-rose-500 p-3 rounded-xl text-sm font-semibold flex items-center space-x-2">
+              <div className="bg-rose-500/10 border border-rose-500/20 text-rose-500 p-3 rounded-xl text-sm font-semibold flex items-center space-x-2 w-fit mt-2">
                 <AlertCircle size={16} />
                 <span>{lobbyError}</span>
               </div>
@@ -808,22 +800,19 @@ return (
                 role="switch"
                 aria-checked={showFeedbackAfterEach}
                 onClick={() => setShowFeedbackAfterEach(value => !value)}
-                className="group w-full sm:w-auto min-h-[54px] px-4 py-2.5 rounded-2xl border font-bold text-sm transition-all duration-300 cursor-pointer flex items-center justify-between gap-4 hover:-translate-y-0.5 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400/70"
+                className="group w-full sm:w-auto min-h-[54px] px-4 py-2.5 rounded-xl border font-semibold text-sm transition-all duration-300 cursor-pointer flex items-center justify-between gap-4 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400/70"
                 style={{
-                  background: showFeedbackAfterEach
-                    ? "linear-gradient(135deg, rgba(99, 102, 241, 0.18), rgba(139, 92, 246, 0.12))"
-                    : "var(--bg-input)",
-                  borderColor: showFeedbackAfterEach ? "var(--border-accent)" : "var(--border-primary)",
-                  color: "var(--text-primary)",
-                  boxShadow: showFeedbackAfterEach ? "0 14px 30px -20px var(--accent-primary)" : "none",
+                  backgroundColor: showFeedbackAfterEach ? "var(--bg-secondary)" : "var(--bg-primary)",
+                  borderColor: showFeedbackAfterEach ? "var(--text-primary)" : "var(--border-primary)",
+                  color: "var(--text-primary)"
                 }}
               >
                 <span className="flex min-w-0 items-center gap-2.5">
                   <span
-                    className="grid h-8 w-8 shrink-0 place-items-center rounded-xl transition-colors"
+                    className="grid h-8 w-8 shrink-0 place-items-center rounded-lg transition-colors"
                     style={{
-                      backgroundColor: showFeedbackAfterEach ? "var(--accent-glow)" : "rgba(148, 163, 184, 0.12)",
-                      color: showFeedbackAfterEach ? "var(--text-accent)" : "var(--text-secondary)",
+                      backgroundColor: showFeedbackAfterEach ? "var(--text-primary)" : "var(--bg-secondary)",
+                      color: showFeedbackAfterEach ? "var(--bg-primary)" : "var(--text-secondary)",
                     }}
                   >
                     <Flag size={16} />
@@ -831,11 +820,11 @@ return (
                   <span className="truncate">{showFeedbackAfterEach ? "Feedback Each Question" : "Feedback At End"}</span>
                 </span>
                 <span
-                  className={`relative grid h-8 w-[74px] shrink-0 grid-cols-2 items-center rounded-full p-1 text-[10px] font-black uppercase tracking-wide transition-all duration-300 ${showFeedbackAfterEach ? "bg-indigo-500/95 text-white shadow-inner" : "bg-slate-500/20 text-slate-400"
+                  className={`relative grid h-8 w-[74px] shrink-0 grid-cols-2 items-center rounded-full p-1 text-[10px] font-bold uppercase tracking-wide transition-all duration-300 ${showFeedbackAfterEach ? "bg-[var(--text-primary)] text-[var(--bg-primary)] shadow-inner" : "bg-[var(--bg-secondary)] text-[var(--text-muted)]"
                     }`}
                 >
-                  <span className={`relative z-10 text-center transition-colors duration-300 ${!showFeedbackAfterEach ? "text-slate-800" : ""}`}>End</span>
-                  <span className={`relative z-10 text-center transition-colors duration-300 ${showFeedbackAfterEach ? "text-indigo-600" : ""}`}>Each</span>
+                  <span className={`relative z-10 text-center transition-colors duration-300 ${!showFeedbackAfterEach ? "text-[var(--text-primary)]" : ""}`}>End</span>
+                  <span className={`relative z-10 text-center transition-colors duration-300 ${showFeedbackAfterEach ? "text-[var(--bg-primary)]" : ""}`}>Each</span>
                   <span
                     className={`absolute left-1 top-1 h-6 w-[33px] rounded-full bg-white shadow-lg ring-1 ring-black/5 transition-transform duration-300 ease-out ${showFeedbackAfterEach ? "translate-x-[33px]" : "translate-x-0"
                       }`}
@@ -843,19 +832,18 @@ return (
                 </span>
               </button>
             </div>
-          </div>
-        </div>
+          </section>
 
         {/* Scheduled Vivas List */}
         <div className="space-y-6">
-          <h2 className="text-xl font-bold font-display flex items-center gap-2" style={{ color: "var(--text-primary)" }}>
-            <Calendar className="w-5 h-5 text-indigo-400" />
+          <h2 className="text-2xl font-serif tracking-tight flex items-center gap-2" style={{ color: "var(--text-primary)" }}>
+            <Calendar size={20} className="text-violet-500" />
             Active & Upcoming Vivas
           </h2>
           
           {scheduledVivas.length === 0 ? (
-            <div className="p-8 rounded-3xl border border-dashed text-center" style={{ borderColor: "var(--border-primary)" }}>
-              <p className="text-sm" style={{ color: "var(--text-secondary)" }}>No Vivas currently scheduled for your institute.</p>
+            <div className="p-8 rounded-2xl border border-dashed text-center" style={{ borderColor: "var(--border-primary)" }}>
+              <p className="text-sm font-medium" style={{ color: "var(--text-secondary)" }}>No Vivas currently scheduled for your institute.</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -872,20 +860,20 @@ return (
                 return (
                   <div
                     key={viva.id}
-                    className="p-6 rounded-3xl border shadow-md flex flex-col justify-between space-y-4 transition-all hover:scale-[1.01]"
-                    style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-card)" }}
+                    className="p-6 rounded-2xl border shadow-sm flex flex-col justify-between space-y-4 transition-colors hover:bg-[var(--bg-secondary)]"
+                    style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}
                   >
                     <div className="space-y-3">
                       <div className="flex justify-between items-center">
-                        <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-indigo-500/10 text-indigo-400">
+                        <span className="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-violet-500/10 text-violet-500">
                           {viva.subject}
                         </span>
                         <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border ${
                           hasAttempted
-                            ? "bg-indigo-500/10 text-indigo-400 border-indigo-500/20"
+                            ? "bg-violet-500/10 text-violet-500 border-violet-500/20"
                             : isActive
-                            ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20 animate-pulse"
-                            : "bg-blue-500/10 text-blue-400 border-blue-500/20"
+                            ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/20 animate-pulse"
+                            : "bg-neutral-500/10 text-neutral-500 border-neutral-500/20"
                         }`}>
                           {hasAttempted ? "Attempted" : isActive ? "Active" : "Upcoming"}
                         </span>
@@ -896,25 +884,25 @@ return (
                           {viva.title}
                         </h3>
                         {viva.description && (
-                          <p className="text-xs text-slate-400 mt-1 line-clamp-2">
+                          <p className="text-xs mt-1 line-clamp-2" style={{ color: "var(--text-secondary)" }}>
                             {viva.description}
                           </p>
                         )}
                       </div>
 
-                      <div className="space-y-1.5 pt-2 border-t border-slate-800 text-xs text-slate-400">
+                      <div className="space-y-1.5 pt-2 border-t text-xs" style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}>
                         <div className="flex items-center gap-2">
-                          <Clock className="w-3.5 h-3.5 text-indigo-400" />
+                          <Clock size={14} className="text-violet-500" />
                           <span>Start: {start.toLocaleString()}</span>
                         </div>
                         {end && (
                           <div className="flex items-center gap-2">
-                            <Clock className="w-3.5 h-3.5 text-rose-400" />
+                            <Clock size={14} className="text-rose-500" />
                             <span>End: {end.toLocaleString()}</span>
                           </div>
                         )}
                         <div className="flex items-center gap-2">
-                          <BookOpen className="w-3.5 h-3.5 text-purple-400" />
+                          <BookOpen size={14} className="text-violet-500" />
                           <span>Questions: {viva.questions?.length || 0}</span>
                         </div>
                       </div>
@@ -924,23 +912,25 @@ return (
                       {hasAttempted ? (
                         <button
                           disabled
-                          className="w-full py-2.5 rounded-xl font-bold text-xs bg-slate-800 text-slate-500 border border-slate-700/50 cursor-not-allowed text-center"
+                          className="w-full py-2.5 rounded-xl font-semibold text-xs border cursor-not-allowed text-center"
+                          style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)", color: "var(--text-muted)" }}
                         >
                           Already Attempted
                         </button>
                       ) : isActive ? (
                         <button
                           onClick={() => startSession(viva.id)}
-                          className="w-full py-2.5 rounded-xl font-bold text-xs text-white shadow-md transition-all flex items-center justify-center gap-2 hover:scale-[1.02]"
-                          style={{ background: "var(--accent-gradient)" }}
+                          className="w-full py-2.5 rounded-xl font-semibold text-xs text-white shadow-md transition-transform flex items-center justify-center gap-2 hover:-translate-y-0.5 cursor-pointer"
+                          style={{ background: "var(--accent-primary)" }}
                         >
-                          <Play className="w-3.5 h-3.5" fill="currentColor" />
+                          <Play size={14} fill="currentColor" />
                           Start Viva Attempt
                         </button>
                       ) : (
                         <button
                           disabled
-                          className="w-full py-2.5 rounded-xl font-bold text-xs bg-slate-800 text-slate-500 border border-slate-700/50 cursor-not-allowed text-center"
+                          className="w-full py-2.5 rounded-xl font-semibold text-xs border cursor-not-allowed text-center"
+                          style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)", color: "var(--text-muted)" }}
                         >
                           Upcoming (Locked)
                         </button>
@@ -955,34 +945,34 @@ return (
 
         {/* History */}
         <div className="space-y-4">
-          <h2 className="text-lg font-bold font-display" style={{ color: "var(--text-primary)" }}>Past Viva Sessions</h2>
+          <h2 className="text-xl font-serif tracking-tight" style={{ color: "var(--text-primary)" }}>Past Viva Sessions</h2>
           {history.length === 0 ? (
-            <div className="p-8 rounded-3xl border border-dashed text-center" style={{ borderColor: "var(--border-primary)" }}>
-              <p className="text-sm" style={{ color: "var(--text-secondary)" }}>You haven't attempted any viva sessions yet.</p>
+            <div className="p-8 rounded-2xl border border-dashed text-center" style={{ borderColor: "var(--border-primary)" }}>
+              <p className="text-sm font-medium" style={{ color: "var(--text-secondary)" }}>You haven't attempted any viva sessions yet.</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {history.map(session => (
                 <Link key={session.id} href={`/student/viva/result/${session.id}`}
-                  className="p-5 rounded-3xl border shadow-sm space-y-3 block transition-all hover:shadow-md hover:scale-[1.01]"
-                  style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-card)" }}>
+                  className="p-5 rounded-2xl border shadow-sm space-y-3 block transition-colors hover:bg-[var(--bg-secondary)]"
+                  style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}>
                   <div className="flex justify-between items-start">
-                    <span className="text-xs font-bold px-2 py-1 rounded-md bg-indigo-500/10 text-indigo-500">
+                    <span className="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-violet-500/10 text-violet-500">
                       {session.subject}
                     </span>
                     <span className="text-[10px] uppercase font-extrabold tracking-wider"
-                      style={{ color: session.status === "COMPLETED" ? "var(--text-accent)" : "var(--text-secondary)" }}>
+                      style={{ color: session.status === "COMPLETED" ? "var(--text-primary)" : "var(--text-muted)" }}>
                       {session.status?.replace("_", " ")}
                     </span>
                   </div>
                   <div className="flex items-end justify-between">
                     <div className="space-y-1">
-                      <p className="text-[10px]" style={{ color: "var(--text-muted)" }}>Final Score</p>
-                      <p className="text-xl font-black" style={{ color: "var(--text-primary)" }}>
+                      <p className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Final Score</p>
+                      <p className="text-xl font-bold" style={{ color: "var(--text-primary)" }}>
                         {session.status === "COMPLETED" ? `${session.totalScore ?? 0}%` : "--"}
                       </p>
                     </div>
-                    <p className="text-[10px]" style={{ color: "var(--text-muted)" }}>
+                    <p className="text-[10px] font-medium" style={{ color: "var(--text-secondary)" }}>
                       {new Date(session.startedAt || session.createdAt).toLocaleDateString()}
                     </p>
                   </div>
@@ -1009,7 +999,7 @@ return (
         {/* Header & Progress */}
         <div className="flex justify-between items-end">
           <div className="space-y-1">
-            <span className="text-xs font-bold text-indigo-500 tracking-wider uppercase">
+            <span className="text-xs font-bold text-zinc-500 tracking-wider uppercase">
               {activeSession.subject} Viva
             </span>
             <h2 className="text-xl font-bold font-display" style={{ color: "var(--text-primary)" }}>
@@ -1027,9 +1017,9 @@ return (
         </div>
 
         {/* Phase indicator & Timer */}
-        <div className="flex items-center justify-between p-4 rounded-2xl border bg-indigo-500/5 border-indigo-500/20">
+        <div className="flex items-center justify-between p-4 rounded-2xl border bg-zinc-500/5 border-zinc-500/20">
           <div className="flex items-center space-x-3">
-            {phase === "reading" ? <BookOpen size={20} className="text-indigo-500 animate-pulse" /> :
+            {phase === "reading" ? <BookOpen size={20} className="text-zinc-500 animate-pulse" /> :
               phase === "answering" ? <Mic size={20} className="text-rose-500 animate-pulse" /> :
                 phase === "reviewing" ? <Edit2 size={20} className="text-amber-500" /> :
                   <Activity size={20} className="text-emerald-500" />}
@@ -1053,7 +1043,7 @@ return (
         <div className="p-6 md:p-8 rounded-3xl shadow-lg border"
           style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
           <div className="flex space-x-4">
-            <div className="shrink-0 pt-1 text-indigo-500"><MessageSquare size={24} /></div>
+            <div className="shrink-0 pt-1 text-zinc-500"><MessageSquare size={24} /></div>
             <p className="text-lg md:text-xl font-medium leading-relaxed" style={{ color: "var(--text-primary)" }}>
               {currentQuestion.questionText}
             </p>
@@ -1114,7 +1104,7 @@ return (
                   disabled={evaluating}
                   className={`shrink-0 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${micEnabled
                     ? "bg-rose-500 text-white hover:bg-rose-600"
-                    : "bg-indigo-500 text-white hover:bg-indigo-600"
+                    : "bg-zinc-500 text-white hover:bg-zinc-600"
                     }`}
                 >
                   {micEnabled ? "Turn Off Mic" : "Turn On Mic"}
@@ -1169,7 +1159,7 @@ return (
                     <p className="text-sm md:text-base leading-relaxed" style={{ color: "var(--text-primary)" }}>
                       {answerText}
                       {interimText && (
-                        <span className="text-indigo-400/80 italic">{interimText}</span>
+                        <span className="text-zinc-400/80 italic">{interimText}</span>
                       )}
                     </p>
                   ) : (
@@ -1247,7 +1237,7 @@ return (
                   </div>
                 </div>
                 {correctionLoading && (
-                  <div className="flex items-center space-x-2 text-indigo-500 text-xs font-bold">
+                  <div className="flex items-center space-x-2 text-zinc-500 text-xs font-bold">
                     <RefreshCw size={14} className="animate-spin" />
                     <span>Correcting…</span>
                   </div>
@@ -1364,7 +1354,7 @@ return (
                     Score: {lastEvaluation.score} / 10
                   </span>
                   {lastEvaluation.usedAI && (
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-500 flex items-center space-x-1">
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-zinc-500/10 text-zinc-500 flex items-center space-x-1">
                       <Sparkles size={9} />
                       <span>AI</span>
                     </span>
@@ -1373,7 +1363,7 @@ return (
                 {summaryData ? (
                   <span className="text-xs font-bold px-3 py-1 rounded-full bg-slate-800 text-white animate-pulse">Session Complete</span>
                 ) : (
-                  <button onClick={nextQuestion} className="flex items-center space-x-1 text-sm font-bold text-indigo-500 hover:underline">
+                  <button onClick={nextQuestion} className="flex items-center space-x-1 text-sm font-bold text-zinc-500 hover:underline">
                     <span>Next Question</span>
                     <ChevronRight size={16} />
                   </button>
@@ -1439,11 +1429,11 @@ return (
                     </div>
                   )}
                   {lastEvaluation.suggestedRevision?.length > 0 && (
-                    <div className="p-3 rounded-2xl bg-indigo-500/5 border border-indigo-500/15 space-y-1">
-                      <p className="text-[10px] font-black uppercase tracking-wider text-indigo-500">Revise</p>
+                    <div className="p-3 rounded-2xl bg-zinc-500/5 border border-zinc-500/15 space-y-1">
+                      <p className="text-[10px] font-black uppercase tracking-wider text-zinc-500">Revise</p>
                       {lastEvaluation.suggestedRevision.map((r, i) => (
                         <p key={i} className="text-[11px] flex items-start space-x-1.5" style={{ color: "var(--text-secondary)" }}>
-                          <Lightbulb size={10} className="text-indigo-500 shrink-0 mt-0.5" />
+                          <Lightbulb size={10} className="text-zinc-500 shrink-0 mt-0.5" />
                           <span>{r}</span>
                         </p>
                       ))}
@@ -1469,7 +1459,7 @@ return (
       <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="max-w-2xl mx-auto text-center space-y-8">
         <div className="p-10 rounded-[2.5rem] border shadow-xl relative overflow-hidden"
           style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
-          <div className="absolute inset-0 bg-gradient-to-tr from-indigo-500/10 to-purple-500/5 pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-tr from-zinc-500/10 to-slate-500/5 pointer-events-none" />
 
           <div className="relative z-10 flex flex-col items-center space-y-4">
             <div className="w-20 h-20 rounded-full flex items-center justify-center text-white shadow-lg mb-2"
@@ -1479,7 +1469,7 @@ return (
             <h2 className="text-3xl font-black font-display" style={{ color: "var(--text-primary)" }}>
               Viva Completed
             </h2>
-            <div className="text-sm font-bold uppercase tracking-widest text-indigo-500">
+            <div className="text-sm font-bold uppercase tracking-widest text-zinc-500">
               Final Score: {summaryData.totalScore ?? summaryData.score ?? 0}%
             </div>
             <p className="text-sm max-w-md" style={{ color: "var(--text-secondary)" }}>

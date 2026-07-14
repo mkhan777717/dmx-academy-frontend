@@ -5,7 +5,7 @@ import { useAuth } from '@/context/AuthContext';
 import { getApiBase, buildAuthHeaders } from '@/utils/api';
 import ResumeForm from '@/components/ResumeBuilder/ResumeForm';
 import ResumePreview from '@/components/ResumeBuilder/ResumePreview';
-import { Download, Save, Loader2, CheckCircle2 } from 'lucide-react';
+import { Download, Save, Loader2, CheckCircle2, FileText } from 'lucide-react';
 
 const defaultResume = {
   personalInfo: { firstName: '', lastName: '', email: '', phone: '', location: '', linkedin: '', github: '', portfolio: '' },
@@ -98,51 +98,58 @@ export default function ResumeBuilderPage() {
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />
+        <Loader2 className="w-8 h-8 text-neutral-600 animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] relative">
+    <div className="min-h-[calc(100vh-4rem)] relative animate-fade-in px-0 sm:px-6 pb-12">
       {/* Header - Hidden when printing */}
-      <div className="sticky top-0 z-40 -mt-6 md:-mt-8 px-6 py-2.5 mb-6 border border-[var(--glass-border)] rounded-2xl bg-[var(--glass-bg)] backdrop-blur-xl shadow-md print:hidden flex flex-col sm:flex-row items-center justify-between gap-4 transition-all">
-        <div className="flex flex-col justify-center">
-          <h1 className="text-xl font-bold text-[var(--text-primary)]">Resume Builder</h1>
-          <p className="text-sm text-[var(--text-secondary)]">Create an ATS-friendly resume</p>
+      <section className="flex flex-col gap-2 border-b pb-6 shrink-0 print:hidden mb-6" style={{ borderColor: "var(--border-primary)" }}>
+        <div className="flex items-center justify-between">
+          <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border mb-3 w-fit"
+            style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)", backgroundColor: "var(--bg-secondary)" }}>
+            <FileText size={12} className="text-violet-500" />
+            Resume Builder
+          </div>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={handleSave}
+              disabled={isSaving}
+              className="flex items-center px-4 py-2 border rounded-xl font-semibold text-sm transition-colors shadow-sm cursor-pointer hover:bg-[var(--bg-secondary)]"
+              style={{ 
+                backgroundColor: "var(--bg-primary)", 
+                borderColor: "var(--border-primary)",
+                color: "var(--text-primary)"
+              }}
+            >
+              {isSaving ? (
+                <Loader2 className="w-4 h-4 mr-2 animate-spin text-[var(--text-muted)]" />
+              ) : saveSuccess ? (
+                <CheckCircle2 className="w-4 h-4 mr-2 text-emerald-500" />
+              ) : (
+                <Save className="w-4 h-4 mr-2 text-violet-500" />
+              )}
+              {saveSuccess ? 'Saved!' : 'Save Progress'}
+            </button>
+            <button
+              onClick={handlePrint}
+              className="flex items-center px-4 py-2.5 rounded-xl font-semibold text-white text-sm transition-transform hover:-translate-y-0.5 shadow-md cursor-pointer"
+              style={{ 
+                background: "var(--accent-primary)"
+              }}
+            >
+              <Download className="w-4 h-4 mr-2" />
+              Export PDF
+            </button>
+          </div>
         </div>
-        <div className="flex items-center gap-3">
-          <button
-            onClick={handleSave}
-            disabled={isSaving}
-            className="flex items-center px-4 py-2 border rounded-lg font-medium text-sm transition-colors shadow-sm"
-            style={{ 
-              backgroundColor: "var(--bg-card)", 
-              borderColor: "var(--border-primary)",
-              color: "var(--text-primary)"
-            }}
-          >
-            {isSaving ? (
-              <Loader2 className="w-4 h-4 mr-2 animate-spin text-[var(--text-muted)]" />
-            ) : saveSuccess ? (
-              <CheckCircle2 className="w-4 h-4 mr-2 text-green-500" />
-            ) : (
-              <Save className="w-4 h-4 mr-2 text-[var(--text-accent)]" />
-            )}
-            {saveSuccess ? 'Saved!' : 'Save Progress'}
-          </button>
-          <button
-            onClick={handlePrint}
-            className="flex items-center px-4 py-2 rounded-lg font-bold text-white text-sm transition-all hover:scale-105 shadow-lg"
-            style={{ 
-              background: "var(--accent-gradient)"
-            }}
-          >
-            <Download className="w-4 h-4 mr-2" />
-            Export PDF
-          </button>
-        </div>
-      </div>
+        <h1 className="text-4xl font-serif tracking-tight" style={{ color: "var(--text-primary)" }}>Resume Builder</h1>
+        <p className="text-sm max-w-xl" style={{ color: "var(--text-secondary)" }}>
+          Create an ATS-friendly resume to showcase your skills and experience.
+        </p>
+      </section>
 
       {/* Main Content Area */}
       <div className="max-w-[1600px] mx-auto">

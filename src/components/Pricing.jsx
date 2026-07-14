@@ -1,286 +1,344 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
-import { Check, Sparkles } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const plans = [
   {
+    id: "explorer",
     name: "Explorer",
-    desc: "Test the waters and explore the basics of code-driven motion design.",
+    tagline: "Test the waters",
+    desc: "Get started with core modules and basic AI suggestions.",
     priceMonthly: 0,
     priceAnnually: 0,
-    popular: false,
-    ctaText: "Start Explorer Track",
+    ctaText: "Start for Free",
+    ctaHref: "/login?redirect=/student",
+    featured: false,
     features: [
-      { text: "Access to initial course modules", included: true },
-      { text: "1 Sandbox compiler checkpoint", included: true },
-      { text: "Basic AI code suggestions", included: true },
-      { text: "Interactive community chat", included: true },
-      { text: "Advanced WebGL projects", included: false },
-      { text: "Cryptographic credentials", included: false },
-      { text: "1-on-1 cohort code review", included: false },
+      "Access to initial course modules",
+      "1 Sandbox compiler checkpoint",
+      "Basic AI code suggestions",
+      "Community chat access",
+    ],
+    missing: [
+      "Advanced WebGL projects",
+      "On-chain certificates",
+      "1-on-1 cohort reviews",
     ],
   },
   {
+    id: "pro",
     name: "Pro Pass",
-    desc: "Unlock the complete curriculum, premium sandboxes, and AI mentors.",
+    tagline: "The full experience",
+    desc: "Unlock the complete curriculum, unlimited sandboxes, and AI mentors.",
     priceMonthly: 29,
     priceAnnually: 19,
-    popular: true,
-    ctaText: "Enroll in Pro Access",
+    ctaText: "Enroll in Pro",
+    ctaHref: "/login?redirect=/student",
+    featured: true,
     features: [
-      { text: "Full access to all course tracks", included: true },
-      { text: "Unlimited browser sandbox renders", included: true },
-      { text: "24/7 AI mentor code audits", included: true },
-      { text: "On-chain cryptographically signed credentials", included: true },
-      { text: "Premium shader & Three.js projects", included: true },
-      { text: "Weekly live cohort review workshops", included: true },
-      { text: "Priority industry recruiter matching", included: false },
+      "Full access to all course tracks",
+      "Unlimited browser sandbox renders",
+      "24/7 AI mentor code audits",
+      "On-chain cryptographic credentials",
+      "Premium shader & Three.js projects",
+      "Weekly live cohort workshops",
     ],
+    missing: ["Priority recruiter matching"],
   },
   {
+    id: "enterprise",
     name: "Enterprise",
-    desc: "Custom training platforms and scale indicators for agencies & teams.",
+    tagline: "Scale with your team",
+    desc: "Custom training platforms for agencies and teams.",
     priceMonthly: 99,
     priceAnnually: 79,
-    popular: false,
     ctaText: "Contact Sales",
+    ctaHref: "mailto:hello@dmxacademy.com",
+    featured: false,
     features: [
-      { text: "Everything in Pro Pass included", included: true },
-      { text: "Dedicated company cohort reviews", included: true },
-      { text: "Custom internal training roadmaps", included: true },
-      { text: "Enterprise API key access", included: true },
-      { text: "Dedicated student success manager", included: true },
-      { text: "Recruiter hiring channel alignment", included: true },
-      { text: "Custom SLA agreement support", included: true },
+      "Everything in Pro Pass",
+      "Dedicated company cohort",
+      "Custom training roadmaps",
+      "Enterprise API key access",
+      "Dedicated success manager",
+      "Recruiter hiring channel",
+      "Custom SLA support",
     ],
+    missing: [],
   },
 ];
 
+/* ─── Price Display ───────────────────────── */
+function Price({ monthly, annually, isAnnual }) {
+  const price = isAnnual ? annually : monthly;
+  return (
+    <div className="flex items-baseline gap-1">
+      <span className="text-[11px] font-medium" style={{ color: "var(--text-muted)", alignSelf: "flex-start", paddingTop: "8px" }}>
+        {price === 0 ? "" : "$"}
+      </span>
+      <AnimatePresence mode="wait">
+        <motion.span
+          key={price}
+          initial={{ opacity: 0, y: -8 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 8 }}
+          transition={{ duration: 0.2 }}
+          className="text-5xl font-black tracking-[-0.03em]"
+          style={{ color: "var(--text-primary)" }}
+        >
+          {price === 0 ? "Free" : price}
+        </motion.span>
+      </AnimatePresence>
+      {price > 0 && (
+        <span className="text-xs" style={{ color: "var(--text-muted)", marginLeft: "2px" }}>
+          / mo
+        </span>
+      )}
+    </div>
+  );
+}
+
+/* ─── Plan Card ──────────────────────────── */
+function PlanCard({ plan, isAnnual, index }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ duration: 0.7, delay: index * 0.12, ease: [0.25, 0.46, 0.45, 0.94] }}
+      className={`relative flex flex-col rounded-2xl p-8 ${plan.featured ? "mt-0 lg:-mt-6" : "mt-0 lg:mt-6"}`}
+      style={{
+        backgroundColor: plan.featured ? "var(--accent-primary)" : "var(--bg-card)",
+        border: plan.featured ? "none" : "1px solid var(--border-card)",
+        color: plan.featured ? "#ffffff" : "var(--text-primary)",
+      }}
+    >
+      {/* Featured accent stripe */}
+      {plan.featured && (
+        <div
+          className="absolute top-0 left-0 right-0 h-0.5 rounded-t-2xl"
+          style={{ background: "linear-gradient(to right, #818cf8, #a78bfa)" }}
+        />
+      )}
+
+      {/* Plan header */}
+      <div className="space-y-1 mb-8">
+        <div className="flex items-center justify-between">
+          <span
+            className="text-[10px] font-bold uppercase tracking-[0.2em]"
+            style={{ color: plan.featured ? "rgba(255,255,255,0.7)" : "var(--text-muted)" }}
+          >
+            {plan.tagline}
+          </span>
+          {plan.featured && (
+            <span className="text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full bg-white/15">
+              Most Popular
+            </span>
+          )}
+        </div>
+        <h3
+          className="text-2xl font-black tracking-[-0.02em]"
+          style={{ color: plan.featured ? "#ffffff" : "var(--text-primary)" }}
+        >
+          {plan.name}
+        </h3>
+        <p
+          className="text-sm"
+          style={{ color: plan.featured ? "rgba(255,255,255,0.6)" : "var(--text-muted)" }}
+        >
+          {plan.desc}
+        </p>
+      </div>
+
+      {/* Price */}
+      <div className="mb-8">
+        <Price monthly={plan.priceMonthly} annually={plan.priceAnnually} isAnnual={isAnnual} />
+        {isAnnual && plan.priceMonthly > 0 && (
+          <div
+            className="text-[11px] mt-1"
+            style={{ color: plan.featured ? "rgba(255,255,255,0.5)" : "var(--text-muted)" }}
+          >
+            billed annually · saves ${(plan.priceMonthly - plan.priceAnnually) * 12}/yr
+          </div>
+        )}
+      </div>
+
+      {/* CTA */}
+      <a
+        href={plan.ctaHref}
+        className="block w-full rounded-xl py-3.5 text-sm font-bold text-center mb-8 transition-all duration-200"
+        style={plan.featured
+          ? { backgroundColor: "rgba(255,255,255,0.18)", color: "#ffffff", backdropFilter: "blur(8px)" }
+          : { backgroundColor: "var(--accent-primary)", color: "#ffffff" }
+        }
+        onMouseEnter={e => {
+          if (plan.featured) e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.25)";
+          else e.currentTarget.style.opacity = "0.9";
+        }}
+        onMouseLeave={e => {
+          if (plan.featured) e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.18)";
+          else e.currentTarget.style.opacity = "1";
+        }}
+      >
+        {plan.ctaText}
+      </a>
+
+      {/* Divider */}
+      <div
+        className="h-px mb-6"
+        style={{ background: plan.featured ? "rgba(255,255,255,0.15)" : "var(--border-primary)" }}
+      />
+
+      {/* Features */}
+      <div className="space-y-3 flex-1">
+        {plan.features.map((f, i) => (
+          <div key={i} className="flex items-start gap-3 text-sm">
+            <svg
+              className="flex-shrink-0 mt-0.5"
+              width="14" height="14" viewBox="0 0 24 24" fill="none"
+              stroke={plan.featured ? "rgba(255,255,255,0.8)" : "var(--accent-primary)"}
+              strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+            >
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            <span style={{ color: plan.featured ? "rgba(255,255,255,0.85)" : "var(--text-secondary)" }}>
+              {f}
+            </span>
+          </div>
+        ))}
+        {plan.missing.map((f, i) => (
+          <div key={i} className="flex items-start gap-3 text-sm opacity-40">
+            <svg
+              className="flex-shrink-0 mt-0.5"
+              width="14" height="14" viewBox="0 0 24 24" fill="none"
+              stroke={plan.featured ? "rgba(255,255,255,0.5)" : "var(--text-muted)"}
+              strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+            >
+              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+            <span style={{ color: plan.featured ? "rgba(255,255,255,0.5)" : "var(--text-muted)", textDecoration: "line-through" }}>
+              {f}
+            </span>
+          </div>
+        ))}
+      </div>
+    </motion.div>
+  );
+}
+
+/* ─── Pricing Section ───────────────────── */
 export default function Pricing() {
   const [isAnnual, setIsAnnual] = useState(false);
 
   return (
-    <section
-      id="pricing"
-      className="relative py-24 overflow-hidden"
-      style={{ backgroundColor: "var(--bg-primary)" }}
-    >
-      {/* Ambient Glow */}
-      <div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[600px] w-[600px] rounded-full blur-[150px] pointer-events-none"
-        style={{ backgroundColor: "var(--accent-glow)" }}
-      />
+    <section id="pricing" className="relative py-28 overflow-hidden" style={{ backgroundColor: "var(--bg-secondary)" }}>
+      <div className="editorial-line" />
 
-      <div className="relative z-10 mx-auto max-w-7xl px-4 md:px-8">
-
-        {/* Section Header */}
-        <motion.div 
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.7 }}
-          className="text-center max-w-3xl mx-auto space-y-4 mb-16"
-        >
-          <span
-            className="text-xs font-bold font-display uppercase tracking-widest"
-            style={{ color: "var(--text-accent)" }}
-          >
-            Transparent Subscriptions
-          </span>
-          <h2
-            className="text-3xl sm:text-4xl font-extrabold font-display tracking-tight"
-            style={{ color: "var(--text-primary)" }}
-          >
-            Simple Billing. Unlimited Access.
-          </h2>
-          <p className="text-sm sm:text-base" style={{ color: "var(--text-secondary)" }}>
-            Choose a plan that fits your speed of study. Swap plans or pause your subscription at any time without fees.
-          </p>
-
-          {/* Monthly / Annual Toggle */}
-          <div className="flex items-center justify-center pt-8">
-            <div
-              className="relative flex items-center p-1 rounded-full"
-              style={{
-                backgroundColor: "var(--bg-hover)",
-                border: "1px solid var(--border-primary)",
-              }}
+      {/* Section header */}
+      <div className="mx-auto max-w-[1400px] px-6 md:px-12 mb-16">
+        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-8">
+          <div className="space-y-4">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="flex items-center gap-3"
             >
-              <button
-                suppressHydrationWarning
-                onClick={() => setIsAnnual(false)}
-                className="relative px-4 py-2 text-xs font-bold uppercase transition-colors duration-300"
-                style={{ color: !isAnnual ? "var(--text-primary)" : "var(--text-muted)" }}
-              >
-                {!isAnnual && (
-                  <motion.div
-                    layoutId="pricingToggle"
-                    className="absolute inset-0 rounded-full shadow-sm"
-                    style={{
-                      backgroundColor: "var(--bg-card)",
-                      border: "1px solid var(--border-primary)",
-                    }}
-                    transition={{ type: "spring", stiffness: 350, damping: 25 }}
-                  />
-                )}
-                <span className="relative z-10">Monthly</span>
-              </button>
+              <div className="h-px w-8" style={{ background: "var(--accent-primary)" }} />
+              <span className="text-[11px] font-bold tracking-[0.2em] uppercase" style={{ color: "var(--text-muted)" }}>
+                Pricing
+              </span>
+            </motion.div>
+
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7, delay: 0.1 }}
+              className="text-[clamp(2rem,4vw,3.5rem)] font-black tracking-[-0.03em] leading-[1.05]"
+              style={{ color: "var(--text-primary)" }}
+            >
+              Simple billing.<br />
+              <em className="font-serif-display not-italic" style={{ color: "var(--text-muted)" }}>Unlimited access.</em>
+            </motion.h2>
+          </div>
+
+          {/* Annual toggle */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3 }}
+            className="flex items-center gap-3"
+          >
+            <button
+              suppressHydrationWarning
+              onClick={() => setIsAnnual(false)}
+              className="text-sm font-medium transition-colors"
+              style={{ color: !isAnnual ? "var(--text-primary)" : "var(--text-muted)" }}
+            >
+              Monthly
+            </button>
+
+            <button
+              suppressHydrationWarning
+              onClick={() => setIsAnnual(v => !v)}
+              className="relative h-6 w-11 rounded-full transition-colors duration-300"
+              style={{ backgroundColor: isAnnual ? "var(--accent-primary)" : "var(--bg-hover)", border: "1px solid var(--border-primary)" }}
+              aria-label="Toggle annual billing"
+            >
+              <motion.div
+                animate={{ x: isAnnual ? 18 : 2 }}
+                transition={{ type: "spring", stiffness: 400, damping: 28 }}
+                className="absolute top-0.5 h-5 w-5 rounded-full bg-white shadow-sm"
+              />
+            </button>
+
+            <div className="flex items-center gap-1.5">
               <button
                 suppressHydrationWarning
                 onClick={() => setIsAnnual(true)}
-                className="relative px-4 py-2 text-xs font-bold uppercase transition-colors duration-300"
+                className="text-sm font-medium transition-colors"
                 style={{ color: isAnnual ? "var(--text-primary)" : "var(--text-muted)" }}
               >
-                {isAnnual && (
-                  <motion.div
-                    layoutId="pricingToggle"
-                    className="absolute inset-0 rounded-full shadow-sm"
-                    style={{
-                      backgroundColor: "var(--bg-card)",
-                      border: "1px solid var(--border-primary)",
-                    }}
-                    transition={{ type: "spring", stiffness: 350, damping: 25 }}
-                  />
-                )}
-                <span className="relative z-10">Yearly Save 30%</span>
+                Yearly
               </button>
+              {isAnnual && (
+                <motion.span
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="text-[10px] font-bold px-1.5 py-0.5 rounded-full"
+                  style={{ backgroundColor: "var(--accent-primary)", color: "#fff" }}
+                >
+                  -35%
+                </motion.span>
+              )}
             </div>
-          </div>
-        </motion.div>
+          </motion.div>
+        </div>
+      </div>
 
-        {/* Pricing Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch max-w-6xl mx-auto">
-          {plans.map((plan) => {
-            const price = isAnnual ? plan.priceAnnually : plan.priceMonthly;
-
-            return (
-              <motion.div
-                key={plan.name}
-                initial={{ opacity: 0, y: 45 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-100px" }}
-                transition={{ duration: 0.65, delay: plan.name === "Explorer" ? 0 : plan.name === "Pro Pass" ? 0.15 : 0.3, type: "spring", stiffness: 80 }}
-                whileHover={{ y: -8 }}
-                className="relative flex flex-col justify-between rounded-2xl p-8 shadow-md transition-all duration-300"
-                style={{
-                  backgroundColor: "var(--bg-card)",
-                  border: plan.popular
-                    ? "2px solid var(--accent-primary)"
-                    : "2px solid var(--border-card)",
-                }}
-              >
-                {/* Popular Badge — no blurry overlay causing clipping */}
-                {plan.popular && (
-                  <span
-                    className="absolute -top-3.5 left-1/2 -translate-x-1/2 inline-flex items-center space-x-1 rounded-full px-3 py-1 text-xs font-bold text-white shadow-md"
-                    style={{ background: "var(--accent-gradient)" }}
-                  >
-                    <Sparkles size={10} className="animate-pulse" />
-                    <span>Most Popular</span>
-                  </span>
-                )}
-
-                {/* Plan Metadata */}
-                <div>
-                  <h3
-                    className="text-xl font-bold font-display"
-                    style={{ color: "var(--text-primary)" }}
-                  >
-                    {plan.name}
-                  </h3>
-                  <p
-                    className="text-xs mt-2 min-h-[36px]"
-                    style={{ color: "var(--text-muted)" }}
-                  >
-                    {plan.desc}
-                  </p>
-
-                  {/* Price */}
-                  <div className="my-8 flex items-baseline">
-                    <span
-                      className="text-5xl font-extrabold font-display"
-                      style={{ color: "var(--text-primary)" }}
-                    >
-                      $
-                    </span>
-                    <span
-                      className="text-5xl font-extrabold font-display transition-all duration-300"
-                      style={{ color: "var(--text-primary)" }}
-                    >
-                      {price}
-                    </span>
-                    <span
-                      className="text-sm font-semibold ml-2"
-                      style={{ color: "var(--text-muted)" }}
-                    >
-                      / month
-                    </span>
-                  </div>
-
-                  {/* Features */}
-                  <ul
-                    className="space-y-4 pt-8"
-                    style={{ borderTop: "1px solid var(--border-primary)" }}
-                  >
-                    {plan.features.map((feature, fIdx) => (
-                      <li key={fIdx} className="flex items-start space-x-3 text-sm">
-                        <div
-                          className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full"
-                          style={
-                            feature.included
-                              ? { backgroundColor: "var(--bg-badge)", color: "var(--text-accent)" }
-                              : { backgroundColor: "var(--bg-hover)", color: "var(--text-muted)" }
-                          }
-                        >
-                          <Check size={10} />
-                        </div>
-                        <span
-                          style={{
-                            color: feature.included ? "var(--text-secondary)" : "var(--text-muted)",
-                            textDecoration: feature.included ? "none" : "line-through",
-                            fontWeight: feature.included ? 500 : 400,
-                          }}
-                        >
-                          {feature.text}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                {/* CTA Button */}
-                <div className="mt-8 pt-6">
-                  <motion.button
-                    suppressHydrationWarning
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => {
-                      window.location.href = "/login?redirect=/student";
-                    }}
-                    className="w-full rounded-xl py-3 text-sm font-bold shadow-md transition-all"
-                    style={
-                      plan.popular
-                        ? {
-                            background: "var(--accent-gradient)",
-                            color: "#ffffff",
-                            boxShadow: `0 4px 18px var(--accent-glow)`,
-                          }
-                        : {
-                            backgroundColor: "var(--bg-hover)",
-                            color: "var(--text-primary)",
-                            border: "1px solid var(--border-primary)",
-                          }
-                    }
-                  >
-                    {plan.ctaText}
-                  </motion.button>
-                </div>
-              </motion.div>
-            );
-          })}
+      {/* Plans — offset grid */}
+      <div className="mx-auto max-w-[1400px] px-6 md:px-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 items-start">
+          {plans.map((plan, i) => (
+            <PlanCard key={plan.id} plan={plan} isAnnual={isAnnual} index={i} />
+          ))}
         </div>
 
+        {/* Footer note */}
+        <motion.p
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.4 }}
+          className="text-center text-xs mt-10"
+          style={{ color: "var(--text-muted)" }}
+        >
+          All plans include a 7-day free trial. No credit card required to start. Cancel anytime.
+        </motion.p>
       </div>
     </section>
   );

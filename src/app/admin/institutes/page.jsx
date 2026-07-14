@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   ShieldAlert, Plus, Users, School, Mail, Key, UserPlus, 
-  X, CheckCircle2, AlertCircle, Calendar, ShieldCheck, Ban, Eye, EyeOff, Edit
+  X, CheckCircle2, AlertCircle, Calendar, ShieldCheck, Ban, Eye, EyeOff, Edit, Trash2, RefreshCw
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 
@@ -277,19 +277,19 @@ export default function InstitutesPage() {
   }
 
   return (
-    <div className="space-y-6 p-6 min-h-0 flex flex-col flex-1" style={{ color: "var(--text-primary)" }}>
+    <div className="space-y-6 p-0 sm:p-6 min-h-0 flex flex-col flex-1 animate-in fade-in duration-500" style={{ color: "var(--text-primary)" }}>
       {/* Header section */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 shrink-0">
-        <div className="space-y-1.5">
-          <div className="flex items-center gap-2">
-            <span className="px-2.5 py-1 rounded-full bg-[var(--bg-badge)] text-[var(--text-accent)] text-[10px] font-extrabold uppercase tracking-wider">
-              Control Panel
-            </span>
+      <section className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 border-b pb-6 shrink-0" style={{ borderColor: "var(--border-primary)" }}>
+        <div className="space-y-2">
+          <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border mb-3"
+            style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)", backgroundColor: "var(--bg-secondary)" }}>
+            <ShieldAlert size={12} className="text-violet-500" />
+            Control Panel
           </div>
-          <h1 className="text-2xl font-black tracking-tight" style={{ color: "var(--text-primary)" }}>
+          <h1 className="text-4xl font-serif tracking-tight" style={{ color: "var(--text-primary)" }}>
             Institutes & Admins
           </h1>
-          <p className="text-xs" style={{ color: "var(--text-muted)" }}>
+          <p className="text-sm max-w-xl" style={{ color: "var(--text-secondary)" }}>
             Register new institute-specific admins and track their active platforms.
           </p>
         </div>
@@ -300,41 +300,44 @@ export default function InstitutesPage() {
             setModalSuccess("");
             setIsModalOpen(true);
           }}
-          className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-[var(--accent-primary)] hover:bg-[var(--accent-secondary)] text-white text-xs font-black uppercase transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer shadow-lg shadow-[var(--accent-glow)] border border-transparent shrink-0"
+          className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-white text-xs font-semibold transition-transform hover:-translate-y-0.5 cursor-pointer shadow-md shrink-0"
+          style={{ background: "var(--accent-primary)" }}
         >
-          <Plus size={16} />
+          <Plus size={14} />
           <span>Add Institute Admin</span>
         </button>
-      </div>
+      </section>
 
       {/* Main Table view */}
-      <div className="flex-1 min-h-0 overflow-y-auto rounded-3xl border" style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
+      <div className="flex-1 min-h-0 overflow-y-auto rounded-2xl border pb-12" style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}>
         {loading ? (
           <div className="flex h-64 items-center justify-center">
             <div className="text-center space-y-4">
-              <div className="w-8 h-8 border-3 rounded-full border-t-transparent animate-spin mx-auto" style={{ borderColor: "var(--text-accent)" }} />
-              <p className="text-[10px] font-bold" style={{ color: "var(--text-muted)" }}>Loading records...</p>
+              <div className="w-8 h-8 border-2 rounded-full border-t-transparent animate-spin mx-auto" style={{ borderColor: "var(--text-primary)" }} />
+              <p className="text-xs font-medium" style={{ color: "var(--text-muted)" }}>Loading records...</p>
             </div>
           </div>
         ) : errorMsg ? (
           <div className="flex h-64 flex-col items-center justify-center space-y-3">
-            <AlertCircle size={32} className="text-rose-500" />
-            <p className="text-xs font-bold" style={{ color: "var(--text-muted)" }}>{errorMsg}</p>
+            <div className="p-4 rounded-full bg-rose-50 dark:bg-rose-950/50">
+              <AlertCircle size={24} className="text-rose-500" />
+            </div>
+            <p className="text-sm font-semibold" style={{ color: "var(--text-muted)" }}>{errorMsg}</p>
             <button
               onClick={fetchAdmins}
-              className="px-3 py-1.5 text-[10px] font-bold uppercase rounded-xl border hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-              style={{ borderColor: "var(--border-primary)" }}
+              className="px-4 py-2 text-xs font-semibold rounded-lg border hover:bg-[var(--bg-secondary)] transition-colors mt-2"
+              style={{ borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
             >
               Retry
             </button>
           </div>
         ) : admins.length === 0 ? (
           <div className="flex h-64 flex-col items-center justify-center space-y-4">
-            <div className="w-16 h-16 rounded-3xl bg-[var(--bg-badge)] flex items-center justify-center" style={{ color: "var(--text-accent)" }}>
-              <School size={28} />
+            <div className="p-4 rounded-full bg-[var(--bg-secondary)]">
+              <School size={24} className="text-violet-500" />
             </div>
             <div className="text-center space-y-1">
-              <h3 className="text-sm font-black" style={{ color: "var(--text-primary)" }}>No Institute Admins</h3>
+              <h3 className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>No Institute Admins</h3>
               <p className="text-xs max-w-xs" style={{ color: "var(--text-muted)" }}>
                 Add your first Institute Admin to begin segmenting academic platforms.
               </p>
@@ -342,77 +345,82 @@ export default function InstitutesPage() {
           </div>
         ) : (
           <div className="w-full overflow-x-auto min-w-0">
-            <table className="w-full border-collapse text-left">
+            <table className="w-full border-collapse text-left text-sm">
               <thead>
-                <tr className="border-b text-[10px] font-extrabold uppercase tracking-wider select-none" style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}>
+                <tr className="border-b bg-[var(--bg-secondary)] text-xs font-semibold uppercase tracking-wider select-none" style={{ borderColor: "var(--border-primary)", color: "var(--text-muted)" }}>
                   <th className="px-6 py-4">Username</th>
                   <th className="px-6 py-4">Email</th>
                   <th className="px-6 py-4">Institute</th>
                   <th className="px-6 py-4">Status</th>
-                  <th className="px-6 py-4">Role Permission</th>
+                  <th className="px-6 py-4">Role</th>
                   <th className="px-6 py-4">Created Date</th>
-                  <th className="px-6 py-4">Actions</th>
+                  <th className="px-6 py-4 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y text-xs font-semibold" style={{ borderColor: "var(--border-primary)", color: "var(--text-primary)" }}>
+              <tbody className="divide-y font-medium" style={{ divideColor: "var(--border-primary)", color: "var(--text-primary)" }}>
                 {admins.map((adm) => (
-                  <tr key={adm.id} className="hover:bg-[var(--bg-primary)]/50 transition-colors">
-                    <td className="px-6 py-4 font-black">{adm.username}</td>
+                  <tr key={adm.id} className="hover:bg-[var(--bg-secondary)] transition-colors group">
+                    <td className="px-6 py-4 font-semibold">{adm.username}</td>
                     <td className="px-6 py-4" style={{ color: "var(--text-secondary)" }}>{adm.email}</td>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-2">
-                        <School size={14} className="text-[var(--text-accent)] shrink-0" />
-                        <span className="font-extrabold">{adm.institute?.name || "Global"}</span>
+                        <School size={14} className="text-violet-500 shrink-0" />
+                        <span className="font-semibold">{adm.institute?.name || "Global"}</span>
                       </div>
                     </td>
                     <td className="px-6 py-4">
                       {adm.institute?.isBlocked ? (
-                        <span className="px-2 py-0.5 rounded-md text-[9px] font-extrabold bg-rose-500/10 text-rose-400 border border-rose-500/20 flex items-center gap-1 w-fit">
-                          <Ban size={9} /> Blocked
+                        <span className="px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider bg-rose-500/10 text-rose-600 border border-rose-500/20 dark:text-rose-400 flex items-center gap-1 w-fit">
+                          <Ban size={10} /> Blocked
                         </span>
                       ) : (
-                        <span className="px-2 py-0.5 rounded-md text-[9px] font-extrabold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 w-fit block">
-                          Active
+                        <span className="px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 dark:text-emerald-400 flex items-center gap-1 w-fit">
+                          <CheckCircle2 size={10} /> Active
                         </span>
                       )}
                     </td>
                     <td className="px-6 py-4">
-                      <span className="px-2 py-0.5 rounded-md text-[9px] font-extrabold bg-blue-500/10 text-blue-400 border border-blue-500/20">
-                        {adm.role === "INSTITUTE_ADMIN" ? "INSTITUTE ADMIN" : adm.role}
+                      <span className="px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider bg-neutral-500/10 text-neutral-600 border border-neutral-500/20 dark:text-neutral-400">
+                        {adm.role === "INSTITUTE_ADMIN" ? "INST. ADMIN" : adm.role}
                       </span>
                     </td>
-                    <td className="px-6 py-4" style={{ color: "var(--text-muted)" }}>
+                    <td className="px-6 py-4 text-xs tabular-nums" style={{ color: "var(--text-secondary)" }}>
                       <div className="flex items-center gap-1.5">
                         <Calendar size={12} />
                         <span>{new Date(adm.createdAt).toLocaleDateString()}</span>
                       </div>
                     </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-2">
+                    <td className="px-6 py-4 text-right">
+                      <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                         <button
                           onClick={() => handleEditClick(adm)}
-                          className="flex items-center gap-1 text-[10px] font-black uppercase text-emerald-500 hover:text-emerald-600 transition-colors cursor-pointer border border-emerald-500/20 bg-emerald-500/5 px-2.5 py-1.5 rounded-xl hover:bg-emerald-500/10"
+                          className="p-2 rounded-lg text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-950/50 transition-colors cursor-pointer"
+                          title="Edit"
                         >
-                          <Edit size={10} />
-                          Edit
+                          <Edit size={16} />
                         </button>
                         <button
                           onClick={() => handleToggleBlock(adm)}
                           disabled={blockLoading === adm.institute?.id}
-                          className={`flex items-center gap-1 text-[10px] font-black uppercase transition-colors cursor-pointer border px-2.5 py-1.5 rounded-xl disabled:opacity-50 ${
+                          className={`p-2 rounded-lg transition-colors cursor-pointer disabled:opacity-50 ${
                             adm.institute?.isBlocked
-                              ? "text-emerald-500 border-emerald-500/20 bg-emerald-500/5 hover:bg-emerald-500/10"
-                              : "text-amber-500 border-amber-500/20 bg-amber-500/5 hover:bg-amber-500/10"
+                              ? "text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-950/50"
+                              : "text-amber-500 hover:bg-amber-50 dark:hover:bg-amber-950/50"
                           }`}
+                          title={adm.institute?.isBlocked ? "Unblock" : "Block"}
                         >
-                          <Ban size={10} />
-                          {blockLoading === adm.institute?.id ? "..." : adm.institute?.isBlocked ? "Unblock" : "Block"}
+                          {blockLoading === adm.institute?.id ? (
+                            <RefreshCw size={16} className="animate-spin" />
+                          ) : (
+                            <Ban size={16} />
+                          )}
                         </button>
                         <button
                           onClick={() => handleDeleteClick(adm)}
-                          className="flex items-center gap-1 text-[10px] font-black uppercase text-rose-500 hover:text-rose-600 transition-colors cursor-pointer border border-rose-500/20 bg-rose-500/5 px-2.5 py-1.5 rounded-xl hover:bg-rose-500/10"
+                          className="p-2 rounded-lg text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/50 transition-colors cursor-pointer"
+                          title="Delete"
                         >
-                          Delete
+                          <Trash2 size={16} />
                         </button>
                       </div>
                     </td>
@@ -583,7 +591,7 @@ export default function InstitutesPage() {
                   <button
                     type="submit"
                     disabled={modalLoading}
-                    className="px-5 py-2.5 rounded-2xl bg-[var(--accent-primary)] hover:bg-[var(--accent-secondary)] text-white text-xs font-black uppercase transition-all shadow-lg hover:scale-[1.02] cursor-pointer"
+                    className="px-5 py-2.5 rounded-2xl bg-[var(--accent-primary)] hover:bg-[var(--accent-secondary)] text-[var(--text-on-accent)] text-xs font-black uppercase transition-all shadow-lg hover:scale-[1.02] cursor-pointer"
                   >
                     {modalLoading ? "Creating..." : "Create Admin"}
                   </button>
@@ -754,7 +762,7 @@ export default function InstitutesPage() {
                   <button
                     type="submit"
                     disabled={modalLoading}
-                    className="px-5 py-2.5 rounded-2xl bg-[var(--accent-primary)] hover:bg-[var(--accent-secondary)] text-white text-xs font-black uppercase transition-all shadow-lg hover:scale-[1.02] cursor-pointer"
+                    className="px-5 py-2.5 rounded-2xl bg-[var(--accent-primary)] hover:bg-[var(--accent-secondary)] text-[var(--text-on-accent)] text-xs font-black uppercase transition-all shadow-lg hover:scale-[1.02] cursor-pointer"
                   >
                     {modalLoading ? "Saving..." : "Save Changes"}
                   </button>

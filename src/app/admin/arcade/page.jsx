@@ -22,9 +22,9 @@ const GAME_TYPES = [
     label: "Quiz Blitz",
     icon: BookOpen,
     color: "indigo",
-    accent: "text-indigo-400",
-    bg: "bg-indigo-500/10",
-    border: "border-indigo-500/20",
+    accent: "text-zinc-400",
+    bg: "bg-zinc-500/10",
+    border: "border-zinc-500/20",
     description: "Multiple-choice timed questions with explanations",
     tracks: ["JavaScript", "React.js", "Node.js", "MongoDB"],
   },
@@ -521,8 +521,8 @@ function QuestionCard({ q, type, onEdit, onDelete, canManage }) {
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.97 }}
-      className="flex items-start justify-between gap-4 p-4 rounded-2xl border group transition-all hover:border-white/20"
-      style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-card)" }}
+      className="flex items-start justify-between gap-4 p-4 rounded-xl border group transition-colors hover:bg-[var(--bg-secondary)]"
+      style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}
     >
       <div className="flex items-center gap-2 flex-1 min-w-0">
         <p className="text-xs font-mono flex-1 leading-relaxed" style={{ color: "var(--text-secondary)" }}>{preview}</p>
@@ -533,7 +533,7 @@ function QuestionCard({ q, type, onEdit, onDelete, canManage }) {
       {canManage && (
         <div className="flex items-center gap-2 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
           <button onClick={() => onEdit(q)} title="Edit"
-            className="p-1.5 rounded-lg hover:bg-indigo-500/10 hover:text-indigo-400 transition-colors cursor-pointer"
+            className="p-1.5 rounded-lg hover:bg-zinc-500/10 hover:text-zinc-400 transition-colors cursor-pointer"
             style={{ color: "var(--text-muted)" }}>
             <Edit3 size={13} />
           </button>
@@ -781,7 +781,7 @@ export default function ArcadeQuestionsPage() {
   const totalAll = GAME_TYPES.reduce((sum, g) => sum + (customData[g.key]?.length || 0), 0);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 animate-in fade-in duration-500 pb-12">
       {/* ── Notification toast ─────────────────────────────────────────── */}
       <AnimatePresence>
         {notification && (
@@ -789,10 +789,10 @@ export default function ArcadeQuestionsPage() {
             initial={{ opacity: 0, y: -12, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -12, scale: 0.95 }}
-            className={`fixed top-6 right-6 z-[9999] flex items-center gap-3 px-5 py-3 rounded-2xl shadow-2xl border text-sm font-bold ${
+            className={`fixed top-6 right-6 z-[9999] flex items-center gap-3 px-5 py-3 rounded-xl shadow-2xl border text-sm font-semibold ${
               notification.type === "error"
-                ? "bg-rose-950/90 border-rose-500/30 text-rose-300"
-                : "bg-emerald-950/90 border-emerald-500/30 text-emerald-300"
+                ? "bg-rose-50 text-rose-600 border-rose-200 dark:bg-rose-950 dark:text-rose-300 dark:border-rose-900"
+                : "bg-emerald-50 text-emerald-600 border-emerald-200 dark:bg-emerald-950 dark:text-emerald-300 dark:border-emerald-900"
             }`}
           >
             {notification.type === "error" ? <XCircle size={16} /> : <CheckCircle2 size={16} />}
@@ -809,23 +809,23 @@ export default function ArcadeQuestionsPage() {
             className="fixed inset-0 z-[9998] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
           >
             <motion.div
-              initial={{ scale: 0.9 }} animate={{ scale: 1 }} exit={{ scale: 0.9 }}
-              className="w-full max-w-sm rounded-3xl p-6 border shadow-2xl text-center space-y-4"
-              style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}
+              initial={{ scale: 0.9, y: 10 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.9, y: 10 }}
+              className="w-full max-w-sm rounded-2xl p-6 border shadow-2xl text-center space-y-4"
+              style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}
             >
-              <div className="w-12 h-12 rounded-2xl bg-rose-500/10 text-rose-500 flex items-center justify-center mx-auto border border-rose-500/20">
+              <div className="w-12 h-12 rounded-full bg-rose-500/10 text-rose-500 flex items-center justify-center mx-auto">
                 <Trash2 size={22} />
               </div>
               <div>
-                <h3 className="text-sm font-black text-rose-400 uppercase tracking-wider">Remove Question?</h3>
-                <p className="text-[11px] mt-1" style={{ color: "var(--text-muted)" }}>This question will be removed from the pool immediately.</p>
+                <h3 className="text-base font-semibold text-rose-600 dark:text-rose-400">Remove Question?</h3>
+                <p className="text-xs mt-1" style={{ color: "var(--text-muted)" }}>This question will be removed from the pool immediately.</p>
               </div>
               <div className="flex gap-3 pt-2">
                 <button onClick={() => setDeleteConfirm(null)}
-                  className="flex-1 px-4 py-2.5 rounded-2xl border text-xs font-bold cursor-pointer hover:bg-white/5 transition-all"
+                  className="flex-1 px-4 py-2.5 rounded-xl border text-xs font-semibold cursor-pointer hover:bg-[var(--bg-secondary)] transition-colors"
                   style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}>Cancel</button>
                 <button onClick={() => handleDelete(deleteConfirm)}
-                  className="flex-1 px-4 py-2.5 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-black cursor-pointer transition-all">
+                  className="flex-1 px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold cursor-pointer transition-colors">
                   Delete
                 </button>
               </div>
@@ -835,39 +835,33 @@ export default function ArcadeQuestionsPage() {
       </AnimatePresence>
 
       {/* ── Page Header ──────────────────────────────────────────────────── */}
-      <div
-        className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 md:p-8 rounded-3xl border relative overflow-hidden"
-        style={{
-          backgroundColor: "var(--glass-bg)",
-          borderColor: "var(--border-primary)",
-          backgroundImage: "linear-gradient(135deg, rgba(139,92,246,0.07) 0%, rgba(16,185,129,0.05) 100%)",
-        }}
-      >
-        <div className="space-y-1 relative z-10">
-          <div className="flex items-center space-x-2">
-            <Gamepad2 size={15} className="text-violet-400" />
-            <span className="text-[10px] font-extrabold uppercase tracking-wider text-violet-400">Arcade Manager</span>
+      <section className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b pb-6" style={{ borderColor: "var(--border-primary)" }}>
+        <div className="space-y-2">
+          <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border mb-3"
+            style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)", backgroundColor: "var(--bg-secondary)" }}>
+            <Gamepad2 size={12} className="text-violet-500" />
+            Arcade Manager
           </div>
-          <h1 className="text-2xl md:text-3xl font-black font-display tracking-tight" style={{ color: "var(--text-primary)" }}>
+          <h1 className="text-4xl font-serif tracking-tight" style={{ color: "var(--text-primary)" }}>
             Question Bank
           </h1>
-          <p className="text-xs" style={{ color: "var(--text-secondary)" }}>
+          <p className="text-sm max-w-xl" style={{ color: "var(--text-secondary)" }}>
             Add custom questions to expand the student game pool — they auto-merge with built-in content.
           </p>
         </div>
-        <div className="flex items-center gap-3 relative z-10 shrink-0">
-          <div className="px-4 py-2 rounded-2xl border text-xs font-bold" style={{ borderColor: "var(--border-primary)", backgroundColor: "var(--bg-card)", color: "var(--text-secondary)" }}>
-            <span style={{ color: "var(--text-primary)" }} className="font-black text-sm">{totalAll}</span> custom {totalAll === 1 ? "question" : "questions"} total
+        <div className="flex items-center gap-3 shrink-0">
+          <div className="px-4 py-2 rounded-xl border text-xs font-medium" style={{ borderColor: "var(--border-primary)", backgroundColor: "var(--bg-primary)", color: "var(--text-secondary)" }}>
+            <span style={{ color: "var(--text-primary)" }} className="font-bold text-sm">{totalAll}</span> custom {totalAll === 1 ? "question" : "questions"} total
           </div>
           <button
             onClick={openAddForm}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-2xl font-bold text-xs text-white shadow-lg transition-all hover:scale-105 cursor-pointer"
-            style={{ background: "linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%)" }}
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-xs text-white shadow-md transition-transform hover:-translate-y-0.5 cursor-pointer"
+            style={{ background: "var(--accent-primary)" }}
           >
             <Plus size={14} /> Add Question
           </button>
         </div>
-      </div>
+      </section>
 
       {/* ── Game type tabs ────────────────────────────────────────────────── */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -879,15 +873,18 @@ export default function ArcadeQuestionsPage() {
             <button
               key={gt.key}
               onClick={() => { setActiveType(gt.key); setSearch(""); setShowForm(false); }}
-              className={`p-4 rounded-2xl border text-left transition-all cursor-pointer ${isActive ? `${gt.bg} ${gt.border}` : "hover:border-white/20"}`}
-              style={isActive ? {} : { backgroundColor: "var(--bg-card)", borderColor: "var(--border-card)" }}
+              className={`p-5 rounded-2xl border text-left transition-colors cursor-pointer flex flex-col items-start ${isActive ? "shadow-md" : "hover:bg-[var(--bg-secondary)]"}`}
+              style={{
+                backgroundColor: isActive ? "var(--bg-secondary)" : "var(--bg-primary)",
+                borderColor: isActive ? "var(--accent-primary)" : "var(--border-primary)"
+              }}
             >
-              <div className={`p-2 rounded-xl ${gt.bg} ${gt.accent} w-fit mb-3`}>
-                <Icon size={16} />
+              <div className={`p-2.5 rounded-xl mb-4 ${gt.bg} ${gt.accent}`}>
+                <Icon size={18} />
               </div>
-              <p className={`text-xs font-black ${isActive ? gt.accent : ""}`} style={isActive ? {} : { color: "var(--text-primary)" }}>{gt.label}</p>
-              <p className="text-[10px] mt-0.5" style={{ color: "var(--text-muted)" }}>{gt.description}</p>
-              <div className={`mt-3 inline-flex items-center gap-1 text-[10px] font-extrabold px-2 py-0.5 rounded-full ${gt.bg} ${gt.accent}`}>
+              <h3 className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>{gt.label}</h3>
+              <p className="text-[11px] mt-1" style={{ color: "var(--text-muted)" }}>{gt.description}</p>
+              <div className="mt-4 inline-flex items-center gap-1 text-[10px] font-bold px-2.5 py-1 rounded-full bg-[var(--bg-primary)] border" style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}>
                 {count} custom
               </div>
             </button>
@@ -900,18 +897,18 @@ export default function ArcadeQuestionsPage() {
         {showForm && (
           <motion.div
             key="form"
-            initial={{ opacity: 0, y: -16 }}
+            initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -16 }}
-            transition={{ duration: 0.25 }}
-            className="rounded-3xl border p-6 space-y-5"
-            style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.2 }}
+            className="rounded-2xl border p-6 md:p-8 space-y-6 shadow-sm"
+            style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}
           >
-            <div className="flex items-center justify-between">
-              <h2 className="text-sm font-black" style={{ color: "var(--text-primary)" }}>
+            <div className="flex items-center justify-between border-b pb-4" style={{ borderColor: "var(--border-primary)" }}>
+              <h2 className="text-xl font-serif" style={{ color: "var(--text-primary)" }}>
                 {editingId ? "Edit" : "Add"} {activeGameType.label} Question
               </h2>
-              <button onClick={closeForm} className="p-1.5 rounded-lg hover:bg-white/10 transition-colors cursor-pointer" style={{ color: "var(--text-muted)" }}>
+              <button onClick={closeForm} className="p-2 rounded-full hover:bg-[var(--bg-secondary)] transition-colors cursor-pointer" style={{ color: "var(--text-muted)" }}>
                 <X size={16} />
               </button>
             </div>
@@ -923,21 +920,21 @@ export default function ArcadeQuestionsPage() {
             {activeType === "fillin" && <FillinForm form={form} onChange={handleFieldChange} />}
 
             {formError && (
-              <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs font-bold">
-                <AlertCircle size={13} className="shrink-0" /> {formError}
+              <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-rose-50 text-rose-600 border border-rose-200 dark:bg-rose-950/50 dark:border-rose-900/50 dark:text-rose-400 text-xs font-medium">
+                <AlertCircle size={14} className="shrink-0" /> {formError}
               </div>
             )}
 
-            <div className="flex gap-3 pt-2">
+            <div className="flex justify-end gap-3 pt-4 border-t" style={{ borderColor: "var(--border-primary)" }}>
               <button onClick={closeForm}
-                className="px-5 py-2.5 rounded-xl border text-xs font-bold cursor-pointer hover:bg-white/5 transition-all"
+                className="px-5 py-2.5 rounded-xl border text-xs font-semibold cursor-pointer hover:bg-[var(--bg-secondary)] transition-colors"
                 style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}>
                 Cancel
               </button>
               <button onClick={handleSave}
-                className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-white text-xs font-black cursor-pointer transition-all hover:opacity-90"
-                style={{ background: "linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%)" }}>
-                <Save size={13} /> {editingId ? "Save Changes" : "Add Question"}
+                className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-white text-xs font-semibold cursor-pointer transition-transform hover:-translate-y-0.5"
+                style={{ background: "var(--accent-primary)" }}>
+                <Save size={14} /> {editingId ? "Save Changes" : "Add Question"}
               </button>
             </div>
           </motion.div>
@@ -946,57 +943,59 @@ export default function ArcadeQuestionsPage() {
 
       {/* ── Questions list ────────────────────────────────────────────────── */}
       <div
-        className="rounded-3xl border p-6 space-y-5"
-        style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}
+        className="rounded-2xl border p-6 md:p-8 space-y-6"
+        style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}
       >
-        <div className="flex items-center justify-between gap-4 flex-wrap">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b pb-4" style={{ borderColor: "var(--border-primary)" }}>
           <div>
-            <h2 className="text-sm font-black" style={{ color: "var(--text-primary)" }}>
+            <h2 className="text-xl font-serif" style={{ color: "var(--text-primary)" }}>
               Custom {activeGameType.label} Questions
             </h2>
-            <p className="text-[10px] mt-0.5" style={{ color: "var(--text-muted)" }}>
+            <p className="text-xs mt-1" style={{ color: "var(--text-muted)" }}>
               {allItems.length} question{allItems.length !== 1 ? "s" : ""} in pool · merge with {activeGameType.description}
             </p>
           </div>
 
           {allItems.length > 3 && (
-            <div className="relative">
-              <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: "var(--text-muted)" }} />
+            <div className="relative w-full md:w-auto">
+              <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: "var(--text-muted)" }} />
               <input
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 placeholder="Search questions..."
-                className="pl-8 pr-4 py-2 rounded-xl border text-xs font-medium outline-none w-52"
-                style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
+                className="pl-9 pr-4 py-2.5 rounded-xl border text-sm font-medium outline-none w-full md:w-64 transition-colors focus:border-[var(--text-muted)]"
+                style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
               />
             </div>
           )}
         </div>
 
         {filtered.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-14 text-center space-y-3">
-            <div className={`p-4 rounded-2xl ${activeGameType.bg}`}>
-              {React.createElement(activeGameType.icon, { size: 28, className: activeGameType.accent })}
+          <div className="flex flex-col items-center justify-center py-16 text-center space-y-4 border border-dashed rounded-2xl" style={{ borderColor: "var(--border-primary)" }}>
+            <div className={`p-4 rounded-full ${activeGameType.bg}`}>
+              {React.createElement(activeGameType.icon, { size: 24, className: activeGameType.accent })}
             </div>
-            <p className="text-sm font-bold" style={{ color: "var(--text-primary)" }}>
-              {search ? "No questions match your search" : `No custom ${activeGameType.label} questions yet`}
-            </p>
-            <p className="text-xs" style={{ color: "var(--text-muted)" }}>
-              {search ? "Try a different search term" : "Click \"Add Question\" to expand the student question pool."}
-            </p>
+            <div className="space-y-1">
+              <p className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>
+                {search ? "No questions match your search" : `No custom ${activeGameType.label} questions yet`}
+              </p>
+              <p className="text-xs" style={{ color: "var(--text-muted)" }}>
+                {search ? "Try a different search term" : "Click \"Add Question\" to expand the student question pool."}
+              </p>
+            </div>
             {!search && (
               <button
                 onClick={openAddForm}
-                className="mt-2 flex items-center gap-2 px-4 py-2 rounded-xl text-white text-xs font-bold cursor-pointer transition-all hover:opacity-90"
-                style={{ background: "linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%)" }}
+                className="mt-2 flex items-center gap-2 px-5 py-2.5 rounded-xl text-white text-xs font-semibold cursor-pointer transition-transform hover:-translate-y-0.5"
+                style={{ background: "var(--accent-primary)" }}
               >
-                <Plus size={12} /> Add First Question
+                <Plus size={14} /> Add First Question
               </button>
             )}
           </div>
         ) : (
           <AnimatePresence>
-            <div className="space-y-2">
+            <div className="space-y-3">
               {filtered.map(q => {
                 const isAdmin = user?.role === 'ADMIN';
                 const isInstituteAdmin = user?.role === 'INSTITUTE_ADMIN';
@@ -1020,12 +1019,12 @@ export default function ArcadeQuestionsPage() {
       </div>
 
       {/* ── Info panel ───────────────────────────────────────────────────── */}
-      <div className="p-4 rounded-2xl border flex items-start gap-3"
-        style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-card)" }}>
-        <AlertCircle size={15} className="text-amber-400 shrink-0 mt-0.5" />
-        <div>
-          <p className="text-xs font-bold text-amber-400">How It Works</p>
-          <p className="text-[11px] mt-0.5 leading-relaxed" style={{ color: "var(--text-muted)" }}>
+      <div className="p-5 rounded-2xl border flex items-start gap-3"
+        style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)" }}>
+        <AlertCircle size={16} className="text-amber-500 shrink-0 mt-0.5" />
+        <div className="space-y-1">
+          <p className="text-xs font-semibold text-amber-600 dark:text-amber-400">How It Works</p>
+          <p className="text-xs leading-relaxed" style={{ color: "var(--text-muted)" }}>
             Custom questions are stored locally in this browser and automatically merged with the built-in question pool when students play.
             Students will see both built-in and custom questions shuffled together. Questions are tracked to avoid repetition until the pool is exhausted.
           </p>

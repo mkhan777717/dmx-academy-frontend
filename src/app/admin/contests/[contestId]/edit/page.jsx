@@ -527,7 +527,7 @@ export default function EditContest() {
                   onClick={() => setContestProbTab("institute")}
                   className={`px-4 py-1.5 font-bold uppercase tracking-wider transition-all rounded-lg cursor-pointer mr-2 ${
                     contestProbTab === "institute"
-                      ? "bg-[var(--accent-primary)] text-white"
+                      ? "bg-[var(--accent-primary)] text-[var(--text-on-accent)]"
                       : "text-[var(--text-muted)] hover:bg-[var(--bg-primary)]"
                   }`}
                 >
@@ -538,7 +538,7 @@ export default function EditContest() {
                   onClick={() => setContestProbTab("global")}
                   className={`px-4 py-1.5 font-bold uppercase tracking-wider transition-all rounded-lg cursor-pointer ${
                     contestProbTab === "global"
-                      ? "bg-[var(--accent-primary)] text-white"
+                      ? "bg-[var(--accent-primary)] text-[var(--text-on-accent)]"
                       : "text-[var(--text-muted)] hover:bg-[var(--bg-primary)]"
                   }`}
                 >
@@ -631,7 +631,7 @@ export default function EditContest() {
           >
             {/* Status Line */}
             <div
-              className={`absolute top-0 left-0 right-0 h-[3px] transition-all ${status === "active" ? "bg-emerald-500" : status === "upcoming" ? "bg-indigo-500" : "bg-slate-400"
+              className={`absolute top-0 left-0 right-0 h-[3px] transition-all ${status === "active" ? "bg-emerald-500" : status === "upcoming" ? "bg-zinc-500" : "bg-slate-400"
                 }`}
             />
 
@@ -649,12 +649,12 @@ export default function EditContest() {
                 </span>
 
                 <div className="flex items-center space-x-1.5">
-                  <span className={`w-1.5 h-1.5 rounded-full ${status === "active" ? "bg-emerald-500 animate-pulse" : status === "upcoming" ? "bg-indigo-500" : "bg-slate-400"
+                  <span className={`w-1.5 h-1.5 rounded-full ${status === "active" ? "bg-emerald-500 animate-pulse" : status === "upcoming" ? "bg-zinc-500" : "bg-slate-400"
                     }`} />
                   <span
                     className="text-[9px] font-extrabold uppercase"
                     style={{
-                      color: status === "active" ? "var(--text-emerald-500, #10b981)" : status === "upcoming" ? "var(--text-indigo-500, #6366f1)" : "var(--text-muted)"
+                      color: status === "active" ? "var(--text-emerald-500, #10b981)" : status === "upcoming" ? "var(--text-zinc-500, #6366f1)" : "var(--text-muted)"
                     }}
                   >
                     {status}
@@ -683,7 +683,7 @@ export default function EditContest() {
                 <Clock size={11} />
                 <span>{durationMins} Mins</span>
               </div>
-              <div className="flex items-center space-x-1 text-indigo-400">
+              <div className="flex items-center space-x-1 text-zinc-400">
                 <Trophy size={11} />
                 <span>{totalPoints} Pts</span>
               </div>

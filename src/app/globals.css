@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 /* =============================================
-   THEME VARIABLE SYSTEM
-   4 themes: light (default), dark, mint, violet
+   PREMIUM DESIGN SYSTEM — 2 THEMES ONLY
+   Light (default) | Dark
    ============================================= */
 
 @layer base {
@@ -12,194 +12,133 @@
   /* ---- LIGHT THEME (default) ---- */
   :root,
   html.theme-light {
-    --bg-primary:       #faf9f6;
+    --bg-primary:       #f8f7f4;
     --bg-secondary:     #ffffff;
     --bg-card:          #ffffff;
     --bg-sidebar:       #ffffff;
-    --bg-input:         #f8fafc;
-    --bg-hover:         #f1f5f9;
-    --bg-badge:         #eff6ff;
-    --bg-code:          #f8fafc;
+    --bg-input:         #f1f0ed;
+    --bg-hover:         #efefed;
+    --bg-badge:         #f0effe;
+    --bg-code:          #1a1a1a;
+    --bg-surface:       #fafaf8;
 
-    --text-primary:     #0f172a;
-    --text-secondary:   #334155;
-    --text-muted:       #64748b;
-    --text-accent:      #4f46e5;
-    --text-accent2:     #7c3aed;
+    --text-primary:     #111110;
+    --text-secondary:   #3c3c3a;
+    --text-muted:       #8a8a85;
+    --text-accent:      #111110;
+    --text-accent2:     #3c3c3a;
 
-    --border-primary:   #e2e8f0;
-    --border-accent:    #c7d2fe;
-    --border-card:      #e2e8f0;
+    --border-primary:   #e5e4e0;
+    --border-accent:    #111110;
+    --border-card:      #e8e7e3;
+    --border-subtle:    #f0eeea;
 
-    --accent-primary:   #4f46e5;
-    --accent-secondary: #7c3aed;
-    --accent-gradient:  linear-gradient(135deg, #4f46e5, #7c3aed);
-    --accent-glow:      rgba(99, 102, 241, 0.25);
+    --accent-primary:   #111110;
+    --accent-secondary: #3c3c3a;
+    --accent-gradient:  #111110;
+    --accent-glow:      rgba(17, 17, 16, 0.08);
+    --text-on-accent:   #ffffff;
 
-    --note-bg:          #fffbeb;
-    --note-border:      #f59e0b;
-    --note-text:        #78350f;
+    --glass-bg:         rgba(255, 255, 255, 0.85);
+    --glass-border:     rgba(17, 17, 16, 0.08);
 
-    --glass-bg:         rgba(255, 255, 255, 0.72);
-    --glass-border:     rgba(99, 102, 241, 0.10);
+    --scrollbar-track:  #f8f7f4;
+    --scrollbar-thumb:  #d4d3cf;
+    --scrollbar-hover:  #b8b7b3;
 
-    --scrollbar-track:  #faf9f6;
-    --scrollbar-thumb:  #cbd5e1;
-    --scrollbar-hover:  #94a3b8;
+    --selection-bg:     rgba(17, 17, 16, 0.12);
+    --selection-text:   #111110;
 
-    --selection-bg:     rgba(99, 102, 241, 0.15);
-    --selection-text:   #4f46e5;
+    --noise-opacity:    0.03;
+    --dot-color:        rgba(17, 17, 16, 0.08);
 
-    --font-inter: 'Inter', sans-serif;
-    --font-outfit: 'Outfit', sans-serif;
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-serif: 'Instrument Serif', Georgia, serif;
   }
 
   /* ---- DARK THEME ---- */
   html.theme-dark {
-    --bg-primary:       #0b0f19;
-    --bg-secondary:     #111827;
-    --bg-card:          #161d2e;
-    --bg-sidebar:       #0f1624;
-    --bg-input:         #1e2740;
-    --bg-hover:         #1e293b;
-    --bg-badge:         #1e2a4a;
-    --bg-code:          #0d1117;
+    --bg-primary:       #0c0c0b;
+    --bg-secondary:     #111110;
+    --bg-card:          #161615;
+    --bg-sidebar:       #0f0f0e;
+    --bg-input:         #1c1c1a;
+    --bg-hover:         #1e1e1c;
+    --bg-badge:         #1a1a2e;
+    --bg-code:          #0a0a09;
+    --bg-surface:       #131312;
 
-    --text-primary:     #e2e8f0;
-    --text-secondary:   #94a3b8;
-    --text-muted:       #4b5563;
-    --text-accent:      #818cf8;
-    --text-accent2:     #a78bfa;
+    --text-primary:     #ededec;
+    --text-secondary:   #9b9b97;
+    --text-muted:       #52524e;
+    --text-accent:      #ffffff;
+    --text-accent2:     #ededec;
 
-    --border-primary:   #1e293b;
-    --border-accent:    #3730a3;
-    --border-card:      #1e293b;
+    --border-primary:   #1f1f1e;
+    --border-accent:    #ffffff;
+    --border-card:      #1a1a19;
+    --border-subtle:    #161615;
 
-    --accent-primary:   #6366f1;
-    --accent-secondary: #8b5cf6;
-    --accent-gradient:  linear-gradient(135deg, #6366f1, #8b5cf6);
-    --accent-glow:      rgba(99, 102, 241, 0.35);
+    --accent-primary:   #ffffff;
+    --accent-secondary: #ededec;
+    --accent-gradient:  #ffffff;
+    --accent-glow:      rgba(255, 255, 255, 0.12);
+    --text-on-accent:   #0c0c0b;
 
-    --note-bg:          #1c1a0d;
-    --note-border:      #d97706;
-    --note-text:        #fbbf24;
+    --glass-bg:         rgba(12, 12, 11, 0.88);
+    --glass-border:     rgba(237, 237, 236, 0.06);
 
-    --glass-bg:         rgba(15, 22, 36, 0.80);
-    --glass-border:     rgba(99, 102, 241, 0.18);
+    --scrollbar-track:  #0c0c0b;
+    --scrollbar-thumb:  #1f1f1e;
+    --scrollbar-hover:  #2c2c2a;
 
-    --scrollbar-track:  #0b0f19;
-    --scrollbar-thumb:  #1e293b;
-    --scrollbar-hover:  #334155;
+    --selection-bg:     rgba(255, 255, 255, 0.15);
+    --selection-text:   #ffffff;
 
-    --selection-bg:     rgba(99, 102, 241, 0.25);
-    --selection-text:   #818cf8;
-  }
+    --noise-opacity:    0.04;
+    --dot-color:        rgba(237, 237, 236, 0.05);
 
-  /* ---- MINT / SAGE THEME ---- */
-  html.theme-mint {
-    --bg-primary:       #f0fbf7;
-    --bg-secondary:     #ffffff;
-    --bg-card:          #ffffff;
-    --bg-sidebar:       #f7fdfb;
-    --bg-input:         #ecfdf5;
-    --bg-hover:         #d1fae5;
-    --bg-badge:         #ecfdf5;
-    --bg-code:          #f0fdf4;
-
-    --text-primary:     #064e3b;
-    --text-secondary:   #065f46;
-    --text-muted:       #0d9488;
-    --text-accent:      #059669;
-    --text-accent2:     #0d9488;
-
-    --border-primary:   #a7f3d0;
-    --border-accent:    #6ee7b7;
-    --border-card:      #bbf7d0;
-
-    --accent-primary:   #10b981;
-    --accent-secondary: #0d9488;
-    --accent-gradient:  linear-gradient(135deg, #10b981, #0d9488);
-    --accent-glow:      rgba(16, 185, 129, 0.28);
-
-    --note-bg:          #ecfeff;
-    --note-border:      #0891b2;
-    --note-text:        #164e63;
-
-    --glass-bg:         rgba(240, 253, 247, 0.80);
-    --glass-border:     rgba(16, 185, 129, 0.15);
-
-    --scrollbar-track:  #f0fbf7;
-    --scrollbar-thumb:  #6ee7b7;
-    --scrollbar-hover:  #34d399;
-
-    --selection-bg:     rgba(16, 185, 129, 0.15);
-    --selection-text:   #065f46;
-  }
-
-  /* ---- MIDNIGHT VIOLET THEME ---- */
-  html.theme-violet {
-    --bg-primary:       #0d0818;
-    --bg-secondary:     #130d24;
-    --bg-card:          #1a1030;
-    --bg-sidebar:       #0f0a1e;
-    --bg-input:         #1f1438;
-    --bg-hover:         #2a1b48;
-    --bg-badge:         #231549;
-    --bg-code:          #0a0714;
-
-    --text-primary:     #e9d5ff;
-    --text-secondary:   #c4b5fd;
-    --text-muted:       #6b21a8;
-    --text-accent:      #e879f9;
-    --text-accent2:     #a855f7;
-
-    --border-primary:   #2d1b54;
-    --border-accent:    #7c3aed;
-    --border-card:      #2d1b54;
-
-    --accent-primary:   #d946ef;
-    --accent-secondary: #a855f7;
-    --accent-gradient:  linear-gradient(135deg, #d946ef, #a855f7, #6366f1);
-    --accent-glow:      rgba(217, 70, 239, 0.35);
-
-    --note-bg:          #1a0d2e;
-    --note-border:      #9333ea;
-    --note-text:        #e9d5ff;
-
-    --glass-bg:         rgba(13, 8, 24, 0.80);
-    --glass-border:     rgba(217, 70, 239, 0.20);
-
-    --scrollbar-track:  #0d0818;
-    --scrollbar-thumb:  #2d1b54;
-    --scrollbar-hover:  #5b21b6;
-
-    --selection-bg:     rgba(217, 70, 239, 0.20);
-    --selection-text:   #e879f9;
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-serif: 'Instrument Serif', Georgia, serif;
   }
 
   body {
     background-color: var(--bg-primary);
     color: var(--text-primary);
-    font-family: var(--font-inter);
+    font-family: var(--font-sans);
+    font-feature-settings: 'cv11', 'ss01';
+    font-variation-settings: 'opsz' 32;
     overflow-x: hidden;
-    transition: background-color 0.35s ease, color 0.35s ease;
+    transition: background-color 0.4s ease, color 0.4s ease;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-outfit);
+    font-family: var(--font-sans);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+
+  /* Serif display utility */
+  .font-serif-display {
+    font-family: var(--font-serif);
+    font-style: italic;
+    letter-spacing: -0.01em;
   }
 }
 
 /* =============================================
-   CUSTOM SCROLLBAR (theme-aware)
+   CUSTOM SCROLLBAR
    ============================================= */
-::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track  { background: var(--scrollbar-track); }
-::-webkit-scrollbar-thumb  { background: var(--scrollbar-thumb); border-radius: 4px; }
+::-webkit-scrollbar-thumb  { background: var(--scrollbar-thumb); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-hover); }
 
 /* =============================================
-   TEXT SELECTION (theme-aware)
+   TEXT SELECTION
    ============================================= */
 ::selection {
   background: var(--selection-bg);
@@ -207,25 +146,48 @@
 }
 
 /* =============================================
-   GLASSMORPHISM UTILITIES (theme-aware)
+   THEME TRANSITION
    ============================================= */
-.glass-panel {
-  background: var(--glass-bg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--glass-border);
-}
-
-.glass-panel-heavy {
-  background: var(--glass-bg);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--glass-border);
-  opacity: 0.95;
+html {
+  transition: background-color 0.4s ease;
 }
 
 /* =============================================
-   TEXT GRADIENTS
+   DOT GRID PATTERN (no glow orbs)
+   ============================================= */
+.dot-grid {
+  background-image: radial-gradient(var(--dot-color) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+.dot-grid-fine {
+  background-image: radial-gradient(var(--dot-color) 1px, transparent 1px);
+  background-size: 18px 18px;
+}
+
+/* =============================================
+   NOISE TEXTURE OVERLAY
+   ============================================= */
+.noise-overlay::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+  opacity: var(--noise-opacity);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* =============================================
+   EDITORIAL LINE
+   ============================================= */
+.editorial-line {
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--border-primary), transparent);
+}
+
+/* =============================================
+   TEXT GRADIENT UTILITY
    ============================================= */
 .text-gradient {
   background: var(--accent-gradient);
@@ -234,18 +196,32 @@
   background-clip: text;
 }
 
-.text-gradient-neon {
-  background: linear-gradient(to right, #4f46e5, #6366f1, #2563eb, #0891b2);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+/* =============================================
+   CUSTOM CURSOR — hides native on desktop
+   ============================================= */
+@media (pointer: fine) {
+  .cursor-none-zone,
+  .cursor-none-zone * {
+    cursor: none !important;
+  }
 }
 
 /* =============================================
-   THEME TRANSITION HELPER
+   CINEMATIC SCROLL SNAP (optional, section-level)
    ============================================= */
-html {
-  transition: background-color 0.35s ease;
+.scroll-section {
+  scroll-snap-align: start;
+}
+
+/* =============================================
+   MAGNETIC BUTTON BASE
+   ============================================= */
+.magnetic-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 /* =============================================
@@ -260,31 +236,18 @@ html {
 html.theme-light .live-control-bar-fullscreen,
 html.theme-light .live-chat-sidebar-fullscreen {
   background-color: rgba(255, 255, 255, 0.96) !important;
-  border-color: rgba(15, 23, 42, 0.08) !important;
-}
-
-html.theme-mint .live-control-bar-fullscreen,
-html.theme-mint .live-chat-sidebar-fullscreen {
-  background-color: rgba(240, 253, 247, 0.96) !important;
-  border-color: rgba(6, 95, 70, 0.12) !important;
+  border-color: rgba(17, 17, 16, 0.08) !important;
 }
 
 html.theme-dark .live-control-bar-fullscreen,
 html.theme-dark .live-chat-sidebar-fullscreen {
-  background-color: rgba(15, 22, 36, 0.88) !important;
-  border-color: rgba(255, 255, 255, 0.08) !important;
-}
-
-html.theme-violet .live-control-bar-fullscreen,
-html.theme-violet .live-chat-sidebar-fullscreen {
-  background-color: rgba(13, 8, 24, 0.88) !important;
-  border-color: rgba(255, 255, 255, 0.08) !important;
+  background-color: rgba(12, 12, 11, 0.88) !important;
+  border-color: rgba(255, 255, 255, 0.06) !important;
 }
 
 /* =============================================
    CONTEST WORKSPACE ANIMATIONS
    ============================================= */
-
 @keyframes shimmer-sweep {
   0%   { transform: translateX(-100%); }
   100% { transform: translateX(200%); }
@@ -297,27 +260,77 @@ html.theme-violet .live-chat-sidebar-fullscreen {
 }
 
 /* =============================================
+   TICKER ANIMATION
+   ============================================= */
+@keyframes ticker {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.ticker-track {
+  display: flex;
+  width: max-content;
+  animation: ticker 28s linear infinite;
+}
+
+.ticker-track:hover {
+  animation-play-state: paused;
+}
+
+/* =============================================
    PRINT STYLES FOR RESUME BUILDER
    ============================================= */
 @media print {
-  /* Hide the entire sidebar and top header natively */
   aside, header {
     display: none !important;
   }
-  
-  /* Reset layout margins for printing */
   body, main {
     margin: 0 !important;
     padding: 0 !important;
     background: white !important;
     overflow: visible !important;
   }
-  
-  /* The layout wrapper often has flex/h-screen which breaks multipage printing */
   .h-screen {
     height: auto !important;
     overflow: visible !important;
   }
 }
 
+/* =============================================
+   HORIZONTAL SCROLL RAIL
+   ============================================= */
+.horizontal-scroll-rail {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.horizontal-scroll-rail::-webkit-scrollbar {
+  display: none;
+}
+.horizontal-scroll-rail > * {
+  scroll-snap-align: start;
+  flex-shrink: 0;
+}
 
+/* =============================================
+   UNDERLINE DRAW ANIMATION
+   ============================================= */
+.underline-draw {
+  position: relative;
+}
+.underline-draw::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: var(--accent-primary);
+  transition: width 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.underline-draw:hover::after {
+  width: 100%;
+}

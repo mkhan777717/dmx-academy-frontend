@@ -18,7 +18,7 @@ import { getApiBase } from "@/utils/api";
 
 const OPTION_LABELS = ["A", "B", "C", "D"];
 const OPTION_COLORS = [
-  "bg-blue-500/15 text-blue-400 border-blue-500/30",
+  "bg-neutral-500/15 text-neutral-400 border-neutral-500/30",
   "bg-violet-500/15 text-violet-400 border-violet-500/30",
   "bg-amber-500/15 text-amber-400 border-amber-500/30",
   "bg-rose-500/15 text-rose-400 border-rose-500/30",

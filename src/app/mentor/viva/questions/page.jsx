@@ -569,7 +569,7 @@ export default function AIAllInOneVivaPage() {
     const start = new Date(viva.startTime);
     const end = viva.endTime ? new Date(viva.endTime) : null;
 
-    if (now < start) return { label: "Upcoming", color: "bg-blue-500/10 text-blue-400 border-blue-500/20" };
+    if (now < start) return { label: "Upcoming", color: "bg-neutral-500/10 text-neutral-400 border-neutral-500/20" };
     if (end && now > end) return { label: "Ended", color: "bg-neutral-500/10 text-neutral-400 border-neutral-500/20" };
     return { label: "Active", color: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20 animate-pulse" };
   };
@@ -592,7 +592,7 @@ export default function AIAllInOneVivaPage() {
               <div className="space-y-3">
                 <div>
                   <label className="block text-xs font-bold text-slate-400 mb-1">Question Text *</label>
-                  <textarea rows={3} value={form.questionText} onChange={e => setForm({...form, questionText: e.target.value})} className="w-full bg-[#161B2B] border border-slate-800 rounded-xl p-3 text-sm focus:border-indigo-500 outline-none resize-none" placeholder="Enter question..." />
+                  <textarea rows={3} value={form.questionText} onChange={e => setForm({...form, questionText: e.target.value})} className="w-full bg-[#161B2B] border border-slate-800 rounded-xl p-3 text-sm focus:border-zinc-500 outline-none resize-none" placeholder="Enter question..." />
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
@@ -611,7 +611,7 @@ export default function AIAllInOneVivaPage() {
                   <label className="block text-xs font-bold text-slate-400 mb-1">Difficulty *</label>
                   <div className="flex gap-2">
                     {DIFFICULTIES.map(d => (
-                      <button type="button" key={d} onClick={() => setForm({...form, difficulty: d})} className={`flex-1 py-2 rounded-xl text-xs font-bold border transition-all ${form.difficulty === d ? "bg-indigo-600 text-white border-transparent" : "border-slate-800 text-slate-400"}`}>
+                      <button type="button" key={d} onClick={() => setForm({...form, difficulty: d})} className={`flex-1 py-2 rounded-xl text-xs font-bold border transition-all ${form.difficulty === d ? "bg-zinc-600 text-white border-transparent" : "border-slate-800 text-slate-400"}`}>
                         {d}
                       </button>
                     ))}
@@ -628,7 +628,7 @@ export default function AIAllInOneVivaPage() {
               </div>
               <div className="flex gap-3 pt-2">
                 <button onClick={closeModal} className="flex-1 py-2.5 border border-slate-800 rounded-xl text-sm text-slate-400 font-bold hover:bg-slate-800">Cancel</button>
-                <button onClick={handleSaveManual} disabled={formSaving} className="flex-1 py-2.5 bg-indigo-600 hover:bg-indigo-700 font-bold text-sm text-white rounded-xl">
+                <button onClick={handleSaveManual} disabled={formSaving} className="flex-1 py-2.5 bg-zinc-600 hover:bg-zinc-700 font-bold text-sm text-white rounded-xl">
                   {formSaving ? "Saving..." : "Save"}
                 </button>
               </div>
@@ -645,7 +645,7 @@ export default function AIAllInOneVivaPage() {
               <input type="text" value={newFolderSubjectName} onChange={e => setNewFolderSubjectName(e.target.value)} className="w-full bg-[#161B2B] border border-slate-800 rounded-xl p-3 text-sm outline-none" placeholder="Subject Name..." />
               <div className="flex gap-3">
                 <button onClick={() => setSubjectModalOpen(false)} className="flex-1 py-2 border border-slate-800 rounded-xl text-xs text-slate-400 font-bold hover:bg-slate-800">Cancel</button>
-                <button onClick={handleCreateSubjectFolder} className="flex-1 py-2 bg-indigo-600 hover:bg-indigo-700 font-bold text-xs text-white rounded-xl">Create</button>
+                <button onClick={handleCreateSubjectFolder} className="flex-1 py-2 bg-zinc-600 hover:bg-zinc-700 font-bold text-xs text-white rounded-xl">Create</button>
               </div>
             </div>
           </div>
@@ -747,7 +747,7 @@ export default function AIAllInOneVivaPage() {
                                 isSel ? "bg-emerald-500/10 border-emerald-500/50 outline outline-2 outline-emerald-500/30" : "bg-[#111625] border-slate-800/80 hover:border-slate-700"
                               }`}
                             >
-                              <span className="text-[9px] uppercase font-bold text-indigo-400">{q.difficulty}</span>
+                              <span className="text-[9px] uppercase font-bold text-zinc-400">{q.difficulty}</span>
                               <p className="text-xs font-medium text-slate-200 mt-0.5 line-clamp-2">{q.questionText}</p>
                             </div>
                           );
@@ -759,7 +759,7 @@ export default function AIAllInOneVivaPage() {
 
               <div className="flex gap-3 pt-4 border-t border-slate-800/80">
                 <button type="button" onClick={() => setScheduleOpen(false)} className="flex-1 py-2.5 border border-slate-800 rounded-xl text-sm text-slate-400 font-bold hover:bg-slate-800">Cancel</button>
-                <button type="submit" disabled={scheduleSubmitting} className="flex-1 py-2.5 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 font-bold text-sm text-white rounded-xl">
+                <button type="submit" disabled={scheduleSubmitting} className="flex-1 py-2.5 bg-gradient-to-r from-pink-500 to-slate-600 hover:from-pink-600 hover:to-slate-700 font-bold text-sm text-white rounded-xl">
                   {scheduleSubmitting ? "Scheduling..." : "Schedule & Publish"}
                 </button>
               </div>
@@ -773,7 +773,7 @@ export default function AIAllInOneVivaPage() {
             <div className="bg-[#111625] border border-slate-800 w-full max-w-4xl rounded-2xl p-6 space-y-6 my-8">
               <div className="flex justify-between items-center border-b border-slate-800 pb-3">
                 <h3 className="text-lg font-bold text-slate-200 flex items-center gap-2">
-                  <Sparkles className="w-5 h-5 text-indigo-400" />
+                  <Sparkles className="w-5 h-5 text-zinc-400" />
                   AI Question Extractor
                 </h3>
                 <button type="button" onClick={() => setExtractModalOpen(false)} className="p-1 hover:bg-slate-800 rounded"><X size={18} /></button>
@@ -787,7 +787,7 @@ export default function AIAllInOneVivaPage() {
                 <button
                   type="button"
                   onClick={() => setUploadOpen(true)}
-                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 font-bold text-xs text-white"
+                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-zinc-600 hover:bg-zinc-700 font-bold text-xs text-white"
                 >
                   <Upload className="w-4 h-4" />
                   <span>Upload PDF</span>
@@ -797,7 +797,7 @@ export default function AIAllInOneVivaPage() {
               <div className="space-y-3">
                 <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">Uploaded Materials</h4>
                 {materialsLoading && materials.length === 0 ? (
-                  <div className="flex justify-center py-6"><Loader2 className="w-6 h-6 animate-spin text-indigo-500" /></div>
+                  <div className="flex justify-center py-6"><Loader2 className="w-6 h-6 animate-spin text-zinc-500" /></div>
                 ) : materials.length === 0 ? (
                   <p className="text-xs text-slate-500 italic text-center py-6">No PDF documents uploaded yet.</p>
                 ) : (
@@ -813,7 +813,7 @@ export default function AIAllInOneVivaPage() {
                           <div className="min-w-0 flex-1 pr-2">
                             <p className="text-xs font-bold text-slate-200 truncate">{m.title}</p>
                             <div className="flex flex-wrap items-center gap-1.5 text-[9px] text-slate-400 mt-1">
-                              <span className="px-1.5 py-0.5 rounded bg-indigo-500/10 text-indigo-400 font-bold uppercase">{m.subject}</span>
+                              <span className="px-1.5 py-0.5 rounded bg-zinc-500/10 text-zinc-400 font-bold uppercase">{m.subject}</span>
                               <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full ${statusMeta.cls}`}>
                                 <StatusIcon size={8} />
                                 <span>{statusMeta.label}</span>
@@ -828,7 +828,7 @@ export default function AIAllInOneVivaPage() {
                               <button
                                 type="button"
                                 onClick={() => triggerGenerate(m)}
-                                className="flex items-center gap-1 px-2.5 py-1.5 rounded bg-indigo-600 hover:bg-indigo-700 font-bold text-[10px] text-white"
+                                className="flex items-center gap-1 px-2.5 py-1.5 rounded bg-zinc-600 hover:bg-zinc-700 font-bold text-[10px] text-white"
                               >
                                 <Sparkles size={9} />
                                 <span>Generate</span>
@@ -862,7 +862,7 @@ export default function AIAllInOneVivaPage() {
               <div className="space-y-3">
                 <div>
                   <label className="block text-xs font-bold text-slate-400 mb-1">Select PDF Document *</label>
-                  <input type="file" accept=".pdf" required onChange={e => setUploadFile(e.target.files[0])} className="w-full text-sm text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-indigo-600 file:text-white hover:file:bg-indigo-700 cursor-pointer" />
+                  <input type="file" accept=".pdf" required onChange={e => setUploadFile(e.target.files[0])} className="w-full text-sm text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-zinc-600 file:text-white hover:file:bg-zinc-700 cursor-pointer" />
                 </div>
                 <div>
                   <label className="block text-xs font-bold text-slate-400 mb-1">Title *</label>
@@ -878,7 +878,7 @@ export default function AIAllInOneVivaPage() {
               </div>
               <div className="flex gap-3 pt-2">
                 <button type="button" onClick={() => setUploadOpen(false)} className="flex-1 py-2.5 border border-slate-800 rounded-xl text-sm text-slate-400 font-bold hover:bg-slate-800">Cancel</button>
-                <button type="submit" disabled={uploading} className="flex-1 py-2.5 bg-indigo-600 hover:bg-indigo-700 font-bold text-sm text-white rounded-xl cursor-pointer">
+                <button type="submit" disabled={uploading} className="flex-1 py-2.5 bg-zinc-600 hover:bg-zinc-700 font-bold text-sm text-white rounded-xl cursor-pointer">
                   {uploading ? "Uploading..." : "Upload"}
                 </button>
               </div>
@@ -927,7 +927,7 @@ export default function AIAllInOneVivaPage() {
               <div className="flex gap-2">
                 {[5, 10, 15, 20].map(n => (
                   <button key={n} onClick={() => setGenCount(n)}
-                          className={`px-4 py-2 rounded-xl text-sm font-bold border transition-all cursor-pointer ${genCount === n ? "bg-indigo-600 text-white border-transparent" : "border-slate-800 text-slate-400 hover:border-slate-700"}`}>
+                          className={`px-4 py-2 rounded-xl text-sm font-bold border transition-all cursor-pointer ${genCount === n ? "bg-zinc-600 text-white border-transparent" : "border-slate-800 text-slate-400 hover:border-slate-700"}`}>
                     {n}
                   </button>
                 ))}
@@ -935,7 +935,7 @@ export default function AIAllInOneVivaPage() {
             </div>
             {genError && <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs">{genError}</div>}
             <button onClick={handleGenerateQuestions} disabled={generating}
-                    className="w-full py-3.5 rounded-2xl bg-indigo-600 hover:bg-indigo-700 font-bold text-sm text-white flex items-center justify-center gap-2 cursor-pointer">
+                    className="w-full py-3.5 rounded-2xl bg-zinc-600 hover:bg-zinc-700 font-bold text-sm text-white flex items-center justify-center gap-2 cursor-pointer">
               {generating ? <><Loader2 className="w-4 h-4 animate-spin" />Generating...</> : <><Sparkles className="w-4 h-4" />Generate Questions</>}
             </button>
           </div>
@@ -947,7 +947,7 @@ export default function AIAllInOneVivaPage() {
                 <div className="text-emerald-400 text-sm font-bold">✓ {saveResult.saved} questions added!</div>
               ) : (
                 <button onClick={handleSaveDraftToBank} disabled={savingToBank || approvedCount === 0}
-                        className="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 font-bold text-sm text-white disabled:opacity-50 cursor-pointer">
+                        className="px-5 py-2.5 rounded-xl bg-zinc-600 hover:bg-zinc-700 font-bold text-sm text-white disabled:opacity-50 cursor-pointer">
                   Save {approvedCount} to Bank
                 </button>
               )}
@@ -959,13 +959,13 @@ export default function AIAllInOneVivaPage() {
                   <div className="flex items-start gap-4 justify-between">
                     <div className="flex items-start gap-4 flex-1">
                       <button onClick={() => updateDraft(idx, "_approved", !q._approved)}
-                              className={`w-5 h-5 mt-1 rounded border flex items-center justify-center cursor-pointer shrink-0 ${q._approved ? "bg-indigo-500 border-indigo-500" : "border-slate-700"}`}>
+                              className={`w-5 h-5 mt-1 rounded border flex items-center justify-center cursor-pointer shrink-0 ${q._approved ? "bg-zinc-500 border-zinc-500" : "border-slate-700"}`}>
                         {q._approved && <Check size={12} />}
                       </button>
                       <div className="flex-1 space-y-2">
                         {q._editing ? (
                           <div className="space-y-3">
-                            <textarea rows={2} className="w-full p-3 bg-[#161b2b] border border-slate-800 rounded-xl text-sm focus:border-indigo-500 outline-none resize-none" value={q.questionText} onChange={e => updateDraft(idx, "questionText", e.target.value)} />
+                            <textarea rows={2} className="w-full p-3 bg-[#161b2b] border border-slate-800 rounded-xl text-sm focus:border-zinc-500 outline-none resize-none" value={q.questionText} onChange={e => updateDraft(idx, "questionText", e.target.value)} />
                             <div className="flex items-center gap-3">
                               <div className="flex-1">
                                 <label className="block text-[10px] font-bold text-slate-400 mb-1">Difficulty</label>
@@ -997,7 +997,7 @@ export default function AIAllInOneVivaPage() {
                           <Check size={14} />
                         </button>
                       ) : (
-                        <button onClick={() => updateDraft(idx, "_editing", true)} className="p-2 rounded hover:bg-indigo-500/10 hover:text-indigo-400 text-slate-400 cursor-pointer" title="Edit draft">
+                        <button onClick={() => updateDraft(idx, "_editing", true)} className="p-2 rounded hover:bg-zinc-500/10 hover:text-zinc-400 text-slate-400 cursor-pointer" title="Edit draft">
                           <Edit2 size={14} />
                         </button>
                       )}
@@ -1011,7 +1011,7 @@ export default function AIAllInOneVivaPage() {
               
               {generating && (
                 <div className="p-5 rounded-2xl border border-slate-800/40 bg-[#111625]/50 flex items-center justify-center space-x-3">
-                  <Loader2 className="w-5 h-5 animate-spin text-indigo-400" />
+                  <Loader2 className="w-5 h-5 animate-spin text-zinc-400" />
                   <span className="text-sm font-medium text-slate-400">Generating question {draftQuestions.length + 1} of {genCount}...</span>
                 </div>
               )}
@@ -1039,10 +1039,10 @@ export default function AIAllInOneVivaPage() {
               <div className="flex items-center space-x-2 text-xs text-slate-400 font-semibold">
                 <span className="cursor-pointer hover:underline" onClick={() => setSelectedSubject("")}>Question Bank</span>
                 <span>/</span>
-                <span className="text-indigo-400">{selectedSubject}</span>
+                <span className="text-zinc-400">{selectedSubject}</span>
               </div>
               <h1 className="text-2xl font-black mt-1 flex items-center gap-2">
-                <FolderOpen className="w-6 h-6 text-indigo-400 animate-pulse" />
+                <FolderOpen className="w-6 h-6 text-zinc-400 animate-pulse" />
                 {selectedSubject}
               </h1>
             </div>
@@ -1057,7 +1057,7 @@ export default function AIAllInOneVivaPage() {
                   setFormError("");
                   setModalOpen(true);
                 }}
-                className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 font-semibold text-xs text-white shadow-lg transition-all cursor-pointer"
+                className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-zinc-500 to-slate-600 hover:from-zinc-600 hover:to-slate-700 font-semibold text-xs text-white shadow-lg transition-all cursor-pointer"
               >
                 <Plus className="w-4 h-4" />
                 <span>Add Question</span>
@@ -1093,7 +1093,7 @@ export default function AIAllInOneVivaPage() {
                   </div>
                   {!(q.instituteId === null && user?.role !== "ADMIN") && (
                     <div className="flex items-center space-x-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button onClick={() => openEdit(q)} className="p-2 rounded hover:bg-indigo-500/10 hover:text-indigo-400 text-slate-400 cursor-pointer">
+                      <button onClick={() => openEdit(q)} className="p-2 rounded hover:bg-zinc-500/10 hover:text-zinc-400 text-slate-400 cursor-pointer">
                         <Edit2 size={13} />
                       </button>
                       <button onClick={() => setDeleteTarget({ id: q.id, questionText: q.questionText })} className="p-2 rounded hover:bg-rose-500/10 hover:text-rose-400 text-slate-400 cursor-pointer">
@@ -1144,12 +1144,12 @@ export default function AIAllInOneVivaPage() {
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-slate-800 pb-6">
           <div className="space-y-1.5">
             <div className="flex items-center space-x-2">
-              <div className="p-1.5 rounded-lg bg-indigo-500/10 text-indigo-400">
+              <div className="p-1.5 rounded-lg bg-zinc-500/10 text-zinc-400">
                 <Brain size={18} />
               </div>
-              <span className="text-xs font-bold uppercase tracking-widest text-indigo-400">AI Viva</span>
+              <span className="text-xs font-bold uppercase tracking-widest text-zinc-400">AI Viva</span>
             </div>
-            <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+            <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-zinc-400 via-slate-400 to-pink-400 bg-clip-text text-transparent">
               Viva Management Dashboard
             </h1>
             <p className="text-slate-400 text-sm">
@@ -1165,19 +1165,19 @@ export default function AIAllInOneVivaPage() {
                     onClick={() => { setSubjectModalError(""); setNewFolderSubjectName(""); setSubjectModalOpen(true); }}
                     className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 hover:bg-slate-800 font-medium text-xs text-slate-300 transition-all cursor-pointer"
                   >
-                    <Plus className="w-4 h-4 text-indigo-400" />
+                    <Plus className="w-4 h-4 text-zinc-400" />
                     <span>Add Folder</span>
                   </button>
                   <button
                     onClick={() => { setExtractModalOpen(true); fetchMaterials(); }}
                     className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 hover:bg-slate-800 font-medium text-xs text-slate-300 transition-all cursor-pointer"
                   >
-                    <Sparkles className="w-4 h-4 text-indigo-400" />
+                    <Sparkles className="w-4 h-4 text-zinc-400" />
                     <span>Extract from PDF</span>
                   </button>
                   <button
                     onClick={openCreate}
-                    className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 font-semibold text-xs text-white shadow-lg transition-all cursor-pointer"
+                    className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-zinc-500 to-slate-600 hover:from-zinc-600 hover:to-slate-700 font-semibold text-xs text-white shadow-lg transition-all cursor-pointer"
                   >
                     <Plus className="w-4 h-4" />
                     <span>Add Question</span>
@@ -1202,7 +1202,7 @@ export default function AIAllInOneVivaPage() {
                   setScheduleSuccess("");
                   setScheduleOpen(true);
                 }}
-                className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 font-bold text-xs text-white shadow transition-all cursor-pointer"
+                className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-pink-500 to-slate-600 hover:from-pink-600 hover:to-slate-700 font-bold text-xs text-white shadow transition-all cursor-pointer"
               >
                 <Plus className="w-4 h-4" />
                 <span>Schedule Viva</span>
@@ -1216,14 +1216,14 @@ export default function AIAllInOneVivaPage() {
           <button
             type="button"
             onClick={() => setSubSectionTab("bank")}
-            className={`flex-1 py-2 px-4 rounded-lg font-bold text-xs transition-all cursor-pointer ${subSectionTab === "bank" ? "bg-indigo-600 text-white" : "text-slate-400 hover:text-slate-200"}`}
+            className={`flex-1 py-2 px-4 rounded-lg font-bold text-xs transition-all cursor-pointer ${subSectionTab === "bank" ? "bg-zinc-600 text-white" : "text-slate-400 hover:text-slate-200"}`}
           >
             Question Bank
           </button>
           <button
             type="button"
             onClick={() => setSubSectionTab("schedule")}
-            className={`flex-1 py-2 px-4 rounded-lg font-bold text-xs transition-all cursor-pointer ${subSectionTab === "schedule" ? "bg-indigo-600 text-white" : "text-slate-400 hover:text-slate-200"}`}
+            className={`flex-1 py-2 px-4 rounded-lg font-bold text-xs transition-all cursor-pointer ${subSectionTab === "schedule" ? "bg-zinc-600 text-white" : "text-slate-400 hover:text-slate-200"}`}
           >
             Schedule Viva
           </button>
@@ -1245,7 +1245,7 @@ export default function AIAllInOneVivaPage() {
                 { label: "Hard Questions", value: byDiff.HARD, icon: Layers, color: "rose" },
               ].map(({ label, value, icon: Icon, color }) => (
                 <div key={label} className="p-4 rounded-xl border border-slate-800 bg-slate-900/30 flex items-center space-x-3">
-                  <div className={`p-2 rounded-lg bg-indigo-500/10 text-indigo-400 shrink-0`}><Icon size={16} /></div>
+                  <div className={`p-2 rounded-lg bg-zinc-500/10 text-zinc-400 shrink-0`}><Icon size={16} /></div>
                   <div>
                     <p className="text-xl font-black">{value}</p>
                     <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">{label}</p>
@@ -1260,14 +1260,14 @@ export default function AIAllInOneVivaPage() {
                 <button
                   type="button"
                   onClick={() => { setActiveTab("institute"); setSelectedSubject(""); setQuestionPage(1); }}
-                  className={`flex-1 py-1.5 px-3 rounded-lg font-bold text-xs transition-all cursor-pointer ${activeTab === "institute" ? "bg-indigo-600 text-white" : "text-slate-400 hover:text-slate-200"}`}
+                  className={`flex-1 py-1.5 px-3 rounded-lg font-bold text-xs transition-all cursor-pointer ${activeTab === "institute" ? "bg-zinc-600 text-white" : "text-slate-400 hover:text-slate-200"}`}
                 >
                   Your Institute
                 </button>
                 <button
                   type="button"
                   onClick={() => { setActiveTab("global"); setSelectedSubject(""); setQuestionPage(1); }}
-                  className={`flex-1 py-1.5 px-3 rounded-lg font-bold text-xs transition-all cursor-pointer ${activeTab === "global" ? "bg-indigo-600 text-white" : "text-slate-400 hover:text-slate-200"}`}
+                  className={`flex-1 py-1.5 px-3 rounded-lg font-bold text-xs transition-all cursor-pointer ${activeTab === "global" ? "bg-zinc-600 text-white" : "text-slate-400 hover:text-slate-200"}`}
                 >
                   Global Bank
                 </button>
@@ -1276,14 +1276,14 @@ export default function AIAllInOneVivaPage() {
 
             {/* Folder Grid */}
             <div className="space-y-4">
-              <h2 className="text-lg font-bold flex items-center gap-2 text-indigo-300">
-                <Folder className="w-5 h-5 text-indigo-400" />
+              <h2 className="text-lg font-bold flex items-center gap-2 text-zinc-300">
+                <Folder className="w-5 h-5 text-zinc-400" />
                 Question Bank Subjects
               </h2>
 
               {loading ? (
                 <div className="flex items-center justify-center h-24">
-                  <Loader2 className="w-6 h-6 animate-spin text-indigo-500" />
+                  <Loader2 className="w-6 h-6 animate-spin text-zinc-500" />
                 </div>
               ) : subjectNames.length === 0 ? (
                 <div className="p-8 rounded-xl border border-dashed border-slate-800 text-center text-slate-500">
@@ -1301,10 +1301,10 @@ export default function AIAllInOneVivaPage() {
                           setSelectedSubject(subject);
                           setQuestionPage(1);
                         }}
-                        className="group flex items-center justify-between gap-4 p-5 rounded-xl bg-[#111625] border border-slate-800 hover:border-indigo-500/40 text-left transition-all cursor-pointer outline-none font-sans"
+                        className="group flex items-center justify-between gap-4 p-5 rounded-xl bg-[#111625] border border-slate-800 hover:border-zinc-500/40 text-left transition-all cursor-pointer outline-none font-sans"
                       >
                         <div className="flex items-center gap-3 min-w-0">
-                          <div className="p-2 rounded-lg bg-indigo-500/10 text-indigo-400 shrink-0">
+                          <div className="p-2 rounded-lg bg-zinc-500/10 text-zinc-400 shrink-0">
                             <Folder className="w-4 h-4" />
                           </div>
                           <div className="min-w-0">
@@ -1314,7 +1314,7 @@ export default function AIAllInOneVivaPage() {
                             </p>
                           </div>
                         </div>
-                        <ChevronRight className="w-4 h-4 text-slate-600 group-hover:text-indigo-400 transition-colors" />
+                        <ChevronRight className="w-4 h-4 text-slate-600 group-hover:text-zinc-400 transition-colors" />
                       </button>
                     );
                   })}
@@ -1352,7 +1352,7 @@ export default function AIAllInOneVivaPage() {
                     <div key={viva.id} className="p-5 rounded-xl border border-slate-800 bg-slate-900/30 flex flex-col justify-between space-y-4 hover:border-slate-700 transition-all font-sans">
                       <div className="space-y-3">
                         <div className="flex justify-between items-center">
-                          <span className="text-xs font-bold px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-400">{viva.subject}</span>
+                          <span className="text-xs font-bold px-2 py-0.5 rounded bg-zinc-500/10 text-zinc-400">{viva.subject}</span>
                           <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${status.color}`}>{status.label}</span>
                         </div>
                         <div>
@@ -1368,7 +1368,7 @@ export default function AIAllInOneVivaPage() {
                           <button
                             type="button"
                             onClick={() => openEditViva(viva)}
-                            className="inline-flex items-center justify-center p-1.5 rounded-lg text-indigo-400 hover:text-indigo-300 hover:bg-indigo-500/10 cursor-pointer transition-colors"
+                            className="inline-flex items-center justify-center p-1.5 rounded-lg text-zinc-400 hover:text-zinc-300 hover:bg-zinc-500/10 cursor-pointer transition-colors"
                             title="Edit Viva Details"
                           >
                             <Edit2 className="w-4 h-4" />

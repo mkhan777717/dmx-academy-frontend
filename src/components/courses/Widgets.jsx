@@ -54,7 +54,7 @@ export function PromptPlayground() {
   return (
     <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
       <div className="flex items-center space-x-2 border-b border-slate-100 pb-3 mb-4">
-        <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600">
+        <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-zinc-50 text-zinc-600">
           <Sparkles size={16} />
         </div>
         <h4 className="font-bold text-slate-800 text-sm">Interactive Prompt Engineering Sandbox</h4>
@@ -65,7 +65,7 @@ export function PromptPlayground() {
           <label className="block text-xs font-semibold text-slate-500 mb-1">1. Role / Persona ("Act as a...")</label>
           <input
             type="text"
-            className="w-full rounded-lg border border-slate-200 px-3 py-1.5 text-xs text-slate-700 focus:border-indigo-500 focus:outline-none"
+            className="w-full rounded-lg border border-slate-200 px-3 py-1.5 text-xs text-slate-700 focus:border-zinc-500 focus:outline-none"
             value={role}
             onChange={(e) => setRole(e.target.value)}
             placeholder="e.g., Senior JavaScript Developer, Pirate Captain, etc."
@@ -75,7 +75,7 @@ export function PromptPlayground() {
         <div>
           <label className="block text-xs font-semibold text-slate-500 mb-1">2. Context / Background (The scenario)</label>
           <textarea
-            className="w-full rounded-lg border border-slate-200 px-3 py-1.5 text-xs text-slate-700 focus:border-indigo-500 focus:outline-none h-14 resize-none"
+            className="w-full rounded-lg border border-slate-200 px-3 py-1.5 text-xs text-slate-700 focus:border-zinc-500 focus:outline-none h-14 resize-none"
             value={context}
             onChange={(e) => setContext(e.target.value)}
             placeholder="Describe the product or situation..."
@@ -87,7 +87,7 @@ export function PromptPlayground() {
             <label className="block text-xs font-semibold text-slate-500 mb-1">3. Specific Task (What to do)</label>
             <input
               type="text"
-              className="w-full rounded-lg border border-slate-200 px-3 py-1.5 text-xs text-slate-700 focus:border-indigo-500 focus:outline-none"
+              className="w-full rounded-lg border border-slate-200 px-3 py-1.5 text-xs text-slate-700 focus:border-zinc-500 focus:outline-none"
               value={task}
               onChange={(e) => setTask(e.target.value)}
               placeholder="e.g., Write a product email, slogan, etc."
@@ -97,7 +97,7 @@ export function PromptPlayground() {
             <label className="block text-xs font-semibold text-slate-500 mb-1">4. Format & Constraints</label>
             <input
               type="text"
-              className="w-full rounded-lg border border-slate-200 px-3 py-1.5 text-xs text-slate-700 focus:border-indigo-500 focus:outline-none"
+              className="w-full rounded-lg border border-slate-200 px-3 py-1.5 text-xs text-slate-700 focus:border-zinc-500 focus:outline-none"
               value={format}
               onChange={(e) => setFormat(e.target.value)}
               placeholder="e.g., 3 bullet points, under 100 words..."
@@ -108,7 +108,7 @@ export function PromptPlayground() {
         <button
           onClick={testPrompt}
           disabled={isGenerating}
-          className="flex w-full items-center justify-center space-x-1.5 rounded-lg bg-indigo-600 px-4 py-2 text-xs font-semibold text-white hover:bg-indigo-700 transition-colors disabled:bg-slate-300"
+          className="flex w-full items-center justify-center space-x-1.5 rounded-lg bg-zinc-600 px-4 py-2 text-xs font-semibold text-white hover:bg-zinc-700 transition-colors disabled:bg-slate-300"
         >
           {isGenerating ? (
             <>
@@ -172,7 +172,7 @@ export function TokenVisualizer() {
     const wordsArray = text.trim().split(/\s+/);
     const tokenList = [];
     const colors = [
-      "bg-indigo-100 text-indigo-800 border-indigo-200",
+      "bg-zinc-100 text-zinc-800 border-zinc-200",
       "bg-violet-100 text-violet-800 border-violet-200",
       "bg-pink-100 text-pink-800 border-pink-200",
       "bg-emerald-100 text-emerald-800 border-emerald-200",
@@ -225,7 +225,7 @@ export function TokenVisualizer() {
           <textarea
             value={text}
             onChange={(e) => setText(e.target.value)}
-            className="w-full rounded-lg border border-slate-200 p-2.5 text-xs text-slate-700 focus:border-indigo-500 focus:outline-none h-20 resize-none leading-relaxed"
+            className="w-full rounded-lg border border-slate-200 p-2.5 text-xs text-slate-700 focus:border-zinc-500 focus:outline-none h-20 resize-none leading-relaxed"
             placeholder="Type your sentences here..."
           />
         </div>
@@ -264,8 +264,8 @@ export function TokenVisualizer() {
             <div className="text-[9px] font-semibold text-slate-400 uppercase">Words</div>
           </div>
           <div className="text-center">
-            <div className="text-lg font-bold text-indigo-600">{stats.tokensCount}</div>
-            <div className="text-[9px] font-semibold text-indigo-400 uppercase">Est. Tokens</div>
+            <div className="text-lg font-bold text-zinc-600">{stats.tokensCount}</div>
+            <div className="text-[9px] font-semibold text-zinc-400 uppercase">Est. Tokens</div>
           </div>
         </div>
 
@@ -296,7 +296,7 @@ export function TokenVisualizer() {
           </div>
           <div className="h-1.5 w-full bg-slate-200 rounded-full overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-violet-500 to-indigo-500 transition-all duration-300"
+              className="h-full bg-gradient-to-r from-violet-500 to-zinc-500 transition-all duration-300"
               style={{ width: `${Math.min(100, (stats.tokensCount / 4000) * 100)}%` }}
             />
           </div>
@@ -450,14 +450,14 @@ export function ClassifierSandbox() {
             <div className="flex gap-2">
               <input
                 type="text"
-                className="flex-grow rounded-lg border border-slate-200 px-3 py-2 text-xs text-slate-700 focus:border-indigo-500 focus:outline-none"
+                className="flex-grow rounded-lg border border-slate-200 px-3 py-2 text-xs text-slate-700 focus:border-zinc-500 focus:outline-none"
                 placeholder="Type something like: You won a cash reward..."
                 value={customText}
                 onChange={(e) => setCustomText(e.target.value)}
               />
               <button
                 onClick={handleCustomPredict}
-                className="flex items-center space-x-1 rounded-lg bg-indigo-600 px-3.5 py-2 text-xs font-semibold text-white hover:bg-indigo-700 transition-colors"
+                className="flex items-center space-x-1 rounded-lg bg-zinc-600 px-3.5 py-2 text-xs font-semibold text-white hover:bg-zinc-700 transition-colors"
               >
                 <Send size={12} />
                 <span>Predict</span>

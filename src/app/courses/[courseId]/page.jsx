@@ -638,7 +638,7 @@ export default function DynamicCoursePage() {
           </a>
           <button 
             onClick={() => setIsSidebarOpen(false)}
-            className="rounded-lg p-1 hover:bg-slate-200/20 md:hidden"
+            className="rounded-lg p-1 transition-colors hover:bg-[var(--bg-secondary)] md:hidden"
             style={{ color: "var(--text-secondary)" }}
           >
             <X size={20} />
@@ -966,7 +966,7 @@ export default function DynamicCoursePage() {
                           : { backgroundColor: "var(--bg-card)", border: "1px solid var(--border-primary)", color: "var(--text-secondary)" }
                       }
                     >
-                      <CheckCircle2 size={14} className={completedLessons.includes(activeLesson.id) ? "text-indigo-500" : "text-slate-400"} />
+                      <CheckCircle2 size={14} className={completedLessons.includes(activeLesson.id) ? "text-violet-500" : "text-[var(--text-muted)]"} />
                       <span>{completedLessons.includes(activeLesson.id) ? "Completed" : "Mark as Complete"}</span>
                     </button>
                   </div>
@@ -1091,7 +1091,7 @@ export default function DynamicCoursePage() {
                               style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}
                             >
                               <div className="space-y-1">
-                                <div className="flex items-center justify-between text-xs font-bold group-hover:text-indigo-500 transition-colors" style={{ color: "var(--text-primary)" }}>
+                                <div className="flex items-center justify-between text-xs font-bold group-hover:text-violet-500 transition-colors" style={{ color: "var(--text-primary)" }}>
                                   <span>{item.name}</span>
                                   <ExternalLink size={12} style={{ color: "var(--text-muted)" }} />
                                 </div>

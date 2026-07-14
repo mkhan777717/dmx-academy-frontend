@@ -313,30 +313,30 @@ export default function FlexDojo({ onProgressChange, savedProgress }) {
   };
 
   return (
-<div className="grid grid-cols-1 lg:grid-cols-12 gap-6 text-[#E8E6E1] bg-[#24133F]/20 backdrop-blur-md p-3 md:p-6 rounded-3xl border border-purple-500/20 shadow-2xl relative overflow-hidden font-sans">
+<div className="grid grid-cols-1 lg:grid-cols-12 gap-6 text-[#E8E6E1] bg-[#24133F]/20 backdrop-blur-md p-3 md:p-6 rounded-3xl border border-slate-500/20 shadow-2xl relative overflow-hidden font-sans">
       
       {/* Decorative CRT scanline background glow */}
       <div className="absolute inset-0 pointer-events-none opacity-5 bg-[linear-gradient(rgba(18,20,28,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[size:100%_4px,6px_100%] z-50"></div>
 
       {/* Top Arcade/Terminal HUD Info Row */}
-      <div className="lg:col-span-12 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 bg-[#2C184E]/40 p-4 rounded-2xl border border-purple-500/20 z-10">
+      <div className="lg:col-span-12 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 bg-[#2C184E]/40 p-4 rounded-2xl border border-slate-500/20 z-10">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.15)] animate-pulse">
+          <div className="w-10 h-10 rounded-xl bg-slate-500/10 border border-slate-500/20 flex items-center justify-center text-slate-400 shadow-[0_0_15px_rgba(168,85,247,0.15)] animate-pulse">
             <Trophy size={18} />
           </div>
           <div>
             <h2 className="font-display font-black text-sm tracking-tight text-white uppercase">
               FLEX DOJO COMPILER
             </h2>
-            <p className="text-[10px] font-mono text-purple-300/50 uppercase tracking-wider">
-              Quadrant Alignment Protocol // Streak: <span className="text-purple-300 font-bold">{streak}</span>
+            <p className="text-[10px] font-mono text-slate-300/50 uppercase tracking-wider">
+              Quadrant Alignment Protocol // Streak: <span className="text-slate-300 font-bold">{streak}</span>
             </p>
           </div>
         </div>
 
         {/* Level Controls */}
         <div className="flex items-center justify-between md:justify-end gap-3 font-mono">
-          <div className="flex items-center gap-1.5 bg-[#341B5C]/35 p-1 rounded-xl border border-purple-500/15">
+          <div className="flex items-center gap-1.5 bg-[#341B5C]/35 p-1 rounded-xl border border-slate-500/15">
             <button
               onClick={handlePrevLevel}
               disabled={currentLevelIdx === 0}
@@ -358,15 +358,15 @@ export default function FlexDojo({ onProgressChange, savedProgress }) {
 
           <button
             onClick={() => setAudioEnabled(!audioEnabled)}
-            className="p-2.5 rounded-xl border border-purple-500/15 bg-[#341B5C]/35 text-purple-300 hover:text-white transition-all cursor-pointer"
+            className="p-2.5 rounded-xl border border-slate-500/15 bg-[#341B5C]/35 text-slate-300 hover:text-white transition-all cursor-pointer"
           >
-            {audioEnabled ? <Volume2 size={13} className="text-purple-400" /> : <VolumeX size={13} />}
+            {audioEnabled ? <Volume2 size={13} className="text-slate-400" /> : <VolumeX size={13} />}
           </button>
         </div>
       </div>
 
       {/* Grid check list map */}
-      <div className="lg:col-span-12 flex flex-wrap gap-2 p-2 bg-[#2C184E]/40 rounded-2xl border border-purple-500/20 z-10">
+      <div className="lg:col-span-12 flex flex-wrap gap-2 p-2 bg-[#2C184E]/40 rounded-2xl border border-slate-500/20 z-10">
         {LEVELS.map((lvl, idx) => {
           const isCompleted = completedLevels.includes(lvl.level);
           const isActive = currentLevelIdx === idx;
@@ -376,10 +376,10 @@ export default function FlexDojo({ onProgressChange, savedProgress }) {
               onClick={() => handleSelectLevel(idx)}
               className={`flex-1 min-w-[36px] py-2 rounded-xl font-mono text-xs font-black tracking-wide border transition-all cursor-pointer text-center ${
                 isActive
-                  ? "bg-purple-600 text-white border-purple-400 shadow-[0_0_12px_rgba(168,85,247,0.25)]"
+                  ? "bg-slate-600 text-white border-slate-400 shadow-[0_0_12px_rgba(168,85,247,0.25)]"
                   : isCompleted
-                  ? "bg-purple-500/20 text-[#A78BFA] border border-purple-500/30 hover:bg-purple-500/30"
-                  : "bg-[#24133F]/35 border border-purple-500/15 text-purple-300/60 hover:text-white"
+                  ? "bg-slate-500/20 text-[#A78BFA] border border-slate-500/30 hover:bg-slate-500/30"
+                  : "bg-[#24133F]/35 border border-slate-500/15 text-slate-300/60 hover:text-white"
               }`}
             >
               {lvl.level}
@@ -391,44 +391,44 @@ export default function FlexDojo({ onProgressChange, savedProgress }) {
       {/* Left Column: Visual IDE Layout */}
       <div className="lg:col-span-6 flex flex-col space-y-6 z-10">
         {/* Level description block */}
-        <div className="bg-[#24133F]/40 p-5 rounded-2xl border border-purple-500/20 relative overflow-hidden space-y-2.5 backdrop-blur-md">
-          <div className="absolute top-0 right-0 w-24 h-24 bg-purple-500/5 rounded-full blur-2xl pointer-events-none"></div>
+        <div className="bg-[#24133F]/40 p-5 rounded-2xl border border-slate-500/20 relative overflow-hidden space-y-2.5 backdrop-blur-md">
+          <div className="absolute top-0 right-0 w-24 h-24 bg-slate-500/5 rounded-full blur-2xl pointer-events-none"></div>
           <span className="text-[9px] font-mono font-extrabold uppercase tracking-widest text-[#7CFFB2] bg-[#7CFFB2]/10 border border-[#7CFFB2]/20 px-2 py-0.5 rounded-md">
             Quadrant Objective
           </span>
           <h3 className="font-display font-black text-white text-base">
             {currentLevel.title}
           </h3>
-          <p className="text-xs leading-relaxed text-purple-300/50">
+          <p className="text-xs leading-relaxed text-slate-300/50">
             {currentLevel.instructions}
           </p>
         </div>
 
         {/* IDE mockup editor workspace */}
-        <div className="bg-[#24133F]/45 rounded-2xl border border-purple-500/20 overflow-hidden flex flex-col relative shadow-lg backdrop-blur-md">
+        <div className="bg-[#24133F]/45 rounded-2xl border border-slate-500/20 overflow-hidden flex flex-col relative shadow-lg backdrop-blur-md">
           
           {/* File explorer navigation header */}
-          <div className="bg-[#150B25] border-b border-purple-500/10 flex items-center justify-between px-4 py-2.5">
+          <div className="bg-[#150B25] border-b border-slate-500/10 flex items-center justify-between px-4 py-2.5">
             <div className="flex items-center space-x-1">
               <span className="w-2.5 h-2.5 rounded-full bg-rose-500/80"></span>
               <span className="w-2.5 h-2.5 rounded-full bg-amber-500/80"></span>
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/80"></span>
             </div>
-            <div className="text-[10px] font-mono font-extrabold tracking-widest uppercase text-purple-300 flex items-center gap-1.5">
-              <FileCode size={12} className="text-purple-400" />
+            <div className="text-[10px] font-mono font-extrabold tracking-widest uppercase text-slate-300 flex items-center gap-1.5">
+              <FileCode size={12} className="text-slate-400" />
               <span>sandbox-dojo.css</span>
             </div>
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setShowHint(!showHint)}
-                className={`p-1 rounded text-purple-300 hover:text-white transition-all cursor-pointer ${showHint ? "text-[#FFB86B]" : ""}`}
+                className={`p-1 rounded text-slate-300 hover:text-white transition-all cursor-pointer ${showHint ? "text-[#FFB86B]" : ""}`}
                 title="Hint Overlay"
               >
                 <HelpCircle size={14} />
               </button>
               <button
                 onClick={handleResetLevel}
-                className="p-1 rounded text-purple-300 hover:text-white transition-all cursor-pointer"
+                className="p-1 rounded text-slate-300 hover:text-white transition-all cursor-pointer"
                 title="Reset Workspace"
               >
                 <RefreshCw size={14} />
@@ -439,22 +439,22 @@ export default function FlexDojo({ onProgressChange, savedProgress }) {
           {/* IDE layout wrapper - File Tree + Code Editor */}
           <div className="flex min-h-[220px]">
             {/* Sidebar File explorer pane */}
-            <div className="w-32 bg-[#0B0415]/70 border-r border-purple-500/10 p-3 hidden sm:flex flex-col space-y-4 select-none font-mono">
+            <div className="w-32 bg-[#0B0415]/70 border-r border-slate-500/10 p-3 hidden sm:flex flex-col space-y-4 select-none font-mono">
               <div className="space-y-1">
-                <span className="text-[9px] font-extrabold text-purple-400/50 uppercase tracking-wider flex items-center gap-1">
+                <span className="text-[9px] font-extrabold text-slate-400/50 uppercase tracking-wider flex items-center gap-1">
                   <FolderOpen size={10} />
                   <span>WORKSPACE</span>
                 </span>
                 <div className="space-y-1 pl-1">
-                  <div className="text-[10px] text-white bg-[#341B5C]/50 px-2 py-1 rounded-md flex items-center gap-1.5 cursor-pointer font-bold border border-purple-500/15">
-                    <FileCode size={10} className="text-purple-400" />
+                  <div className="text-[10px] text-white bg-[#341B5C]/50 px-2 py-1 rounded-md flex items-center gap-1.5 cursor-pointer font-bold border border-slate-500/15">
+                    <FileCode size={10} className="text-slate-400" />
                     <span className="truncate">dojo.css</span>
                   </div>
-                  <div className="text-[10px] text-purple-300/40 px-2 py-1 flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer">
+                  <div className="text-[10px] text-slate-300/40 px-2 py-1 flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer">
                     <FileCode size={10} />
                     <span className="truncate">index.html</span>
                   </div>
-                  <div className="text-[10px] text-purple-300/40 px-2 py-1 flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer">
+                  <div className="text-[10px] text-slate-300/40 px-2 py-1 flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer">
                     <FileCode size={10} />
                     <span className="truncate">vars.json</span>
                   </div>
@@ -465,7 +465,7 @@ export default function FlexDojo({ onProgressChange, savedProgress }) {
             {/* Code inputs workspace */}
             <div className="flex-1 flex font-mono text-xs p-4 relative bg-[#120721]/95">
               {/* Line numbers column */}
-              <div className="text-purple-400/40 select-none text-right pr-3.5 border-r border-purple-500/10 flex flex-col space-y-1">
+              <div className="text-slate-400/40 select-none text-right pr-3.5 border-r border-slate-500/10 flex flex-col space-y-1">
                 <span>1</span>
                 <span>2</span>
                 <span>3</span>
@@ -479,9 +479,9 @@ export default function FlexDojo({ onProgressChange, savedProgress }) {
                 <div className="text-[#6B7080] select-none">
                   #dojo-container &#123;
                 </div>
-                <div className="text-purple-400/70 pl-4 font-bold select-none flex items-center gap-2">
+                <div className="text-slate-400/70 pl-4 font-bold select-none flex items-center gap-2">
                   display: flex;
-                  <span className="text-[9px] font-mono font-normal text-purple-400 bg-[#341B5C]/35 border border-purple-500/10 px-1.5 rounded-md uppercase">system default</span>
+                  <span className="text-[9px] font-mono font-normal text-slate-400 bg-[#341B5C]/35 border border-slate-500/10 px-1.5 rounded-md uppercase">system default</span>
                 </div>
                 <textarea
                   ref={editorRef}
@@ -502,8 +502,8 @@ export default function FlexDojo({ onProgressChange, savedProgress }) {
           </div>
 
           {/* Code suggestions clickable tags pills */}
-          <div className="bg-[#150B25] p-3 border-t border-purple-500/10 flex flex-wrap gap-1.5 items-center z-10">
-            <span className="text-[9px] font-mono font-bold uppercase tracking-wider text-purple-400 mr-1.5">
+          <div className="bg-[#150B25] p-3 border-t border-slate-500/10 flex flex-wrap gap-1.5 items-center z-10">
+            <span className="text-[9px] font-mono font-bold uppercase tracking-wider text-slate-400 mr-1.5">
               Suggestions:
             </span>
             {[
@@ -518,7 +518,7 @@ export default function FlexDojo({ onProgressChange, savedProgress }) {
               <button
                 key={s}
                 onClick={() => handleInsertSuggestion(s + "\n")}
-                className="px-2 py-1 rounded-lg border border-purple-500/20 bg-[#341B5C]/35 hover:bg-purple-900/40 hover:border-purple-500/35 text-purple-300 text-[10px] font-mono tracking-tight transition-all cursor-pointer"
+                className="px-2 py-1 rounded-lg border border-slate-500/20 bg-[#341B5C]/35 hover:bg-slate-900/40 hover:border-slate-500/35 text-slate-300 text-[10px] font-mono tracking-tight transition-all cursor-pointer"
               >
                 {s.replace(";", "")}
               </button>
@@ -526,8 +526,8 @@ export default function FlexDojo({ onProgressChange, savedProgress }) {
           </div>
 
           {/* Interactive Compiler terminal logger pane */}
-          <div className="bg-[#0B0415]/95 p-3 border-t border-purple-500/15 font-mono text-[9px] flex flex-col space-y-1.5 select-none relative min-h-[90px]">
-            <div className="flex items-center justify-between text-purple-400/60 border-b border-purple-500/10 pb-1 mb-1">
+          <div className="bg-[#0B0415]/95 p-3 border-t border-slate-500/15 font-mono text-[9px] flex flex-col space-y-1.5 select-none relative min-h-[90px]">
+            <div className="flex items-center justify-between text-slate-400/60 border-b border-slate-500/10 pb-1 mb-1">
               <span className="flex items-center gap-1">
                 <TerminalIcon size={10} />
                 <span>DIAGNOSTIC CONSOLE LOGS</span>
@@ -543,13 +543,13 @@ export default function FlexDojo({ onProgressChange, savedProgress }) {
                   <span className="text-[#7CFFB2]">{log.text}</span>
                 )}
                 {log.type === "system" && (
-                  <span className="text-indigo-400">{log.text}</span>
+                  <span className="text-zinc-400">{log.text}</span>
                 )}
                 {log.type === "warn" && (
                   <span className="text-[#FFB86B]">{log.text}</span>
                 )}
                 {log.type === "info" && (
-                  <span className="text-purple-200">{log.text}</span>
+                  <span className="text-slate-200">{log.text}</span>
                 )}
                 {log.type === "input" && (
                   <span className="text-[#E8E6E1]">{log.text}</span>
@@ -565,7 +565,7 @@ export default function FlexDojo({ onProgressChange, savedProgress }) {
                 initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 15 }}
-                className="absolute bottom-0 left-0 right-0 p-4 bg-[#1A0C2F] border-t border-purple-500/20 text-xs space-y-2 z-20 shadow-xl"
+                className="absolute bottom-0 left-0 right-0 p-4 bg-[#1A0C2F] border-t border-slate-500/20 text-xs space-y-2 z-20 shadow-xl"
               >
                 <div className="flex items-center justify-between">
                   <span className="font-extrabold uppercase text-[#FFB86B] flex items-center gap-1">
@@ -582,7 +582,7 @@ export default function FlexDojo({ onProgressChange, savedProgress }) {
                 <p className="text-[#E8E6E1] leading-relaxed">
                   Apply this alignment code into the workspace CSS:
                 </p>
-                <code className="block font-mono text-[10px] select-all bg-[#0B0415]/90 p-2.5 rounded-lg border border-purple-500/20 text-[#7CFFB2] font-black">
+                <code className="block font-mono text-[10px] select-all bg-[#0B0415]/90 p-2.5 rounded-lg border border-slate-500/20 text-[#7CFFB2] font-black">
                   {currentLevel.hint}
                 </code>
               </motion.div>
@@ -635,7 +635,7 @@ export default function FlexDojo({ onProgressChange, savedProgress }) {
             Visual Grid Sandbox
           </span>
           <div className="flex items-center gap-1.5 font-mono text-[10px]">
-            <span className="text-purple-300/60 uppercase">TARGET OVERLAP:</span>
+            <span className="text-slate-300/60 uppercase">TARGET OVERLAP:</span>
             <span className={`font-bold ${isSuccess ? "text-[#7CFFB2]" : "text-amber-400"}`}>
               {matchPercentage}%
             </span>
@@ -643,7 +643,7 @@ export default function FlexDojo({ onProgressChange, savedProgress }) {
         </div>
 
         {/* Visual Arena Workspace */}
-        <div className="flex-grow min-h-[300px] md:min-h-[380px] bg-[#120721]/95 border border-purple-500/20 rounded-2xl relative overflow-hidden flex flex-col items-stretch">
+        <div className="flex-grow min-h-[300px] md:min-h-[380px] bg-[#120721]/95 border border-slate-500/20 rounded-2xl relative overflow-hidden flex flex-col items-stretch">
           
           {/* Target Container */}
           <div 
@@ -657,7 +657,7 @@ export default function FlexDojo({ onProgressChange, savedProgress }) {
             {currentLevel.items.map((item, i) => (
               <div 
                 key={item.id} 
-                className="dojo-target w-12 h-12 border-2 border-dashed border-purple-400 rounded-xl flex items-center justify-center text-purple-400 text-lg font-bold"
+                className="dojo-target w-12 h-12 border-2 border-dashed border-slate-400 rounded-xl flex items-center justify-center text-slate-400 text-lg font-bold"
               >
                 {item.emoji}
               </div>
@@ -673,7 +673,7 @@ export default function FlexDojo({ onProgressChange, savedProgress }) {
             {currentLevel.items.map((item, i) => (
               <div 
                 key={item.id} 
-                className="dojo-item w-12 h-12 bg-purple-600 border border-purple-400 text-white rounded-xl flex items-center justify-center text-lg font-black shadow-lg animate-float"
+                className="dojo-item w-12 h-12 bg-slate-600 border border-slate-400 text-white rounded-xl flex items-center justify-center text-lg font-black shadow-lg animate-float"
                 style={{ animationDelay: `${i * 0.2}s` }}
               >
                 {item.emoji}
@@ -683,12 +683,12 @@ export default function FlexDojo({ onProgressChange, savedProgress }) {
         </div>
 
         {/* Snapping progress bar */}
-        <div className="bg-[#1C0F32]/50 border border-purple-500/20 rounded-xl p-3 flex items-center gap-3">
-          <span className="text-[9px] font-mono text-purple-300 uppercase tracking-wider shrink-0">SNAPPING MATCH:</span>
-          <div className="flex-1 h-2 bg-purple-950/40 border border-purple-950 rounded-full overflow-hidden">
+        <div className="bg-[#1C0F32]/50 border border-slate-500/20 rounded-xl p-3 flex items-center gap-3">
+          <span className="text-[9px] font-mono text-slate-300 uppercase tracking-wider shrink-0">SNAPPING MATCH:</span>
+          <div className="flex-1 h-2 bg-slate-950/40 border border-slate-950 rounded-full overflow-hidden">
             <div 
               className={`h-full transition-all duration-300 ${
-                isSuccess ? "bg-[#7CFFB2] shadow-[0_0_10px_rgba(124,255,178,0.5)]" : "bg-purple-500"
+                isSuccess ? "bg-[#7CFFB2] shadow-[0_0_10px_rgba(124,255,178,0.5)]" : "bg-slate-500"
               }`}
               style={{ width: `${matchPercentage}%` }}
             ></div>

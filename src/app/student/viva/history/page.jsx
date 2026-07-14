@@ -214,7 +214,7 @@ export default function VivaHistoryPage() {
                     {/* Meta */}
                     <div className="space-y-1">
                       <div className="flex items-center space-x-2 flex-wrap gap-1">
-                        <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-indigo-500/10 text-indigo-500">
+                        <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-zinc-500/10 text-zinc-500">
                           {session.subject}
                         </span>
                         <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider ${

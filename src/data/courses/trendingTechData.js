@@ -326,7 +326,7 @@ export default function Card() {
 * **Why does a utility-first CSS framework reduce bundle sizes in production?**
   *   *Answer:* Tailwind uses **PurgeCSS** during compilation. It scans your code files, identifies the utility classes used, and deletes unused styles. The final production CSS bundle is tiny, typically under 10KB.
 * **Explain how Tailwind handles hover and focus states.**
-  *   *Answer:* By prefixing classes with state modifiers (e.g. \`hover:bg-blue-600\`, \`focus:outline-none\`). Tailwind applies these classes only when the elements enter those states.
+  *   *Answer:* By prefixing classes with state modifiers (e.g. \`hover:bg-neutral-600\`, \`focus:outline-none\`). Tailwind applies these classes only when the elements enter those states.
 
 #### Summary:
 Tailwind uses utility classes applied directly in markup tags, optimizing production bundles by deleting unused classes.

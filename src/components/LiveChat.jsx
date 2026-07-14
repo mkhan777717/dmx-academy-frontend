@@ -120,7 +120,7 @@ function ChatMessage({ message, isOwnMessage, isHost, hostUsername, blockedUsers
       {/* Avatar */}
       <div
         className={`w-7 h-7 rounded-lg flex items-center justify-center text-[10px] font-extrabold shrink-0 ${isOwnMessage
-            ? "bg-indigo-500 text-white"
+            ? "bg-zinc-500 text-white"
             : "text-white"
           }`}
         style={
@@ -171,7 +171,7 @@ function ChatMessage({ message, isOwnMessage, isHost, hostUsername, blockedUsers
         </div>
         <div
           className={`w-fit px-3 py-2 rounded-2xl text-[13px] font-medium leading-relaxed break-words shadow-sm ${isOwnMessage
-              ? "rounded-tr-sm bg-indigo-500 text-white"
+              ? "rounded-tr-sm bg-zinc-500 text-white"
               : "rounded-tl-sm"
             }`}
           style={
@@ -517,7 +517,7 @@ export default function LiveChat({
             style={{ borderColor: "rgba(148, 163, 184, 0.16)", backgroundColor: "var(--bg-card)" }}
           >
             <div className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-[var(--text-muted)]">
-              <MessageSquare size={13} className="text-indigo-500" />
+              <MessageSquare size={13} className="text-zinc-500" />
               <span>Live Chat (Popped Out)</span>
             </div>
             
@@ -538,14 +538,14 @@ export default function LiveChat({
 
           {/* Centered Body Content */}
           <div className="flex-1 flex flex-col items-center justify-center p-6 text-center space-y-4">
-            <MessageSquare size={36} className="text-indigo-500 animate-pulse" />
+            <MessageSquare size={36} className="text-zinc-500 animate-pulse" />
             <h4 className="text-sm font-black tracking-tight text-[var(--text-primary)]">Chat is Popped Out</h4>
             <p className="text-[11px] leading-relaxed text-[var(--text-secondary)]">
               The chat panel is running in a separate window. You can drag it to another monitor.
             </p>
             <button
               onClick={() => setIsPoppedOut(false)}
-              className="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition-all hover:scale-105 shadow-md shadow-indigo-600/20 cursor-pointer"
+              className="px-3.5 py-2 rounded-xl bg-zinc-600 hover:bg-zinc-700 text-white text-xs font-bold transition-all hover:scale-105 shadow-md shadow-zinc-600/20 cursor-pointer"
             >
               Merge Chat Back
             </button>
@@ -580,7 +580,7 @@ export default function LiveChat({
             <button
               onClick={() => setActiveTab("chat")}
               className={`flex items-center gap-1.5 pb-0.5 border-b-2 text-xs font-extrabold uppercase tracking-wider transition-colors cursor-pointer ${activeTab === "chat"
-                  ? "border-indigo-500 text-[var(--text-primary)]"
+                  ? "border-zinc-500 text-[var(--text-primary)]"
                   : "border-transparent text-[var(--text-muted)] hover:text-[var(--text-primary)]"
                 }`}
               id="tab-chat-btn"
@@ -601,7 +601,7 @@ export default function LiveChat({
             <button
               onClick={() => setActiveTab("participants")}
               className={`flex items-center gap-1.5 pb-0.5 border-b-2 text-xs font-extrabold uppercase tracking-wider transition-colors cursor-pointer ${activeTab === "participants"
-                  ? "border-indigo-500 text-[var(--text-primary)]"
+                  ? "border-zinc-500 text-[var(--text-primary)]"
                   : "border-transparent text-[var(--text-muted)] hover:text-[var(--text-primary)]"
                 }`}
               id="tab-participants-btn"
@@ -619,7 +619,7 @@ export default function LiveChat({
             <button
               onClick={() => setActiveTab("polls")}
               className={`flex items-center gap-1.5 pb-0.5 border-b-2 text-xs font-extrabold uppercase tracking-wider transition-colors cursor-pointer ${activeTab === "polls"
-                  ? "border-indigo-500 text-[var(--text-primary)]"
+                  ? "border-zinc-500 text-[var(--text-primary)]"
                   : "border-transparent text-[var(--text-muted)] hover:text-[var(--text-primary)]"
                 }`}
               id="tab-polls-btn"
@@ -746,7 +746,7 @@ export default function LiveChat({
                                 {p.identity}
                               </span>
                               {isLocal && (
-                                <span className="text-[8px] font-bold text-indigo-400 bg-indigo-500/10 px-1.5 py-0.2 rounded-md uppercase shrink-0">
+                                <span className="text-[8px] font-bold text-zinc-400 bg-zinc-500/10 px-1.5 py-0.2 rounded-md uppercase shrink-0">
                                   You
                                 </span>
                               )}
@@ -825,7 +825,7 @@ export default function LiveChat({
                         <div className="flex items-center justify-end gap-1.5 pt-2 border-t" style={{ borderColor: "rgba(148, 163, 184, 0.08)" }}>
                           <button
                             onClick={() => acceptSpeaker(p.identity)}
-                            className="px-2.5 py-1 rounded bg-indigo-600 hover:bg-indigo-700 text-white text-[10px] font-bold transition-all cursor-pointer"
+                            className="px-2.5 py-1 rounded bg-zinc-600 hover:bg-zinc-700 text-white text-[10px] font-bold transition-all cursor-pointer"
                           >
                             Accept
                           </button>
@@ -883,8 +883,8 @@ export default function LiveChat({
                       <button
                         onClick={() => setShowPollCreator((v) => !v)}
                         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[10px] font-extrabold uppercase tracking-wide transition-all cursor-pointer border ${showPollCreator
-                            ? "bg-indigo-600 border-transparent text-white"
-                            : "bg-indigo-500/10 border-indigo-500/20 text-indigo-400 hover:bg-indigo-500/20"
+                            ? "bg-zinc-600 border-transparent text-white"
+                            : "bg-zinc-500/10 border-zinc-500/20 text-zinc-400 hover:bg-zinc-500/20"
                           }`}
                       >
                         <BarChart2 size={11} />
@@ -929,8 +929,8 @@ export default function LiveChat({
                 /* Student View */
                 <div className="space-y-4">
                   {activePoll ? (
-                    <div className="flex flex-col items-center justify-center p-6 text-center space-y-3 rounded-2xl border bg-indigo-500/5 border-indigo-500/20">
-                      <div className="w-12 h-12 rounded-full bg-indigo-500/10 flex items-center justify-center text-indigo-400">
+                    <div className="flex flex-col items-center justify-center p-6 text-center space-y-3 rounded-2xl border bg-zinc-500/5 border-zinc-500/20">
+                      <div className="w-12 h-12 rounded-full bg-zinc-500/10 flex items-center justify-center text-zinc-400">
                         <BarChart2 className="animate-pulse" size={24} />
                       </div>
                       <div className="space-y-1">
@@ -1055,7 +1055,7 @@ export default function LiveChat({
               <button
                 onClick={handleSend}
                 disabled={!inputValue.trim() || isSending || blockedUsers.includes(localIdentity)}
-                className="p-1.5 rounded-lg transition-all disabled:opacity-30 cursor-pointer hover:bg-indigo-500/10"
+                className="p-1.5 rounded-lg transition-all disabled:opacity-30 cursor-pointer hover:bg-zinc-500/10"
                 style={{ color: "var(--text-accent)" }}
                 id="chat-send-btn"
               >

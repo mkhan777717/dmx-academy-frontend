@@ -7,7 +7,7 @@ import {
   Users, CheckSquare, Calendar, Star,
   ArrowUpRight, Clock, Award, Activity,
   ChevronRight, BookOpen, Send, CheckCircle,
-  FileCode, Sparkles, MessageCircle, Plus, X
+  FileCode, Sparkles, MessageCircle, Plus, X, List
 } from "lucide-react";
 
 export default function MentorDashboard() {
@@ -53,7 +53,7 @@ export default function MentorDashboard() {
     setNewSlotTopic("");
     setNewSlotTime("");
     setShowAddSlot(false);
-    triggerNotification("🎉 Scheduled new Office Hour slot!");
+    triggerNotification("Scheduled new Office Hour slot.");
   };
 
   const handleSubmitReview = (reviewId) => {
@@ -62,207 +62,153 @@ export default function MentorDashboard() {
     ));
     setSelectedReview(null);
     setReviewComment("");
-    triggerNotification(`✓ Submission graded! Final score: ${reviewScore} pts`);
+    triggerNotification(`Review submitted successfully. Final score: ${reviewScore} pts.`);
   };
 
   const stats = [
-    {
-      title: "Scholars Guided",
-      value: "45 Active",
-      change: "+6 new scholars this week",
-      icon: Users,
-      color: "text-indigo-400",
-      bgColor: "bg-indigo-500/10"
-    },
-    {
-      title: "Reviews Conducted",
-      value: `${reviewsList.filter(r => r.status === "Reviewed").length} Reviewed`,
-      change: `${reviewsList.filter(r => r.status !== "Reviewed").length} remaining in queue`,
-      icon: CheckSquare,
-      color: "text-emerald-400",
-      bgColor: "bg-emerald-500/10"
-    },
-    {
-      title: "Office Hours",
-      value: `${officeHours.length} Scheduled`,
-      change: "Active slots coordinator",
-      icon: Calendar,
-      color: "text-blue-400",
-      bgColor: "bg-blue-500/10"
-    },
-    {
-      title: "Mentor Rating",
-      value: "4.95 / 5.0",
-      change: "Based on 84 review votes",
-      icon: Star,
-      color: "text-purple-400",
-      bgColor: "bg-purple-500/10"
-    }
+    { title: "Scholars Guided", value: "45", label: "Active scholars", icon: Users },
+    { title: "Reviews Conducted", value: reviewsList.filter(r => r.status === "Reviewed").length, label: `${reviewsList.filter(r => r.status !== "Reviewed").length} pending`, icon: CheckSquare },
+    { title: "Office Hours", value: officeHours.length, label: "Scheduled sessions", icon: Calendar },
+    { title: "Mentor Rating", value: "4.95", label: "Out of 5.0", icon: Star }
   ];
 
   const mentoredTracks = [
-    { id: "m-1", name: "Web & Mobile Development", activeScholars: 24, activeReviews: 5, rating: 4.9, progress: 80 },
-    { id: "m-2", name: "Creative Tech & Blockchain", activeScholars: 12, activeReviews: 2, rating: 5.0, progress: 65 },
-    { id: "m-3", name: "Data & AI Systems", activeScholars: 9, activeReviews: 3, rating: 4.8, progress: 40 }
+    { id: "m-1", name: "Web & Mobile Development", activeScholars: 24, progress: 80 },
+    { id: "m-2", name: "Creative Tech & Blockchain", activeScholars: 12, progress: 65 },
+    { id: "m-3", name: "Data & AI Systems", activeScholars: 9, progress: 40 }
   ];
 
   return (
-    <div className="space-y-8">
-      {/* Welcome Hero Banner */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 p-6 md:p-8 rounded-3xl border relative overflow-hidden"
-        style={{
-          backgroundColor: "var(--glass-bg)",
-          borderColor: "var(--border-primary)",
-          backgroundImage: "linear-gradient(135deg, rgba(124, 58, 237, 0.05) 0%, rgba(59, 130, 246, 0.05) 100%)"
-        }}
-      >
-        <div className="space-y-2 relative z-10">
-          <div className="flex items-center space-x-2">
-            <span className="h-2 w-2 rounded-full bg-violet-400 animate-ping" />
-            <span className="text-[10px] font-extrabold uppercase tracking-wider text-violet-400">Mentor Command Center</span>
+    <div className="space-y-12 pb-12 animate-in fade-in duration-500">
+      
+      {/* ── HEADER / INTRO ────────────────────────────────────── */}
+      <section className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 pt-4 border-b pb-6" style={{ borderColor: "var(--border-primary)" }}>
+        <div className="max-w-2xl space-y-4">
+          <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border"
+            style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)", backgroundColor: "var(--bg-secondary)" }}>
+            <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: "var(--accent-primary)" }} />
+            Instructor Dashboard
           </div>
-          <h1 className="text-2xl md:text-3xl font-black font-display tracking-tight" style={{ color: "var(--text-primary)" }}>
-            Welcome back, Instructor!
+          <h1 className="text-4xl md:text-5xl font-serif tracking-tight" style={{ color: "var(--text-primary)" }}>
+            Welcome back, Mentor.
           </h1>
-          <p className="text-xs max-w-xl" style={{ color: "var(--text-secondary)" }}>
+          <p className="text-sm leading-relaxed" style={{ color: "var(--text-secondary)" }}>
             Review pending code speedruns, coordinate live mentoring office hours, audit course tracks, and check scholar analytics.
           </p>
         </div>
-        <div className="flex items-center gap-3 shrink-0 relative z-10">
-          <button
-            onClick={() => router.push("/contest")}
-            className="px-5 py-3 rounded-2xl font-bold text-xs text-white shadow-md transition-all cursor-pointer flex items-center space-x-1.5 hover:scale-102"
-            style={{ background: "linear-gradient(135deg, #7c3aed 0%, #3b82f6 100%)" }}
-          >
-            <Award size={14} />
-            <span>Manage Contests</span>
+        <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+          <button onClick={() => router.push("/contest")}
+            className="px-5 py-2.5 rounded-xl font-semibold text-xs flex items-center justify-center gap-2 transition-all hover:-translate-y-0.5 border"
+            style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}>
+            <Award size={14} /> Manage Contests
           </button>
-          <button
-            onClick={() => router.push("/courses")}
-            className="px-5 py-3 rounded-2xl font-bold text-xs transition-all border cursor-pointer flex items-center space-x-1.5 hover:scale-102"
-            style={{ 
-              backgroundColor: "var(--bg-card)",
-              borderColor: "var(--border-primary)",
-              color: "var(--text-primary)"
-            }}
-          >
-            <span>Browse Curriculum</span>
-            <ArrowUpRight size={14} />
+          <button onClick={() => router.push("/courses")}
+            className="px-5 py-2.5 rounded-xl font-semibold text-xs text-white flex items-center justify-center gap-2 transition-all hover:-translate-y-0.5 shadow-lg"
+            style={{ background: "var(--accent-primary)" }}>
+            Curriculum <ArrowUpRight size={14} />
           </button>
         </div>
-      </div>
+      </section>
 
       {/* Floating Notifications */}
       <AnimatePresence>
         {notification && (
           <motion.div
-            initial={{ opacity: 0, y: -10 }}
+            initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0 }}
-            className="p-4 rounded-2xl border text-xs text-center font-bold bg-emerald-500/10 border-emerald-500/20 text-emerald-400"
+            exit={{ opacity: 0, y: -20 }}
+            className="fixed top-8 left-1/2 -translate-x-1/2 z-[100] px-4 py-3 rounded-xl border shadow-2xl text-xs font-semibold flex items-center gap-3"
+            style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
           >
+            <CheckCircle size={14} style={{ color: "var(--accent-primary)" }} />
             {notification}
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      {/* ── KEY METRICS (Asymmetrical Rail) ───────────────────── */}
+      <section className="grid grid-cols-2 md:grid-cols-4 gap-px border bg-slate-200/20 dark:bg-slate-800/50 rounded-2xl overflow-hidden" style={{ borderColor: "var(--border-primary)" }}>
         {stats.map((stat, idx) => {
-          const IconComponent = stat.icon;
+          const Icon = stat.icon;
           return (
-            <motion.div
-              key={stat.title}
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: idx * 0.05 }}
-              className="p-6 rounded-3xl border shadow-sm flex flex-col justify-between space-y-4"
-              style={{
-                backgroundColor: "var(--bg-card)",
-                borderColor: "var(--border-card)"
-              }}
-            >
+            <div key={idx} className="p-6 space-y-6 flex flex-col justify-between group transition-colors"
+              style={{ backgroundColor: "var(--bg-primary)" }}
+              onMouseEnter={e => e.currentTarget.style.backgroundColor = "var(--bg-secondary)"}
+              onMouseLeave={e => e.currentTarget.style.backgroundColor = "var(--bg-primary)"}>
               <div className="flex justify-between items-start">
-                <span className="text-[10px] font-extrabold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>
-                  {stat.title}
-                </span>
-                <div className={`p-2 rounded-xl ${stat.bgColor} ${stat.color}`}>
-                  <IconComponent size={16} />
-                </div>
+                <Icon size={16} className="transition-transform group-hover:scale-110" style={{ color: "var(--text-muted)" }} />
               </div>
-              <div className="space-y-1">
-                <div className="text-2xl font-black" style={{ color: "var(--text-primary)" }}>
-                  {stat.value}
-                </div>
-                <div className="text-[10px] font-bold" style={{ color: "var(--text-secondary)" }}>
-                  {stat.change}
-                </div>
+              <div>
+                <div className="text-3xl font-serif tracking-tight" style={{ color: "var(--text-primary)" }}>{stat.value}</div>
+                <div className="text-[11px] font-medium uppercase tracking-wider mt-1" style={{ color: "var(--text-muted)" }}>{stat.title}</div>
+                <div className="text-xs mt-3 font-medium" style={{ color: "var(--accent-primary)" }}>{stat.label}</div>
               </div>
-            </motion.div>
+            </div>
           );
         })}
-      </div>
+      </section>
 
-      {/* Split Details Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      {/* ── MAIN CONTENT (Asymmetrical Grid) ──────────────────── */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         
-        {/* Left: Pending Submissions review queue */}
-        <div className="lg:col-span-2 space-y-6">
-          <div className="flex justify-between items-center">
-            <h2 className="text-base font-bold font-display" style={{ color: "var(--text-primary)" }}>
-              Pending Submissions Queue
-            </h2>
-            <span className="inline-flex items-center space-x-1.5 text-[10px] font-bold uppercase tracking-wider text-indigo-500">
-              <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-ping" />
-              <span>Awaiting Feedback</span>
-            </span>
+        {/* Left: Pending Submissions review queue (Col 8) */}
+        <section className="lg:col-span-8 space-y-6">
+          <div className="flex items-center justify-between pb-4 border-b" style={{ borderColor: "var(--border-primary)" }}>
+            <h2 className="text-2xl font-serif" style={{ color: "var(--text-primary)" }}>Submission Queue</h2>
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full" style={{ backgroundColor: "var(--accent-primary)" }} />
+              <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Needs Review</span>
+            </div>
           </div>
 
-          <div className="border rounded-3xl overflow-hidden shadow-sm" style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-card)" }}>
+          <div className="border rounded-2xl overflow-hidden" style={{ borderColor: "var(--border-primary)", backgroundColor: "var(--bg-primary)" }}>
             <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse text-xs">
+              <table className="w-full text-left text-sm whitespace-nowrap">
                 <thead>
-                  <tr className="bg-slate-500/5 font-bold text-[var(--text-muted)] border-b" style={{ borderColor: "var(--border-primary)" }}>
-                    <th className="px-6 py-4">Scholar</th>
-                    <th className="px-6 py-4">Challenge</th>
-                    <th className="px-6 py-4">Language</th>
-                    <th className="px-6 py-4 text-center">Status</th>
-                    <th className="px-6 py-4 text-right">Action</th>
+                  <tr className="border-b bg-[var(--bg-secondary)]" style={{ borderColor: "var(--border-primary)" }}>
+                    <th className="px-5 py-4 font-semibold text-xs uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Scholar</th>
+                    <th className="px-5 py-4 font-semibold text-xs uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Challenge</th>
+                    <th className="px-5 py-4 font-semibold text-xs uppercase tracking-wider text-center" style={{ color: "var(--text-muted)" }}>Status</th>
+                    <th className="px-5 py-4 font-semibold text-xs uppercase tracking-wider text-right" style={{ color: "var(--text-muted)" }}>Action</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y" style={{ divideColor: "var(--border-primary)", color: "var(--text-secondary)" }}>
+                <tbody className="divide-y" style={{ divideColor: "var(--border-primary)" }}>
                   {reviewsList.map((sub) => (
-                    <tr key={sub.id} className="hover:bg-slate-500/5 transition-colors">
-                      <td className="px-6 py-4 font-bold text-[var(--text-primary)]">
-                        {sub.user}
+                    <tr key={sub.id} className="transition-colors hover:bg-[var(--bg-secondary)]">
+                      <td className="px-5 py-4">
+                        <div className="font-semibold" style={{ color: "var(--text-primary)" }}>{sub.user}</div>
+                        <div className="text-[11px] mt-0.5" style={{ color: "var(--text-muted)" }}>{sub.time}</div>
                       </td>
-                      <td className="px-6 py-4 font-semibold">
-                        {sub.problem}
+                      <td className="px-5 py-4">
+                        <div className="font-medium" style={{ color: "var(--text-secondary)" }}>{sub.problem}</div>
+                        <div className="text-[11px] font-mono mt-0.5" style={{ color: "var(--text-muted)" }}>{sub.lang}</div>
                       </td>
-                      <td className="px-6 py-4 font-mono text-[10px]">
-                        {sub.lang}
+                      <td className="px-5 py-4 text-center">
+                        {sub.status === "Reviewed" ? (
+                          <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-md text-emerald-600 bg-emerald-500/10">
+                            <CheckCircle size={10} /> Reviewed
+                          </span>
+                        ) : sub.status === "Under Review" ? (
+                          <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-md text-amber-600 bg-amber-500/10">
+                            <Activity size={10} /> In Progress
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-md text-rose-600 bg-rose-500/10">
+                            <Clock size={10} /> Pending
+                          </span>
+                        )}
                       </td>
-                      <td className="px-6 py-4 text-center">
-                        <span className={`text-[9px] font-extrabold uppercase px-2 py-0.5 rounded-md border ${
-                          sub.status === "Reviewed" ? "text-emerald-500 bg-emerald-500/10 border-emerald-500/20" :
-                          sub.status === "Under Review" ? "text-amber-500 bg-amber-500/10 border-amber-500/20" :
-                          "text-rose-500 bg-rose-500/10 border-rose-500/20"
-                        }`}>
-                          {sub.status}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-right">
+                      <td className="px-5 py-4 text-right">
                         {sub.status !== "Reviewed" ? (
                           <button
                             onClick={() => setSelectedReview(sub)}
-                            className="px-3.5 py-1.5 rounded-xl border text-[10px] font-bold text-white transition-all cursor-pointer hover:scale-102 flex items-center space-x-1"
-                            style={{ background: "linear-gradient(135deg, #7c3aed 0%, #3b82f6 100%)" }}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all hover:bg-[var(--bg-secondary)]"
+                            style={{ borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
                           >
-                            <FileCode size={11} />
-                            <span>Review Code</span>
+                            <FileCode size={12} /> Review Code
                           </button>
                         ) : (
-                          <span className="text-[10px] text-slate-400 font-medium">Completed</span>
+                          <span className="text-[11px] font-medium" style={{ color: "var(--text-muted)" }}>Completed</span>
                         )}
                       </td>
                     </tr>
@@ -272,160 +218,109 @@ export default function MentorDashboard() {
             </div>
           </div>
 
-          {/* Interactive Code IDE Viewer (Expandable overlay) */}
+          {/* Code Review Overlay / Expansion */}
           <AnimatePresence>
             {selectedReview && (
               <motion.div
-                initial={{ opacity: 0, scale: 0.98 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.98 }}
-                className="glass-panel p-6 rounded-3xl border shadow-xl space-y-4"
-                style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-accent)" }}
+                initial={{ opacity: 0, height: 0, marginTop: 0 }}
+                animate={{ opacity: 1, height: "auto", marginTop: 24 }}
+                exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                className="overflow-hidden"
               >
-                <div className="flex justify-between items-center border-b pb-3" style={{ borderColor: "var(--border-primary)" }}>
-                  <div className="flex items-center space-x-2">
-                    <div className="p-2 rounded-xl bg-violet-500/10 text-violet-400">
-                      <FileCode size={16} />
-                    </div>
+                <div className="p-6 md:p-8 rounded-2xl border bg-[var(--bg-secondary)] space-y-6" style={{ borderColor: "var(--border-primary)" }}>
+                  <div className="flex items-start justify-between pb-4 border-b" style={{ borderColor: "var(--border-primary)" }}>
                     <div>
-                      <h3 className="text-xs font-extrabold uppercase tracking-wider text-[var(--text-primary)]">
-                        Speedrun Review Desk
-                      </h3>
-                      <p className="text-[10px] text-slate-400">
-                        Assessing {selectedReview.user}&apos;s solution for <strong>{selectedReview.problem}</strong>
-                      </p>
+                      <h3 className="text-xl font-serif" style={{ color: "var(--text-primary)" }}>Review Workspace</h3>
+                      <p className="text-xs mt-1" style={{ color: "var(--text-muted)" }}>Evaluating {selectedReview.user}'s submission for {selectedReview.problem}</p>
+                    </div>
+                    <button onClick={() => setSelectedReview(null)} className="p-1.5 rounded-full border bg-[var(--bg-primary)] transition-transform hover:rotate-90" style={{ borderColor: "var(--border-primary)", color: "var(--text-muted)" }}>
+                      <X size={14} />
+                    </button>
+                  </div>
+
+                  <div className="rounded-xl overflow-hidden border" style={{ borderColor: "var(--border-primary)" }}>
+                    <div className="px-4 py-2 border-b flex items-center justify-between bg-slate-900/50" style={{ borderColor: "var(--border-primary)" }}>
+                      <span className="text-[10px] font-mono text-slate-400">{selectedReview.lang}</span>
+                    </div>
+                    <div className="p-4 bg-[#0d1117] overflow-x-auto">
+                      <pre className="text-xs font-mono text-slate-300 leading-relaxed">{selectedReview.code}</pre>
                     </div>
                   </div>
-                  <button
-                    onClick={() => setSelectedReview(null)}
-                    className="p-1.5 rounded-lg hover:bg-slate-500/10 cursor-pointer"
-                  >
-                    <X size={15} style={{ color: "var(--text-secondary)" }} />
-                  </button>
-                </div>
 
-                {/* Simulated IDE code wrapper */}
-                <div className="p-4 rounded-2xl bg-slate-950 border border-slate-900 overflow-x-auto text-[11px] font-mono leading-relaxed text-slate-300">
-                  <pre>{selectedReview.code}</pre>
-                </div>
-
-                {/* Score slider & review content */}
-                <div className="space-y-4 pt-2">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="space-y-1.5">
-                      <label className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">
-                        Assign Score ({reviewScore} pts)
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+                    <div className="space-y-3">
+                      <label className="text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--text-secondary)" }}>
+                        Score Assignment: <span style={{ color: "var(--text-primary)" }}>{reviewScore}</span>
                       </label>
                       <input 
-                        type="range" 
-                        min="0" 
-                        max="200" 
-                        step="10"
-                        value={reviewScore}
-                        onChange={(e) => setReviewScore(Number(e.target.value))}
-                        className="w-full h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-violet-500"
+                        type="range" min="0" max="200" step="5"
+                        value={reviewScore} onChange={(e) => setReviewScore(Number(e.target.value))}
+                        className="w-full h-1 bg-slate-300 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer"
                       />
+                      <p className="text-[10px]" style={{ color: "var(--text-muted)" }}>Suggested: 180-200 for optimal time complexity.</p>
                     </div>
-                    <div className="flex items-center space-x-1.5 text-[10px] font-bold text-violet-400 pl-1">
-                      <Sparkles size={12} className="animate-pulse" />
-                      <span>Suggested: 180-200 pts for dynamic optimal resolution</span>
-                    </div>
-                  </div>
 
-                  <div className="space-y-1.5">
-                    <label className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">
-                      Feedback/Review Comments
-                    </label>
-                    <div className="relative">
+                    <div className="space-y-3">
+                      <label className="text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--text-secondary)" }}>
+                        Feedback Notes
+                      </label>
                       <textarea
-                        rows={2}
-                        placeholder="Write constructive suggestions on performance optimization, structure, and readability..."
+                        rows={3}
+                        placeholder="Leave constructive feedback regarding logic and style..."
                         value={reviewComment}
                         onChange={(e) => setReviewComment(e.target.value)}
-                        className="w-full rounded-2xl p-3 text-xs outline-none border transition-all resize-none bg-slate-900/40 border-slate-800 text-[var(--text-primary)]"
-                        required
+                        className="w-full rounded-xl p-3 text-sm border bg-[var(--bg-primary)] outline-none resize-none transition-colors focus:border-[var(--text-primary)]"
+                        style={{ borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
                       />
                     </div>
                   </div>
 
-                  <div className="flex justify-end space-x-3 pt-1">
-                    <button
-                      onClick={() => setSelectedReview(null)}
-                      className="px-4 py-2 text-xs font-bold border rounded-xl hover:bg-slate-500/10 cursor-pointer"
-                      style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}
-                    >
-                      Cancel
+                  <div className="flex justify-end gap-3 pt-4">
+                    <button onClick={() => setSelectedReview(null)}
+                      className="px-5 py-2.5 rounded-xl text-xs font-semibold border hover:bg-[var(--bg-primary)] transition-colors"
+                      style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}>
+                      Discard
                     </button>
-                    <button
-                      onClick={() => handleSubmitReview(selectedReview.id)}
-                      className="px-5 py-2 text-xs font-bold text-white rounded-xl shadow-md cursor-pointer transition-all hover:scale-102 flex items-center space-x-1.5"
-                      style={{ background: "linear-gradient(135deg, #7c3aed 0%, #3b82f6 100%)" }}
-                    >
-                      <Send size={11} />
-                      <span>Submit Review Feedback</span>
+                    <button onClick={() => handleSubmitReview(selectedReview.id)}
+                      className="px-6 py-2.5 rounded-xl text-xs font-semibold text-white transition-transform hover:-translate-y-0.5 shadow-md flex items-center gap-2"
+                      style={{ background: "var(--accent-primary)" }}>
+                      <Send size={12} /> Submit Evaluation
                     </button>
                   </div>
                 </div>
               </motion.div>
             )}
           </AnimatePresence>
-        </div>
+        </section>
 
-        {/* Right column: Mentoring Cohorts & Office Hours Planner */}
-        <div className="space-y-8">
+        {/* Right column: Mentoring Cohorts & Office Hours Planner (Col 4) */}
+        <section className="lg:col-span-4 space-y-10">
           
-          {/* Cohorts Progress cards */}
-          <div className="space-y-4">
-            <div className="flex justify-between items-center">
-              <h2 className="text-base font-bold font-display" style={{ color: "var(--text-primary)" }}>
-                Mentoring Cohorts
-              </h2>
-              <Activity size={16} style={{ color: "var(--text-muted)" }} />
-            </div>
-
+          {/* Cohorts Progress */}
+          <div className="space-y-6">
+            <h2 className="text-xl font-serif pb-2 border-b" style={{ color: "var(--text-primary)", borderColor: "var(--border-primary)" }}>
+              Active Cohorts
+            </h2>
             <div className="space-y-4">
               {mentoredTracks.map((cohort) => (
-                <div
-                  key={cohort.id}
-                  className="p-5 rounded-3xl border shadow-sm space-y-3 relative group overflow-hidden"
-                  style={{
-                    backgroundColor: "var(--bg-card)",
-                    borderColor: "var(--border-card)"
-                  }}
-                >
-                  <div className="flex justify-between items-center">
-                    <span className="text-[9px] font-extrabold uppercase px-2 py-0.5 rounded border bg-slate-500/5"
-                      style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}
-                    >
-                      Active Group
-                    </span>
-                    <div className="flex items-center space-x-1 text-[10px] font-bold text-amber-500">
-                      <Star size={12} className="fill-amber-500" />
-                      <span>{cohort.rating.toFixed(1)}</span>
+                <div key={cohort.id} className="p-5 rounded-2xl border transition-all hover:-translate-y-1 hover:shadow-lg"
+                  style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-semibold text-sm leading-tight" style={{ color: "var(--text-primary)" }}>{cohort.name}</h3>
+                      <span className="text-[10px] font-bold px-2 py-1 rounded bg-[var(--bg-secondary)]" style={{ color: "var(--text-secondary)" }}>
+                        {cohort.activeScholars} Scholars
+                      </span>
                     </div>
-                  </div>
-
-                  <div className="space-y-1.5">
-                    <h3 className="text-xs font-bold font-display" style={{ color: "var(--text-primary)" }}>
-                      {cohort.name}
-                    </h3>
-                    {/* Linear Progress bar */}
-                    <div className="space-y-1">
-                      <div className="flex justify-between text-[9px]" style={{ color: "var(--text-secondary)" }}>
-                        <span>Cohort Progress</span>
+                    <div className="space-y-1.5">
+                      <div className="flex justify-between text-[10px] font-medium" style={{ color: "var(--text-muted)" }}>
+                        <span>Completion Rate</span>
                         <span>{cohort.progress}%</span>
                       </div>
-                      <div className="w-full h-1 bg-slate-500/10 rounded-full overflow-hidden">
-                        <div className="h-full bg-violet-400 transition-all duration-1000" style={{ width: `${cohort.progress}%` }} />
+                      <div className="w-full h-1.5 rounded-full bg-[var(--bg-secondary)] overflow-hidden">
+                        <div className="h-full rounded-full transition-all duration-1000" style={{ width: `${cohort.progress}%`, backgroundColor: "var(--text-primary)" }} />
                       </div>
                     </div>
-                  </div>
-
-                  <div className="flex justify-between items-center pt-2 text-[10px] border-t" style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}>
-                    <span style={{ color: "var(--text-muted)" }}>{cohort.activeScholars} scholars enrolled</span>
-                    <button className="font-bold text-[var(--text-accent)] hover:underline">
-                      Audit Cohort
-                    </button>
                   </div>
                 </div>
               ))}
@@ -433,65 +328,46 @@ export default function MentorDashboard() {
           </div>
 
           {/* Office hours scheduler widget */}
-          <div className="glass-panel p-5 rounded-3xl border space-y-4" style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
-            <div className="flex justify-between items-center">
-              <h2 className="text-sm font-bold uppercase tracking-wider text-[var(--text-primary)]">
-                Office Hours Calendar
-              </h2>
-              <button
-                onClick={() => setShowAddSlot(!showAddSlot)}
-                className="p-1.5 rounded-lg border hover:bg-slate-500/10 cursor-pointer"
-                style={{ borderColor: "var(--border-primary)" }}
-              >
-                {showAddSlot ? <X size={12} style={{ color: "var(--text-secondary)" }} /> : <Plus size={12} style={{ color: "var(--text-accent)" }} />}
+          <div className="space-y-6">
+            <div className="flex items-center justify-between pb-2 border-b" style={{ borderColor: "var(--border-primary)" }}>
+              <h2 className="text-xl font-serif" style={{ color: "var(--text-primary)" }}>Office Hours</h2>
+              <button onClick={() => setShowAddSlot(!showAddSlot)}
+                className="p-1.5 rounded-lg border hover:bg-[var(--bg-secondary)] transition-colors"
+                style={{ borderColor: "var(--border-primary)", color: "var(--text-primary)" }}>
+                {showAddSlot ? <X size={14} /> : <Plus size={14} />}
               </button>
             </div>
 
-            {/* Quick scheduler form */}
             <AnimatePresence>
               {showAddSlot && (
                 <motion.form
                   onSubmit={handleAddOfficeHour}
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: "auto" }}
-                  exit={{ opacity: 0, height: 0 }}
-                  className="space-y-3 p-3.5 rounded-2xl border bg-slate-500/5 overflow-hidden"
+                  initial={{ opacity: 0, height: 0, marginBottom: 0 }}
+                  animate={{ opacity: 1, height: "auto", marginBottom: 24 }}
+                  exit={{ opacity: 0, height: 0, marginBottom: 0 }}
+                  className="space-y-4 p-5 rounded-2xl border bg-[var(--bg-secondary)] overflow-hidden"
                   style={{ borderColor: "var(--border-primary)" }}
                 >
-                  <div className="space-y-1">
-                    <label className="text-[9px] font-extrabold uppercase tracking-wider" style={{ color: "var(--text-secondary)" }}>
-                      Topic Discussion
-                    </label>
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "var(--text-secondary)" }}>Topic / Agenda</label>
                     <input 
-                      type="text"
-                      placeholder="e.g. Rate Limiting Algorithms"
-                      value={newSlotTopic}
-                      onChange={(e) => setNewSlotTopic(e.target.value)}
-                      className="w-full rounded-xl py-2 px-3 text-[11px] outline-none border bg-slate-900/30 text-white"
-                      style={{ borderColor: "var(--border-primary)" }}
-                      required
+                      type="text" placeholder="e.g. Data Structures Q&A" value={newSlotTopic} onChange={(e) => setNewSlotTopic(e.target.value)} required
+                      className="w-full px-3 py-2 text-xs rounded-lg border bg-[var(--bg-primary)] outline-none focus:border-[var(--text-primary)] transition-colors"
+                      style={{ borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
                     />
                   </div>
-                  <div className="space-y-1">
-                    <label className="text-[9px] font-extrabold uppercase tracking-wider" style={{ color: "var(--text-secondary)" }}>
-                      Date &amp; Time
-                    </label>
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "var(--text-secondary)" }}>Date & Time</label>
                     <input 
-                      type="text"
-                      placeholder="e.g. Monday at 3:00 PM"
-                      value={newSlotTime}
-                      onChange={(e) => setNewSlotTime(e.target.value)}
-                      className="w-full rounded-xl py-2 px-3 text-[11px] outline-none border bg-slate-900/30 text-white"
-                      style={{ borderColor: "var(--border-primary)" }}
-                      required
+                      type="text" placeholder="e.g. Wednesday at 5:00 PM" value={newSlotTime} onChange={(e) => setNewSlotTime(e.target.value)} required
+                      className="w-full px-3 py-2 text-xs rounded-lg border bg-[var(--bg-primary)] outline-none focus:border-[var(--text-primary)] transition-colors"
+                      style={{ borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
                     />
                   </div>
-                  <button
-                    type="submit"
-                    className="w-full py-2.5 rounded-xl font-bold text-[10px] text-white transition-all cursor-pointer hover:scale-101"
-                    style={{ background: "linear-gradient(135deg, #7c3aed 0%, #3b82f6 100%)" }}
-                  >
-                    Confirm Event Slot
+                  <button type="submit"
+                    className="w-full py-2.5 rounded-xl font-semibold text-xs text-white transition-all hover:opacity-90"
+                    style={{ background: "var(--text-primary)" }}>
+                    Schedule Session
                   </button>
                 </motion.form>
               )}
@@ -499,30 +375,27 @@ export default function MentorDashboard() {
 
             <div className="space-y-3">
               {officeHours.map((slot) => (
-                <div 
-                  key={slot.id}
-                  className="p-3.5 rounded-2xl border flex items-center justify-between"
-                  style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}
-                >
-                  <div className="space-y-1 min-w-0 pr-2">
-                    <p className="text-xs font-bold truncate" style={{ color: "var(--text-primary)" }}>{slot.topic}</p>
-                    <div className="flex items-center space-x-1.5 text-[9px]" style={{ color: "var(--text-secondary)" }}>
-                      <Clock size={10} />
-                      <span>{slot.time}</span>
-                    </div>
+                <div key={slot.id} className="p-4 rounded-2xl border bg-[var(--bg-primary)] flex items-start gap-4 transition-colors hover:border-[var(--text-muted)]"
+                  style={{ borderColor: "var(--border-primary)" }}>
+                  <div className="p-2 rounded-xl bg-[var(--bg-secondary)] shrink-0 mt-0.5" style={{ color: "var(--text-secondary)" }}>
+                    <Calendar size={16} />
                   </div>
-                  <span className={`text-[9px] px-2 py-0.5 rounded-md border font-extrabold shrink-0 ${
-                    slot.active 
-                      ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400" 
-                      : "bg-slate-500/5 border-transparent text-slate-400"
-                  }`}>
-                    {slot.active ? "Upcoming" : "Draft"}
-                  </span>
+                  <div>
+                    <h4 className="text-sm font-semibold leading-tight mb-1" style={{ color: "var(--text-primary)" }}>{slot.topic}</h4>
+                    <p className="text-xs flex items-center gap-1.5" style={{ color: "var(--text-muted)" }}>
+                      <Clock size={12} /> {slot.time}
+                    </p>
+                  </div>
                 </div>
               ))}
+              {officeHours.length === 0 && (
+                <div className="text-center py-6 border border-dashed rounded-2xl" style={{ borderColor: "var(--border-primary)", color: "var(--text-muted)" }}>
+                  <p className="text-xs">No upcoming sessions scheduled.</p>
+                </div>
+              )}
             </div>
           </div>
-        </div>
+        </section>
         
       </div>
     </div>

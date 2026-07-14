@@ -155,7 +155,7 @@ export default function AntiCheatShield({
 
               <button
                 onClick={requestFullscreen}
-                className="px-6 py-3.5 rounded-2xl text-sm font-bold text-white shadow-lg bg-gradient-to-r from-indigo-500 to-violet-600 hover:scale-102 hover:shadow-indigo-500/25 transition-all cursor-pointer flex items-center space-x-2"
+                className="px-6 py-3.5 rounded-2xl text-sm font-bold text-white shadow-lg bg-gradient-to-r from-zinc-500 to-violet-600 hover:scale-102 hover:shadow-zinc-500/25 transition-all cursor-pointer flex items-center space-x-2"
               >
                 <Maximize2 size={16} />
                 <span>Go Fullscreen</span>

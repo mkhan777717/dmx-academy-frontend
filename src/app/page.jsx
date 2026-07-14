@@ -7,21 +7,24 @@ import Pricing from "@/components/Pricing";
 import CTA from "@/components/CTA";
 import Footer from "@/components/Footer";
 import LiveBanner from "@/components/LiveBanner";
+import CinematicCursor from "@/components/CinematicCursor";
+import ScrollProgress from "@/components/ScrollProgress";
 
 export default function Home() {
   return (
     <div className="relative flex min-h-screen flex-col overflow-hidden" style={{ backgroundColor: "var(--bg-primary)" }}>
-      {/* Background ambient lighting */}
-      <div className="absolute top-0 left-0 right-0 h-[500px] bg-gradient-to-b from-indigo-100/40 via-transparent to-transparent pointer-events-none z-0" />
+      {/* Global chrome */}
+      <ScrollProgress />
+      <CinematicCursor />
 
-      {/* Main navigation header */}
+      {/* Navigation */}
       <Navbar />
 
-      {/* Main landing sections */}
+      {/* Page content */}
       <main className="flex-grow">
         <Hero />
-        
-        {/* Live Session Banner — shows active/past live sessions */}
+
+        {/* Live Session Banner */}
         <LiveBanner />
 
         <Tracks />
@@ -31,9 +34,7 @@ export default function Home() {
         <CTA />
       </main>
 
-      {/* Page Footer */}
       <Footer />
     </div>
   );
 }
-

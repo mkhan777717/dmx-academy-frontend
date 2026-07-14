@@ -1,110 +1,122 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { Sparkles, MessageSquare } from "lucide-react";
+import Link from "next/link";
+
+const footerLinks = [
+  {
+    title: "Tracks",
+    links: [
+      { name: "Frontend Architecture", href: "/courses?category=Web%20%26%20Mobile%20Development" },
+      { name: "AI & Data Science", href: "/courses?category=Data%20%26%20AI" },
+      { name: "Cloud & DevOps", href: "/courses?category=Cloud%20%26%20DevOps" },
+      { name: "Creative Tech", href: "/courses?category=Creative%20Tech" },
+    ],
+  },
+  {
+    title: "Platform",
+    links: [
+      { name: "Live Classes", href: "/live-classes" },
+      { name: "Contest Hub", href: "/contest" },
+      { name: "Course Catalog", href: "/courses" },
+      { name: "Pricing", href: "/#pricing" },
+    ],
+  },
+  {
+    title: "Company",
+    links: [
+      { name: "About DMX", href: "#" },
+      { name: "Academy Blog", href: "#" },
+      { name: "Student Work", href: "#" },
+      { name: "Careers", href: "#" },
+    ],
+  },
+];
 
 const TwitterIcon = () => (
-  <svg className="w-[18px] h-[18px] fill-current" viewBox="0 0 24 24">
-    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
   </svg>
 );
 
-
 const YoutubeIcon = () => (
-  <svg className="w-[18px] h-[18px] fill-current" viewBox="0 0 24 24">
-    <path d="M23.498 6.163a3.003 3.003 0 00-2.11-2.11C19.518 3.5 12 3.5 12 3.5s-7.518 0-9.388.553a3.003 3.003 0 00-2.11 2.11C0 8.033 0 12 0 12s0 3.967.502 5.837a3.003 3.003 0 002.11 2.11c1.87.553 9.388.553 9.388.553s7.518 0 9.388-.553a3.003 3.003 0 002.11-2.11C24 15.967 24 12 24 12s0-3.967-.502-5.837zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M23.498 6.163a3.003 3.003 0 00-2.11-2.11C19.518 3.5 12 3.5 12 3.5s-7.518 0-9.388.553a3.003 3.003 0 00-2.11 2.11C0 8.033 0 12 0 12s0 3.967.502 5.837a3.003 3.003 0 002.11 2.11c1.87.553 9.388.553 9.388.553s7.518 0 9.388-.553a3.003 3.003 0 002.11-2.11C24 15.967 24 12 24 12s0-3.967-.502-5.837zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+  </svg>
+);
+
+const GithubIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
   </svg>
 );
 
 export default function Footer() {
-  const footerLinks = [
-    {
-      title: "Learning Tracks",
-      links: [
-        { name: "Creative Motion", href: "#tracks" },
-        { name: "Frontend Architect", href: "#tracks" },
-        { name: "AI Agents & LLMs", href: "#tracks" },
-        { name: "UI/UX Craftsmanship", href: "#tracks" },
-      ],
-    },
-    {
-      title: "Resources",
-      links: [
-        { name: "Syllabus Download", href: "#" },
-        { name: "Interactive Sandboxes", href: "#" },
-        { name: "Discord Community", href: "#" },
-        { name: "Recruiter Alignment", href: "#" },
-      ],
-    },
-    {
-      title: "Company",
-      links: [
-        { name: "About DMX", href: "#" },
-        { name: "Academy Blog", href: "#" },
-        { name: "Student Work", href: "#" },
-        { name: "Careers", href: "#" },
-      ],
-    },
-  ];
-
-  const socialIcons = [
-    { icon: <TwitterIcon />, href: "#" },
-    { icon: <MessageSquare size={18} />, href: "#" },
-    { icon: <YoutubeIcon />, href: "#" },
-  ];
-
   return (
     <footer
-      className="relative pt-20 pb-12 overflow-hidden"
+      className="relative pt-20 pb-10"
       style={{
         backgroundColor: "var(--bg-secondary)",
         borderTop: "1px solid var(--border-primary)",
       }}
     >
-      <div className="relative z-10 mx-auto max-w-7xl px-4 md:px-8">
+      <div className="mx-auto max-w-[1400px] px-6 md:px-12">
 
-        {/* Upper Link Row */}
-        <div
-          className="grid grid-cols-2 md:grid-cols-5 gap-8 pb-16"
-          style={{ borderBottom: "1px solid var(--border-primary)" }}
-        >
-          {/* Logo column */}
-          <div className="col-span-2 space-y-4">
-            <a href="#" className="flex items-center space-x-2 text-xl font-bold font-display tracking-tight group">
-              <div
-                className="flex h-8 w-8 items-center justify-center rounded-lg text-white shadow-[0_4px_10px_rgba(99,102,241,0.25)]"
-                style={{ background: "var(--accent-gradient)" }}
-              >
-                <Sparkles size={14} />
-              </div>
-              <span style={{ color: "var(--text-primary)" }}>DMX</span>
-            </a>
-            <p className="text-xs max-w-sm leading-relaxed" style={{ color: "var(--text-secondary)" }}>
-              Synthesizing engineering precision with high-end creative design. Learn advanced tools and motion logic through direct interactive play.
+        {/* Large wordmark */}
+        <div className="mb-16 overflow-hidden">
+          <div
+            className="text-[clamp(4rem,10vw,9rem)] font-black tracking-[-0.06em] leading-none select-none"
+            style={{ color: "var(--border-card)", letterSpacing: "-0.05em" }}
+          >
+            DMX Academy
+          </div>
+        </div>
+
+        {/* Link columns + tagline */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-10 pb-16" style={{ borderBottom: "1px solid var(--border-primary)" }}>
+          {/* Tagline column */}
+          <div className="col-span-2 md:col-span-1 space-y-4">
+            <p className="text-sm leading-relaxed max-w-[200px]" style={{ color: "var(--text-muted)" }}>
+              Engineering precision meets high-end creative design.
             </p>
+            <div className="flex items-center gap-2">
+              {[
+                { icon: <TwitterIcon />, href: "#", label: "Twitter" },
+                { icon: <YoutubeIcon />, href: "#", label: "YouTube" },
+                { icon: <GithubIcon />, href: "#", label: "GitHub" },
+              ].map(s => (
+                <a
+                  key={s.label}
+                  href={s.href}
+                  aria-label={s.label}
+                  className="h-8 w-8 rounded-lg flex items-center justify-center transition-all duration-200"
+                  style={{ border: "1px solid var(--border-primary)", color: "var(--text-muted)" }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = "var(--accent-primary)"; e.currentTarget.style.color = "var(--text-accent)"; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--border-primary)"; e.currentTarget.style.color = "var(--text-muted)"; }}
+                >
+                  {s.icon}
+                </a>
+              ))}
+            </div>
           </div>
 
           {/* Nav columns */}
-          {footerLinks.map((col) => (
+          {footerLinks.map(col => (
             <div key={col.title} className="space-y-4">
-              <h4
-                className="text-xs font-bold font-display uppercase tracking-widest"
-                style={{ color: "var(--text-muted)" }}
-              >
+              <h4 className="text-[10px] font-bold uppercase tracking-[0.2em]" style={{ color: "var(--text-muted)" }}>
                 {col.title}
               </h4>
               <ul className="space-y-2.5">
-                {col.links.map((link) => (
+                {col.links.map(link => (
                   <li key={link.name}>
-                    <a
+                    <Link
                       href={link.href}
-                      className="text-xs transition-colors duration-200"
+                      className="text-sm transition-colors duration-200 underline-draw"
                       style={{ color: "var(--text-secondary)" }}
-                      onMouseEnter={(e) => (e.target.style.color = "var(--text-accent)")}
-                      onMouseLeave={(e) => (e.target.style.color = "var(--text-secondary)")}
+                      onMouseEnter={e => e.currentTarget.style.color = "var(--text-primary)"}
+                      onMouseLeave={e => e.currentTarget.style.color = "var(--text-secondary)"}
                     >
                       {link.name}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -112,47 +124,20 @@ export default function Footer() {
           ))}
         </div>
 
-        {/* Lower Row */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-6 pt-12">
-          {/* Copyright */}
-          <div className="text-[11px] order-2 sm:order-1 text-center sm:text-left" style={{ color: "var(--text-muted)" }}>
-            <p>© {new Date().getFullYear()} DMX Academy Inc. All rights reserved.</p>
-            <p className="mt-1">
-              Developed in flow state using Next.js & Framer Motion.{" "}
-              <span className="mx-1" style={{ color: "var(--border-primary)" }}>|</span>
-              <a href="#" className="transition-colors" style={{ color: "var(--text-muted)" }}
-                onMouseEnter={(e) => (e.target.style.color = "var(--text-accent)")}
-                onMouseLeave={(e) => (e.target.style.color = "var(--text-muted)")}
-              >Privacy Policy</a>
-              <span className="mx-1" style={{ color: "var(--border-primary)" }}>|</span>
-              <a href="#" className="transition-colors" style={{ color: "var(--text-muted)" }}
-                onMouseEnter={(e) => (e.target.style.color = "var(--text-accent)")}
-                onMouseLeave={(e) => (e.target.style.color = "var(--text-muted)")}
-              >Terms of Service</a>
-            </p>
-          </div>
+        {/* Bottom bar */}
+        <div className="pt-10 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p className="text-[11px]" style={{ color: "var(--text-muted)" }}>
+            © {new Date().getFullYear()} DMX Academy Inc. All rights reserved.
+          </p>
 
-          {/* Social Icons */}
-          <div className="flex items-center space-x-3 order-1 sm:order-2">
-            {socialIcons.map((social, idx) => (
-              <motion.a
-                key={idx}
-                href={social.href}
-                whileHover={{ scale: 1.1, y: -2 }}
-                whileTap={{ scale: 0.95 }}
-                className="flex h-10 w-10 items-center justify-center rounded-xl transition-all"
-                style={{
-                  backgroundColor: "var(--bg-hover)",
-                  border: "1px solid var(--border-primary)",
-                  color: "var(--text-secondary)",
-                }}
-              >
-                {social.icon}
-              </motion.a>
-            ))}
+          <div className="flex items-center gap-4 text-[11px]" style={{ color: "var(--text-muted)" }}>
+            <a href="#" className="hover:text-[var(--text-secondary)] transition-colors">Privacy Policy</a>
+            <span style={{ color: "var(--border-primary)" }}>·</span>
+            <a href="#" className="hover:text-[var(--text-secondary)] transition-colors">Terms of Service</a>
+            <span style={{ color: "var(--border-primary)" }}>·</span>
+            <span>Built with Next.js & Framer Motion</span>
           </div>
         </div>
-
       </div>
     </footer>
   );

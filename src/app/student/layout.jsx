@@ -3,9 +3,10 @@
 import React, { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
-import { 
-  LayoutDashboard, Trophy, LogOut, 
-  Menu, X, ChevronLeft, ChevronRight, BookOpen, ArrowLeftRight, Code, Brain, Radio, AlertTriangle, FileText, Gamepad2, FileCheck, Activity, Settings, Paintbrush
+import {
+  LayoutDashboard, Trophy, LogOut,
+  Menu, X, ChevronLeft, ChevronRight, BookOpen, ArrowLeftRight,
+  Code, Brain, Radio, AlertTriangle, FileText, Gamepad2, FileCheck, Activity, Settings, Paintbrush
 } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
 import { useAuth } from "@/context/AuthContext";
@@ -24,7 +25,6 @@ export default function StudentLayout({ children }) {
 
   useEffect(() => {
     if (!user) return;
-
     async function fetchRank() {
       const headers = {
         "Content-Type": "application/json",
@@ -32,7 +32,6 @@ export default function StudentLayout({ children }) {
           ? { Authorization: `Bearer ${token}` }
           : { "x-bypass-auth": "true", "x-bypass-role": user.role === "ADMIN" ? "ADMIN" : "USER" }),
       };
-
       try {
         const subRes = await fetch(`${API_BASE}/api/submissions?userId=${user.id}`, { headers });
         let uniqueSolved = 0;
@@ -43,23 +42,16 @@ export default function StudentLayout({ children }) {
             uniqueSolved = new Set(accepted.map(s => s.problemId)).size;
           }
         }
-
         const contestRes = await fetch(`${API_BASE}/api/contests`, { headers });
         let bestScore = 0;
         if (contestRes.ok) {
           const contestData = await contestRes.json();
           if (contestData.success) {
-            const myParticipations = (contestData.contests || []).filter(c =>
-              c.userParticipation && c.userParticipation.completed
-            );
-            bestScore = myParticipations.length > 0
-              ? Math.max(...myParticipations.map(c => c.userParticipation?.score || 0))
-              : 0;
+            const myParticipations = (contestData.contests || []).filter(c => c.userParticipation && c.userParticipation.completed);
+            bestScore = myParticipations.length > 0 ? Math.max(...myParticipations.map(c => c.userParticipation?.score || 0)) : 0;
           }
         }
-
         const points = uniqueSolved * 10 + bestScore;
-
         const RANKS = [
           { name: "Novice Scholar", minPoints: 0, maxPoints: 100 },
           { name: "Bronze Scholar", minPoints: 100, maxPoints: 200 },
@@ -71,14 +63,12 @@ export default function StudentLayout({ children }) {
           { name: "Grandmaster Scholar", minPoints: 750, maxPoints: 1000 },
           { name: "Legendary Coder", minPoints: 1000, maxPoints: Infinity }
         ];
-
         const matchedRank = RANKS.find(r => points >= r.minPoints && points < r.maxPoints) || RANKS[0];
         setRoleName(matchedRank.name);
       } catch (e) {
         console.error("Failed to fetch user rank for layout:", e);
       }
     }
-
     fetchRank();
   }, [user, token, API_BASE]);
 
@@ -86,7 +76,6 @@ export default function StudentLayout({ children }) {
     if (typeof window !== "undefined") {
       const studentSession = localStorage.getItem("synapse_student_session") === "true";
       const isLoginRoute = pathname === "/student";
-
       if (!studentSession) {
         router.push("/login?redirect=/student/dashboard");
       } else if (isLoginRoute) {
@@ -95,138 +84,105 @@ export default function StudentLayout({ children }) {
         const name = user?.username || "DMX Student";
         const email = user?.email || "student@synapse.com";
         const avatar = name.slice(0, 2).toUpperCase();
-
-        setStudentUser({
-          name,
-          email,
-          role: roleName,
-          avatar
-        });
+        setStudentUser({ name, email, role: roleName, avatar });
       }
       setCheckingAuth(false);
     }
   }, [pathname, router, user, roleName]);
 
-  const handleLogout = () => {
-    setShowLogoutConfirm(true);
-  };
-
+  const handleLogout = () => setShowLogoutConfirm(true);
   const isLoginRoute = pathname === "/student";
 
   if (checkingAuth) {
     return (
       <div className="flex h-screen items-center justify-center" style={{ backgroundColor: "var(--bg-primary)" }}>
-        <div className="text-center space-y-4">
-          <div className="w-10 h-10 border-4 rounded-full border-t-transparent animate-spin mx-auto" style={{ borderColor: "var(--text-accent)" }} />
-          <p className="text-xs font-semibold" style={{ color: "var(--text-secondary)" }}>Verifying authorization...</p>
+        <div className="space-y-4 text-center">
+          <div className="w-8 h-8 border-2 rounded-full border-t-transparent animate-spin mx-auto" style={{ borderColor: "var(--accent-primary)" }} />
+          <p className="text-xs" style={{ color: "var(--text-muted)" }}>Verifying authorization…</p>
         </div>
       </div>
     );
   }
 
-  // For the login page, render without sidebar/layout frame
-  if (isLoginRoute) {
-    return <>{children}</>;
-  }
+  if (isLoginRoute) return <>{children}</>;
 
   const sidebarLinks = [
-    {
-      label: "Dashboard",
-      href: "/student/dashboard",
-      icon: LayoutDashboard
-    },
-    {
-      label: "Practice Arena",
-      href: "/practice",
-      icon: Code
-    },
-    {
-      label: "Contest Arena",
-      href: "/contest",
-      icon: Trophy
-    },
-    {
-      label: "Course Catalog",
-      href: "/courses",
-      icon: BookOpen
-    },
-    {
-      label: "AI Viva",
-      href: "/student/viva",
-      icon: Brain
-    },
-    {
-      label: "Live Sessions",
-      href: "/live-classes",
-      icon: Radio
-    },
-    {
-      label: "Learn with Games",
-      href: "/student/games",
-      icon: Gamepad2
-    },
-    {
-      label: "Study Materials",
-      href: "/student/materials",
-      icon: FileText
-    },
-    {
-      label: "Resume Builder",
-      href: "/student/resume",
-      icon: FileCheck
-    }
+    { label: "Dashboard", href: "/student/dashboard", icon: LayoutDashboard },
+    { label: "Practice Arena", href: "/practice", icon: Code },
+    { label: "Contest Arena", href: "/contest", icon: Trophy },
+    { label: "Course Catalog", href: "/courses", icon: BookOpen },
+    { label: "AI Viva", href: "/student/viva", icon: Brain },
+    { label: "Live Sessions", href: "/live-classes", icon: Radio },
+    { label: "Learn with Games", href: "/student/games", icon: Gamepad2 },
+    { label: "Study Materials", href: "/student/materials", icon: FileText },
+    { label: "Resume Builder", href: "/student/resume", icon: FileCheck },
   ];
+
+  const pageTitle = pathname.split("/").filter(Boolean).slice(1).map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(" / ") || "Dashboard";
 
   return (
     <div className="flex h-screen overflow-hidden" style={{ backgroundColor: "var(--bg-primary)" }}>
-      {/* Sidebar - Desktop */}
-      <aside 
-        className={`hidden md:flex flex-col h-full border-r transition-all duration-300 relative z-30`}
-        style={{ 
-          width: isSidebarCollapsed ? "80px" : "260px",
-          backgroundColor: "var(--bg-sidebar)", 
-          borderColor: "var(--border-primary)" 
-        }}
+
+      {/* ── DESKTOP SIDEBAR ─────────────────────────── */}
+      <aside
+        className="hidden md:flex flex-col h-full border-r transition-all duration-300 relative z-30"
+        style={{ width: isSidebarCollapsed ? "68px" : "240px", backgroundColor: "var(--bg-sidebar)", borderColor: "var(--border-primary)" }}
       >
         {/* Sidebar Header */}
-        <div className="flex items-center justify-between px-6 py-5 border-b" style={{ borderColor: "var(--border-primary)" }}>
-          <div className="flex items-center space-x-3 overflow-hidden">
-            <div className="p-2 rounded-xl" style={{ backgroundColor: "var(--bg-badge)", color: "var(--text-accent)" }}>
-              <BookOpen size={18} />
+        <div className="flex items-center justify-between px-4 h-14 border-b" style={{ borderColor: "var(--border-primary)" }}>
+          {!isSidebarCollapsed && (
+            <div className="flex items-center gap-2.5">
+              <div className="h-6 w-6 rounded-md flex items-center justify-center text-white flex-shrink-0" style={{ background: "var(--accent-gradient)" }}>
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                </svg>
+              </div>
+              <span className="text-[13px] font-bold tracking-tight" style={{ color: "var(--text-primary)" }}>DMX Academy</span>
             </div>
-            {!isSidebarCollapsed && (
-              <span className="font-bold text-sm tracking-tight text-gradient whitespace-nowrap">
-                Student Center
-              </span>
-            )}
-          </div>
+          )}
+          {isSidebarCollapsed && (
+            <div className="h-6 w-6 rounded-md flex items-center justify-center text-white mx-auto" style={{ background: "var(--accent-gradient)" }}>
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+              </svg>
+            </div>
+          )}
         </div>
 
-        {/* Navigation Links */}
-        <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
+        {/* Section label */}
+        {!isSidebarCollapsed && (
+          <div className="px-4 pt-5 pb-2">
+            <span className="text-[9px] font-bold tracking-[0.18em] uppercase" style={{ color: "var(--text-muted)" }}>Navigation</span>
+          </div>
+        )}
+
+        {/* Nav links */}
+        <nav className="flex-1 px-2 py-2 space-y-0.5 overflow-y-auto">
           {sidebarLinks.map((link) => {
             const LinkIcon = link.icon;
-            const isActive = pathname === link.href;
+            const isActive = pathname === link.href || (link.href !== "/student/dashboard" && pathname.startsWith(link.href));
 
             return (
-              <Link 
-                key={link.href} 
+              <Link
+                key={link.href}
                 href={link.href}
-                className="flex items-center space-x-3 px-4 py-3 rounded-2xl text-xs font-bold transition-all relative group cursor-pointer"
+                className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-[12px] font-medium transition-all relative group"
                 style={{
-                  color: isActive ? "#ffffff" : "var(--text-secondary)",
-                  backgroundColor: isActive ? "var(--text-accent)" : "transparent"
+                  color: isActive ? "var(--text-primary)" : "var(--text-secondary)",
+                  backgroundColor: isActive ? "var(--bg-hover)" : "transparent",
+                  fontWeight: isActive ? 600 : 400,
                 }}
+                onMouseEnter={e => { if (!isActive) e.currentTarget.style.backgroundColor = "var(--bg-hover)"; }}
+                onMouseLeave={e => { if (!isActive) e.currentTarget.style.backgroundColor = "transparent"; }}
               >
-                {isActive && (
-                  <span className="absolute inset-0 rounded-2xl opacity-10 bg-white" />
-                )}
-                <LinkIcon size={16} className="shrink-0" />
-                {!isSidebarCollapsed && (
-                  <span>{link.label}</span>
-                )}
+                {/* Active indicator */}
+                {isActive && <div className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 rounded-full" style={{ background: "var(--accent-primary)" }} />}
+                <LinkIcon size={15} className="flex-shrink-0" style={{ color: isActive ? "var(--accent-primary)" : "var(--text-muted)" }} />
+                {!isSidebarCollapsed && <span>{link.label}</span>}
+
+                {/* Collapsed tooltip */}
                 {isSidebarCollapsed && (
-                  <div className="absolute left-16 bg-slate-950 text-white text-[10px] py-1 px-2.5 rounded-lg opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity whitespace-nowrap z-50 shadow-md">
+                  <div className="absolute left-14 bg-[var(--bg-primary)] text-[var(--text-primary)] border border-[var(--border-primary)] text-[10px] py-1.5 px-2.5 rounded-lg opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity whitespace-nowrap z-50 shadow-lg">
                     {link.label}
                   </div>
                 )}
@@ -235,208 +191,171 @@ export default function StudentLayout({ children }) {
           })}
         </nav>
 
-        {/* Collapse Button */}
-        <button 
-          onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-          className="absolute bottom-24 -right-3 p-1.5 rounded-full border shadow-sm transition-all hover:scale-105 z-50 cursor-pointer"
-          style={{ 
-            backgroundColor: "var(--bg-card)", 
-            borderColor: "var(--border-primary)",
-            color: "var(--text-secondary)"
-          }}
-        >
-          {isSidebarCollapsed ? <ChevronRight size={12} /> : <ChevronLeft size={12} />}
-        </button>
-
-        {/* Sidebar Footer Removed - Moved to Top Nav */}
+        {/* Bottom: collapse toggle + theme */}
+        <div className="p-2 border-t space-y-1" style={{ borderColor: "var(--border-primary)" }}>
+          <button
+            onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+            className="flex items-center gap-2.5 w-full px-3 py-2 rounded-xl text-[11px] transition-all"
+            style={{ color: "var(--text-muted)" }}
+            onMouseEnter={e => { e.currentTarget.style.backgroundColor = "var(--bg-hover)"; e.currentTarget.style.color = "var(--text-secondary)"; }}
+            onMouseLeave={e => { e.currentTarget.style.backgroundColor = "transparent"; e.currentTarget.style.color = "var(--text-muted)"; }}
+          >
+            {isSidebarCollapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
+            {!isSidebarCollapsed && <span>Collapse sidebar</span>}
+          </button>
+        </div>
       </aside>
 
-      {/* Sidebar - Mobile Menu Drawer */}
+      {/* ── MOBILE DRAWER ────────────────────────────── */}
       {isMobileMenuOpen && (
-        <div className="fixed inset-0 z-50 flex md:hidden bg-slate-950/60 backdrop-blur-sm">
-          <div 
-            className="w-72 h-full flex flex-col p-6 animate-slide-right shadow-2xl"
-            style={{ backgroundColor: "var(--bg-sidebar)" }}
+        <div className="fixed inset-0 z-50 flex md:hidden" onClick={() => setIsMobileMenuOpen(false)}>
+          <div
+            className="w-72 h-full flex flex-col p-5 shadow-2xl"
+            style={{ backgroundColor: "var(--bg-sidebar)", borderRight: "1px solid var(--border-primary)" }}
+            onClick={e => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between mb-8">
-              <div className="flex items-center space-x-3">
-                <div className="p-2 rounded-xl bg-indigo-500/10 text-indigo-500">
-                  <BookOpen size={18} />
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-2.5">
+                <div className="h-6 w-6 rounded-md flex items-center justify-center text-white" style={{ background: "var(--accent-gradient)" }}>
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                  </svg>
                 </div>
-                <span className="font-bold text-sm text-gradient">Student Center</span>
+                <span className="text-sm font-bold" style={{ color: "var(--text-primary)" }}>DMX Academy</span>
               </div>
-              <button onClick={() => setIsMobileMenuOpen(false)} className="p-1.5 rounded-lg hover:bg-slate-500/10">
-                <X size={18} style={{ color: "var(--text-primary)" }} />
+              <button onClick={() => setIsMobileMenuOpen(false)} className="p-1.5 rounded-lg" style={{ color: "var(--text-secondary)" }}>
+                <X size={16} />
               </button>
             </div>
 
-            <nav className="flex-1 space-y-2">
+            <nav className="flex-1 space-y-0.5">
               {sidebarLinks.map((link) => {
                 const LinkIcon = link.icon;
                 const isActive = pathname === link.href;
-
                 return (
-                  <Link 
-                    key={link.href} 
-                    href={link.href}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="flex items-center space-x-3 px-4 py-3 rounded-2xl text-xs font-bold transition-all"
-                    style={{
-                      color: isActive ? "#ffffff" : "var(--text-secondary)",
-                      backgroundColor: isActive ? "var(--text-accent)" : "transparent"
-                    }}
+                  <Link key={link.href} href={link.href} onClick={() => setIsMobileMenuOpen(false)}
+                    className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium transition-all"
+                    style={{ color: isActive ? "var(--text-primary)" : "var(--text-secondary)", backgroundColor: isActive ? "var(--bg-hover)" : "transparent", fontWeight: isActive ? 600 : 400 }}
                   >
-                    <LinkIcon size={16} />
-                    <span>{link.label}</span>
+                    <LinkIcon size={14} style={{ color: isActive ? "var(--accent-primary)" : "var(--text-muted)" }} />
+                    {link.label}
                   </Link>
                 );
               })}
             </nav>
-
-            {/* Mobile Footer Removed */}
           </div>
         </div>
       )}
 
-      {/* Main Content Area */}
+      {/* ── MAIN CONTENT ─────────────────────────────── */}
       <div className="flex-1 flex flex-col h-full overflow-hidden">
         {/* Header */}
-        <header 
-          className="flex items-center justify-between px-6 py-4 border-b relative z-20"
-          style={{ 
-            backgroundColor: "var(--bg-secondary)", 
-            borderColor: "var(--border-primary)" 
-          }}
+        <header
+          className="flex items-center justify-between px-6 h-14 border-b flex-shrink-0"
+          style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)" }}
         >
-          {/* Left: Mobile Toggle & Breadcrumbs */}
-          <div className="flex items-center space-x-4">
-            <button 
-              onClick={() => setIsMobileMenuOpen(true)}
-              className="p-2 rounded-xl md:hidden hover:bg-slate-500/10"
-              style={{ color: "var(--text-primary)" }}
-            >
-              <Menu size={18} />
+          {/* Left */}
+          <div className="flex items-center gap-4">
+            <button onClick={() => setIsMobileMenuOpen(true)} className="p-2 rounded-lg md:hidden" style={{ color: "var(--text-secondary)" }}>
+              <Menu size={16} />
             </button>
-
-            {/* Breadcrumbs */}
-            <div className="hidden sm:flex items-center space-x-2 text-xs font-semibold" style={{ color: "var(--text-secondary)" }}>
+            {/* Breadcrumb */}
+            <div className="hidden sm:flex items-center gap-2 text-xs" style={{ color: "var(--text-muted)" }}>
               <span>Student</span>
-              <span style={{ color: "var(--text-muted)" }}>/</span>
-              <span className="text-[var(--text-primary)] capitalize">
-                {pathname.split("/").filter(Boolean).slice(1).join(" / ") || "Dashboard"}
-              </span>
+              <span>/</span>
+              <span style={{ color: "var(--text-primary)", fontWeight: 600 }}>{pageTitle}</span>
             </div>
           </div>
 
-          {/* Right: Actions */}
-          <div className="flex items-center space-x-4">
-            <Link 
-              href="/"
-              className="flex items-center space-x-1.5 rounded-full border px-3 py-1.5 text-[10px] font-extrabold uppercase tracking-wider transition-all hover:scale-102"
-              style={{
-                backgroundColor: "var(--bg-card)",
-                borderColor: "var(--border-primary)",
-                color: "var(--text-secondary)"
-              }}
+          {/* Right */}
+          <div className="flex items-center gap-3">
+            {/* Public site link */}
+            <Link href="/" className="hidden sm:flex items-center gap-1.5 text-[11px] font-medium transition-colors px-3 py-1.5 rounded-lg border"
+              style={{ borderColor: "var(--border-primary)", color: "var(--text-muted)" }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = "var(--accent-primary)"; e.currentTarget.style.color = "var(--text-secondary)"; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--border-primary)"; e.currentTarget.style.color = "var(--text-muted)"; }}
             >
-              <ArrowLeftRight size={12} />
-              <span>Go To Public Site</span>
+              <ArrowLeftRight size={11} />
+              <span>Public Site</span>
             </Link>
+
+
+
+            {/* Avatar + profile menu */}
             {studentUser && (
               <div className="relative">
-                <button 
+                <button
                   onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
-                  className="w-9 h-9 rounded-full bg-indigo-500 text-white font-extrabold flex items-center justify-center text-sm shadow-sm cursor-pointer hover:ring-2 hover:ring-indigo-400 transition-all ml-2"
+                  className="flex items-center gap-2 rounded-xl px-2 py-1.5 transition-all"
+                  style={{ color: "var(--text-secondary)" }}
+                  onMouseEnter={e => e.currentTarget.style.backgroundColor = "var(--bg-hover)"}
+                  onMouseLeave={e => e.currentTarget.style.backgroundColor = "transparent"}
                 >
-                  {studentUser.avatar}
+                  <div className="w-7 h-7 rounded-lg flex items-center justify-center text-[11px] font-bold text-white" style={{ background: "var(--accent-gradient)" }}>
+                    {studentUser.avatar}
+                  </div>
+                  <div className="hidden sm:block text-left">
+                    <div className="text-[11px] font-semibold" style={{ color: "var(--text-primary)" }}>{studentUser.name}</div>
+                    <div className="text-[9px]" style={{ color: "var(--text-muted)" }}>{roleName}</div>
+                  </div>
                 </button>
 
                 {isProfileMenuOpen && (
                   <>
-                    <div 
-                      className="fixed inset-0 z-40"
-                      onClick={() => setIsProfileMenuOpen(false)}
-                    />
-                    <div 
-                      className="absolute right-0 mt-3 w-72 rounded-2xl border shadow-xl z-50 animate-in slide-in-from-top-2 fade-in duration-200"
-                      style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}
-                    >
-                      {/* Dropdown Header */}
-                      <div className="p-5 flex items-center space-x-3 border-b relative" style={{ borderColor: "var(--border-primary)" }}>
-                        <div className="w-12 h-12 rounded-full bg-indigo-500 text-white font-extrabold flex items-center justify-center text-lg shrink-0">
-                          {studentUser.avatar}
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <p className="text-sm font-bold truncate" style={{ color: "var(--text-primary)" }}>{studentUser.name}</p>
-                          <p className="text-[10px] text-amber-500 font-semibold truncate mt-0.5">Access all features with Premium!</p>
-                        </div>
-                      </div>
-                      
-                      {/* Grid Icons */}
-                      <div className="grid grid-cols-3 gap-2 p-4 border-b" style={{ borderColor: "var(--border-primary)" }}>
-                        <Link href="/student/lists" onClick={() => setIsProfileMenuOpen(false)} className="flex flex-col items-center justify-center p-2 rounded-xl hover:bg-[var(--bg-primary)] transition-colors cursor-pointer group">
-                          <div className="w-10 h-10 rounded-xl bg-slate-500/10 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
-                            <BookOpen size={18} className="text-indigo-400" />
+                    <div className="fixed inset-0 z-40" onClick={() => setIsProfileMenuOpen(false)} />
+                    <div className="absolute right-0 top-full mt-2 w-64 rounded-xl border shadow-xl z-50 overflow-hidden"
+                      style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
+
+                      {/* Profile header */}
+                      <div className="p-4 border-b" style={{ borderColor: "var(--border-primary)" }}>
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-xl flex items-center justify-center font-bold text-white" style={{ background: "var(--accent-gradient)" }}>
+                            {studentUser.avatar}
                           </div>
-                          <span className="text-[10px] font-semibold text-[var(--text-secondary)]">My Lists</span>
-                        </Link>
-                        
-                        <Link href="/student/notebook" onClick={() => setIsProfileMenuOpen(false)} className="flex flex-col items-center justify-center p-2 rounded-xl hover:bg-[var(--bg-primary)] transition-colors cursor-pointer group">
-                          <div className="w-10 h-10 rounded-xl bg-slate-500/10 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
-                            <FileText size={18} className="text-blue-400" />
-                          </div>
-                          <span className="text-[10px] font-semibold text-[var(--text-secondary)]">Notebook</span>
-                        </Link>
-                        
-                        <Link href="/student/profile" onClick={() => setIsProfileMenuOpen(false)} className="flex flex-col items-center justify-center p-2 rounded-xl hover:bg-[var(--bg-primary)] transition-colors cursor-pointer group">
-                          <div className="w-10 h-10 rounded-xl bg-slate-500/10 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform relative">
-                            {/* Progress SVG */}
-                            <svg className="w-6 h-6 transform -rotate-90">
-                              <circle cx="12" cy="12" r="10" stroke="rgba(16, 185, 129, 0.2)" strokeWidth="3" fill="transparent" />
-                              <circle cx="12" cy="12" r="10" stroke="#10b981" strokeWidth="3" fill="transparent" strokeDasharray="62.8" strokeDashoffset="20" strokeLinecap="round" />
-                            </svg>
-                          </div>
-                          <span className="text-[10px] font-semibold text-[var(--text-secondary)]">Progress</span>
-                        </Link>
-                      </div>
-                      
-                      {/* Dropdown Links */}
-                      <div className="p-2 space-y-1">
-                        <Link 
-                          href="/student/settings"
-                          onClick={() => setIsProfileMenuOpen(false)}
-                          className="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-colors hover:bg-[var(--bg-primary)] cursor-pointer"
-                          style={{ color: "var(--text-secondary)" }}
-                        >
-                          <Settings size={14} />
-                          <span>Settings</span>
-                        </Link>
-                        
-                        <div 
-                          className="flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-semibold"
-                          style={{ color: "var(--text-secondary)" }}
-                        >
-                          <div className="flex items-center space-x-3">
-                            <Paintbrush size={14} />
-                            <span>Appearance</span>
-                          </div>
-                          {/* Inline Theme Toggle */}
-                          <div className="scale-90 origin-right">
-                            <ThemeToggle />
+                          <div>
+                            <div className="text-sm font-bold" style={{ color: "var(--text-primary)" }}>{studentUser.name}</div>
+                            <div className="text-[10px]" style={{ color: "var(--text-muted)" }}>{roleName}</div>
                           </div>
                         </div>
                       </div>
 
-                      <div className="p-2 border-t" style={{ borderColor: "var(--border-primary)" }}>
-                        <button 
-                          onClick={() => {
-                            setIsProfileMenuOpen(false);
-                            handleLogout();
-                          }}
-                          className="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-colors hover:bg-rose-500/10 hover:text-rose-500 cursor-pointer"
+                      {/* Quick links */}
+                      <div className="grid grid-cols-3 gap-1 p-2 border-b" style={{ borderColor: "var(--border-primary)" }}>
+                        {[
+                          { label: "My Lists", href: "/student/lists", icon: <BookOpen size={14} /> },
+                          { label: "Notebook", href: "/student/notebook", icon: <FileText size={14} /> },
+                          { label: "Profile", href: "/student/profile", icon: <Activity size={14} /> },
+                        ].map(item => (
+                          <Link key={item.href} href={item.href} onClick={() => setIsProfileMenuOpen(false)}
+                            className="flex flex-col items-center gap-1.5 p-2.5 rounded-lg transition-colors text-center"
+                            style={{ color: "var(--text-secondary)" }}
+                            onMouseEnter={e => e.currentTarget.style.backgroundColor = "var(--bg-hover)"}
+                            onMouseLeave={e => e.currentTarget.style.backgroundColor = "transparent"}
+                          >
+                            <span style={{ color: "var(--accent-primary)" }}>{item.icon}</span>
+                            <span className="text-[9px] font-medium">{item.label}</span>
+                          </Link>
+                        ))}
+                      </div>
+
+                      {/* Theme in menu */}
+                      <div className="flex items-center justify-between px-3 py-2.5 border-b" style={{ borderColor: "var(--border-primary)" }}>
+                        <div className="flex items-center gap-2 text-xs" style={{ color: "var(--text-secondary)" }}>
+                          <Paintbrush size={13} />
+                          <span>Appearance</span>
+                        </div>
+                        <div className="scale-[0.85] origin-right"><ThemeToggle /></div>
+                      </div>
+
+                      {/* Logout */}
+                      <div className="p-2">
+                        <button onClick={() => { setIsProfileMenuOpen(false); handleLogout(); }}
+                          className="w-full flex items-center gap-2 px-3 py-2.5 rounded-lg text-xs font-medium transition-colors text-left"
                           style={{ color: "var(--text-secondary)" }}
+                          onMouseEnter={e => { e.currentTarget.style.backgroundColor = "rgba(239,68,68,0.08)"; e.currentTarget.style.color = "#ef4444"; }}
+                          onMouseLeave={e => { e.currentTarget.style.backgroundColor = "transparent"; e.currentTarget.style.color = "var(--text-secondary)"; }}
                         >
-                          <LogOut size={14} />
+                          <LogOut size={13} />
                           <span>Sign Out</span>
                         </button>
                       </div>
@@ -448,55 +367,35 @@ export default function StudentLayout({ children }) {
           </div>
         </header>
 
-        {/* Content Body */}
-        <main className="flex-1 overflow-y-auto relative">
-          <div className="max-w-6xl mx-auto space-y-8 p-6 md:p-8">
+        {/* Page content */}
+        <main className="flex-1 overflow-y-auto">
+          <div className="max-w-6xl mx-auto p-6 md:p-8">
             {children}
           </div>
         </main>
       </div>
-      {/* Logout Confirmation Modal */}
+
+      {/* ── LOGOUT MODAL ─────────────────────────────── */}
       {showLogoutConfirm && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-md p-4 animate-in fade-in duration-200">
-          <div
-            className="w-full max-w-sm rounded-3xl p-6 border shadow-2xl text-center space-y-5"
-            style={{
-              backgroundColor: "var(--bg-card)",
-              borderColor: "var(--border-primary)"
-            }}
-          >
-            <div className="w-12 h-12 rounded-2xl bg-rose-500/10 text-rose-500 flex items-center justify-center mx-auto border border-rose-500/20">
-              <AlertTriangle size={24} />
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="w-full max-w-sm rounded-2xl p-6 border shadow-2xl text-center space-y-5"
+            style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
+            <div className="w-11 h-11 rounded-xl bg-rose-500/10 text-rose-500 flex items-center justify-center mx-auto border border-rose-500/20">
+              <AlertTriangle size={20} />
             </div>
-
-            <div className="space-y-2">
-              <h3 className="text-sm font-black uppercase tracking-wider text-rose-500">
-                Are u sure want to logout
-              </h3>
-              <p className="text-[11px]" style={{ color: "var(--text-muted)" }}>
-                You will need to sign back in to access your study portal.
-              </p>
+            <div className="space-y-1.5">
+              <h3 className="text-base font-black" style={{ color: "var(--text-primary)" }}>Sign out?</h3>
+              <p className="text-xs" style={{ color: "var(--text-muted)" }}>You'll need to sign back in to access your study portal.</p>
             </div>
-
-            <div className="flex items-center justify-center gap-3 pt-2">
-              <button
-                type="button"
-                onClick={() => setShowLogoutConfirm(false)}
-                className="px-4 py-2.5 rounded-2xl border text-xs font-bold transition-all hover:bg-[var(--bg-primary)] cursor-pointer text-[var(--text-secondary)]"
-                style={{ borderColor: "var(--border-primary)" }}
-              >
+            <div className="flex gap-3">
+              <button type="button" onClick={() => setShowLogoutConfirm(false)}
+                className="flex-1 py-2.5 rounded-xl border text-xs font-semibold transition-all cursor-pointer"
+                style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}>
                 Cancel
               </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setShowLogoutConfirm(false);
-                  logout();
-                  router.push("/login?redirect=/student/dashboard");
-                }}
-                className="px-5 py-2.5 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-black uppercase transition-all shadow-lg hover:scale-[1.02] cursor-pointer"
-              >
-                Logout
+              <button type="button" onClick={() => { setShowLogoutConfirm(false); logout(); router.push("/login?redirect=/student/dashboard"); }}
+                className="flex-1 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold transition-all cursor-pointer">
+                Sign Out
               </button>
             </div>
           </div>

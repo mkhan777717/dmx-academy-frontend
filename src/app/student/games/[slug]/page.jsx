@@ -74,14 +74,14 @@ export default function GamePageWrapper() {
   return (
     <div className="fixed inset-0 z-[60] bg-gradient-to-br from-[#190C2F] via-[#0E061E] to-[#04010A] overflow-y-auto p-4 md:p-8 text-[#E8E6E1] select-none">
       {/* Immersive Space Ambient Glows */}
-      <div className="absolute top-[-10%] left-[-15%] w-[60%] h-[60%] rounded-full bg-purple-600/10 blur-[130px] pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-15%] w-[60%] h-[60%] rounded-full bg-indigo-600/10 blur-[130px] pointer-events-none" />
+      <div className="absolute top-[-10%] left-[-15%] w-[60%] h-[60%] rounded-full bg-slate-600/10 blur-[130px] pointer-events-none" />
+      <div className="absolute bottom-[-10%] right-[-15%] w-[60%] h-[60%] rounded-full bg-zinc-600/10 blur-[130px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto space-y-6 relative z-10">
         {/* Back to Hub Nav */}
         <button
           onClick={() => router.push("/student/games")}
-          className="flex items-center space-x-2 px-4 py-2 rounded-full border border-purple-500/20 bg-purple-950/25 text-[#D8B4FE] hover:text-white hover:border-purple-500/40 hover:bg-purple-950/40 hover:scale-102 transition-all cursor-pointer text-xs font-bold font-mono shadow-sm w-fit"
+          className="flex items-center space-x-2 px-4 py-2 rounded-full border border-slate-500/20 bg-slate-950/25 text-[#D8B4FE] hover:text-white hover:border-slate-500/40 hover:bg-slate-950/40 hover:scale-102 transition-all cursor-pointer text-xs font-bold font-mono shadow-sm w-fit"
         >
           <ArrowLeft size={14} className="mr-0.5" />
           <span>Exit to Arcade Lobby</span>

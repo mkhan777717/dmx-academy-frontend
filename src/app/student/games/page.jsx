@@ -56,61 +56,51 @@ export default function GamesHubPage() {
   };
 
   return (
-    <div className="fixed inset-0 z-[60] bg-gradient-to-br from-[#190C2F] via-[#0E061E] to-[#04010A] overflow-y-auto p-4 md:p-12 text-[#E8E6E1] select-none">
-      {/* Immersive Space Ambient Glows */}
-      <div className="absolute top-[-10%] left-[-15%] w-[60%] h-[60%] rounded-full bg-purple-600/10 blur-[130px] pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-15%] w-[60%] h-[60%] rounded-full bg-indigo-600/10 blur-[130px] pointer-events-none" />
-      <div className="absolute top-[35%] right-[10%] w-[35%] h-[35%] rounded-full bg-pink-500/5 blur-[100px] pointer-events-none" />
-
+    <div className="min-h-[calc(100vh-4rem)] relative animate-fade-in px-0 sm:px-6 pb-12">
       {/* Top Arcade Navigation Bar */}
-      <div className="max-w-6xl mx-auto flex items-center justify-between mb-8 relative z-10 border-b border-purple-500/10 pb-4">
-        <button
-          onClick={() => router.push("/student/dashboard")}
-          className="flex items-center space-x-2 px-4 py-2 rounded-full border border-purple-500/20 bg-purple-950/25 text-[#D8B4FE] hover:text-white hover:border-purple-500/40 hover:bg-purple-950/40 hover:scale-102 transition-all cursor-pointer text-xs font-bold font-mono shadow-sm"
-        >
-          <ArrowLeft size={14} className="mr-0.5" />
-          <span>Exit Arcade Lobby</span>
-        </button>
-
-        <div className="flex items-center space-x-2">
-          <span className="h-2 w-2 rounded-full bg-[#7CFFB2] animate-pulse" />
-          <span className="text-[10px] font-mono font-extrabold uppercase tracking-wider text-[#7CFFB2]">
-            System Online
-          </span>
-        </div>
-      </div>
-
-      <div className="max-w-6xl mx-auto space-y-8 relative z-10">
-        {/* Header Section */}
-        <div className="space-y-3">
-          <div className="flex items-center space-x-3">
-            <div className="p-2.5 rounded-2xl bg-purple-500/10 border border-purple-500/20">
-              <Gamepad2 size={24} className="text-purple-400" />
-            </div>
-            <h1 className="text-3xl md:text-5xl font-black font-display tracking-tight text-white uppercase">
-              Synapse Arcade
-            </h1>
+      <section className="flex flex-col gap-2 border-b pb-6 shrink-0 mb-8" style={{ borderColor: "var(--border-primary)" }}>
+        <div className="flex items-center justify-between">
+          <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border mb-3 w-fit"
+            style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)", backgroundColor: "var(--bg-secondary)" }}>
+            <Gamepad2 size={12} className="text-violet-500" />
+            Arcade
           </div>
-          <p className="text-sm text-purple-300/60 max-w-xl leading-relaxed">
-            Level up your engineering skills through interactive, edge-to-edge game arenas. Solve layout puzzles, repair code bases, and hack endpoints in real-time.
-          </p>
+          <button
+            onClick={() => router.push("/student/dashboard")}
+            className="flex items-center space-x-2 px-4 py-2 border rounded-xl font-semibold text-sm transition-colors shadow-sm cursor-pointer hover:bg-[var(--bg-secondary)]"
+            style={{ 
+              backgroundColor: "var(--bg-primary)", 
+              borderColor: "var(--border-primary)",
+              color: "var(--text-primary)"
+            }}
+          >
+            <ArrowLeft size={14} className="mr-0.5" />
+            <span>Exit Arcade</span>
+          </button>
         </div>
+        
+        <h1 className="text-4xl font-serif tracking-tight" style={{ color: "var(--text-primary)" }}>Synapse Arcade</h1>
+        <p className="text-sm max-w-xl" style={{ color: "var(--text-secondary)" }}>
+          Level up your engineering skills through interactive, edge-to-edge game arenas. Solve layout puzzles, repair code bases, and hack endpoints in real-time.
+        </p>
+      </section>
 
-        {/* Filters Toolbar - Glassmorphic Purple */}
-        <div className="flex flex-wrap items-center justify-between gap-4 bg-[#22123C]/30 backdrop-blur-md p-4 rounded-2xl border border-purple-500/15">
+      <div className="space-y-8 relative z-10">
+        {/* Filters Toolbar */}
+        <div className="flex flex-wrap items-center justify-between gap-4 p-4 rounded-2xl border shadow-sm" style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}>
           {/* Track Filters */}
           <div className="flex flex-wrap items-center gap-1.5">
-            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-purple-300 mr-2">
+            <span className="text-[10px] font-bold uppercase tracking-wider mr-2" style={{ color: "var(--text-muted)" }}>
               Track:
             </span>
             {tracks.map(track => (
               <button
                 key={track}
                 onClick={() => setFilterTrack(track)}
-                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer border ${
                   filterTrack === track
-                    ? "bg-purple-600 text-white border border-purple-400 shadow-[0_0_12px_rgba(168,85,247,0.3)]"
-                    : "bg-[#251347]/20 border border-purple-900/30 text-purple-300/80 hover:text-white"
+                    ? "bg-[var(--text-primary)] text-[var(--bg-primary)] border-[var(--text-primary)]"
+                    : "bg-transparent text-[var(--text-secondary)] border-[var(--border-primary)] hover:bg-[var(--bg-secondary)]"
                 }`}
               >
                 {track}
@@ -120,17 +110,17 @@ export default function GamesHubPage() {
 
           {/* Difficulty Filters */}
           <div className="flex flex-wrap items-center gap-1.5">
-            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-purple-300 mr-2">
+            <span className="text-[10px] font-bold uppercase tracking-wider mr-2" style={{ color: "var(--text-muted)" }}>
               Difficulty:
             </span>
             {difficulties.map(diff => (
               <button
                 key={diff}
                 onClick={() => setFilterDifficulty(diff)}
-                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer border ${
                   filterDifficulty === diff
-                    ? "bg-purple-600 text-white border border-purple-400 shadow-[0_0_12px_rgba(168,85,247,0.3)]"
-                    : "bg-[#251347]/20 border border-purple-900/30 text-purple-300/80 hover:text-white"
+                    ? "bg-[var(--text-primary)] text-[var(--bg-primary)] border-[var(--text-primary)]"
+                    : "bg-transparent text-[var(--text-secondary)] border-[var(--border-primary)] hover:bg-[var(--bg-secondary)]"
                 }`}
               >
                 {diff}
@@ -139,8 +129,8 @@ export default function GamesHubPage() {
           </div>
         </div>
 
-        {/* Games Grid - Purple Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Games Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <AnimatePresence mode="popLayout">
             {filteredGames.map((game, idx) => {
               const isLive = game.status === "live";
@@ -159,45 +149,46 @@ export default function GamesHubPage() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.95 }}
                   transition={{ delay: idx * 0.05 }}
-                  className="bg-[#24133F]/35 hover:bg-[#2C184E]/45 backdrop-blur-md border border-purple-500/20 hover:border-purple-500/35 rounded-3xl p-6 flex flex-col justify-between space-y-6 relative overflow-hidden transition-all duration-300 hover:shadow-[0_10px_30px_rgba(139,92,246,0.15)]"
+                  className="rounded-2xl border p-6 flex flex-col justify-between space-y-6 transition-all hover:shadow-md bg-[var(--bg-primary)] hover:bg-[var(--bg-secondary)]"
+                  style={{ borderColor: "var(--border-primary)" }}
                 >
                   {/* Top Details */}
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-purple-300/70">
+                      <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "var(--text-secondary)" }}>
                         {game.track}
                       </span>
                       <span className={`text-[9px] font-extrabold uppercase px-2 py-0.5 rounded-md border ${
-                        game.difficulty === "Beginner" ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-400" :
-                        game.difficulty === "Intermediate" ? "border-amber-500/30 bg-amber-500/10 text-amber-400" :
-                        "border-rose-500/30 bg-rose-500/10 text-rose-400"
+                        game.difficulty === "Beginner" ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-500" :
+                        game.difficulty === "Intermediate" ? "border-amber-500/30 bg-amber-500/10 text-amber-500" :
+                        "border-rose-500/30 bg-rose-500/10 text-rose-500"
                       }`}>
                         {game.difficulty}
                       </span>
                     </div>
 
                     <div className="space-y-1.5">
-                      <h3 className="text-lg font-black font-display text-white tracking-tight flex items-center gap-2">
+                      <h3 className="text-lg font-bold tracking-tight flex items-center gap-2" style={{ color: "var(--text-primary)" }}>
                         {game.title}
                         {isFullyCompleted && (
-                          <CheckCircle2 size={16} className="text-[#7CFFB2] fill-[#7CFFB2]/10" />
+                          <CheckCircle2 size={16} className="text-emerald-500" />
                         )}
                       </h3>
-                      <p className="text-xs text-purple-200/50 leading-relaxed font-sans">
+                      <p className="text-xs leading-relaxed" style={{ color: "var(--text-secondary)" }}>
                         {game.description}
                       </p>
                     </div>
                   </div>
 
                   {/* Bottom Stats & Launch Action */}
-                  <div className="flex items-center justify-between border-t border-purple-500/10 pt-4 mt-auto">
-                    <div className="flex items-center space-x-4 text-[10px] font-mono text-purple-300/60">
+                  <div className="flex items-center justify-between border-t pt-4 mt-auto" style={{ borderColor: "var(--border-primary)" }}>
+                    <div className="flex items-center space-x-4 text-[10px] font-semibold" style={{ color: "var(--text-muted)" }}>
                       <span className="flex items-center gap-1">
                         <Clock size={12} />
                         <span>{game.estimatedMinutes} Mins</span>
                       </span>
                       {isLive && (
-                        <span className="flex items-center gap-1 font-bold text-[#7CFFB2]">
+                        <span className="flex items-center gap-1 font-bold text-emerald-500">
                           <Award size={12} />
                           <span>
                             {game.totalLevels
@@ -215,14 +206,16 @@ export default function GamesHubPage() {
                     {isLive ? (
                       <button
                         onClick={() => router.push(`/student/games/${game.slug}`)}
-                        className="px-4 py-2.5 rounded-xl font-bold text-xs text-white bg-purple-600 hover:bg-purple-500 border border-purple-400 hover:scale-102 hover:shadow-[0_0_12px_rgba(168,85,247,0.3)] transition-all cursor-pointer flex items-center gap-1.5"
+                        className="px-4 py-2 rounded-xl font-semibold text-xs text-white transition-transform hover:-translate-y-0.5 shadow-md cursor-pointer flex items-center gap-1.5"
+                        style={{ background: "var(--accent-primary)" }}
                       >
-                        <span>Start Arena</span>
+                        <span>Start</span>
                         <ArrowRight size={13} />
                       </button>
                     ) : (
-                      <span className="px-4 py-2.5 rounded-xl font-bold text-xs border border-purple-900/30 bg-[#251347]/20 text-purple-400/50 cursor-not-allowed select-none">
-                        Locked Node
+                      <span className="px-3 py-1.5 rounded-lg font-bold text-xs border cursor-not-allowed select-none"
+                        style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)", color: "var(--text-muted)" }}>
+                        Locked
                       </span>
                     )}
                   </div>

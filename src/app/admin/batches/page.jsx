@@ -510,22 +510,21 @@ export default function ManageBatchesPage() {
   };
 
   return (
-    <div className="space-y-6 p-6 min-h-0 flex flex-col flex-1" style={{ color: "var(--text-primary)" }}>
-
+    <div className="space-y-6 p-0 sm:p-6 min-h-0 flex flex-col flex-1 animate-in fade-in duration-500" style={{ color: "var(--text-primary)" }}>
       {activeView === "list" ? (
         <>
           {/* Header section */}
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 shrink-0">
-            <div className="space-y-1.5">
-              <div className="flex items-center gap-2">
-                <span className="px-2.5 py-1 rounded-full bg-[var(--bg-badge)] text-[var(--text-accent)] text-[10px] font-extrabold uppercase tracking-wider">
-                  Academy Batches
-                </span>
+          <section className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 border-b pb-6 shrink-0" style={{ borderColor: "var(--border-primary)" }}>
+            <div className="space-y-2">
+              <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border mb-3"
+                style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)", backgroundColor: "var(--bg-secondary)" }}>
+                <Layers size={12} className="text-violet-500" />
+                Academy Batches
               </div>
-              <h1 className="text-2xl font-black tracking-tight" style={{ color: "var(--text-primary)" }}>
+              <h1 className="text-4xl font-serif tracking-tight" style={{ color: "var(--text-primary)" }}>
                 Manage Batches
               </h1>
-              <p className="text-xs" style={{ color: "var(--text-muted)" }}>
+              <p className="text-sm max-w-xl" style={{ color: "var(--text-secondary)" }}>
                 Create academic cohorts, bind dedicated Batch Managers, and map mentor/student rosters.
               </p> 
             </div>
@@ -536,23 +535,24 @@ export default function ManageBatchesPage() {
                 setFormSuccess("");
                 setIsAddModalOpen(true);
               }}
-              className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-[var(--accent-primary)] hover:bg-[var(--accent-secondary)] text-white text-xs font-black uppercase transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer shadow-lg shadow-[var(--accent-glow)] border border-transparent shrink-0"
+              className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-white text-xs font-semibold transition-transform hover:-translate-y-0.5 cursor-pointer shadow-md shrink-0"
+              style={{ background: "var(--accent-primary)" }}
             >
-              <Plus size={16} />
+              <Plus size={14} />
               <span>Create Batch</span>
             </button>
-          </div>
+          </section>
 
           {/* Grid of Batches */}
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 shrink-0 mb-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 shrink-0 mb-2">
             <div className="flex items-center gap-2 w-full sm:w-auto shrink-0">
               <div className="relative w-full sm:w-64">
                 <input
                   type="text"
-                  placeholder="Search batches by name or manager..."
+                  placeholder="Search batches..."
                   value={batchSearchQuery}
                   onChange={(e) => setBatchSearchQuery(e.target.value)}
-                  className="w-full bg-[var(--bg-card)] border rounded-2xl px-4 py-2.5 text-xs font-semibold focus:outline-none focus:border-[var(--border-accent)] transition-all placeholder:text-[var(--text-muted)]"
+                  className="w-full bg-[var(--bg-secondary)] border rounded-xl px-4 py-2.5 text-sm font-medium focus:outline-none focus:border-[var(--text-muted)] transition-colors placeholder:text-[var(--text-muted)]"
                   style={{ borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
                 />
               </div>
@@ -561,28 +561,28 @@ export default function ManageBatchesPage() {
               <button
                 onClick={loadData}
                 title="Refresh Batches"
-                className="p-2.5 rounded-2xl border bg-[var(--bg-card)] hover:bg-[var(--bg-primary)] transition-all flex items-center justify-center cursor-pointer hover:scale-105 active:scale-95 disabled:opacity-50"
-                style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}
+                className="p-2.5 rounded-xl border transition-colors hover:bg-[var(--bg-secondary)] flex items-center justify-center cursor-pointer disabled:opacity-50"
+                style={{ borderColor: "var(--border-primary)", color: "var(--text-primary)", backgroundColor: "var(--bg-primary)" }}
                 disabled={loading}
               >
-                <RefreshCw size={14} className={loading ? "animate-spin text-[var(--text-accent)]" : ""} />
+                <RefreshCw size={14} className={loading ? "animate-spin text-violet-500" : ""} />
               </button>
             </div>
           </div>
 
-          <div className="flex-1 min-h-0 overflow-y-auto">
+          <div className="flex-1 min-h-0 overflow-y-auto pb-12">
             {loading ? (
-              <div className="flex h-64 flex-col items-center justify-center space-y-4 rounded-3xl border bg-[var(--bg-card)]" style={{ borderColor: "var(--border-primary)" }}>
-                <div className="w-8 h-8 rounded-full border-2 border-[var(--text-accent)] border-t-transparent animate-spin" />
-                <span className="text-xs font-semibold text-[var(--text-muted)]">Fetching Batches...</span>
+              <div className="flex h-64 flex-col items-center justify-center space-y-4 rounded-2xl border" style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}>
+                <div className="w-8 h-8 rounded-full border-2 border-[var(--text-primary)] border-t-transparent animate-spin" />
+                <span className="text-xs font-medium" style={{ color: "var(--text-muted)" }}>Fetching Batches...</span>
               </div>
             ) : batches.length === 0 ? (
-              <div className="flex h-64 flex-col items-center justify-center space-y-4 rounded-3xl border bg-[var(--bg-card)]" style={{ borderColor: "var(--border-primary)" }}>
-                <div className="w-16 h-16 rounded-3xl bg-[var(--bg-badge)] flex items-center justify-center text-[var(--text-accent)]">
-                  <Layers size={28} />
+              <div className="flex h-64 flex-col items-center justify-center space-y-4 rounded-2xl border border-dashed" style={{ borderColor: "var(--border-primary)" }}>
+                <div className="p-4 rounded-full bg-[var(--bg-secondary)]">
+                  <Layers size={24} className="text-violet-500" />
                 </div>
                 <div className="text-center space-y-1">
-                  <h3 className="text-sm font-black" style={{ color: "var(--text-primary)" }}>No active batches</h3>
+                  <h3 className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>No active batches</h3>
                   <p className="text-xs max-w-xs" style={{ color: "var(--text-muted)" }}>
                     No cohorts registered yet. Create your first batch mapping to begin.
                   </p>
@@ -597,12 +597,12 @@ export default function ManageBatchesPage() {
                 mgrName.toLowerCase().includes(query)
               );
             }).length === 0 ? (
-              <div className="flex h-64 flex-col items-center justify-center space-y-4 rounded-3xl border bg-[var(--bg-card)]" style={{ borderColor: "var(--border-primary)" }}>
-                <div className="w-16 h-16 rounded-3xl bg-[var(--bg-badge)] flex items-center justify-center text-[var(--text-accent)]">
-                  <Layers size={28} />
+              <div className="flex h-64 flex-col items-center justify-center space-y-4 rounded-2xl border" style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}>
+                <div className="p-4 rounded-full bg-[var(--bg-secondary)]">
+                  <Layers size={24} className="text-violet-500" />
                 </div>
                 <div className="text-center space-y-1">
-                  <h3 className="text-sm font-black" style={{ color: "var(--text-primary)" }}>No matching batches</h3>
+                  <h3 className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>No matching batches</h3>
                   <p className="text-xs max-w-xs" style={{ color: "var(--text-muted)" }}>
                     No cohorts matched your search criteria.
                   </p>
@@ -629,25 +629,25 @@ export default function ManageBatchesPage() {
                         setActiveDetailTab("manager");
                         setActiveView("details");
                       }}
-                      className="rounded-3xl border bg-[var(--bg-card)] p-6 space-y-5 relative overflow-hidden cursor-pointer hover:scale-[1.01] transition-transform duration-200"
-                      style={{ borderColor: "var(--border-primary)" }}
+                      className="rounded-2xl border p-6 space-y-6 transition-colors hover:bg-[var(--bg-secondary)] cursor-pointer group"
+                      style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}
                     >
                       <div className="flex items-start justify-between gap-4">
                         <div className="space-y-1">
-                          <h3 className="text-base font-black tracking-tight" style={{ color: "var(--text-primary)" }}>
+                          <h3 className="text-xl font-serif tracking-tight" style={{ color: "var(--text-primary)" }}>
                             {batch.name}
                           </h3>
-                          <p className="text-[10px] font-bold" style={{ color: "var(--text-muted)" }}>
+                          <p className="text-xs font-medium" style={{ color: "var(--text-muted)" }}>
                             Created on {new Date(batch.createdAt).toLocaleDateString()}
                           </p>
                         </div>
-                         <div className="flex items-center gap-1">
+                        <div className="flex items-center gap-1">
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
                               triggerEdit(batch);
                             }}
-                            className="p-2 rounded-xl text-emerald-500 hover:bg-emerald-500/10 transition-colors cursor-pointer"
+                            className="p-2 rounded-lg text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-950/50 transition-colors cursor-pointer"
                           >
                             <Edit size={16} />
                           </button>
@@ -656,7 +656,7 @@ export default function ManageBatchesPage() {
                               e.stopPropagation();
                               triggerDelete(batch);
                             }}
-                            className="p-2 rounded-xl text-rose-500 hover:bg-rose-500/10 transition-colors cursor-pointer"
+                            className="p-2 rounded-lg text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/50 transition-colors cursor-pointer"
                           >
                             <Trash2 size={16} />
                           </button>
@@ -665,22 +665,22 @@ export default function ManageBatchesPage() {
 
                       {/* Association badges */}
                       <div className="grid grid-cols-3 gap-3">
-                        <div className="p-3 rounded-2xl bg-[var(--bg-primary)]/50 border flex flex-col items-center text-center space-y-1" style={{ borderColor: "var(--border-primary)" }}>
-                          <Briefcase size={14} className="text-purple-400" />
-                          <span className="text-[9px] font-black uppercase text-[var(--text-muted)]">Manager</span>
-                          <span className="text-[10px] font-black truncate max-w-full text-[var(--text-primary)]">{mgrName}</span>
+                        <div className="p-3 rounded-xl border flex flex-col items-center text-center space-y-1" style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)" }}>
+                          <Briefcase size={14} className="text-slate-500" />
+                          <span className="text-[10px] font-bold uppercase text-[var(--text-muted)] tracking-wider mt-1">Manager</span>
+                          <span className="text-xs font-semibold truncate max-w-full text-[var(--text-primary)]">{mgrName}</span>
                         </div>
 
-                        <div className="p-3 rounded-2xl bg-[var(--bg-primary)]/50 border flex flex-col items-center text-center space-y-1" style={{ borderColor: "var(--border-primary)" }}>
-                          <Award size={14} className="text-amber-400" />
-                          <span className="text-[9px] font-black uppercase text-[var(--text-muted)]">Mentors</span>
-                          <span className="text-xs font-black text-[var(--text-primary)]">{batch.mentorIds.length} Instructors</span>
+                        <div className="p-3 rounded-xl border flex flex-col items-center text-center space-y-1" style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)" }}>
+                          <Award size={14} className="text-amber-500" />
+                          <span className="text-[10px] font-bold uppercase text-[var(--text-muted)] tracking-wider mt-1">Mentors</span>
+                          <span className="text-xs font-semibold text-[var(--text-primary)]">{batch.mentorIds.length} Instructors</span>
                         </div>
 
-                        <div className="p-3 rounded-2xl bg-[var(--bg-primary)]/50 border flex flex-col items-center text-center space-y-1" style={{ borderColor: "var(--border-primary)" }}>
-                          <GraduationCap size={14} className="text-emerald-400" />
-                          <span className="text-[9px] font-black uppercase text-[var(--text-muted)]">Students</span>
-                          <span className="text-xs font-black text-[var(--text-primary)]">{batch.studentIds.length} Assigned</span>
+                        <div className="p-3 rounded-xl border flex flex-col items-center text-center space-y-1" style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)" }}>
+                          <GraduationCap size={14} className="text-emerald-500" />
+                          <span className="text-[10px] font-bold uppercase text-[var(--text-muted)] tracking-wider mt-1">Students</span>
+                          <span className="text-xs font-semibold text-[var(--text-primary)]">{batch.studentIds.length} Assigned</span>
                         </div>
                       </div>
                     </motion.div>
@@ -691,39 +691,41 @@ export default function ManageBatchesPage() {
           </div>
         </>
       ) : (
-        /* Full Page Details View (Looks exactly like Manage People) */
+        /* Full Page Details View */
         <div className="flex-1 flex flex-col min-h-0 space-y-6">
           {/* Header section with back button */}
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 shrink-0">
-            <div className="space-y-1.5">
+          <section className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 border-b pb-6 shrink-0" style={{ borderColor: "var(--border-primary)" }}>
+            <div className="space-y-2">
               <button
                 onClick={() => {
                   setActiveView("list");
                   setSelectedBatchId(null);
                 }}
-                className="flex items-center gap-1.5 text-[10px] font-extrabold uppercase tracking-wider text-[var(--text-accent)] hover:underline cursor-pointer"
+                className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest hover:underline cursor-pointer mb-3"
+                style={{ color: "var(--text-secondary)" }}
               >
                 <ArrowLeft size={12} />
                 <span>Back to batches</span>
               </button>
-              <h1 className="text-2xl font-black tracking-tight" style={{ color: "var(--text-primary)" }}>
+              <h1 className="text-4xl font-serif tracking-tight" style={{ color: "var(--text-primary)" }}>
                 Batch: {selectedBatchDetails?.name}
               </h1>
-              <p className="text-xs" style={{ color: "var(--text-muted)" }}>
+              <p className="text-sm max-w-xl" style={{ color: "var(--text-secondary)" }}>
                 Roster table mapping Batch Manager, active Mentors, and assigned Students.
               </p>
             </div>
 
-            <div className="flex items-center gap-2 shrink-0">
+            <div className="flex items-center gap-3 shrink-0">
               {activeDetailTab === "mentors" && (
                 <button
                   onClick={() => {
                     setMentorSearchQuery("");
                     setIsAssignMentorOpen(true);
                   }}
-                  className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-[var(--accent-primary)] hover:bg-[var(--accent-secondary)] text-white text-xs font-black uppercase transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer shadow-lg border border-transparent shrink-0"
+                  className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-white text-xs font-semibold transition-transform hover:-translate-y-0.5 cursor-pointer shadow-md shrink-0"
+                  style={{ background: "var(--accent-primary)" }}
                 >
-                  <Plus size={16} />
+                  <Plus size={14} />
                   <span>Configure Mentors</span>
                 </button>
               )}
@@ -733,41 +735,42 @@ export default function ManageBatchesPage() {
                     setStudentSearchQuery("");
                     setIsAssignStudentOpen(true);
                   }}
-                  className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-[var(--accent-primary)] hover:bg-[var(--accent-secondary)] text-white text-xs font-black uppercase transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer shadow-lg border border-transparent shrink-0"
+                  className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-white text-xs font-semibold transition-transform hover:-translate-y-0.5 cursor-pointer shadow-md shrink-0"
+                  style={{ background: "var(--accent-primary)" }}
                 >
-                  <Plus size={16} />
+                  <Plus size={14} />
                   <span>Configure Students</span>
                 </button>
               )}
               <button
                 onClick={() => triggerEdit(selectedBatchDetails)}
-                className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black uppercase transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer shadow-lg border border-transparent shrink-0"
+                className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold transition-transform hover:-translate-y-0.5 cursor-pointer shadow-md shrink-0"
               >
-                <Edit size={16} />
+                <Edit size={14} />
                 <span>Edit Batch</span>
               </button>
               <button
                 onClick={() => triggerDelete(selectedBatchDetails)}
-                className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-black uppercase transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer shadow-lg border border-transparent shrink-0"
+                className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold transition-transform hover:-translate-y-0.5 cursor-pointer shadow-md shrink-0"
               >
-                <Trash2 size={16} />
+                <Trash2 size={14} />
                 <span>Delete Batch</span>
               </button>
             </div>
-          </div>
+          </section>
 
           {/* Roster Tabs & Search Row */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 shrink-0">
             {/* Roster Tabs List */}
-            <div className="flex gap-2 p-1.5 rounded-2xl w-fit border shrink-0 bg-[var(--bg-card)]" style={{ borderColor: "var(--border-primary)" }}>
+            <div className="flex gap-2 p-1.5 rounded-xl w-fit border shrink-0" style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)" }}>
               <button
                 onClick={() => {
                   setActiveDetailTab("manager");
                   setRosterSearchQuery("");
                 }}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${activeDetailTab === "manager"
-                  ? "bg-[var(--accent-primary)] text-white shadow-md shadow-[var(--accent-glow)]"
-                  : "hover:bg-[var(--bg-primary)] border border-transparent"
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${activeDetailTab === "manager"
+                  ? "bg-[var(--bg-primary)] shadow-sm text-[var(--text-primary)]"
+                  : "text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
                   }`}
               >
                 <Briefcase size={14} />
@@ -778,9 +781,9 @@ export default function ManageBatchesPage() {
                   setActiveDetailTab("mentors");
                   setRosterSearchQuery("");
                 }}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${activeDetailTab === "mentors"
-                  ? "bg-[var(--accent-primary)] text-white shadow-md shadow-[var(--accent-glow)]"
-                  : "hover:bg-[var(--bg-primary)] border border-transparent"
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${activeDetailTab === "mentors"
+                  ? "bg-[var(--bg-primary)] shadow-sm text-[var(--text-primary)]"
+                  : "text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
                   }`}
               >
                 <Award size={14} />
@@ -791,9 +794,9 @@ export default function ManageBatchesPage() {
                   setActiveDetailTab("students");
                   setRosterSearchQuery("");
                 }}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${activeDetailTab === "students"
-                  ? "bg-[var(--accent-primary)] text-white shadow-md shadow-[var(--accent-glow)]"
-                  : "hover:bg-[var(--bg-primary)] border border-transparent"
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${activeDetailTab === "students"
+                  ? "bg-[var(--bg-primary)] shadow-sm text-[var(--text-primary)]"
+                  : "text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
                   }`}
               >
                 <GraduationCap size={14} />
@@ -802,15 +805,15 @@ export default function ManageBatchesPage() {
             </div>
 
             {/* Roster Search & Refresh Actions */}
-            <div className="flex items-center gap-2 w-full sm:w-auto shrink-0">
+            <div className="flex items-center gap-3 w-full sm:w-auto shrink-0">
               {activeDetailTab !== "manager" && (
                 <div className="relative w-full sm:w-64">
                   <input
                     type="text"
-                    placeholder={`Search active ${activeDetailTab}...`}
+                    placeholder={`Search ${activeDetailTab}...`}
                     value={rosterSearchQuery}
                     onChange={(e) => setRosterSearchQuery(e.target.value)}
-                    className="w-full bg-[var(--bg-card)] border rounded-2xl px-4 py-2.5 text-xs font-semibold focus:outline-none focus:border-[var(--border-accent)] transition-all placeholder:text-[var(--text-muted)]"
+                    className="w-full bg-[var(--bg-secondary)] border rounded-xl px-4 py-2 text-sm font-medium focus:outline-none focus:border-[var(--text-muted)] transition-colors placeholder:text-[var(--text-muted)]"
                     style={{ borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
                   />
                 </div>
@@ -820,24 +823,24 @@ export default function ManageBatchesPage() {
               <button
                 onClick={loadData}
                 title="Refresh Roster"
-                className="p-2.5 rounded-2xl border bg-[var(--bg-card)] hover:bg-[var(--bg-primary)] transition-all flex items-center justify-center cursor-pointer hover:scale-105 active:scale-95 disabled:opacity-50"
-                style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}
+                className="p-2.5 rounded-xl border transition-colors hover:bg-[var(--bg-secondary)] flex items-center justify-center cursor-pointer disabled:opacity-50"
+                style={{ borderColor: "var(--border-primary)", color: "var(--text-primary)", backgroundColor: "var(--bg-primary)" }}
                 disabled={loading}
               >
-                <RefreshCw size={14} className={loading ? "animate-spin text-[var(--text-accent)]" : ""} />
+                <RefreshCw size={14} className={loading ? "animate-spin text-violet-500" : ""} />
               </button>
             </div>
           </div>
 
-          {/* Table Body (Styled identically to Manage People page) */}
-          <div className="flex-1 min-h-0 overflow-y-auto rounded-3xl border bg-[var(--bg-card)]" style={{ borderColor: "var(--border-primary)" }}>
+          {/* Table Body */}
+          <div className="flex-1 min-h-0 overflow-y-auto rounded-2xl border" style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}>
             {detailsList.length === 0 ? (
               <div className="flex h-64 flex-col items-center justify-center space-y-4">
-                <div className="w-16 h-16 rounded-3xl bg-[var(--bg-badge)] flex items-center justify-center text-[var(--text-accent)]">
-                  <Users size={28} />
+                <div className="p-4 rounded-full bg-[var(--bg-secondary)]">
+                  <Users size={24} className="text-violet-500" />
                 </div>
                 <div className="text-center space-y-1">
-                  <h3 className="text-sm font-black" style={{ color: "var(--text-primary)" }}>No members found</h3>
+                  <h3 className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>No members found</h3>
                   <p className="text-xs max-w-xs" style={{ color: "var(--text-muted)" }}>
                     No assigned members matched this role category for this batch.
                   </p>
@@ -845,11 +848,11 @@ export default function ManageBatchesPage() {
               </div>
             ) : filteredDetailsList.length === 0 ? (
               <div className="flex h-64 flex-col items-center justify-center space-y-4">
-                <div className="w-16 h-16 rounded-3xl bg-[var(--bg-badge)] flex items-center justify-center text-[var(--text-accent)]">
-                  <Users size={28} />
+                <div className="p-4 rounded-full bg-[var(--bg-secondary)]">
+                  <Users size={24} className="text-violet-500" />
                 </div>
                 <div className="text-center space-y-1">
-                  <h3 className="text-sm font-black" style={{ color: "var(--text-primary)" }}>No matching members</h3>
+                  <h3 className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>No matching members</h3>
                   <p className="text-xs max-w-xs" style={{ color: "var(--text-muted)" }}>
                     No members matched your search criteria.
                   </p>
@@ -857,9 +860,9 @@ export default function ManageBatchesPage() {
               </div>
             ) : (
               <div className="w-full overflow-x-auto min-w-0">
-                <table className="w-full border-collapse text-left">
+                <table className="w-full border-collapse text-left text-sm">
                   <thead>
-                    <tr className="border-b text-[10px] font-extrabold uppercase tracking-wider select-none" style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}>
+                    <tr className="border-b bg-[var(--bg-secondary)] text-xs font-semibold uppercase tracking-wider select-none" style={{ borderColor: "var(--border-primary)", color: "var(--text-muted)" }}>
                       <th className="px-6 py-4">Name</th>
                       <th className="px-6 py-4">Email Address</th>
                       <th className="px-6 py-4">Role Permission</th>
@@ -868,17 +871,17 @@ export default function ManageBatchesPage() {
                       )}
                     </tr>
                   </thead>
-                  <tbody className="divide-y text-xs font-semibold" style={{ borderColor: "var(--border-primary)", color: "var(--text-primary)" }}>
+                  <tbody className="divide-y font-medium" style={{ divideColor: "var(--border-primary)", color: "var(--text-primary)" }}>
                     {filteredDetailsList.map((member) => (
-                      <tr key={member.id} className="hover:bg-[var(--bg-primary)]/50 transition-colors">
-                        <td className="px-6 py-4 font-black">{member.name}</td>
+                      <tr key={member.id} className="hover:bg-[var(--bg-secondary)] transition-colors">
+                        <td className="px-6 py-4 font-semibold">{member.name}</td>
                         <td className="px-6 py-4" style={{ color: "var(--text-secondary)" }}>{member.email}</td>
                         <td className="px-6 py-4">
-                          <span className={`px-2 py-0.5 rounded-md text-[9px] font-extrabold border ${member.role === "BATCH_MANAGER"
-                            ? "bg-purple-500/10 text-purple-400 border-purple-500/20"
+                          <span className={`px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider border ${member.role === "BATCH_MANAGER"
+                            ? "bg-slate-500/10 text-slate-600 border-slate-500/20 dark:text-slate-400"
                             : member.role === "MENTOR"
-                              ? "bg-amber-500/10 text-amber-400 border-amber-500/20"
-                              : "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                              ? "bg-amber-500/10 text-amber-600 border-amber-500/20 dark:text-amber-400"
+                              : "bg-emerald-500/10 text-emerald-600 border-emerald-500/20 dark:text-emerald-400"
                             }`}>
                             {member.role.replace("_", " ")}
                           </span>
@@ -893,9 +896,9 @@ export default function ManageBatchesPage() {
                                   handleRemoveStudentFromBatch(member.id);
                                 }
                               }}
-                              className="flex items-center gap-1.5 text-[10px] font-black uppercase text-rose-500 hover:text-rose-600 transition-colors cursor-pointer border border-rose-500/20 bg-rose-500/5 px-2.5 py-1.5 rounded-xl hover:bg-rose-500/10"
+                              className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-rose-500 hover:text-rose-600 transition-colors cursor-pointer px-3 py-1.5 rounded-lg hover:bg-rose-50 dark:hover:bg-rose-950/50"
                             >
-                              <Trash2 size={12} />
+                              <Trash2 size={14} />
                               <span>Remove</span>
                             </button>
                           </td>
@@ -1056,7 +1059,7 @@ export default function ManageBatchesPage() {
                   type="submit"
                   disabled={submitting}
                   onClick={handleCreateBatchSubmit}
-                  className="px-5 py-2.5 rounded-2xl bg-[var(--accent-primary)] hover:bg-[var(--accent-secondary)] text-white text-xs font-black uppercase transition-all shadow-lg hover:scale-[1.02] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                  className="px-5 py-2.5 rounded-2xl bg-[var(--accent-primary)] hover:bg-[var(--accent-secondary)] text-[var(--text-on-accent)] text-xs font-black uppercase transition-all shadow-lg hover:scale-[1.02] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                 >
                   {submitting ? (
                     <>
@@ -1263,7 +1266,7 @@ export default function ManageBatchesPage() {
                   type="submit"
                   disabled={editing}
                   onClick={handleEditBatchSubmit}
-                  className="px-5 py-2.5 rounded-2xl bg-[var(--accent-primary)] hover:bg-[var(--accent-secondary)] text-white text-xs font-black uppercase transition-all shadow-lg hover:scale-[1.02] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                  className="px-5 py-2.5 rounded-2xl bg-[var(--accent-primary)] hover:bg-[var(--accent-secondary)] text-[var(--text-on-accent)] text-xs font-black uppercase transition-all shadow-lg hover:scale-[1.02] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                 >
                   {editing ? (
                     <>
@@ -1362,7 +1365,7 @@ export default function ManageBatchesPage() {
               <div className="p-6 border-t shrink-0 flex justify-end bg-[var(--bg-card)]" style={{ borderColor: "var(--border-primary)" }}>
                 <button
                   onClick={() => setIsAssignMentorOpen(false)}
-                  className="px-5 py-2.5 rounded-2xl bg-[var(--accent-primary)] hover:bg-[var(--accent-secondary)] text-white text-xs font-black uppercase transition-all shadow-lg hover:scale-[1.02] cursor-pointer"
+                  className="px-5 py-2.5 rounded-2xl bg-[var(--accent-primary)] hover:bg-[var(--accent-secondary)] text-[var(--text-on-accent)] text-xs font-black uppercase transition-all shadow-lg hover:scale-[1.02] cursor-pointer"
                 >
                   Done
                 </button>
@@ -1459,7 +1462,7 @@ export default function ManageBatchesPage() {
               <div className="p-6 border-t shrink-0 flex justify-end bg-[var(--bg-card)]" style={{ borderColor: "var(--border-primary)" }}>
                 <button
                   onClick={() => setIsAssignStudentOpen(false)}
-                  className="px-5 py-2.5 rounded-2xl bg-[var(--accent-primary)] hover:bg-[var(--accent-secondary)] text-white text-xs font-black uppercase transition-all shadow-lg hover:scale-[1.02] cursor-pointer"
+                  className="px-5 py-2.5 rounded-2xl bg-[var(--accent-primary)] hover:bg-[var(--accent-secondary)] text-[var(--text-on-accent)] text-xs font-black uppercase transition-all shadow-lg hover:scale-[1.02] cursor-pointer"
                 >
                   Done
                 </button>

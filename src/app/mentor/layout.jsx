@@ -19,6 +19,7 @@ export default function MentorLayout({ children }) {
   const [checkingAuth, setCheckingAuth] = useState(true);
   const [mentorUser, setMentorUser] = useState(null);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
 
   const { activeSession, setActiveSession, token, API_BASE, user, logout } = useAuth();
   const [showEndConfirmModal, setShowEndConfirmModal] = useState(false);
@@ -208,61 +209,75 @@ export default function MentorLayout({ children }) {
       icon: BookOpen
     }
   ].filter(Boolean);
+  const pageTitle = pathname.split("/").filter(Boolean).slice(1).map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(" / ") || "Dashboard";
 
   return (
     <div className="flex h-screen overflow-hidden" style={{ backgroundColor: "var(--bg-primary)" }}>
-      {/* Sidebar - Desktop */}
-      <aside 
-        className={`hidden md:flex flex-col h-full border-r transition-all duration-300 relative z-30`}
-        style={{ 
-          width: isSidebarCollapsed ? "80px" : "260px",
-          backgroundColor: "var(--bg-sidebar)", 
-          borderColor: "var(--border-primary)" 
-        }}
+
+      {/* ── DESKTOP SIDEBAR ─────────────────────────── */}
+      <aside
+        className="hidden md:flex flex-col h-full border-r transition-all duration-300 relative z-30"
+        style={{ width: isSidebarCollapsed ? "68px" : "240px", backgroundColor: "var(--bg-sidebar)", borderColor: "var(--border-primary)" }}
       >
         {/* Sidebar Header */}
-        <div className="flex items-center justify-between px-6 py-5 border-b" style={{ borderColor: "var(--border-primary)" }}>
-          <div className="flex items-center space-x-3 overflow-hidden">
-            <div className="p-2 rounded-xl" style={{ backgroundColor: "var(--bg-badge)", color: "var(--text-accent)" }}>
-              <GraduationCap size={18} />
+        <div className="flex items-center justify-between px-4 h-14 border-b" style={{ borderColor: "var(--border-primary)" }}>
+          {!isSidebarCollapsed && (
+            <div className="flex items-center gap-2.5">
+              <div className="h-6 w-6 rounded-md flex items-center justify-center text-white flex-shrink-0" style={{ background: "var(--accent-gradient)" }}>
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                </svg>
+              </div>
+              <span className="text-[13px] font-bold tracking-tight" style={{ color: "var(--text-primary)" }}>DMX Academy</span>
             </div>
-            {!isSidebarCollapsed && (
-              <span className="font-bold text-sm tracking-tight text-gradient whitespace-nowrap">
-                Mentor Board
-              </span>
-            )}
-          </div>
+          )}
+          {isSidebarCollapsed && (
+            <div className="h-6 w-6 rounded-md flex items-center justify-center text-white mx-auto" style={{ background: "var(--accent-gradient)" }}>
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+              </svg>
+            </div>
+          )}
         </div>
 
-        {/* Navigation Links */}
-        <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
+        {/* Section label */}
+        {!isSidebarCollapsed && (
+          <div className="px-4 pt-5 pb-2">
+            <span className="text-[9px] font-bold tracking-[0.18em] uppercase" style={{ color: "var(--text-muted)" }}>Mentor Navigation</span>
+          </div>
+        )}
+
+        {/* Nav links */}
+        <nav className="flex-1 px-2 py-2 space-y-0.5 overflow-y-auto custom-scrollbar">
           {sidebarLinks.map((link) => {
             const LinkIcon = link.icon;
-            const isActive = pathname === link.href;
+            const isActive = pathname === link.href || (link.href !== "/mentor/dashboard" && pathname.startsWith(link.href));
 
             return (
-              <Link 
-                key={link.href} 
+              <Link
+                key={link.href}
                 href={link.href}
                 onClick={(e) => {
                   e.preventDefault();
                   handleSafeNavigation(link.href);
                 }}
-                className="flex items-center space-x-3 px-4 py-3 rounded-2xl text-xs font-bold transition-all relative group cursor-pointer"
+                className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-[12px] font-medium transition-all relative group"
                 style={{
-                  color: isActive ? "#ffffff" : "var(--text-secondary)",
-                  backgroundColor: isActive ? "var(--text-accent)" : "transparent"
+                  color: isActive ? "var(--text-primary)" : "var(--text-secondary)",
+                  backgroundColor: isActive ? "var(--bg-hover)" : "transparent",
+                  fontWeight: isActive ? 600 : 400,
                 }}
+                onMouseEnter={e => { if (!isActive) e.currentTarget.style.backgroundColor = "var(--bg-hover)"; }}
+                onMouseLeave={e => { if (!isActive) e.currentTarget.style.backgroundColor = "transparent"; }}
               >
-                {isActive && (
-                  <span className="absolute inset-0 rounded-2xl opacity-10 bg-white" />
-                )}
-                <LinkIcon size={16} className="shrink-0" />
-                {!isSidebarCollapsed && (
-                  <span>{link.label}</span>
-                )}
+                {/* Active indicator */}
+                {isActive && <div className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 rounded-full" style={{ background: "var(--accent-primary)" }} />}
+                <LinkIcon size={15} className="flex-shrink-0" style={{ color: isActive ? "var(--accent-primary)" : "var(--text-muted)" }} />
+                {!isSidebarCollapsed && <span>{link.label}</span>}
+
+                {/* Collapsed tooltip */}
                 {isSidebarCollapsed && (
-                  <div className="absolute left-16 bg-slate-950 text-white text-[10px] py-1 px-2.5 rounded-lg opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity whitespace-nowrap z-50 shadow-md">
+                  <div className="absolute left-14 bg-[var(--bg-primary)] text-[var(--text-primary)] border border-[var(--border-primary)] text-[10px] py-1.5 px-2.5 rounded-lg opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity whitespace-nowrap z-50 shadow-lg">
                     {link.label}
                   </div>
                 )}
@@ -271,183 +286,172 @@ export default function MentorLayout({ children }) {
           })}
         </nav>
 
-        {/* Collapse Button */}
-        <button 
-          onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-          className="absolute bottom-24 -right-3 p-1.5 rounded-full border shadow-sm transition-all hover:scale-105 z-50 cursor-pointer"
-          style={{ 
-            backgroundColor: "var(--bg-card)", 
-            borderColor: "var(--border-primary)",
-            color: "var(--text-secondary)"
-          }}
-        >
-          {isSidebarCollapsed ? <ChevronRight size={12} /> : <ChevronLeft size={12} />}
-        </button>
-
-        {/* Sidebar Footer / User Info */}
-        <div className="p-4 border-t" style={{ borderColor: "var(--border-primary)" }}>
-          {!isSidebarCollapsed && mentorUser ? (
-            <div className="p-3 rounded-2xl flex items-center justify-between" style={{ backgroundColor: "var(--bg-primary)" }}>
-              <div className="flex items-center space-x-3 overflow-hidden">
-                <div className="w-8 h-8 rounded-xl bg-violet-500 text-white font-extrabold flex items-center justify-center text-xs shrink-0 shadow-sm">
-                  {mentorUser.avatar}
-                </div>
-                <div className="min-w-0">
-                  <p className="text-xs font-bold truncate" style={{ color: "var(--text-primary)" }}>{mentorUser.name}</p>
-                  <p className="text-[10px] truncate" style={{ color: "var(--text-muted)" }}>{mentorUser.role}</p>
-                </div>
-              </div>
-              <button 
-                onClick={() => handleSafeNavigation(() => handleLogout())}
-                className="p-1.5 rounded-lg hover:bg-rose-500/10 hover:text-rose-500 transition-colors cursor-pointer"
-                style={{ color: "var(--text-secondary)" }}
-                title="Log Out"
-                id="mentor-logout-btn"
-              >
-                <LogOut size={14} />
-              </button>
-            </div>
-          ) : (
-            <button 
-              onClick={() => handleSafeNavigation(() => handleLogout())}
-              className="w-full flex items-center justify-center p-3 rounded-2xl hover:bg-rose-500/10 hover:text-rose-500 transition-colors cursor-pointer"
-              style={{ color: "var(--text-secondary)" }}
-              title="Log Out"
-              id="mentor-logout-btn"
-            >
-              <LogOut size={16} />
-            </button>
-          )}
+        {/* Bottom: collapse toggle */}
+        <div className="p-2 border-t space-y-1" style={{ borderColor: "var(--border-primary)" }}>
+          <button
+            onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+            className="flex items-center gap-2.5 w-full px-3 py-2 rounded-xl text-[11px] transition-all"
+            style={{ color: "var(--text-muted)" }}
+            onMouseEnter={e => { e.currentTarget.style.backgroundColor = "var(--bg-hover)"; e.currentTarget.style.color = "var(--text-secondary)"; }}
+            onMouseLeave={e => { e.currentTarget.style.backgroundColor = "transparent"; e.currentTarget.style.color = "var(--text-muted)"; }}
+          >
+            {isSidebarCollapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
+            {!isSidebarCollapsed && <span>Collapse sidebar</span>}
+          </button>
         </div>
       </aside>
 
-      {/* Sidebar - Mobile Menu Drawer */}
+      {/* ── MOBILE DRAWER ────────────────────────────── */}
       {isMobileMenuOpen && (
-        <div className="fixed inset-0 z-50 flex md:hidden bg-slate-950/60 backdrop-blur-sm">
-          <div 
-            className="w-72 h-full flex flex-col p-6 animate-slide-right shadow-2xl"
-            style={{ backgroundColor: "var(--bg-sidebar)" }}
+        <div className="fixed inset-0 z-50 flex md:hidden" onClick={() => setIsMobileMenuOpen(false)}>
+          <div
+            className="w-72 h-full flex flex-col p-5 shadow-2xl"
+            style={{ backgroundColor: "var(--bg-sidebar)", borderRight: "1px solid var(--border-primary)" }}
+            onClick={e => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between mb-8">
-              <div className="flex items-center space-x-3">
-                <div className="p-2 rounded-xl bg-indigo-500/10 text-indigo-500">
-                  <GraduationCap size={18} />
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-2.5">
+                <div className="h-6 w-6 rounded-md flex items-center justify-center text-white" style={{ background: "var(--accent-gradient)" }}>
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                  </svg>
                 </div>
-                <span className="font-bold text-sm text-gradient">Mentor Board</span>
+                <span className="text-sm font-bold" style={{ color: "var(--text-primary)" }}>DMX Academy</span>
               </div>
-              <button onClick={() => setIsMobileMenuOpen(false)} className="p-1.5 rounded-lg hover:bg-slate-500/10">
-                <X size={18} style={{ color: "var(--text-primary)" }} />
+              <button onClick={() => setIsMobileMenuOpen(false)} className="p-1.5 rounded-lg" style={{ color: "var(--text-secondary)" }}>
+                <X size={16} />
               </button>
             </div>
 
-            <nav className="flex-1 space-y-2">
+            <nav className="flex-1 space-y-0.5 overflow-y-auto">
               {sidebarLinks.map((link) => {
                 const LinkIcon = link.icon;
-                const isActive = pathname === link.href;
-
+                const isActive = pathname === link.href || (link.href !== "/mentor/dashboard" && pathname.startsWith(link.href));
                 return (
-                  <Link 
-                    key={link.href} 
-                    href={link.href}
+                  <Link key={link.href} href={link.href} 
                     onClick={(e) => {
                       e.preventDefault();
                       setIsMobileMenuOpen(false);
                       handleSafeNavigation(link.href);
                     }}
-                    className="flex items-center space-x-3 px-4 py-3 rounded-2xl text-xs font-bold transition-all"
-                    style={{
-                      color: isActive ? "#ffffff" : "var(--text-secondary)",
-                      backgroundColor: isActive ? "var(--text-accent)" : "transparent"
-                    }}
+                    className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium transition-all"
+                    style={{ color: isActive ? "var(--text-primary)" : "var(--text-secondary)", backgroundColor: isActive ? "var(--bg-hover)" : "transparent", fontWeight: isActive ? 600 : 400 }}
                   >
-                    <LinkIcon size={16} />
-                    <span>{link.label}</span>
+                    <LinkIcon size={14} style={{ color: isActive ? "var(--accent-primary)" : "var(--text-muted)" }} />
+                    {link.label}
                   </Link>
                 );
               })}
             </nav>
-
-            <div className="pt-6 border-t" style={{ borderColor: "var(--border-primary)" }}>
-              {mentorUser && (
-                <div className="flex items-center justify-between p-3 rounded-2xl" style={{ backgroundColor: "var(--bg-primary)" }}>
-                  <div className="flex items-center space-x-3">
-                    <div className="w-8 h-8 rounded-xl bg-indigo-500 text-white font-extrabold flex items-center justify-center text-xs">
-                      {mentorUser.avatar}
-                    </div>
-                    <div>
-                      <p className="text-xs font-bold" style={{ color: "var(--text-primary)" }}>{mentorUser.name}</p>
-                      <p className="text-[10px]" style={{ color: "var(--text-muted)" }}>{mentorUser.role}</p>
-                    </div>
-                  </div>
-                  <button 
-                    onClick={() => handleSafeNavigation(() => handleLogout())}
-                    className="p-1.5 rounded-lg hover:bg-rose-500/10 hover:text-rose-500"
-                    style={{ color: "var(--text-secondary)" }}
-                  >
-                    <LogOut size={14} />
-                  </button>
-                </div>
-              )}
-            </div>
           </div>
         </div>
       )}
 
-      {/* Main Content Area */}
+      {/* ── MAIN CONTENT ─────────────────────────────── */}
       <div className="flex-1 flex flex-col h-full overflow-hidden">
         {/* Header */}
-        <header 
-          className="flex items-center justify-between px-6 py-4 border-b relative z-20"
-          style={{ 
-            backgroundColor: "var(--bg-secondary)", 
-            borderColor: "var(--border-primary)" 
-          }}
+        <header
+          className="flex items-center justify-between px-6 h-14 border-b flex-shrink-0 relative z-20"
+          style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)" }}
         >
-          {/* Left: Mobile Toggle & Breadcrumbs */}
-          <div className="flex items-center space-x-4">
-            <button 
-              onClick={() => setIsMobileMenuOpen(true)}
-              className="p-2 rounded-xl md:hidden hover:bg-slate-500/10"
-              style={{ color: "var(--text-primary)" }}
-            >
-              <Menu size={18} />
+          {/* Left */}
+          <div className="flex items-center gap-4">
+            <button onClick={() => setIsMobileMenuOpen(true)} className="p-2 rounded-lg md:hidden" style={{ color: "var(--text-secondary)" }}>
+              <Menu size={16} />
             </button>
-
-            {/* Breadcrumbs */}
-            <div className="hidden sm:flex items-center space-x-2 text-xs font-semibold" style={{ color: "var(--text-secondary)" }}>
+            {/* Breadcrumb */}
+            <div className="hidden sm:flex items-center gap-2 text-xs" style={{ color: "var(--text-muted)" }}>
               <span>Mentor</span>
-              <span style={{ color: "var(--text-muted)" }}>/</span>
-              <span className="text-[var(--text-primary)] capitalize">
-                {pathname.split("/").filter(Boolean).slice(1).join(" / ") || "Dashboard"}
-              </span>
+              <span>/</span>
+              <span style={{ color: "var(--text-primary)", fontWeight: 600 }}>{pageTitle}</span>
             </div>
           </div>
 
-          {/* Right: Actions */}
-          <div className="flex items-center space-x-4">
-            <Link 
-              href="/"
+          {/* Right */}
+          <div className="flex items-center gap-3">
+            {/* Public site link */}
+            <Link href="/" className="hidden sm:flex items-center gap-1.5 text-[11px] font-medium transition-colors px-3 py-1.5 rounded-lg border"
               onClick={(e) => {
                 e.preventDefault();
                 handleSafeNavigation("/");
               }}
-              className="flex items-center space-x-1.5 rounded-full border px-3 py-1.5 text-[10px] font-extrabold uppercase tracking-wider transition-all hover:scale-102"
-              style={{
-                backgroundColor: "var(--bg-card)",
-                borderColor: "var(--border-primary)",
-                color: "var(--text-secondary)"
-              }}
+              style={{ borderColor: "var(--border-primary)", color: "var(--text-muted)" }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = "var(--accent-primary)"; e.currentTarget.style.color = "var(--text-secondary)"; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--border-primary)"; e.currentTarget.style.color = "var(--text-muted)"; }}
             >
-              <ArrowLeftRight size={12} />
-              <span>Go To Public Site</span>
+              <ArrowLeftRight size={11} />
+              <span>Public Site</span>
             </Link>
-            <ThemeToggle />
+
+            {/* Avatar + profile menu */}
+            {mentorUser && (
+              <div className="relative">
+                <button
+                  onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
+                  className="flex items-center gap-2 rounded-xl px-2 py-1.5 transition-all"
+                  style={{ color: "var(--text-secondary)" }}
+                  onMouseEnter={e => e.currentTarget.style.backgroundColor = "var(--bg-hover)"}
+                  onMouseLeave={e => e.currentTarget.style.backgroundColor = "transparent"}
+                >
+                  <div className="w-7 h-7 rounded-lg flex items-center justify-center text-[11px] font-bold text-white" style={{ background: "var(--accent-gradient)" }}>
+                    {mentorUser.avatar}
+                  </div>
+                  <div className="hidden sm:block text-left">
+                    <div className="text-[11px] font-semibold" style={{ color: "var(--text-primary)" }}>{mentorUser.name}</div>
+                    <div className="text-[9px]" style={{ color: "var(--text-muted)" }}>{mentorUser.role}</div>
+                  </div>
+                </button>
+
+                {isProfileMenuOpen && (
+                  <>
+                    <div className="fixed inset-0 z-40" onClick={() => setIsProfileMenuOpen(false)} />
+                    <div className="absolute right-0 top-full mt-2 w-64 rounded-xl border shadow-xl z-50 overflow-hidden"
+                      style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
+
+                  {/* Profile header */}
+                  <div className="p-4 border-b" style={{ borderColor: "var(--border-primary)" }}>
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl flex items-center justify-center font-bold text-white" style={{ background: "var(--accent-gradient)" }}>
+                        {mentorUser.avatar}
+                      </div>
+                      <div>
+                        <div className="text-sm font-bold" style={{ color: "var(--text-primary)" }}>{mentorUser.name}</div>
+                        <div className="text-[10px]" style={{ color: "var(--text-muted)" }}>{mentorUser.role}</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Theme in menu */}
+                  <div className="flex items-center justify-between px-3 py-2.5 border-b" style={{ borderColor: "var(--border-primary)" }}>
+                    <div className="flex items-center gap-2 text-xs" style={{ color: "var(--text-secondary)" }}>
+                      <span className="text-[10px] font-bold uppercase tracking-wider">Appearance</span>
+                    </div>
+                    <div className="scale-[0.85] origin-right"><ThemeToggle /></div>
+                  </div>
+
+                  {/* Logout */}
+                  <div className="p-2">
+                    <button onClick={() => { setIsProfileMenuOpen(false); handleSafeNavigation(() => handleLogout()); }}
+                      className="w-full flex items-center gap-2 px-3 py-2.5 rounded-lg text-xs font-medium transition-colors text-left"
+                      style={{ color: "var(--text-secondary)" }}
+                      onMouseEnter={e => { e.currentTarget.style.backgroundColor = "rgba(239,68,68,0.08)"; e.currentTarget.style.color = "#ef4444"; }}
+                      onMouseLeave={e => { e.currentTarget.style.backgroundColor = "transparent"; e.currentTarget.style.color = "var(--text-secondary)"; }}
+                    >
+                      <LogOut size={13} />
+                      <span>Sign Out</span>
+                    </button>
+                  </div>
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
           </div>
         </header>
 
-        {/* Content Body */}
-        <main className={`flex-1 relative ${pathname === "/admin/live" ? "overflow-hidden p-4 md:p-6 flex flex-col" : "overflow-y-auto p-6 md:p-8"}`}>
-          <div className={pathname === "/admin/live" ? "flex-1 flex flex-col min-h-0" : "max-w-6xl mx-auto space-y-8"}>
+        {/* Page content */}
+        <main className={`flex-1 relative ${pathname === "/admin/live" ? "overflow-hidden flex flex-col" : "overflow-y-auto p-6 md:p-8"}`}>
+          <div className={pathname === "/admin/live" ? "flex-1 flex flex-col min-h-0 p-4 md:p-6" : "max-w-6xl mx-auto"}>
             {children}
           </div>
         </main>
@@ -483,7 +487,7 @@ export default function MentorLayout({ children }) {
                   setShowEndConfirmModal(false);
                   setPendingNavAction(null);
                 }}
-                className="flex-1 py-3 px-4 rounded-xl border transition-all cursor-pointer"
+                className="flex-1 py-3 px-4 rounded-xl border transition-all cursor-pointer font-bold text-xs"
                 style={{
                   backgroundColor: "var(--bg-primary)",
                   borderColor: "var(--border-primary)",
@@ -502,48 +506,28 @@ export default function MentorLayout({ children }) {
           </div>
         </div>
       )}
+
       {/* Logout Confirmation Modal */}
       {showLogoutConfirm && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-md p-4 animate-in fade-in duration-200">
-          <div
-            className="w-full max-w-sm rounded-3xl p-6 border shadow-2xl text-center space-y-5"
-            style={{
-              backgroundColor: "var(--bg-card)",
-              borderColor: "var(--border-primary)"
-            }}
-          >
-            <div className="w-12 h-12 rounded-2xl bg-rose-500/10 text-rose-500 flex items-center justify-center mx-auto border border-rose-500/20">
-              <AlertTriangle size={24} />
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+          <div className="w-full max-w-sm rounded-2xl p-6 border shadow-2xl text-center space-y-5"
+            style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
+            <div className="w-11 h-11 rounded-xl bg-rose-500/10 text-rose-500 flex items-center justify-center mx-auto border border-rose-500/20">
+              <AlertTriangle size={20} />
             </div>
-
-            <div className="space-y-2">
-              <h3 className="text-sm font-black uppercase tracking-wider text-rose-500">
-                Are u sure want to logout
-              </h3>
-              <p className="text-[11px]" style={{ color: "var(--text-muted)" }}>
-                You will need to sign back in to access the mentor dashboard.
-              </p>
+            <div className="space-y-1.5">
+              <h3 className="text-base font-black" style={{ color: "var(--text-primary)" }}>Sign out?</h3>
+              <p className="text-xs" style={{ color: "var(--text-muted)" }}>You'll need to sign back in to access your portal.</p>
             </div>
-
-            <div className="flex items-center justify-center gap-3 pt-2">
-              <button
-                type="button"
-                onClick={() => setShowLogoutConfirm(false)}
-                className="px-4 py-2.5 rounded-2xl border text-xs font-bold transition-all hover:bg-[var(--bg-primary)] cursor-pointer text-[var(--text-secondary)]"
-                style={{ borderColor: "var(--border-primary)" }}
-              >
+            <div className="flex gap-3">
+              <button type="button" onClick={() => setShowLogoutConfirm(false)}
+                className="flex-1 py-2.5 rounded-xl border text-xs font-semibold transition-all cursor-pointer"
+                style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}>
                 Cancel
               </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setShowLogoutConfirm(false);
-                  logout();
-                  router.push("/login?redirect=/mentor/dashboard");
-                }}
-                className="px-5 py-2.5 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-black uppercase transition-all shadow-lg hover:scale-[1.02] cursor-pointer"
-              >
-                Logout
+              <button type="button" onClick={() => { setShowLogoutConfirm(false); logout(); router.push("/login?redirect=/mentor/dashboard"); }}
+                className="flex-1 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold transition-all cursor-pointer">
+                Sign Out
               </button>
             </div>
           </div>

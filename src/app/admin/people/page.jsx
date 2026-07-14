@@ -437,19 +437,19 @@ export default function ManagePeoplePage() {
   }
 
   return (
-    <div className="space-y-6 p-6 min-h-0 flex flex-col flex-1" style={{ color: "var(--text-primary)" }}>
+    <div className="space-y-6 p-0 sm:p-6 min-h-0 flex flex-col flex-1 animate-in fade-in duration-500" style={{ color: "var(--text-primary)" }}>
       {/* Header section */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 shrink-0">
-        <div className="space-y-1.5">
-          <div className="flex items-center gap-2">
-            <span className="px-2.5 py-1 rounded-full bg-[var(--bg-badge)] text-[var(--text-accent)] text-[10px] font-extrabold uppercase tracking-wider">
-              Institute Directory
-            </span>
+      <section className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 border-b pb-6 shrink-0" style={{ borderColor: "var(--border-primary)" }}>
+        <div className="space-y-2">
+          <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border mb-3"
+            style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)", backgroundColor: "var(--bg-secondary)" }}>
+            <Users size={12} className="text-violet-500" />
+            Institute Directory
           </div>
-          <h1 className="text-2xl font-black tracking-tight" style={{ color: "var(--text-primary)" }}>
+          <h1 className="text-4xl font-serif tracking-tight" style={{ color: "var(--text-primary)" }}>
             Manage People
           </h1>
-          <p className="text-xs" style={{ color: "var(--text-muted)" }}>
+          <p className="text-sm max-w-xl" style={{ color: "var(--text-secondary)" }}>
             Register and configure accounts for batch managers, mentors, and students within your institute.
           </p>
         </div>
@@ -460,22 +460,22 @@ export default function ManagePeoplePage() {
             setFormSuccess("");
             setIsAddModalOpen(true);
           }}
-          className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-[var(--accent-primary)] hover:bg-[var(--accent-secondary)] text-white text-xs font-black uppercase transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer shadow-lg shadow-[var(--accent-glow)] border border-transparent shrink-0"
+          className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-white text-xs font-semibold transition-transform hover:-translate-y-0.5 cursor-pointer shadow-md shrink-0"
+          style={{ background: "var(--accent-primary)" }}
         >
-          <UserPlus size={16} />
+          <UserPlus size={14} />
           <span>Add Member</span>
         </button>
-      </div>
+      </section>
 
       {/* Search & Tabs Row */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 shrink-0">
-        {/* Tabs list */}
-        <div className="flex gap-2 p-1.5 rounded-2xl w-fit border shrink-0 bg-[var(--bg-card)]" style={{ borderColor: "var(--border-primary)" }}>
+        <div className="flex gap-2 p-1.5 rounded-2xl w-fit border shrink-0 bg-[var(--bg-secondary)]" style={{ borderColor: "var(--border-primary)" }}>
           <button
             onClick={() => setActiveTab("managers")}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${activeTab === "managers"
-              ? "bg-[var(--accent-primary)] text-white shadow-md shadow-[var(--accent-glow)]"
-              : "hover:bg-[var(--bg-primary)]"
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-colors cursor-pointer ${activeTab === "managers"
+              ? "bg-[var(--bg-primary)] text-[var(--text-primary)] shadow-sm border border-[var(--border-primary)]"
+              : "text-[var(--text-muted)] hover:text-[var(--text-secondary)] border border-transparent"
               }`}
           >
             <Briefcase size={14} />
@@ -483,9 +483,9 @@ export default function ManagePeoplePage() {
           </button>
           <button
             onClick={() => setActiveTab("mentors")}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${activeTab === "mentors"
-              ? "bg-[var(--accent-primary)] text-white shadow-md shadow-[var(--accent-glow)]"
-              : "hover:bg-[var(--bg-primary)]"
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-colors cursor-pointer ${activeTab === "mentors"
+              ? "bg-[var(--bg-primary)] text-[var(--text-primary)] shadow-sm border border-[var(--border-primary)]"
+              : "text-[var(--text-muted)] hover:text-[var(--text-secondary)] border border-transparent"
               }`}
           >
             <Award size={14} />
@@ -493,59 +493,54 @@ export default function ManagePeoplePage() {
           </button>
           <button
             onClick={() => setActiveTab("students")}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${activeTab === "students"
-              ? "bg-[var(--accent-primary)] text-white shadow-md shadow-[var(--accent-glow)]"
-              : "hover:bg-[var(--bg-primary)]"
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-colors cursor-pointer ${activeTab === "students"
+              ? "bg-[var(--bg-primary)] text-[var(--text-primary)] shadow-sm border border-[var(--border-primary)]"
+              : "text-[var(--text-muted)] hover:text-[var(--text-secondary)] border border-transparent"
               }`}
           >
             <GraduationCap size={14} />
             <span>Students</span>
           </button>
-          
         </div>
 
-        {/* Search & Refresh Actions */}
         <div className="flex items-center gap-2 w-full sm:w-auto shrink-0">
-          {/* Search Input Bar */}
           <div className="relative w-full sm:w-64">
             <input
               type="text"
               placeholder={`Search ${activeTab}...`}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-[var(--bg-card)] border rounded-2xl px-4 py-2.5 text-xs font-semibold focus:outline-none focus:border-[var(--border-accent)] transition-all placeholder:text-[var(--text-muted)]"
+              className="w-full bg-[var(--bg-secondary)] border rounded-xl px-4 py-2 text-sm font-medium focus:outline-none focus:border-[var(--text-muted)] transition-colors placeholder:text-[var(--text-muted)]"
               style={{ borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
             />
           </div>
-
-          {/* Refresh Directory Button */}
           <button
             onClick={() => {
               fetchMembers();
               fetchBatches();
             }}
             title="Refresh Directory"
-            className="p-2.5 rounded-2xl border bg-[var(--bg-card)] hover:bg-[var(--bg-primary)] transition-all flex items-center justify-center cursor-pointer hover:scale-105 active:scale-95 disabled:opacity-50"
+            className="p-2 rounded-xl border bg-transparent hover:bg-[var(--bg-secondary)] transition-colors flex items-center justify-center cursor-pointer disabled:opacity-50"
             style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}
             disabled={loading}
           >
-            <RefreshCw size={14} className={loading ? "animate-spin text-[var(--text-accent)]" : ""} />
+            <RefreshCw size={16} className={loading ? "animate-spin text-[var(--text-accent)]" : ""} />
           </button>
         </div>
       </div>
-      <div className="flex-1 min-h-0 overflow-y-auto rounded-3xl border bg-[var(--bg-card)]" style={{ borderColor: "var(--border-primary)" }}>
+      <div className="flex-1 min-h-0 overflow-y-auto rounded-2xl border pb-12" style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}>
         {loading ? (
           <div className="flex h-64 flex-col items-center justify-center space-y-4">
-            <div className="w-8 h-8 rounded-full border-2 border-[var(--text-accent)] border-t-transparent animate-spin" />
-            <span className="text-xs font-semibold text-[var(--text-muted)]">Fetching directory members...</span>
+            <div className="w-8 h-8 rounded-full border-2 border-[var(--text-primary)] border-t-transparent animate-spin" />
+            <span className="text-xs font-medium text-[var(--text-muted)]">Fetching directory members...</span>
           </div>
         ) : filteredPeople.length === 0 ? (
           <div className="flex h-64 flex-col items-center justify-center space-y-4">
-            <div className="w-16 h-16 rounded-3xl bg-[var(--bg-badge)] flex items-center justify-center text-[var(--text-accent)]">
-              <Users size={28} />
+            <div className="p-4 rounded-full bg-[var(--bg-secondary)]">
+              <Users size={24} className="text-violet-500" />
             </div>
             <div className="text-center space-y-1">
-              <h3 className="text-sm font-black" style={{ color: "var(--text-primary)" }}>No members found</h3>
+              <h3 className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>No members found</h3>
               <p className="text-xs max-w-xs" style={{ color: "var(--text-muted)" }}>
                 No active records matched this role criteria. Add a member to begin populating the list.
               </p>
@@ -553,61 +548,61 @@ export default function ManagePeoplePage() {
           </div>
         ) : (
           <div className="w-full overflow-x-auto min-w-0">
-            <table className="w-full border-collapse text-left">
+            <table className="w-full border-collapse text-left text-sm">
               <thead>
-                <tr className="border-b text-[10px] font-extrabold uppercase tracking-wider select-none" style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}>
+                <tr className="border-b bg-[var(--bg-secondary)] text-xs font-semibold uppercase tracking-wider select-none" style={{ borderColor: "var(--border-primary)", color: "var(--text-muted)" }}>
                   <th className="px-6 py-4">Name</th>
                   <th className="px-6 py-4">Email Address</th>
-                  <th className="px-6 py-4">Role Permission</th>
+                  <th className="px-6 py-4">Role</th>
                   <th className="px-6 py-4">Assigned Batch</th>
                   <th className="px-6 py-4">Registered Date</th>
-                  <th className="px-6 py-4">Actions</th>
+                  <th className="px-6 py-4 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y text-xs font-semibold" style={{ borderColor: "var(--border-primary)", color: "var(--text-primary)" }}>
+              <tbody className="divide-y font-medium" style={{ divideColor: "var(--border-primary)", color: "var(--text-primary)" }}>
                 {filteredPeople.map((member) => (
-                  <tr key={member.id} className="hover:bg-[var(--bg-primary)]/50 transition-colors">
-                    <td className="px-6 py-4 font-black">{member.name}</td>
+                  <tr key={member.id} className="hover:bg-[var(--bg-secondary)] transition-colors group">
+                    <td className="px-6 py-4 font-semibold">{member.name}</td>
                     <td className="px-6 py-4" style={{ color: "var(--text-secondary)" }}>{member.email}</td>
                     <td className="px-6 py-4">
-                      <span className={`px-2 py-0.5 rounded-md text-[9px] font-extrabold border ${member.role === "BATCH_MANAGER"
-                        ? "bg-purple-500/10 text-purple-400 border-purple-500/20"
+                      <span className={`px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider border ${member.role === "BATCH_MANAGER"
+                        ? "bg-slate-500/10 text-slate-600 border-slate-500/20 dark:text-slate-400"
                         : member.role === "MENTOR"
-                          ? "bg-amber-500/10 text-amber-400 border-amber-500/20"
-                          : "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                          ? "bg-amber-500/10 text-amber-600 border-amber-500/20 dark:text-amber-400"
+                          : "bg-emerald-500/10 text-emerald-600 border-emerald-500/20 dark:text-emerald-400"
                         }`}>
                         {member.role.replace("_", " ")}
                       </span>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="flex items-center gap-1">
-                        <Layers size={12} className="text-[var(--text-muted)] shrink-0" />
-                        <span className="font-extrabold text-[var(--text-secondary)]">
+                      <div className="flex items-center gap-2">
+                        <Layers size={14} className="text-violet-500 shrink-0" />
+                        <span className="font-semibold text-[var(--text-secondary)]">
                           {getBatchesForUser(member.id, member.role, member.assignedBatch)}
                         </span>
                       </div>
                     </td>
-                    <td className="px-6 py-4" style={{ color: "var(--text-muted)" }}>
+                    <td className="px-6 py-4 text-xs tabular-nums" style={{ color: "var(--text-secondary)" }}>
                       <div className="flex items-center gap-1.5">
                         <Calendar size={12} />
                         <span>{new Date(member.dateAdded).toLocaleDateString()}</span>
                       </div>
                     </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-2">
+                    <td className="px-6 py-4 text-right">
+                      <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                         <button
                           onClick={() => triggerEdit(member)}
-                          className="flex items-center gap-1 text-[10px] font-black uppercase text-emerald-500 hover:text-emerald-600 transition-colors cursor-pointer border border-emerald-500/20 bg-emerald-500/5 px-2.5 py-1.5 rounded-xl hover:bg-emerald-500/10"
+                          className="p-2 rounded-lg text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-950/50 transition-colors cursor-pointer"
+                          title="Edit"
                         >
-                          <Edit size={12} />
-                          <span>Edit</span>
+                          <Edit size={16} />
                         </button>
                         <button
                           onClick={() => triggerDelete(member)}
-                          className="flex items-center gap-1 text-[10px] font-black uppercase text-rose-500 hover:text-rose-600 transition-colors cursor-pointer border border-rose-500/20 bg-rose-500/5 px-2.5 py-1.5 rounded-xl hover:bg-rose-500/10"
+                          className="p-2 rounded-lg text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/50 transition-colors cursor-pointer"
+                          title="Delete"
                         >
-                          <Trash2 size={12} />
-                          <span>Delete</span>
+                          <Trash2 size={16} />
                         </button>
                       </div>
                     </td>
@@ -815,7 +810,7 @@ export default function ManagePeoplePage() {
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="px-5 py-2.5 rounded-2xl bg-[var(--accent-primary)] hover:bg-[var(--accent-secondary)] text-white text-xs font-black uppercase transition-all shadow-lg hover:scale-[1.02] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                    className="px-5 py-2.5 rounded-2xl bg-[var(--accent-primary)] hover:bg-[var(--accent-secondary)] text-[var(--text-on-accent)] text-xs font-black uppercase transition-all shadow-lg hover:scale-[1.02] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                   >
                     {submitting ? (
                       <>
@@ -1039,7 +1034,7 @@ export default function ManagePeoplePage() {
                   <button
                     type="submit"
                     disabled={editing}
-                    className="px-5 py-2.5 rounded-2xl bg-[var(--accent-primary)] hover:bg-[var(--accent-secondary)] text-white text-xs font-black uppercase transition-all shadow-lg hover:scale-[1.02] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                    className="px-5 py-2.5 rounded-2xl bg-[var(--accent-primary)] hover:bg-[var(--accent-secondary)] text-[var(--text-on-accent)] text-xs font-black uppercase transition-all shadow-lg hover:scale-[1.02] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                   >
                     {editing ? (
                       <>

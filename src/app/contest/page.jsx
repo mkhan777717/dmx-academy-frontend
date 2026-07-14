@@ -223,10 +223,10 @@ export default function ContestLobby() {
             color = "text-rose-500";
           } else if (points >= 50) {
             rankClass = "Master";
-            color = "text-purple-500";
+            color = "text-slate-500";
           } else if (points >= 30) {
             rankClass = "Diamond";
-            color = "text-blue-500";
+            color = "text-neutral-500";
           } else if (points >= 10) {
             rankClass = "Gold";
             color = "text-amber-500";
@@ -351,7 +351,7 @@ export default function ContestLobby() {
   return (
     <div className="relative flex min-h-screen flex-col overflow-hidden" style={{ backgroundColor: "var(--bg-primary)" }}>
       {/* Background ambient light */}
-      <div className="absolute top-0 left-0 right-0 h-[450px] bg-gradient-to-b from-indigo-100/30 via-transparent to-transparent pointer-events-none z-0" />
+      <div className="absolute top-0 left-0 right-0 h-[450px] bg-gradient-to-b from-zinc-100/30 via-transparent to-transparent pointer-events-none z-0" />
 
       <Navbar />
 
@@ -392,7 +392,7 @@ export default function ContestLobby() {
             }}
           >
             {/* Tab links */}
-            <div className="flex flex-wrap gap-1 items-center bg-slate-500/5 p-1 rounded-full border" style={{ borderColor: "var(--border-primary)" }}>
+            <div className="flex flex-wrap gap-1 items-center p-1 rounded-full border" style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)" }}>
               {[
                 { id: "all", label: "All Contests" },
                 { id: "active", label: "Active" },
@@ -462,7 +462,7 @@ export default function ContestLobby() {
                 <div className="overflow-x-auto">
                   <table className="w-full text-left border-collapse text-xs">
                     <thead>
-                      <tr className="bg-slate-500/5 font-bold text-[var(--text-muted)] border-b" style={{ borderColor: "var(--border-primary)" }}>
+                      <tr className="font-bold text-[var(--text-muted)] border-b" style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)" }}>
                         <th className="px-6 py-4">Rank</th>
                         <th className="px-6 py-4">Developer</th>
                         <th className="px-6 py-4 text-center">Score Points</th>
@@ -486,7 +486,7 @@ export default function ContestLobby() {
                         </tr>
                       ) : (
                         leaderboard.map((player) => (
-                          <tr key={player.rank} className="hover:bg-slate-500/5 transition-colors">
+                          <tr key={player.rank} className="hover:bg-[var(--bg-secondary)] transition-colors">
                             <td className="px-6 py-4 font-bold">
                               {player.rank === 1 ? "🥇" : player.rank === 2 ? "🥈" : player.rank === 3 ? "🥉" : `#${player.rank}`}
                             </td>
@@ -563,7 +563,7 @@ export default function ContestLobby() {
                       >
                         {/* Status Line */}
                         <div
-                          className={`absolute top-0 left-0 right-0 h-[3px] ${isActive ? "bg-emerald-500" : isUpcoming ? "bg-indigo-500" : "bg-slate-400"
+                          className={`absolute top-0 left-0 right-0 h-[3px] ${isActive ? "bg-emerald-500" : isUpcoming ? "bg-zinc-500" : "bg-slate-400"
                             }`}
                         />
 
@@ -578,7 +578,7 @@ export default function ContestLobby() {
 
                             {/* Dynamic Tag Pill */}
                             <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md border ${isActive ? "text-emerald-500 bg-emerald-500/10 border-emerald-500/20" :
-                                isUpcoming ? "text-indigo-500 bg-indigo-500/10 border-indigo-500/20" :
+                                isUpcoming ? "text-zinc-500 bg-zinc-500/10 border-zinc-500/20" :
                                   "text-[var(--text-muted)] bg-slate-500/5 border-transparent"
                               }`}>
                               {contest.status.toUpperCase()}

@@ -1,479 +1,371 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence, useMotionValue, useTransform } from "framer-motion";
-import {
-  Play, Sparkles, BookOpen, Star, Activity, X, ArrowRight,
-  Zap, Brain, Code2, Layers, CheckCircle, Users, Award
-} from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from "framer-motion";
+import Link from "next/link";
 
-/* ─── Animated Counter ────────────────────────────── */
-function AnimatedCounter({ to, suffix = "" }) {
-  const [count, setCount] = useState(0);
+/* ─── Animated SVG Network Graph ──────────────────── */
+const nodes = [
+  { id: "react",  x: 50,  y: 30,  label: "React",     color: "#61dafb", r: 6 },
+  { id: "ai",     x: 78,  y: 55,  label: "Gen AI",    color: "#a78bfa", r: 8 },
+  { id: "next",   x: 22,  y: 58,  label: "Next.js",   color: "#ededec", r: 5 },
+  { id: "motion", x: 62,  y: 78,  label: "Motion",    color: "#f97316", r: 6 },
+  { id: "cloud",  x: 30,  y: 80,  label: "Cloud",     color: "#34d399", r: 5 },
+  { id: "web3",   x: 85,  y: 25,  label: "Web3",      color: "#fbbf24", r: 4 },
+  { id: "llm",    x: 15,  y: 35,  label: "LLMs",      color: "#f472b6", r: 5 },
+];
+
+const edges = [
+  ["react", "next"], ["react", "motion"], ["react", "ai"],
+  ["ai", "llm"], ["ai", "web3"], ["ai", "motion"],
+  ["next", "cloud"], ["motion", "cloud"], ["web3", "react"],
+  ["llm", "next"],
+];
+
+function NetworkGraph({ mouseX, mouseY }) {
+  const [tick, setTick] = useState(0);
+  const [pulsingEdge, setPulsingEdge] = useState(0);
+
   useEffect(() => {
-    let start = 0;
-    const step = Math.ceil(to / 60);
-    const timer = setInterval(() => {
-      start += step;
-      if (start >= to) { setCount(to); clearInterval(timer); }
-      else setCount(start);
-    }, 20);
-    return () => clearInterval(timer);
-  }, [to]);
-  return <>{count.toLocaleString()}{suffix}</>;
-}
+    const id = setInterval(() => setTick(t => t + 1), 60);
+    const eid = setInterval(() => setPulsingEdge(e => (e + 1) % edges.length), 1200);
+    return () => { clearInterval(id); clearInterval(eid); };
+  }, []);
 
-/* ─── Particle / glowing orb background ──────────── */
-function GlowOrb({ x, y, size, color, delay, duration }) {
+  // Subtle parallax offset from mouse
+  const offsetX = (mouseX - 0.5) * 12;
+  const offsetY = (mouseY - 0.5) * 8;
+
+  const animatedNodes = nodes.map((n, i) => {
+    const floatY = Math.sin(tick / 60 + i * 0.8) * 1.5;
+    const floatX = Math.cos(tick / 80 + i * 0.6) * 1;
+    return {
+      ...n,
+      cx: n.x + floatX + offsetX * (1 - n.x / 100) * 0.3,
+      cy: n.y + floatY + offsetY * (1 - n.y / 100) * 0.3,
+    };
+  });
+
+  const nodeMap = Object.fromEntries(animatedNodes.map(n => [n.id, n]));
+
   return (
-    <motion.div
-      className="absolute rounded-full pointer-events-none"
-      style={{ width: size, height: size, left: x, top: y, background: color, filter: "blur(80px)", opacity: 0.35 }}
-      animate={{ scale: [1, 1.25, 1], opacity: [0.25, 0.45, 0.25] }}
-      transition={{ duration, repeat: Infinity, ease: "easeInOut", delay }}
-    />
+    <svg
+      viewBox="0 0 100 100"
+      preserveAspectRatio="xMidYMid meet"
+      className="w-full h-full"
+      style={{ overflow: "visible" }}
+    >
+      <defs>
+        {nodes.map(n => (
+          <radialGradient key={n.id} id={`grd-${n.id}`} r="50%" cx="50%" cy="50%">
+            <stop offset="0%" stopColor={n.color} stopOpacity="0.4" />
+            <stop offset="100%" stopColor={n.color} stopOpacity="0" />
+          </radialGradient>
+        ))}
+      </defs>
+
+      {/* Edges */}
+      {edges.map(([a, b], i) => {
+        const na = nodeMap[a];
+        const nb = nodeMap[b];
+        if (!na || !nb) return null;
+        const isPulsing = i === pulsingEdge;
+        return (
+          <g key={`${a}-${b}`}>
+            <line
+              x1={na.cx} y1={na.cy} x2={nb.cx} y2={nb.cy}
+              stroke={isPulsing ? na.color : "var(--border-primary)"}
+              strokeWidth={isPulsing ? 0.3 : 0.15}
+              strokeOpacity={isPulsing ? 0.8 : 0.5}
+              style={{ transition: "stroke 0.4s, stroke-width 0.4s, stroke-opacity 0.4s" }}
+            />
+            {isPulsing && (
+              <motion.circle
+                r="0.7"
+                fill={na.color}
+                initial={{ cx: na.cx, cy: na.cy, opacity: 1 }}
+                animate={{ cx: nb.cx, cy: nb.cy, opacity: [1, 1, 0] }}
+                transition={{ duration: 1.2, ease: "easeInOut" }}
+              />
+            )}
+          </g>
+        );
+      })}
+
+      {/* Nodes */}
+      {animatedNodes.map((n) => (
+        <g key={n.id}>
+          <circle cx={n.cx} cy={n.cy} r={n.r * 3} fill={`url(#grd-${n.id})`} />
+          <circle cx={n.cx} cy={n.cy} r={n.r} fill={n.color} fillOpacity="0.15" stroke={n.color} strokeWidth="0.3" strokeOpacity="0.7" />
+          <circle cx={n.cx} cy={n.cy} r={n.r * 0.45} fill={n.color} />
+          <text x={n.cx} y={n.cy + n.r + 3} textAnchor="middle" fontSize="3" fill="var(--text-muted)" fontFamily="var(--font-sans)">{n.label}</text>
+        </g>
+      ))}
+    </svg>
   );
 }
 
-/* ─── Mini floating skill card ────────────────────── */
-function FloatCard({ icon: Icon, title, subtitle, accent, delay, style }) {
-  return (
-    <motion.div
-      className="absolute z-20 flex items-center gap-3 rounded-2xl px-4 py-3 shadow-xl backdrop-blur-xl cursor-default select-none"
-      style={{
-        backgroundColor: "var(--glass-bg)",
-        border: "1px solid var(--glass-border)",
-        ...style
-      }}
-      animate={{ y: [0, -12, 0] }}
-      transition={{ duration: 6 + delay, repeat: Infinity, ease: "easeInOut", delay }}
-      whileHover={{ scale: 1.06, y: -16 }}
-    >
-      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl" style={{ background: accent + "20", border: `1px solid ${accent}35` }}>
-        <Icon size={17} style={{ color: accent }} />
-      </div>
-      <div>
-        <div className="text-sm font-bold leading-tight" style={{ color: "var(--text-primary)" }}>{title}</div>
-        <div className="text-[11px] mt-0.5" style={{ color: "var(--text-muted)" }}>{subtitle}</div>
-      </div>
-      {/* glowing dot */}
-      <span className="absolute -top-1 -right-1 h-2.5 w-2.5 rounded-full animate-pulse" style={{ backgroundColor: accent, boxShadow: `0 0 6px ${accent}` }} />
-    </motion.div>
-  );
-}
+/* ─── Ticker Strip ──────────────────────────────── */
+const tickers = [
+  "AI-Powered Code Review",
+  "Interactive Browser Sandboxes",
+  "Blockchain Certificates",
+  "Live Cohort Sessions",
+  "Real-Time Feedback",
+  "300+ Projects Built",
+  "Industry-Mentored Tracks",
+];
 
-/* ─── Live code preview card ──────────────────────── */
-function LiveCodeCard() {
-  const lines = [
-    { indent: 0, text: "import { motion } from 'framer-motion'", color: "#818cf8" },
-    { indent: 0, text: "", color: "" },
-    { indent: 0, text: "export function Hero() {", color: "var(--text-primary)" },
-    { indent: 1, text: "return (", color: "var(--text-secondary)" },
-    { indent: 2, text: "<motion.div", color: "#4ade80" },
-    { indent: 3, text: "animate={{ y: [0,-12,0] }}", color: "#fb923c" },
-    { indent: 3, text: "transition={{ repeat: Infinity }}", color: "#fb923c" },
-    { indent: 2, text: "/>", color: "#4ade80" },
-    { indent: 1, text: ")", color: "var(--text-secondary)" },
-    { indent: 0, text: "}", color: "var(--text-primary)" },
-  ];
-
+function TickerStrip() {
+  const items = [...tickers, ...tickers];
   return (
-    <motion.div
-      className="relative w-full max-w-sm rounded-2xl overflow-hidden shadow-2xl"
-      style={{ backgroundColor: "var(--bg-code)", border: "1px solid var(--border-primary)" }}
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.6, duration: 0.7 }}
-      whileHover={{ y: -4 }}
-    >
-      {/* Title bar */}
-      <div className="flex items-center gap-1.5 px-4 py-3" style={{ borderBottom: "1px solid var(--border-primary)" }}>
-        <span className="h-3 w-3 rounded-full bg-red-500/80" />
-        <span className="h-3 w-3 rounded-full bg-yellow-500/80" />
-        <span className="h-3 w-3 rounded-full bg-green-500/80" />
-        <span className="ml-3 text-[11px] font-mono" style={{ color: "var(--text-muted)" }}>hero.jsx — DMX Academy</span>
-        <span className="ml-auto text-[10px] px-1.5 py-0.5 rounded" style={{ backgroundColor: "#4ade8020", color: "#4ade80" }}>● live</span>
-      </div>
-      {/* Code lines */}
-      <div className="p-4 space-y-1 font-mono text-xs">
-        {lines.map((line, i) => (
-          <motion.div
-            key={i}
-            initial={{ opacity: 0, x: -8 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.8 + i * 0.07 }}
-            className="flex"
-            style={{ paddingLeft: `${line.indent * 14}px` }}
-          >
-            <span className="mr-4 select-none w-4 text-right shrink-0" style={{ color: "var(--text-muted)", fontSize: "10px" }}>{i + 1}</span>
-            <span style={{ color: line.color || "transparent" }}>{line.text || "\u00A0"}</span>
-          </motion.div>
+    <div className="overflow-hidden border-y" style={{ borderColor: "var(--border-primary)" }}>
+      <div className="ticker-track py-2.5">
+        {items.map((t, i) => (
+          <span key={i} className="mx-8 text-xs font-medium tracking-widest uppercase whitespace-nowrap" style={{ color: "var(--text-muted)" }}>
+            {t}
+            <span className="mx-8" style={{ color: "var(--border-primary)" }}>·</span>
+          </span>
         ))}
       </div>
-      {/* Animated cursor */}
-      <motion.div
-        className="absolute right-8 bottom-8 h-4 w-0.5 rounded"
-        style={{ backgroundColor: "#818cf8" }}
-        animate={{ opacity: [1, 0, 1] }}
-        transition={{ duration: 1, repeat: Infinity }}
-      />
-      {/* Bottom status bar */}
-      <div className="flex items-center gap-3 px-4 py-2 text-[10px]" style={{ borderTop: "1px solid var(--border-primary)", color: "var(--text-muted)" }}>
-        <span style={{ color: "#4ade80" }}>✓ No errors</span>
-        <span>·</span>
-        <span>JSX</span>
-        <span>·</span>
-        <span>Next.js 16</span>
-      </div>
-    </motion.div>
+    </div>
   );
 }
 
+/* ─── Main Hero ───────────────────────────────── */
 export default function Hero() {
-  const [isVideoOpen, setIsVideoOpen] = useState(false);
+  const containerRef = useRef(null);
+  const rawX = useMotionValue(0.5);
+  const rawY = useMotionValue(0.5);
+  const mouseX = useSpring(rawX, { stiffness: 60, damping: 20 });
+  const mouseY = useSpring(rawY, { stiffness: 60, damping: 20 });
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { staggerChildren: 0.15, delayChildren: 0.1 } },
+  const [mxVal, setMxVal] = useState(0.5);
+  const [myVal, setMyVal] = useState(0.5);
+
+  useEffect(() => {
+    const unsub1 = mouseX.on("change", v => setMxVal(v));
+    const unsub2 = mouseY.on("change", v => setMyVal(v));
+    return () => { unsub1(); unsub2(); };
+  }, [mouseX, mouseY]);
+
+  const handleMouseMove = (e) => {
+    const rect = containerRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    rawX.set((e.clientX - rect.left) / rect.width);
+    rawY.set((e.clientY - rect.top) / rect.height);
   };
 
-  const itemVariants = {
-    hidden: { y: 32, opacity: 0 },
-    visible: { y: 0, opacity: 1, transition: { type: "spring", stiffness: 90, damping: 16 } },
+  // Text reveal variants
+  const sentence = {
+    hidden: { opacity: 1 },
+    visible: { opacity: 1, transition: { staggerChildren: 0.04, delayChildren: 0.1 } },
+  };
+  const letter = {
+    hidden: { y: 60, opacity: 0, rotateX: -40 },
+    visible: { y: 0, opacity: 1, rotateX: 0, transition: { type: "spring", stiffness: 120, damping: 18 } },
   };
 
-  const stats = [
-    { value: 12000, suffix: "+", label: "Students Enrolled" },
-    { value: 98, suffix: "%", label: "Completion Rate" },
-    { value: 400, suffix: "+", label: "Live Projects" },
-    { value: 4.9, suffix: "★", label: "Average Rating" },
-  ];
-
-  const features = [
-    { icon: CheckCircle, text: "AI-powered code review" },
-    { icon: CheckCircle, text: "Interactive browser sandboxes" },
-    { icon: CheckCircle, text: "Verified on-chain certificates" },
-  ];
+  const words = ["Master", "Code.", "Build", "Tomorrow."];
 
   return (
     <section
-      className="relative min-h-screen w-full overflow-hidden pt-24 pb-20 flex items-center justify-center"
+      ref={containerRef}
+      onMouseMove={handleMouseMove}
+      className="relative min-h-screen w-full overflow-hidden cursor-none-zone"
       style={{ backgroundColor: "var(--bg-primary)" }}
     >
-      {/* ── Animated Background ── */}
-      <div className="absolute inset-0 z-0 overflow-hidden">
-        <GlowOrb x="5%" y="15%" size={520} color="var(--accent-primary)" delay={0} duration={14} />
-        <GlowOrb x="55%" y="60%" size={420} color="var(--accent-secondary)" delay={3} duration={11} />
-        <GlowOrb x="75%" y="5%" size={320} color="#06b6d4" delay={6} duration={9} />
+      {/* Dot grid background */}
+      <div className="absolute inset-0 dot-grid opacity-100 pointer-events-none" />
 
-        {/* Animated grid */}
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: "linear-gradient(var(--border-primary) 1px, transparent 1px), linear-gradient(to right, var(--border-primary) 1px, transparent 1px)",
-            backgroundSize: "40px 40px",
-            WebkitMaskImage: "radial-gradient(ellipse 70% 60% at 50% 40%, black 40%, transparent 100%)",
-            maskImage: "radial-gradient(ellipse 70% 60% at 50% 40%, black 40%, transparent 100%)",
-            opacity: 0.5,
-          }}
-        />
+      {/* Ticker at very top below navbar */}
+      <div className="absolute top-[64px] left-0 right-0 z-10">
+        <TickerStrip />
       </div>
 
-      <div className="relative z-10 mx-auto max-w-7xl px-4 md:px-8 w-full">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+      {/* Main content */}
+      <div className="relative z-10 mx-auto max-w-[1400px] px-6 md:px-12 min-h-screen flex items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_480px] gap-16 lg:gap-24 items-center w-full pt-40 pb-24 lg:pt-32 lg:pb-20">
 
-          {/* ── LEFT COLUMN ── */}
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-            className="space-y-7 text-center lg:text-left"
-          >
-            {/* Badge */}
-            <motion.div variants={itemVariants} className="flex justify-center lg:justify-start">
-              <motion.span
-                className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-bold"
-                style={{
-                  backgroundColor: "var(--bg-badge)",
-                  border: "1px solid var(--border-accent)",
-                  color: "var(--text-accent)",
-                }}
-                animate={{ boxShadow: ["0 0 0px var(--accent-glow)", "0 0 16px var(--accent-glow)", "0 0 0px var(--accent-glow)"] }}
-                transition={{ duration: 3, repeat: Infinity }}
-              >
-                <Sparkles size={11} className="animate-pulse" />
-                Next-Gen Creative Technical Academy
-                <span className="inline-block h-1.5 w-1.5 rounded-full animate-pulse" style={{ backgroundColor: "var(--accent-primary)" }} />
-              </motion.span>
+          {/* LEFT — Editorial typography */}
+          <div className="space-y-10">
+
+            {/* Chapter label */}
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+              className="flex items-center gap-3"
+            >
+              <div className="h-px w-12" style={{ background: "var(--accent-primary)" }} />
+              <span className="text-[11px] font-bold tracking-[0.2em] uppercase" style={{ color: "var(--text-muted)" }}>
+                DMX Academy — Est. 2024
+              </span>
             </motion.div>
 
-            {/* Heading */}
+            {/* Main headline — split word by word for stagger */}
             <motion.h1
-              variants={itemVariants}
-              className="text-4xl sm:text-5xl md:text-6xl xl:text-7xl font-extrabold font-display leading-[1.05] tracking-tight"
-              style={{ color: "var(--text-primary)" }}
+              className="text-[clamp(3.2rem,6.5vw,7rem)] font-black leading-[0.95] tracking-[-0.04em]"
+              style={{ color: "var(--text-primary)", perspective: "800px" }}
+              variants={sentence}
+              initial="hidden"
+              animate="visible"
             >
-              Learn in{" "}
-              <span
-                className="relative inline-block"
-                style={{ background: "var(--accent-gradient)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}
-              >
-                Flow State
-                {/* Underline glow */}
-                <motion.span
-                  className="absolute -bottom-1 left-0 right-0 h-1 rounded-full"
-                  style={{ background: "var(--accent-gradient)", opacity: 0.5 }}
-                  animate={{ scaleX: [0.8, 1, 0.8], opacity: [0.3, 0.6, 0.3] }}
-                  transition={{ duration: 3, repeat: Infinity }}
-                />
-              </span>
-              <br />
-              <span style={{ color: "var(--text-primary)" }}>Master the Code.</span>
+              {words.map((word, wi) => (
+                <span key={wi} className="overflow-hidden inline-block mr-[0.25em] last:mr-0">
+                  <motion.span
+                    variants={letter}
+                    className={`inline-block ${wi === 1 || wi === 3 ? "font-serif-display" : ""}`}
+                    style={wi === 1 || wi === 3 ? { color: "var(--text-primary)" } : {}}
+                  >
+                    {wi === 1 || wi === 3 ? (
+                      <em style={{
+                        background: "var(--accent-gradient)",
+                        WebkitBackgroundClip: "text",
+                        WebkitTextFillColor: "transparent",
+                        backgroundClip: "text",
+                        fontStyle: "italic"
+                      }}>
+                        {word}
+                      </em>
+                    ) : word}
+                  </motion.span>
+                </span>
+              ))}
             </motion.h1>
 
-            {/* Subtext */}
+            {/* Sub description */}
             <motion.p
-              variants={itemVariants}
-              className="text-base sm:text-lg max-w-xl mx-auto lg:mx-0 leading-relaxed"
-              style={{ color: "var(--text-secondary)" }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5, duration: 0.7 }}
+              className="text-base sm:text-lg max-w-[480px] leading-[1.65]"
+              style={{ color: "var(--text-secondary)", fontWeight: 400 }}
             >
-              Immersive, curriculum-led learning tracks with interactive sandboxes,
-              real-time AI feedback, and motion design labs. Build extraordinary things.
+              Immersive, project-driven learning in AI, Frontend Engineering, Cloud, and Creative Tech — with live mentors, interactive sandboxes, and verified certificates.
             </motion.p>
 
-            {/* Feature checklist */}
-            <motion.ul variants={itemVariants} className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
-              {features.map((f, i) => (
-                <li key={i} className="flex items-center gap-2 text-sm font-medium" style={{ color: "var(--text-secondary)" }}>
-                  <CheckCircle size={14} style={{ color: "var(--accent-primary)" }} />
-                  {f.text}
-                </li>
-              ))}
-            </motion.ul>
-
-            {/* CTA Buttons */}
+            {/* CTA row */}
             <motion.div
-              variants={itemVariants}
-              className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.65, duration: 0.7 }}
+              className="flex flex-col sm:flex-row items-start gap-4"
             >
-              <motion.a
+              <Link
                 href="/courses/generative-ai"
-                whileHover={{ scale: 1.05, boxShadow: "0 8px 30px var(--accent-glow)" }}
-                whileTap={{ scale: 0.96 }}
-                className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-full px-8 py-4 text-sm font-bold text-white shadow-xl transition-all"
-                style={{ background: "var(--accent-gradient)" }}
-              >
-                <Sparkles size={15} />
-                Start Free Gen AI Course
-                <ArrowRight size={14} />
-              </motion.a>
-
-              <motion.button
-                suppressHydrationWarning
-                onClick={() => setIsVideoOpen(true)}
-                whileHover={{ scale: 1.04 }}
-                whileTap={{ scale: 0.96 }}
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-3 rounded-full px-8 py-4 text-sm font-bold shadow-sm transition-all"
+                className="group inline-flex items-center gap-3 rounded-full px-7 py-3.5 text-sm font-semibold text-white transition-all duration-300"
                 style={{
-                  backgroundColor: "var(--bg-card)",
-                  border: "1px solid var(--border-primary)",
-                  color: "var(--text-primary)",
+                  background: "var(--accent-gradient)",
+                  boxShadow: "0 0 0 0 var(--accent-glow)",
                 }}
+                onMouseEnter={e => e.currentTarget.style.boxShadow = "0 8px 32px var(--accent-glow)"}
+                onMouseLeave={e => e.currentTarget.style.boxShadow = "0 0 0 0 var(--accent-glow)"}
               >
-                <motion.div
-                  className="flex h-7 w-7 items-center justify-center rounded-full text-white shadow-md"
-                  style={{ background: "var(--accent-gradient)" }}
-                  animate={{ boxShadow: ["0 0 0px var(--accent-glow)", "0 0 12px var(--accent-glow)", "0 0 0px var(--accent-glow)"] }}
-                  transition={{ duration: 2.5, repeat: Infinity }}
-                >
-                  <Play size={10} className="ml-0.5 fill-white" />
-                </motion.div>
-                Watch Platform Intro
-              </motion.button>
+                <span>Start Learning Free</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover:translate-x-1">
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              </Link>
+
+              <Link
+                href="/courses"
+                className="inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-medium transition-all duration-200 underline-draw"
+                style={{
+                  color: "var(--text-secondary)",
+                  border: "1px solid var(--border-primary)",
+                  backgroundColor: "transparent",
+                }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = "var(--accent-primary)"; e.currentTarget.style.color = "var(--text-primary)"; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--border-primary)"; e.currentTarget.style.color = "var(--text-secondary)"; }}
+              >
+                Browse Courses
+              </Link>
             </motion.div>
 
-            {/* Stats Row */}
+            {/* Proof line */}
             <motion.div
-              variants={itemVariants}
-              className="grid grid-cols-4 gap-4 pt-6"
-              style={{ borderTop: "1px solid var(--border-primary)" }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.85 }}
+              className="flex items-center gap-6 pt-2"
             >
-              {stats.map((s, i) => (
-                <div key={i} className="text-center lg:text-left">
-                  <p className="text-xl sm:text-2xl font-extrabold font-display" style={{ color: "var(--text-primary)" }}>
-                    <AnimatedCounter to={typeof s.value === "number" && !Number.isInteger(s.value) ? s.value * 10 : s.value} suffix={s.suffix} />
-                  </p>
-                  <p className="text-[10px] sm:text-xs mt-0.5" style={{ color: "var(--text-muted)" }}>{s.label}</p>
+              <div className="flex items-center gap-2">
+                {/* Avatars stack */}
+                <div className="flex -space-x-2">
+                  {["#6366f1","#f97316","#34d399","#f472b6"].map((c, i) => (
+                    <div key={i} className="h-7 w-7 rounded-full border-2 flex items-center justify-center text-[9px] font-bold text-white" style={{ borderColor: "var(--bg-primary)", background: c }}>
+                      {String.fromCharCode(65 + i * 3)}
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </motion.div>
-          </motion.div>
-
-          {/* ── RIGHT COLUMN ── */}
-          <div className="relative flex items-center justify-center min-h-[480px] lg:min-h-[560px]">
-            {/* Floating orbit rings */}
-            <motion.div
-              className="absolute rounded-full"
-              style={{ width: 380, height: 380, border: "1px dashed var(--border-accent)", opacity: 0.4 }}
-              animate={{ rotate: 360 }}
-              transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
-            />
-            <motion.div
-              className="absolute rounded-full"
-              style={{ width: 280, height: 280, border: "1px dashed var(--border-primary)", opacity: 0.5 }}
-              animate={{ rotate: -360 }}
-              transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-            />
-
-            {/* Center hub */}
-            <motion.div
-              className="relative z-10 flex h-20 w-20 items-center justify-center rounded-2xl shadow-2xl text-white"
-              style={{ background: "var(--accent-gradient)", boxShadow: "0 0 40px var(--accent-glow)" }}
-              animate={{ scale: [0.95, 1.05, 0.95] }}
-              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-            >
-              <Brain size={36} />
-            </motion.div>
-
-            {/* Live Code Card */}
-            <div className="absolute -left-4 lg:-left-10 bottom-8">
-              <LiveCodeCard />
-            </div>
-
-            {/* Floating topic cards */}
-            <FloatCard
-              icon={Activity}
-              title="Motion Design"
-              subtitle="Framer Motion + WebGL"
-              accent="#06b6d4"
-              delay={0}
-              style={{ top: "6%", right: "0%" }}
-            />
-            <FloatCard
-              icon={Brain}
-              title="AI & LLMs"
-              subtitle="GPT-4 + LangChain"
-              accent="#a855f7"
-              delay={1.5}
-              style={{ top: "38%", right: "-5%" }}
-            />
-            <FloatCard
-              icon={Code2}
-              title="Frontend Arch"
-              subtitle="Next.js 16 + React 19"
-              accent="#818cf8"
-              delay={0.7}
-              style={{ bottom: "10%", right: "10%" }}
-            />
-
-            {/* Stat pill floating top-left */}
-            <motion.div
-              className="absolute top-4 left-0 z-20 flex items-center gap-2 rounded-full px-4 py-2 text-xs font-semibold shadow-lg"
-              style={{
-                backgroundColor: "var(--bg-card)",
-                border: "1px solid var(--border-primary)",
-                color: "var(--text-primary)",
-              }}
-              animate={{ y: [0, -8, 0] }}
-              transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-            >
-              <Users size={13} style={{ color: "var(--accent-primary)" }} />
-              <span>12,000+ learners enrolled</span>
-            </motion.div>
-
-            {/* Award pill */}
-            <motion.div
-              className="absolute bottom-24 left-4 z-20 flex items-center gap-2 rounded-full px-4 py-2 text-xs font-semibold shadow-lg"
-              style={{
-                backgroundColor: "var(--bg-card)",
-                border: "1px solid var(--border-primary)",
-                color: "var(--text-primary)",
-              }}
-              animate={{ y: [0, -6, 0] }}
-              transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-            >
-              <Award size={13} style={{ color: "#f59e0b" }} />
-              <span>Blockchain-verified certificates</span>
+                <span className="text-xs" style={{ color: "var(--text-muted)" }}>
+                  <strong style={{ color: "var(--text-primary)" }}>12,000+</strong> learners enrolled
+                </span>
+              </div>
+              <div className="h-4 w-px" style={{ background: "var(--border-primary)" }} />
+              <div className="flex items-center gap-1.5">
+                <div className="flex">
+                  {[1,2,3,4,5].map(i => (
+                    <svg key={i} width="12" height="12" viewBox="0 0 24 24" fill="#f59e0b"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                  ))}
+                </div>
+                <span className="text-xs" style={{ color: "var(--text-muted)" }}>
+                  <strong style={{ color: "var(--text-primary)" }}>4.9</strong> avg rating
+                </span>
+              </div>
             </motion.div>
           </div>
+
+          {/* RIGHT — SVG Network Graph */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.3, duration: 1, ease: "easeOut" }}
+            className="relative hidden lg:block"
+            style={{ height: "520px" }}
+          >
+            {/* Border frame */}
+            <div
+              className="absolute inset-0 rounded-3xl"
+              style={{
+                border: "1px solid var(--border-card)",
+                background: "var(--bg-card)",
+              }}
+            />
+
+            {/* Corner labels */}
+            <div className="absolute top-5 left-5 z-10">
+              <div className="text-[10px] font-bold tracking-widest uppercase" style={{ color: "var(--text-muted)" }}>Tech Stack</div>
+              <div className="text-[9px] mt-0.5" style={{ color: "var(--border-primary)" }}>Live Network</div>
+            </div>
+            <div className="absolute top-5 right-5 z-10 flex items-center gap-1.5">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="text-[10px]" style={{ color: "var(--text-muted)" }}>Live</span>
+            </div>
+
+            {/* Graph */}
+            <div className="absolute inset-8">
+              <NetworkGraph mouseX={mxVal} mouseY={myVal} />
+            </div>
+
+            {/* Bottom badge */}
+            <div
+              className="absolute bottom-5 left-5 right-5 flex items-center justify-between text-[10px]"
+              style={{ color: "var(--text-muted)" }}
+            >
+              <span>{nodes.length} technologies · {edges.length} connections</span>
+              <span style={{ color: "var(--accent-primary)", fontWeight: 600 }}>Interactive</span>
+            </div>
+          </motion.div>
         </div>
       </div>
 
-      {/* ── Video Modal ── */}
-      <AnimatePresence>
-        {isVideoOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center px-4"
-            style={{ backgroundColor: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}
-            onClick={() => setIsVideoOpen(false)}
-          >
-            <motion.div
-              initial={{ scale: 0.88, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.88, opacity: 0 }}
-              transition={{ type: "spring", damping: 22 }}
-              className="relative w-full max-w-3xl overflow-hidden rounded-3xl shadow-2xl"
-              style={{ backgroundColor: "var(--bg-card)", border: "1px solid var(--border-primary)" }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <button
-                suppressHydrationWarning
-                onClick={() => setIsVideoOpen(false)}
-                className="absolute top-4 right-4 z-10 flex h-8 w-8 items-center justify-center rounded-full shadow-sm transition-colors"
-                style={{ backgroundColor: "var(--bg-hover)", border: "1px solid var(--border-primary)", color: "var(--text-secondary)" }}
-              >
-                <X size={16} />
-              </button>
-
-              <div className="relative aspect-video w-full flex flex-col items-center justify-center p-8" style={{ backgroundColor: "var(--bg-code)" }}>
-                <div className="absolute top-8 left-8 h-2 w-2 rounded-full bg-cyan-400 animate-pulse blur-[2px]" />
-                <div className="absolute bottom-8 right-8 h-3 w-3 rounded-full bg-purple-500 animate-pulse blur-[3px]" />
-
-                <div className="flex flex-col items-center space-y-5 text-center z-10">
-                  <motion.div
-                    className="flex h-20 w-20 items-center justify-center rounded-2xl shadow-2xl text-white"
-                    style={{ background: "var(--accent-gradient)", boxShadow: "0 0 40px var(--accent-glow)" }}
-                    animate={{ rotate: [0, 360] }}
-                    transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-                  >
-                    <Sparkles size={32} />
-                  </motion.div>
-                  <h3 className="text-2xl font-bold font-display" style={{ color: "var(--text-primary)" }}>
-                    DMX Academy Platform Tour
-                  </h3>
-                  <p className="text-sm max-w-sm" style={{ color: "var(--text-secondary)" }}>
-                    Compile animations live in the browser, track your motion design skills,
-                    and unlock cryptographic credentials on completion.
-                  </p>
-                  <motion.a
-                    href="/courses/generative-ai"
-                    whileHover={{ scale: 1.04 }}
-                    whileTap={{ scale: 0.96 }}
-                    className="rounded-full px-6 py-2.5 text-sm font-bold text-white shadow-lg"
-                    style={{ background: "var(--accent-gradient)" }}
-                  >
-                    Start Learning Free →
-                  </motion.a>
-                </div>
-
-                {/* Playback bar */}
-                <div className="absolute bottom-0 left-0 right-0 h-1.5" style={{ backgroundColor: "var(--border-primary)" }}>
-                  <motion.div
-                    initial={{ width: 0 }}
-                    animate={{ width: "70%" }}
-                    transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                    className="h-full rounded-full"
-                    style={{ background: "var(--accent-gradient)" }}
-                  />
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Bottom fade to next section */}
+      <div
+        className="absolute bottom-0 left-0 right-0 h-32 pointer-events-none"
+        style={{ background: "linear-gradient(to bottom, transparent, var(--bg-primary))" }}
+      />
     </section>
   );
 }

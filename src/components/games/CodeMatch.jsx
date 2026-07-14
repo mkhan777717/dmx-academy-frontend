@@ -308,7 +308,7 @@ export default function CodeMatch({ onProgressChange, savedProgress, onBack }) {
   };
 
   return (
-    <div className="relative min-h-[70vh] w-full bg-[#0a0714] border border-purple-500/20 rounded-3xl overflow-hidden font-mono text-[#E8E6E1]">
+    <div className="relative min-h-[70vh] w-full bg-[#0a0714] border border-slate-500/20 rounded-3xl overflow-hidden font-mono text-[#E8E6E1]">
       {/* CSS 3D Card Flip Styles */}
       <style dangerouslySetInnerHTML={{ __html: `
         .arcade-card-container {
@@ -344,7 +344,7 @@ export default function CodeMatch({ onProgressChange, savedProgress, onBack }) {
       <div className="absolute top-4 right-4 z-30">
         <button
           onClick={() => setSoundEnabled(!soundEnabled)}
-          className="p-2 rounded-xl border border-purple-500/20 bg-purple-950/20 hover:bg-purple-950/40 text-purple-300 hover:text-white transition-all cursor-pointer shadow-sm"
+          className="p-2 rounded-xl border border-slate-500/20 bg-slate-950/20 hover:bg-slate-950/40 text-slate-300 hover:text-white transition-all cursor-pointer shadow-sm"
         >
           {soundEnabled ? <Volume2 size={16} /> : <VolumeX size={16} />}
         </button>
@@ -362,8 +362,8 @@ export default function CodeMatch({ onProgressChange, savedProgress, onBack }) {
           >
             {loading ? (
               <div className="flex flex-col items-center gap-3">
-                <RefreshCw size={24} className="animate-spin text-purple-400" />
-                <p className="text-xs text-purple-300/60 font-mono">Syncing match pairs from database...</p>
+                <RefreshCw size={24} className="animate-spin text-slate-400" />
+                <p className="text-xs text-slate-300/60 font-mono">Syncing match pairs from database...</p>
               </div>
             ) : !selectedTrack ? (
               <>
@@ -371,10 +371,10 @@ export default function CodeMatch({ onProgressChange, savedProgress, onBack }) {
                   <span className="text-[10px] font-bold tracking-widest text-[#7CFFB2] border border-[#7CFFB2]/20 bg-[#7CFFB2]/5 px-3 py-1 rounded-full uppercase">
                     Mode: Code Match
                   </span>
-                  <h2 className="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 uppercase tracking-tight">
+                  <h2 className="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-slate-400 via-pink-400 to-cyan-400 uppercase tracking-tight">
                     Concepts Match
                   </h2>
-                  <p className="text-xs text-purple-300/50 max-w-md mx-auto">
+                  <p className="text-xs text-slate-300/50 max-w-md mx-auto">
                     Select a track to launch your level progress. Match 6 code terms with their definitions under the grid context!
                   </p>
                 </div>
@@ -386,12 +386,12 @@ export default function CodeMatch({ onProgressChange, savedProgress, onBack }) {
                       <button
                         key={track}
                         onClick={() => setSelectedTrack(track)}
-                        className="relative p-5 rounded-2xl border border-purple-500/25 bg-gradient-to-br from-[#1a0e30]/40 to-[#0e071e]/70 text-left hover:scale-[1.03] transition-all cursor-pointer hover:border-purple-400 group overflow-hidden shadow-lg"
+                        className="relative p-5 rounded-2xl border border-slate-500/25 bg-gradient-to-br from-[#1a0e30]/40 to-[#0e071e]/70 text-left hover:scale-[1.03] transition-all cursor-pointer hover:border-slate-400 group overflow-hidden shadow-lg"
                       >
-                        <div className="absolute top-0 right-0 w-24 h-24 bg-purple-500/5 rounded-full blur-2xl group-hover:bg-purple-500/10 transition-all" />
-                        <span className="text-xs font-bold text-purple-400/60 uppercase">Track</span>
+                        <div className="absolute top-0 right-0 w-24 h-24 bg-slate-500/5 rounded-full blur-2xl group-hover:bg-slate-500/10 transition-all" />
+                        <span className="text-xs font-bold text-slate-400/60 uppercase">Track</span>
                         <h4 className="text-lg font-black text-white group-hover:text-[#7CFFB2] transition-colors">{track}</h4>
-                        <div className="flex items-center gap-1 mt-3 text-[10px] text-purple-300/40">
+                        <div className="flex items-center gap-1 mt-3 text-[10px] text-slate-300/40">
                           <span>{totalLvs} Level{totalLvs > 1 ? 's' : ''} available</span>
                         </div>
                       </button>
@@ -401,7 +401,7 @@ export default function CodeMatch({ onProgressChange, savedProgress, onBack }) {
 
                 <button
                   onClick={onBack}
-                  className="flex items-center gap-2 text-xs font-bold text-purple-400 hover:text-white transition-colors cursor-pointer mt-4"
+                  className="flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-white transition-colors cursor-pointer mt-4"
                 >
                   <ArrowLeft size={14} /> Back to Hub Lobby
                 </button>
@@ -412,10 +412,10 @@ export default function CodeMatch({ onProgressChange, savedProgress, onBack }) {
                   <span className="text-[10px] font-bold tracking-widest text-[#7CFFB2] border border-[#7CFFB2]/20 bg-[#7CFFB2]/5 px-3 py-1 rounded-full uppercase">
                     Track: {selectedTrack}
                   </span>
-                  <h2 className="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 uppercase tracking-tight">
+                  <h2 className="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-slate-400 via-pink-400 to-cyan-400 uppercase tracking-tight">
                     Select Level
                   </h2>
-                  <p className="text-xs text-purple-300/50 max-w-md mx-auto">
+                  <p className="text-xs text-slate-300/50 max-w-md mx-auto">
                     Complete levels sequentially. Match all pairs to unlock the next level.
                   </p>
                 </div>
@@ -431,8 +431,8 @@ export default function CodeMatch({ onProgressChange, savedProgress, onBack }) {
                         onClick={() => handleStartGame(selectedTrack, lvl)}
                         className={`relative p-5 rounded-2xl border flex flex-col items-center justify-center transition-all ${
                           isUnlocked
-                            ? "bg-purple-950/20 border-purple-500/30 hover:border-[#7CFFB2] hover:scale-105 cursor-pointer text-white"
-                            : "bg-[#180f2d]/40 border-purple-950/20 text-purple-500/20 cursor-not-allowed"
+                            ? "bg-slate-950/20 border-slate-500/30 hover:border-[#7CFFB2] hover:scale-105 cursor-pointer text-white"
+                            : "bg-[#180f2d]/40 border-slate-950/20 text-slate-500/20 cursor-not-allowed"
                         }`}
                       >
                         <span className="text-xs font-bold uppercase tracking-wider mb-2">Lvl {lvl}</span>
@@ -441,7 +441,7 @@ export default function CodeMatch({ onProgressChange, savedProgress, onBack }) {
                         ) : isUnlocked ? (
                           <span className="text-[9px] font-bold text-cyan-400 bg-cyan-500/10 border border-cyan-500/20 px-2 py-0.5 rounded uppercase">Play</span>
                         ) : (
-                          <span className="text-[9px] font-bold text-purple-500/10 uppercase">Locked</span>
+                          <span className="text-[9px] font-bold text-slate-500/10 uppercase">Locked</span>
                         )}
                       </button>
                     );
@@ -450,7 +450,7 @@ export default function CodeMatch({ onProgressChange, savedProgress, onBack }) {
 
                 <button
                   onClick={() => setSelectedTrack(null)}
-                  className="flex items-center gap-2 text-xs font-bold text-purple-400 hover:text-white transition-colors cursor-pointer mt-4"
+                  className="flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-white transition-colors cursor-pointer mt-4"
                 >
                   <ArrowLeft size={14} /> Back to Tracks Selection
                 </button>
@@ -469,9 +469,9 @@ export default function CodeMatch({ onProgressChange, savedProgress, onBack }) {
             className="p-6 md:p-8 flex flex-col justify-between min-h-[70vh] relative z-10"
           >
             {/* HUD */}
-            <div className="flex items-center justify-between border-b border-purple-500/15 pb-4 mb-6">
+            <div className="flex items-center justify-between border-b border-slate-500/15 pb-4 mb-6">
               <div className="flex items-center space-x-3">
-                <span className="text-xs font-black uppercase text-purple-400 tracking-wider">
+                <span className="text-xs font-black uppercase text-slate-400 tracking-wider">
                   {selectedTrack} — Level {currentLevel}
                 </span>
                 <span className="text-[10px] font-bold text-cyan-400 border border-cyan-500/20 px-2 py-0.5 rounded bg-cyan-500/5 uppercase flex items-center gap-1">
@@ -484,7 +484,7 @@ export default function CodeMatch({ onProgressChange, savedProgress, onBack }) {
                   <Zap size={14} className="fill-amber-400/10" />
                   <span>{score} pts</span>
                 </div>
-                <div className="text-purple-300/60 text-xs">
+                <div className="text-slate-300/60 text-xs">
                   Moves: <span className="text-white font-bold">{moves}</span>
                 </div>
                 {streak > 0 && (
@@ -510,19 +510,19 @@ export default function CodeMatch({ onProgressChange, savedProgress, onBack }) {
                   >
                     <div className="arcade-card-inner w-full h-full">
                       {/* CARD FRONT (FACE DOWN - arcade design) */}
-                      <div className="arcade-card-front flex flex-col items-center justify-center border border-purple-500/20 bg-gradient-to-br from-[#1b0a33] to-[#0a0414] hover:border-purple-500/40 text-purple-500 shadow-lg">
+                      <div className="arcade-card-front flex flex-col items-center justify-center border border-slate-500/20 bg-gradient-to-br from-[#1b0a33] to-[#0a0414] hover:border-slate-500/40 text-slate-500 shadow-lg">
                         <Grid size={24} className="animate-pulse" />
-                        <span className="text-[9px] uppercase tracking-wider text-purple-500/40 mt-2">DMX ARCADE</span>
+                        <span className="text-[9px] uppercase tracking-wider text-slate-500/40 mt-2">DMX ARCADE</span>
                       </div>
 
                       {/* CARD BACK (FACE UP - details) */}
                       <div className={`arcade-card-back flex items-center justify-center p-3 text-center border text-[10px] md:text-xs font-bold leading-tight ${
                         card.isMatched
                           ? "border-emerald-500/50 bg-emerald-950/20 text-emerald-300 shadow-[0_0_12px_rgba(16,185,129,0.1)]"
-                          : "border-purple-500 bg-[#160c2b] text-white shadow-[0_0_12px_rgba(139,92,246,0.15)]"
+                          : "border-slate-500 bg-[#160c2b] text-white shadow-[0_0_12px_rgba(139,92,246,0.15)]"
                       }`}>
                         <div className="w-full flex flex-col justify-between h-full">
-                          <span className={`text-[8px] uppercase tracking-wide self-start ${card.isMatched ? "text-emerald-400/50" : "text-purple-400/50"}`}>
+                          <span className={`text-[8px] uppercase tracking-wide self-start ${card.isMatched ? "text-emerald-400/50" : "text-slate-400/50"}`}>
                             {card.type}
                           </span>
                           <span className="flex-grow flex items-center justify-center text-center leading-normal font-sans py-1">
@@ -542,7 +542,7 @@ export default function CodeMatch({ onProgressChange, savedProgress, onBack }) {
             </div>
 
             {/* Bottom spacer */}
-            <div className="border-t border-purple-500/10 pt-4 mt-6 text-center text-[10px] text-purple-300/40 font-sans">
+            <div className="border-t border-slate-500/10 pt-4 mt-6 text-center text-[10px] text-slate-300/40 font-sans">
               Match each terminology card on the left or right with its respective definition block.
             </div>
           </motion.div>
@@ -562,30 +562,30 @@ export default function CodeMatch({ onProgressChange, savedProgress, onBack }) {
             </div>
 
             <div>
-              <span className="text-[10px] font-bold text-purple-400 uppercase tracking-widest">
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
                 Arena Cleared
               </span>
               <h2 className="text-2xl md:text-3xl font-black text-white mt-1">
                 CODE MATCH COMPLETE
               </h2>
-              <p className="text-xs text-purple-300/40 font-mono mt-1 uppercase">
+              <p className="text-xs text-slate-300/40 font-mono mt-1 uppercase">
                 Track: {selectedTrack} — Level {currentLevel}
               </p>
             </div>
 
             {/* Metrics */}
             <div className="grid grid-cols-3 gap-3 w-full max-w-md">
-              <div className="bg-purple-950/15 border border-purple-500/10 rounded-2xl p-4">
+              <div className="bg-slate-950/15 border border-slate-500/10 rounded-2xl p-4">
                 <div className="text-2xl font-black text-cyan-300">{score}</div>
-                <div className="text-[9px] uppercase tracking-wider text-purple-300/40 font-bold mt-1">Score</div>
+                <div className="text-[9px] uppercase tracking-wider text-slate-300/40 font-bold mt-1">Score</div>
               </div>
-              <div className="bg-purple-950/15 border border-purple-500/10 rounded-2xl p-4">
+              <div className="bg-slate-950/15 border border-slate-500/10 rounded-2xl p-4">
                 <div className="text-2xl font-black text-[#7CFFB2]">{getFormatTime(elapsedTime)}</div>
-                <div className="text-[9px] uppercase tracking-wider text-purple-300/40 font-bold mt-1">Time</div>
+                <div className="text-[9px] uppercase tracking-wider text-slate-300/40 font-bold mt-1">Time</div>
               </div>
-              <div className="bg-purple-950/15 border border-purple-500/10 rounded-2xl p-4">
+              <div className="bg-slate-950/15 border border-slate-500/10 rounded-2xl p-4">
                 <div className="text-2xl font-black text-orange-400">{moves}</div>
-                <div className="text-[9px] uppercase tracking-wider text-purple-300/40 font-bold mt-1">Moves</div>
+                <div className="text-[9px] uppercase tracking-wider text-slate-300/40 font-bold mt-1">Moves</div>
               </div>
             </div>
 
@@ -609,13 +609,13 @@ export default function CodeMatch({ onProgressChange, savedProgress, onBack }) {
               })()}
               <button
                 onClick={() => handleStartGame(selectedTrack, currentLevel)}
-                className="px-5 py-2.5 rounded-xl border border-purple-500/25 bg-[#1b0d35]/30 text-purple-300 hover:text-white hover:border-purple-400 text-xs font-bold transition-all cursor-pointer flex items-center gap-2 font-mono"
+                className="px-5 py-2.5 rounded-xl border border-slate-500/25 bg-[#1b0d35]/30 text-slate-300 hover:text-white hover:border-slate-400 text-xs font-bold transition-all cursor-pointer flex items-center gap-2 font-mono"
               >
                 <RotateCcw size={13} /> Replay Level {currentLevel}
               </button>
               <button
                 onClick={() => setPhase("lobby")}
-                className="px-5 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-black text-xs transition-all cursor-pointer flex items-center gap-2 hover:shadow-[0_0_12px_rgba(168,85,247,0.3)] font-mono"
+                className="px-5 py-2.5 rounded-xl bg-slate-600 hover:bg-slate-500 text-white font-black text-xs transition-all cursor-pointer flex items-center gap-2 hover:shadow-[0_0_12px_rgba(168,85,247,0.3)] font-mono"
               >
                 <Play size={13} /> Levels Selection
               </button>
@@ -623,7 +623,7 @@ export default function CodeMatch({ onProgressChange, savedProgress, onBack }) {
 
             <button
               onClick={onBack}
-              className="text-xs font-bold text-purple-500 hover:text-white transition-colors cursor-pointer mt-2"
+              className="text-xs font-bold text-slate-500 hover:text-white transition-colors cursor-pointer mt-2"
             >
               Exit to Arcade Lobby
             </button>

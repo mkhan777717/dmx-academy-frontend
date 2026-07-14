@@ -131,67 +131,46 @@ export default function AdminContestsPage() {
 
   const statusStyles = {
     active: "text-emerald-500 bg-emerald-500/10 border-emerald-500/20",
-    upcoming: "text-indigo-500 bg-indigo-500/10 border-indigo-500/20",
+    upcoming: "text-zinc-500 bg-zinc-500/10 border-zinc-500/20",
     past: "text-slate-400 bg-slate-500/5 border-transparent",
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 p-0 sm:p-6 min-h-0 flex flex-col flex-1 animate-in fade-in duration-500" style={{ color: "var(--text-primary)" }}>
       {/* Page Header */}
-      <div
-        className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 md:p-8 rounded-3xl border relative overflow-hidden"
-        style={{
-          backgroundColor: "var(--glass-bg)",
-          borderColor: "var(--border-primary)",
-          backgroundImage:
-            "linear-gradient(135deg, rgba(6, 182, 212, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%)",
-        }}
-      >
-        <div className="space-y-1 relative z-10">
-          <div className="flex items-center space-x-2">
-            <Trophy size={16} className="text-cyan-400" />
-            <span className="text-[10px] font-extrabold uppercase tracking-wider text-cyan-400">
-              Contest Registry
-            </span>
+      <section className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 border-b pb-6 shrink-0" style={{ borderColor: "var(--border-primary)" }}>
+        <div className="space-y-2">
+          <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border mb-3"
+            style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)", backgroundColor: "var(--bg-secondary)" }}>
+            <Trophy size={12} className="text-violet-500" />
+            Contest Registry
           </div>
-          <h1
-            className="text-2xl md:text-3xl font-black font-display tracking-tight"
-            style={{ color: "var(--text-primary)" }}
-          >
+          <h1 className="text-4xl font-serif tracking-tight" style={{ color: "var(--text-primary)" }}>
             Manage Contests
           </h1>
-          <p className="text-xs" style={{ color: "var(--text-secondary)" }}>
+          <p className="text-sm max-w-xl" style={{ color: "var(--text-secondary)" }}>
             View, manage, and delete contests from the registry.
           </p>
         </div>
-        <div className="flex items-center gap-3 relative z-10">
+        <div className="flex items-center gap-3 shrink-0">
           <button
             onClick={loadContests}
-            className="p-2.5 rounded-xl border transition-all cursor-pointer hover:bg-slate-500/10"
-            style={{
-              backgroundColor: "var(--bg-card)",
-              borderColor: "var(--border-primary)",
-            }}
+            className="p-2.5 rounded-xl border transition-colors hover:bg-[var(--bg-secondary)] flex items-center justify-center cursor-pointer"
+            style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}
             title="Refresh"
           >
-            <RefreshCw
-              size={14}
-              className={loading ? "animate-spin" : ""}
-              style={{ color: "var(--text-secondary)" }}
-            />
+            <RefreshCw size={14} className={loading ? "animate-spin text-violet-500" : "text-[var(--text-secondary)]"} />
           </button>
           <button
             onClick={() => router.push("/admin/contests/new")}
-            className="px-5 py-3 rounded-2xl font-bold text-xs text-white shadow-md transition-all cursor-pointer flex items-center space-x-1.5 hover:scale-102"
-            style={{
-              background: "linear-gradient(135deg, #06b6d4 0%, #7c3aed 100%)",
-            }}
+            className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-white text-xs font-semibold transition-transform hover:-translate-y-0.5 cursor-pointer shadow-md"
+            style={{ background: "var(--accent-primary)" }}
           >
             <Plus size={14} />
             <span>Create Contest</span>
           </button>
         </div>
-      </div>
+      </section>
 
       {/* Notification toast */}
       <AnimatePresence>
@@ -211,154 +190,99 @@ export default function AdminContestsPage() {
         )}
       </AnimatePresence>
 
-      {/* Stats Chips */}
-      <div className="flex flex-wrap gap-3">
-        {[
-          { key: "all", label: "All Contests", color: "text-slate-400" },
-          { key: "active", label: "Active", color: "text-emerald-400" },
-          { key: "upcoming", label: "Upcoming", color: "text-indigo-400" },
-          { key: "past", label: "Past", color: "text-slate-500" },
-        ].map((f) => (
-          <button
-            key={f.key}
-            onClick={() => setFilterStatus(f.key)}
-            className={`flex items-center space-x-1.5 px-4 py-2 rounded-xl border text-[10px] font-extrabold uppercase tracking-wider transition-all cursor-pointer ${
-              filterStatus === f.key
-                ? "border-current bg-current/10"
-                : "border-transparent bg-slate-500/5 hover:bg-slate-500/10"
-            } ${f.color}`}
-          >
-            <span>{f.label}</span>
-            <span className="px-1.5 py-0.5 rounded-md bg-current/15 text-current">
-              {counts[f.key]}
-            </span>
-          </button>
-        ))}
-      </div>
-
-      {/* Search */}
-      <div className="relative">
-        <Search
-          size={14}
-          className="absolute left-4 top-1/2 -translate-y-1/2"
-          style={{ color: "var(--text-muted)" }}
-        />
-        <input
-          type="text"
-          placeholder="Search by title or category..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-full rounded-2xl py-3 pl-11 pr-4 text-xs outline-none border transition-all"
-          style={{
-            backgroundColor: "var(--bg-input, var(--bg-card))",
-            borderColor: "var(--border-primary)",
-            color: "var(--text-primary)",
-          }}
-        />
-        {search && (
-          <button
-            onClick={() => setSearch("")}
-            className="absolute right-4 top-1/2 -translate-y-1/2"
-            style={{ color: "var(--text-muted)" }}
-          >
-            <X size={13} />
-          </button>
-        )}
-      </div>
-
-      {/* Contest Table */}
-      <div
-        className="rounded-3xl border overflow-hidden shadow-sm"
-        style={{
-          backgroundColor: "var(--bg-card)",
-          borderColor: "var(--border-card)",
-        }}
-      >
-        {/* Table Header */}
-        <div
-          className="flex items-center justify-between px-6 py-4 border-b"
-          style={{ borderColor: "var(--border-primary)" }}
-        >
-          <div className="flex items-center space-x-2">
-            <Trophy size={15} style={{ color: "var(--text-accent)" }} />
-            <h2 className="text-sm font-bold" style={{ color: "var(--text-primary)" }}>
-              {filterStatus === "all" ? "All Contests" : `${filterStatus.charAt(0).toUpperCase() + filterStatus.slice(1)} Contests`}
-            </h2>
-            <span
-              className="text-[10px] font-bold px-2 py-0.5 rounded-full border"
-              style={{
-                backgroundColor: "var(--bg-badge)",
-                borderColor: "var(--border-accent)",
-                color: "var(--text-accent)",
-              }}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 shrink-0">
+        <div className="flex flex-wrap gap-2">
+          {[
+            { key: "all", label: "All Contests", color: "text-[var(--text-muted)]" },
+            { key: "active", label: "Active", color: "text-emerald-500" },
+            { key: "upcoming", label: "Upcoming", color: "text-zinc-500" },
+            { key: "past", label: "Past", color: "text-slate-500" },
+          ].map((f) => (
+            <button
+              key={f.key}
+              onClick={() => setFilterStatus(f.key)}
+              className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-xs font-semibold transition-colors cursor-pointer border ${
+                filterStatus === f.key
+                  ? "bg-[var(--bg-primary)] shadow-sm text-[var(--text-primary)] border-[var(--border-primary)]"
+                  : "bg-transparent border-transparent text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
+              }`}
             >
-              {filteredContests.length}
-            </span>
-          </div>
+              <span className={f.color}>{f.label}</span>
+              <span className="px-1.5 py-0.5 rounded-md bg-[var(--bg-secondary)] text-[10px] font-bold">
+                {counts[f.key]}
+              </span>
+            </button>
+          ))}
         </div>
 
+        <div className="relative w-full sm:w-64">
+          <input
+            type="text"
+            placeholder="Search contests..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full bg-[var(--bg-secondary)] border rounded-xl px-4 py-2 text-sm font-medium focus:outline-none focus:border-[var(--text-muted)] transition-colors placeholder:text-[var(--text-muted)]"
+            style={{ borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
+          />
+          {search && (
+            <button
+              onClick={() => setSearch("")}
+              className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-md hover:bg-[var(--bg-primary)] transition-colors"
+              style={{ color: "var(--text-muted)" }}
+            >
+              <X size={14} />
+            </button>
+          )}
+        </div>
+      </div>
+
+      <div className="flex-1 min-h-0 overflow-y-auto rounded-2xl border pb-12" style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}>
         {loading ? (
           <div className="flex items-center justify-center py-20 space-x-2">
-            <RefreshCw
-              size={16}
-              className="animate-spin"
-              style={{ color: "var(--text-accent)" }}
-            />
-            <span className="text-xs font-semibold" style={{ color: "var(--text-secondary)" }}>
-              Loading contests...
+            <RefreshCw size={16} className="animate-spin text-violet-500" />
+            <span className="text-xs font-medium" style={{ color: "var(--text-muted)" }}>
+              Fetching contests...
             </span>
           </div>
         ) : filteredContests.length === 0 ? (
-          <div className="py-20 text-center space-y-3">
-            <Trophy
-              size={40}
-              className="mx-auto opacity-20"
-              style={{ color: "var(--text-secondary)" }}
-            />
-            <p className="text-sm font-bold" style={{ color: "var(--text-primary)" }}>
-              No contests found
-            </p>
-            <p className="text-xs" style={{ color: "var(--text-secondary)" }}>
-              {search ? "Try adjusting your search or filter." : "Create your first contest."}
-            </p>
-            <button
-              onClick={() => router.push("/admin/contests/new")}
-              className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl border text-xs font-bold transition-all cursor-pointer hover:bg-slate-500/10"
-              style={{
-                borderColor: "var(--border-primary)",
-                color: "var(--text-accent)",
-              }}
-            >
-              <Plus size={12} />
-              <span>Create Contest</span>
-            </button>
+          <div className="flex h-64 flex-col items-center justify-center space-y-4">
+            <div className="p-4 rounded-full bg-[var(--bg-secondary)]">
+              <Trophy size={24} className="text-violet-500" />
+            </div>
+            <div className="text-center space-y-1">
+              <h3 className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>
+                No contests found
+              </h3>
+              <p className="text-xs max-w-xs" style={{ color: "var(--text-muted)" }}>
+                {search ? "Try adjusting your search or filter." : "Create your first contest."}
+              </p>
+            </div>
+            {!search && (
+              <button
+                onClick={() => router.push("/admin/contests/new")}
+                className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-lg border text-xs font-semibold transition-colors cursor-pointer hover:bg-[var(--bg-secondary)] mt-2"
+                style={{ borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
+              >
+                <Plus size={14} />
+                <span>Create Contest</span>
+              </button>
+            )}
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs border-collapse">
+          <div className="w-full overflow-x-auto min-w-0">
+            <table className="w-full text-left text-sm border-collapse">
               <thead>
-                <tr
-                  className="font-bold uppercase tracking-wider border-b"
-                  style={{
-                    backgroundColor: "var(--bg-primary)",
-                    borderColor: "var(--border-primary)",
-                    color: "var(--text-muted)",
-                    fontSize: "10px",
-                  }}
-                >
-                  <th className="px-6 py-3">Contest</th>
-                  <th className="px-6 py-3">Category</th>
-                  <th className="px-6 py-3">Status</th>
-                  <th className="px-6 py-3">Start Time</th>
-                  <th className="px-6 py-3">End Time</th>
-                  <th className="px-6 py-3 text-center">Problems</th>
-                  <th className="px-6 py-3 text-right">Actions</th>
+                <tr className="border-b bg-[var(--bg-secondary)] text-xs font-semibold uppercase tracking-wider select-none" style={{ borderColor: "var(--border-primary)", color: "var(--text-muted)" }}>
+                  <th className="px-6 py-4">Contest</th>
+                  <th className="px-6 py-4">Category</th>
+                  <th className="px-6 py-4">Status</th>
+                  <th className="px-6 py-4">Start Time</th>
+                  <th className="px-6 py-4">End Time</th>
+                  <th className="px-6 py-4 text-center">Problems</th>
+                  <th className="px-6 py-4 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody
-                className="divide-y"
-                style={{ borderColor: "var(--border-primary)" }}
-              >
+              <tbody className="divide-y font-medium" style={{ divideColor: "var(--border-primary)" }}>
                 <AnimatePresence>
                   {filteredContests.map((contest, idx) => (
                     <motion.tr
@@ -367,137 +291,76 @@ export default function AdminContestsPage() {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0 }}
                       transition={{ delay: idx * 0.03 }}
-                      className="hover:bg-slate-500/5 transition-colors"
+                      className="hover:bg-[var(--bg-secondary)] transition-colors group"
                     >
-                      {/* Title */}
                       <td className="px-6 py-4">
-                        <div className="space-y-0.5">
-                          <p
-                            className="font-bold max-w-[200px] truncate"
-                            style={{ color: "var(--text-primary)" }}
-                          >
+                        <div className="space-y-1">
+                          <p className="font-semibold text-[var(--text-primary)] max-w-[200px] truncate">
                             {contest.title}
                           </p>
                           {contest.description && (
-                            <p
-                              className="text-[10px] max-w-[200px] truncate"
-                              style={{ color: "var(--text-muted)" }}
-                            >
+                            <p className="text-[10px] max-w-[200px] truncate" style={{ color: "var(--text-muted)" }}>
                               {contest.description}
                             </p>
                           )}
                         </div>
                       </td>
-
-                      {/* Category */}
                       <td className="px-6 py-4">
-                        <span
-                          className="text-[9px] font-bold uppercase px-2 py-0.5 rounded border"
-                          style={{
-                            borderColor: "var(--border-primary)",
-                            color: "var(--text-secondary)",
-                            backgroundColor: "var(--bg-primary)",
-                          }}
-                        >
+                        <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-md border"
+                          style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)", backgroundColor: "var(--bg-primary)" }}>
                           {contest.category || "General"}
                         </span>
                       </td>
-
-                      {/* Status */}
                       <td className="px-6 py-4">
-                        <span
-                          className={`text-[9px] font-extrabold uppercase px-2 py-0.5 rounded-md border ${
-                            statusStyles[contest.status] || statusStyles.past
-                          }`}
-                        >
+                        <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-md border ${statusStyles[contest.status] || statusStyles.past}`}>
                           {contest.status === "active" ? "● Active" : contest.status}
                         </span>
                       </td>
-
-                      {/* Start */}
-                      <td
-                        className="px-6 py-4 font-mono text-[10px]"
-                        style={{ color: "var(--text-secondary)" }}
-                      >
+                      <td className="px-6 py-4 text-[10px] tabular-nums" style={{ color: "var(--text-secondary)" }}>
                         {formatDate(contest.startTime)}
                       </td>
-
-                      {/* End */}
-                      <td
-                        className="px-6 py-4 font-mono text-[10px]"
-                        style={{ color: "var(--text-secondary)" }}
-                      >
+                      <td className="px-6 py-4 text-[10px] tabular-nums" style={{ color: "var(--text-secondary)" }}>
                         {formatDate(contest.endTime)}
                       </td>
-
-                      {/* Problems count */}
                       <td className="px-6 py-4 text-center">
-                        <span
-                          className="font-extrabold"
-                          style={{ color: "var(--text-primary)" }}
-                        >
-                          {contest.contestProblems?.length ??
-                            contest.problems?.length ??
-                            "—"}
+                        <span className="font-semibold text-[var(--text-primary)]">
+                          {contest.contestProblems?.length ?? contest.problems?.length ?? "—"}
                         </span>
                       </td>
-
-                      {/* Actions */}
                       <td className="px-6 py-4 text-right">
-                        <div className="flex items-center justify-end space-x-2">
+                        <div className="flex items-center justify-end space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
                           {contest.isDbContest && (
                             <>
                               <button
-                                onClick={() =>
-                                  router.push(`/admin/contests/${contest.id}/edit`)
-                                }
-                                className="p-1.5 rounded-lg border transition-all cursor-pointer hover:bg-slate-500/10 group"
-                                style={{ borderColor: "var(--border-primary)" }}
+                                onClick={() => router.push(`/admin/contests/${contest.id}/edit`)}
+                                className="p-2 rounded-lg text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-950/50 transition-colors cursor-pointer"
                                 title="Edit Contest"
                               >
-                                <Edit3
-                                  size={12}
-                                  style={{ color: "var(--text-secondary)" }}
-                                />
+                                <Edit3 size={16} />
                               </button>
                               <button
-                                onClick={() =>
-                                  router.push(`/admin/contests/${contest.id}`)
-                                }
-                                className="p-1.5 rounded-lg border transition-all cursor-pointer hover:bg-slate-500/10 group"
-                                style={{ borderColor: "var(--border-primary)" }}
+                                onClick={() => router.push(`/admin/contests/${contest.id}`)}
+                                className="p-2 rounded-lg text-neutral-500 hover:bg-neutral-50 dark:hover:bg-neutral-950/50 transition-colors cursor-pointer"
                                 title="View Participants"
                               >
-                                <Users
-                                  size={12}
-                                  style={{ color: "var(--text-accent)" }}
-                                />
+                                <Users size={16} />
                               </button>
                             </>
                           )}
                           <button
-                            onClick={() =>
-                              router.push(`/contest/${contest.id}`)
-                            }
-                            className="p-1.5 rounded-lg border transition-all cursor-pointer hover:bg-slate-500/10"
-                            style={{ borderColor: "var(--border-primary)" }}
+                            onClick={() => router.push(`/contest/${contest.id}`)}
+                            className="p-2 rounded-lg text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-primary)] transition-colors cursor-pointer"
                             title="View in Arena"
                           >
-                            <ArrowUpRight
-                              size={12}
-                              style={{ color: "var(--text-secondary)" }}
-                            />
+                            <ArrowUpRight size={16} />
                           </button>
                           {(contest.isDbContest || contest.isLocalContest) && (
                             <button
-                              onClick={() =>
-                                setDeletingId(String(contest.id))
-                              }
-                              className="p-1.5 rounded-lg border transition-all cursor-pointer hover:bg-rose-500/10 hover:border-rose-500/20"
-                              style={{ borderColor: "var(--border-primary)" }}
+                              onClick={() => setDeletingId(String(contest.id))}
+                              className="p-2 rounded-lg text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/50 transition-colors cursor-pointer"
                               title="Delete Contest"
                             >
-                              <Trash2 size={12} className="text-rose-400" />
+                              <Trash2 size={16} />
                             </button>
                           )}
                         </div>
@@ -511,70 +374,47 @@ export default function AdminContestsPage() {
         )}
       </div>
 
-      {/* Delete Confirm Modal */}
       <AnimatePresence>
         {deletingId && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4"
-            style={{ backgroundColor: "rgba(0,0,0,0.6)" }}
-          >
+          <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-md p-4">
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
               className="p-8 rounded-3xl border shadow-2xl max-w-sm w-full space-y-6 text-center"
-              style={{
-                backgroundColor: "var(--bg-card)",
-                borderColor: "var(--border-primary)",
-              }}
+              style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}
             >
               <div className="space-y-2">
-                <div className="inline-flex p-3 rounded-2xl bg-rose-500/10 text-rose-400 mx-auto">
-                  <Trash2 size={22} />
+                <div className="inline-flex p-3 rounded-full bg-rose-500/10 text-rose-500 mx-auto mb-2">
+                  <Trash2 size={24} />
                 </div>
-                <h3
-                  className="text-base font-black"
-                  style={{ color: "var(--text-primary)" }}
-                >
+                <h3 className="text-xl font-serif" style={{ color: "var(--text-primary)" }}>
                   Delete Contest?
                 </h3>
-                <p
-                  className="text-xs"
-                  style={{ color: "var(--text-secondary)" }}
-                >
-                  This will permanently delete the contest and all related
-                  data. This action cannot be undone.
+                <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
+                  This will permanently delete the contest and all related data. This action cannot be undone.
                 </p>
               </div>
               <div className="flex justify-center gap-3">
                 <button
                   onClick={() => setDeletingId(null)}
-                  className="px-5 py-2.5 rounded-xl border text-xs font-bold transition-all cursor-pointer hover:bg-slate-500/10"
-                  style={{
-                    borderColor: "var(--border-primary)",
-                    color: "var(--text-secondary)",
-                  }}
+                  className="px-5 py-2.5 rounded-xl border text-sm font-semibold transition-colors cursor-pointer hover:bg-[var(--bg-secondary)]"
+                  style={{ borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
                 >
                   Cancel
                 </button>
                 <button
                   onClick={() => {
-                    const contest = allContests.find(
-                      (c) => String(c.id) === deletingId
-                    );
-                    if (contest)
-                      handleDelete(contest.id);
+                    const contest = allContests.find((c) => String(c.id) === deletingId);
+                    if (contest) handleDelete(contest.id);
                   }}
-                  className="px-5 py-2.5 rounded-xl font-bold text-xs text-white transition-all cursor-pointer hover:scale-102 bg-rose-500 hover:bg-rose-600"
+                  className="px-5 py-2.5 rounded-xl font-semibold text-sm text-white transition-transform hover:-translate-y-0.5 cursor-pointer bg-rose-600 hover:bg-rose-700 shadow-md"
                 >
                   Yes, Delete
                 </button>
               </div>
             </motion.div>
-          </motion.div>
+          </div>
         )}
       </AnimatePresence>
     </div>

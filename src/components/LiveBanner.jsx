@@ -152,17 +152,17 @@ function PastSessionCard({ session, onWatchRecording }) {
                 const url = session.recordingUrl.startsWith('/') ? `${API_BASE}${session.recordingUrl}` : session.recordingUrl;
                 onWatchRecording(url);
               }}
-              className="flex items-center justify-center gap-1.5 w-full py-2 rounded-lg bg-[var(--accent-primary)] hover:bg-[var(--accent-secondary)] text-white text-[10px] font-extrabold uppercase tracking-wider transition-colors shadow-md shadow-[var(--accent-glow)] text-center cursor-pointer border border-transparent"
+              className="flex items-center justify-center gap-1.5 w-full py-2 rounded-lg bg-[var(--accent-primary)] hover:bg-[var(--accent-secondary)] text-[var(--text-on-accent)] text-[10px] font-extrabold uppercase tracking-wider transition-colors shadow-md shadow-[var(--accent-glow)] text-center cursor-pointer border border-transparent"
             >
               <Play size={10} />
               <span>Watch Recording</span>
             </button>
           ) : (session.egressSegments || (session.endedAt && (new Date() - new Date(session.endedAt)) < 180000)) ? (
-            <div className="w-full text-center text-[9px] font-extrabold text-blue-500 bg-blue-500/10 py-2 rounded-lg border border-blue-500/20 animate-pulse">
+            <div className="w-full text-center text-[9px] font-extrabold text-neutral-500 bg-neutral-500/10 py-2 rounded-lg border border-neutral-500/20 animate-pulse">
               Processing Recording...
             </div>
           ) : (
-            <div className="w-full text-center text-[9px] font-bold text-slate-500 bg-slate-500/5 py-2 rounded-lg border border-dashed border-slate-500/10">
+            <div className="w-full text-center text-[9px] font-bold text-[var(--text-muted)] bg-[var(--bg-secondary)] py-2 rounded-lg border border-dashed" style={{ borderColor: "var(--border-primary)" }}>
               No recordings for this session
             </div>
           )}

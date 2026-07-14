@@ -5,18 +5,24 @@ import { BookOpen } from "lucide-react";
 
 export default function MyListsPage() {
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
-      <div className="flex items-center space-x-3 mb-8">
-        <div className="p-3 rounded-2xl bg-indigo-500/10 text-indigo-500">
-          <BookOpen size={24} />
+    <div className="max-w-6xl mx-auto space-y-6 animate-fade-in px-0 sm:px-6 pb-12">
+      <section className="flex flex-col gap-2 border-b pb-6 shrink-0" style={{ borderColor: "var(--border-primary)" }}>
+        <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border mb-3 w-fit"
+          style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)", backgroundColor: "var(--bg-secondary)" }}>
+          <BookOpen size={12} className="text-violet-500" />
+          Lists
         </div>
-        <h1 className="text-2xl font-black text-[var(--text-primary)]">My Lists</h1>
-      </div>
+        <h1 className="text-4xl font-serif tracking-tight" style={{ color: "var(--text-primary)" }}>My Lists</h1>
+        <p className="text-sm max-w-xl" style={{ color: "var(--text-secondary)" }}>
+          Create and organize collections of problems, materials, and notes.
+        </p>
+      </section>
 
-      <div className="p-12 text-center rounded-3xl border shadow-sm" style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-card)" }}>
-        <h2 className="text-lg font-bold text-[var(--text-primary)] mb-2">No lists created yet</h2>
-        <p className="text-sm text-[var(--text-muted)] mb-6">Create lists to organize your favorite problems, articles, and interview preparation materials.</p>
-        <button className="px-6 py-2.5 rounded-xl font-bold text-sm text-white bg-indigo-500 hover:bg-indigo-600 transition-colors shadow-md">
+      <div className="p-12 text-center rounded-2xl border shadow-sm mt-6" style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}>
+        <h2 className="text-lg font-bold mb-2" style={{ color: "var(--text-primary)" }}>No lists created yet</h2>
+        <p className="text-sm mb-6 max-w-md mx-auto" style={{ color: "var(--text-secondary)" }}>Create lists to organize your favorite problems, articles, and interview preparation materials.</p>
+        <button className="px-6 py-2.5 rounded-xl font-semibold text-sm text-white transition-transform hover:-translate-y-0.5 shadow-md cursor-pointer"
+          style={{ background: "var(--accent-primary)" }}>
           Create New List
         </button>
       </div>

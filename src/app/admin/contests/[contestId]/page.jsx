@@ -147,7 +147,7 @@ export default function ContestParticipantsPage() {
             <span className="text-[10px] font-extrabold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Status</span>
             <div className={`text-xs font-bold uppercase ${
               contestStatus === "active" ? "text-emerald-500" :
-              contestStatus === "upcoming" ? "text-indigo-500" : "text-slate-400"
+              contestStatus === "upcoming" ? "text-zinc-500" : "text-slate-400"
             }`}>
               {contestStatus}
             </div>
@@ -249,8 +249,8 @@ export default function ContestParticipantsPage() {
                     <td className="px-6 py-4">
                       <span className={`text-[10px] font-extrabold uppercase px-2 py-0.5 rounded border ${
                         p.user.role === "ADMIN" ? "text-rose-500 bg-rose-500/10 border-rose-500/20" :
-                        p.user.role === "MENTOR" ? "text-purple-500 bg-purple-500/10 border-purple-500/20" :
-                        "text-blue-500 bg-blue-500/10 border-blue-500/20"
+                        p.user.role === "MENTOR" ? "text-slate-500 bg-slate-500/10 border-slate-500/20" :
+                        "text-neutral-500 bg-neutral-500/10 border-neutral-500/20"
                       }`}>
                         {p.user.role}
                       </span>

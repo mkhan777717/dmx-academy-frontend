@@ -140,7 +140,7 @@ export default function VivaResultPage() {
             </div>
             <div className="space-y-1">
               <div className="flex items-center space-x-2">
-                <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-indigo-500/10 text-indigo-500">
+                <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-zinc-500/10 text-zinc-500">
                   {session.subject}
                 </span>
                 <span className="text-xs font-bold px-2 py-0.5 rounded-md"
@@ -204,7 +204,7 @@ export default function VivaResultPage() {
               <Sparkles size={15} />
             </div>
             <h2 className="font-bold text-sm" style={{ color: "var(--text-primary)" }}>AI Session Summary</h2>
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-500">Powered by Local LLM</span>
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-zinc-500/10 text-zinc-500">Powered by Local LLM</span>
           </div>
 
           {session.aiSummary.overallRemark && (
@@ -254,11 +254,11 @@ export default function VivaResultPage() {
               </div>
             )}
             {session.aiSummary.recommendedStudy?.length > 0 && (
-              <div className="p-4 rounded-2xl bg-indigo-500/5 border border-indigo-500/20 space-y-2 sm:col-span-3">
-                <p className="text-[10px] font-black uppercase tracking-wider text-indigo-500">Recommended Study</p>
+              <div className="p-4 rounded-2xl bg-zinc-500/5 border border-zinc-500/20 space-y-2 sm:col-span-3">
+                <p className="text-[10px] font-black uppercase tracking-wider text-zinc-500">Recommended Study</p>
                 <div className="flex flex-wrap gap-2">
                   {session.aiSummary.recommendedStudy.map((t, i) => (
-                    <span key={i} className="text-xs px-2.5 py-1 rounded-lg bg-indigo-500/10 text-indigo-400 flex items-center space-x-1">
+                    <span key={i} className="text-xs px-2.5 py-1 rounded-lg bg-zinc-500/10 text-zinc-400 flex items-center space-x-1">
                       <Lightbulb size={10} />
                       <span>{t}</span>
                     </span>
@@ -413,11 +413,11 @@ export default function VivaResultPage() {
                         </div>
                       )}
                       {a.suggestedRevision?.length > 0 && (
-                        <div className="p-3 rounded-xl bg-indigo-500/5 border border-indigo-500/15 space-y-1">
-                          <p className="text-[10px] font-black uppercase tracking-wider text-indigo-500">Revise</p>
+                        <div className="p-3 rounded-xl bg-zinc-500/5 border border-zinc-500/15 space-y-1">
+                          <p className="text-[10px] font-black uppercase tracking-wider text-zinc-500">Revise</p>
                           {a.suggestedRevision.map((r, i) => (
                             <p key={i} className="text-[11px] flex items-start space-x-1" style={{ color: "var(--text-secondary)" }}>
-                              <Lightbulb size={10} className="text-indigo-500 shrink-0 mt-0.5" />
+                              <Lightbulb size={10} className="text-zinc-500 shrink-0 mt-0.5" />
                               <span>{r}</span>
                             </p>
                           ))}

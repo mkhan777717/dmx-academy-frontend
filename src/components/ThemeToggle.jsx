@@ -1,208 +1,94 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sun, Moon, Leaf, Sparkles, ChevronDown } from "lucide-react";
-
-const THEMES = [
-  {
-    id: "theme-light",
-    label: "Light",
-    icon: Sun,
-    bg: "#faf9f6",
-    accent: "#4f46e5",
-    desc: "Clean & minimal",
-  },
-  {
-    id: "theme-dark",
-    label: "Dark",
-    icon: Moon,
-    bg: "#0b0f19",
-    accent: "#818cf8",
-    desc: "Sleek deep space",
-  },
-  {
-    id: "theme-mint",
-    label: "Mint",
-    icon: Leaf,
-    bg: "#f0fbf7",
-    accent: "#10b981",
-    desc: "Fresh sage green",
-  },
-  {
-    id: "theme-violet",
-    label: "Violet",
-    icon: Sparkles,
-    bg: "#0d0818",
-    accent: "#d946ef",
-    desc: "Midnight cyberpunk",
-  },
-];
 
 export default function ThemeToggle() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [activeTheme, setActiveTheme] = useState("theme-light");
-  const dropdownRef = useRef(null);
+  const [isDark, setIsDark] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
-  // On mount, read stored preference
   useEffect(() => {
+    setMounted(true);
     const stored = localStorage.getItem("academy_theme");
-    if (stored && THEMES.find((t) => t.id === stored)) {
-      setActiveTheme(stored);
-    } else {
-      // Detect what the inline script already applied
-      const applied = THEMES.find((t) =>
-        document.documentElement.classList.contains(t.id)
-      );
-      if (applied) setActiveTheme(applied.id);
-    }
+    setIsDark(stored === "theme-dark");
   }, []);
 
-  // Close on outside click
-  useEffect(() => {
-    const handler = (e) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
-        setIsOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, []);
-
-  const applyTheme = (themeId) => {
-    // Remove all theme classes then apply the selected one
-    THEMES.forEach((t) => document.documentElement.classList.remove(t.id));
-    document.documentElement.classList.add(themeId);
-    localStorage.setItem("academy_theme", themeId);
-    setActiveTheme(themeId);
-    setIsOpen(false);
+  const toggle = () => {
+    const next = isDark ? "theme-light" : "theme-dark";
+    document.documentElement.classList.remove("theme-light", "theme-dark");
+    document.documentElement.classList.add(next);
+    localStorage.setItem("academy_theme", next);
+    setIsDark(!isDark);
   };
 
-  const current = THEMES.find((t) => t.id === activeTheme) || THEMES[0];
-  const CurrentIcon = current.icon;
+  if (!mounted) {
+    return (
+      <div
+        className="relative h-9 w-16 rounded-full border"
+        style={{ backgroundColor: "var(--bg-hover)", borderColor: "var(--border-primary)" }}
+      />
+    );
+  }
 
   return (
-    <div className="relative" ref={dropdownRef}>
-      {/* Toggle Button */}
-      <motion.button
-        whileTap={{ scale: 0.93 }}
-        onClick={() => setIsOpen((o) => !o)}
-        className="flex items-center gap-1.5 rounded-full border px-3 py-2 text-xs font-semibold shadow-sm transition-all duration-200 hover:shadow-md"
+    <button
+      onClick={toggle}
+      aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+      id="theme-toggle-btn"
+      suppressHydrationWarning
+      className="relative flex h-9 w-16 items-center rounded-full border transition-colors duration-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)]"
+      style={{
+        backgroundColor: isDark ? "var(--bg-card)" : "var(--bg-hover)",
+        borderColor: "var(--border-primary)",
+      }}
+    >
+      {/* Track icons */}
+      <div className="absolute inset-0 flex items-center justify-between px-2.5 pointer-events-none">
+        {/* Sun */}
+        <svg
+          width="13"
+          height="13"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          style={{ color: isDark ? "var(--text-muted)" : "#d97706", opacity: isDark ? 0.3 : 1, transition: "opacity 0.3s" }}
+        >
+          <circle cx="12" cy="12" r="4" />
+          <line x1="12" y1="2" x2="12" y2="6" />
+          <line x1="12" y1="18" x2="12" y2="22" />
+          <line x1="4.22" y1="4.22" x2="7.05" y2="7.05" />
+          <line x1="16.95" y1="16.95" x2="19.78" y2="19.78" />
+          <line x1="2" y1="12" x2="6" y2="12" />
+          <line x1="18" y1="12" x2="22" y2="12" />
+          <line x1="4.22" y1="19.78" x2="7.05" y2="16.95" />
+          <line x1="16.95" y1="7.05" x2="19.78" y2="4.22" />
+        </svg>
+        {/* Moon */}
+        <svg
+          width="12"
+          height="12"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          style={{ color: isDark ? "#818cf8" : "var(--text-muted)", opacity: isDark ? 1 : 0.3, transition: "opacity 0.3s" }}
+        >
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+        </svg>
+      </div>
+
+      {/* Sliding thumb */}
+      <motion.div
+        className="absolute top-1 h-7 w-7 rounded-full shadow-md"
+        animate={{ x: isDark ? 28 : 2 }}
+        transition={{ type: "spring", stiffness: 400, damping: 28 }}
         style={{
-          backgroundColor: "var(--bg-card)",
-          borderColor: "var(--border-primary)",
-          color: "var(--text-primary)",
+          background: isDark
+            ? "linear-gradient(135deg, #6366f1, #8b5cf6)"
+            : "linear-gradient(135deg, #f59e0b, #f97316)",
         }}
-        aria-label="Change theme"
-        id="theme-toggle-btn"
-      >
-        {/* Colour swatch */}
-        <span
-          className="h-3 w-3 rounded-full border border-white/30 shadow-sm"
-          style={{ backgroundColor: current.accent }}
-        />
-        <CurrentIcon size={13} style={{ color: current.accent }} />
-        <span className="hidden sm:block">{current.label}</span>
-        <ChevronDown
-          size={12}
-          className="transition-transform duration-200"
-          style={{
-            transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
-            color: "var(--text-muted)",
-          }}
-        />
-      </motion.button>
-
-      {/* Dropdown Panel */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -6, scale: 0.96 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -6, scale: 0.96 }}
-            transition={{ duration: 0.18, ease: "easeOut" }}
-            className="absolute right-0 top-full z-[200] mt-2 w-52 rounded-2xl border shadow-2xl overflow-hidden"
-            style={{
-              backgroundColor: "var(--bg-card)",
-              borderColor: "var(--border-primary)",
-            }}
-          >
-            <div
-              className="px-3 pt-3 pb-1 text-[10px] font-bold uppercase tracking-widest"
-              style={{ color: "var(--text-muted)" }}
-            >
-              Choose Theme
-            </div>
-
-            <ul className="p-2 space-y-1">
-              {THEMES.map((theme) => {
-                const Icon = theme.icon;
-                const isActive = theme.id === activeTheme;
-                return (
-                  <li key={theme.id}>
-                    <button
-                      onClick={() => applyTheme(theme.id)}
-                      className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition-all duration-150"
-                      style={{
-                        backgroundColor: isActive
-                          ? `${theme.accent}20`
-                          : "transparent",
-                        border: isActive
-                          ? `1px solid ${theme.accent}50`
-                          : "1px solid transparent",
-                      }}
-                      id={`theme-option-${theme.id}`}
-                    >
-                      {/* Preview swatch */}
-                      <span
-                        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg shadow-sm"
-                        style={{ backgroundColor: theme.bg, border: `2px solid ${theme.accent}` }}
-                      >
-                        <Icon size={14} style={{ color: theme.accent }} />
-                      </span>
-                      <div className="flex-1 min-w-0">
-                        <div
-                          className="text-xs font-bold"
-                          style={{
-                            color: isActive ? theme.accent : "var(--text-primary)",
-                          }}
-                        >
-                          {theme.label}
-                        </div>
-                        <div
-                          className="text-[10px]"
-                          style={{ color: "var(--text-muted)" }}
-                        >
-                          {theme.desc}
-                        </div>
-                      </div>
-                      {/* Active dot */}
-                      {isActive && (
-                        <motion.span
-                          layoutId="activeThemeDot"
-                          className="h-2 w-2 rounded-full shrink-0"
-                          style={{ backgroundColor: theme.accent }}
-                        />
-                      )}
-                    </button>
-                  </li>
-                );
-              })}
-            </ul>
-
-            {/* Footer hint */}
-            <div
-              className="border-t px-3 py-2 text-center text-[10px]"
-              style={{
-                borderColor: "var(--border-primary)",
-                color: "var(--text-muted)",
-              }}
-            >
-              Your preference is saved locally
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
+      />
+    </button>
   );
 }

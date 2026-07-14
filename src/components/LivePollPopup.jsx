@@ -6,7 +6,7 @@ import { getApiBase } from "@/utils/api";
 
 const OPTION_LABELS = ["A", "B", "C", "D"];
 const OPTION_STYLES = [
-  { ring: "ring-blue-500", bg: "bg-blue-500", light: "bg-blue-500/15 border-blue-500/40", text: "text-blue-400" },
+  { ring: "ring-blue-500", bg: "bg-neutral-500", light: "bg-neutral-500/15 border-neutral-500/40", text: "text-neutral-400" },
   { ring: "ring-violet-500", bg: "bg-violet-500", light: "bg-violet-500/15 border-violet-500/40", text: "text-violet-400" },
   { ring: "ring-amber-500", bg: "bg-amber-500", light: "bg-amber-500/15 border-amber-500/40", text: "text-amber-400" },
   { ring: "ring-rose-500", bg: "bg-rose-500", light: "bg-rose-500/15 border-rose-500/40", text: "text-rose-400" },

@@ -26,7 +26,7 @@ export const coursesRegistry = {
     category: "Web & Mobile Development",
     difficulty: "Beginner-Intermediate",
     accent: "#3b82f6",
-    gradient: "from-blue-500/10 via-cyan-500/5 to-transparent",
+    gradient: "from-neutral-500/10 via-cyan-500/5 to-transparent",
     duration: "18 hrs",
     lessons: 30
   },
@@ -41,7 +41,7 @@ export const coursesRegistry = {
     category: "Web & Mobile Development",
     difficulty: "Intermediate",
     accent: "#6366f1",
-    gradient: "from-indigo-500/10 via-purple-500/5 to-transparent",
+    gradient: "from-zinc-500/10 via-slate-500/5 to-transparent",
     duration: "22 hrs",
     lessons: 45
   },
@@ -116,7 +116,7 @@ export const coursesRegistry = {
     category: "Cloud & DevOps",
     difficulty: "Advanced",
     accent: "#6366f1",
-    gradient: "from-indigo-500/10 via-blue-500/5 to-transparent",
+    gradient: "from-zinc-500/10 via-neutral-500/5 to-transparent",
     duration: "14 hrs",
     lessons: 22
   },
@@ -131,7 +131,7 @@ export const coursesRegistry = {
     category: "Web & Mobile Development",
     difficulty: "Beginner-Intermediate",
     accent: "#06b6d4",
-    gradient: "from-cyan-500/10 via-blue-500/5 to-transparent",
+    gradient: "from-cyan-500/10 via-neutral-500/5 to-transparent",
     duration: "20 hrs",
     lessons: 35
   },
@@ -146,7 +146,7 @@ export const coursesRegistry = {
     category: "Web & Mobile Development",
     difficulty: "Intermediate",
     accent: "#d946ef",
-    gradient: "from-fuchsia-500/10 via-purple-500/5 to-transparent",
+    gradient: "from-fuchsia-500/10 via-slate-500/5 to-transparent",
     duration: "16 hrs",
     lessons: 28
   },
@@ -191,7 +191,7 @@ export const coursesRegistry = {
     category: "Cloud & DevOps",
     difficulty: "Intermediate",
     accent: "#6366f1",
-    gradient: "from-blue-500/10 via-indigo-500/5 to-transparent",
+    gradient: "from-neutral-500/10 via-zinc-500/5 to-transparent",
     duration: "12 hrs",
     lessons: 20
   },
@@ -221,7 +221,7 @@ export const coursesRegistry = {
     category: "Creative Tech",
     difficulty: "Advanced",
     accent: "#a855f7",
-    gradient: "from-purple-500/10 via-indigo-500/5 to-transparent",
+    gradient: "from-slate-500/10 via-zinc-500/5 to-transparent",
     duration: "20 hrs",
     lessons: 32
   },
@@ -236,7 +236,7 @@ export const coursesRegistry = {
     category: "Creative Tech",
     difficulty: "Intermediate-Advanced",
     accent: "#d946ef",
-    gradient: "from-fuchsia-500/10 via-purple-500/5 to-transparent",
+    gradient: "from-fuchsia-500/10 via-slate-500/5 to-transparent",
     duration: "14 hrs",
     lessons: 22
   }

@@ -60,7 +60,7 @@ export default function MentorLogin() {
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-center p-4 overflow-hidden" style={{ backgroundColor: "var(--bg-primary)" }}>
       {/* Background decoration */}
-      <div className="absolute inset-0 bg-gradient-to-b from-indigo-100/20 via-transparent to-transparent pointer-events-none z-0" />
+      <div className="absolute inset-0 bg-gradient-to-b from-zinc-100/20 via-transparent to-transparent pointer-events-none z-0" />
       <div 
         className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full blur-[120px] pointer-events-none opacity-20"
         style={{ background: "var(--accent-gradient)" }}

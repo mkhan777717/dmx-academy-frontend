@@ -542,7 +542,7 @@ export default function CreateContest() {
                     type="button"
                     onClick={() => setContestProbTab("institute")}
                     className={`px-4 py-1.5 font-bold uppercase tracking-wider transition-all rounded-lg cursor-pointer mr-2 ${contestProbTab === "institute"
-                      ? "bg-[var(--accent-primary)] text-white"
+                      ? "bg-[var(--accent-primary)] text-[var(--text-on-accent)]"
                       : "text-[var(--text-muted)] hover:bg-[var(--bg-primary)]"
                       }`}
                   >
@@ -552,7 +552,7 @@ export default function CreateContest() {
                     type="button"
                     onClick={() => setContestProbTab("global")}
                     className={`px-4 py-1.5 font-bold uppercase tracking-wider transition-all rounded-lg cursor-pointer ${contestProbTab === "global"
-                      ? "bg-[var(--accent-primary)] text-white"
+                      ? "bg-[var(--accent-primary)] text-[var(--text-on-accent)]"
                       : "text-[var(--text-muted)] hover:bg-[var(--bg-primary)]"
                       }`}
                   >
@@ -645,7 +645,7 @@ export default function CreateContest() {
           >
             {/* Status Line */}
             <div
-              className={`absolute top-0 left-0 right-0 h-[3px] transition-all ${status === "active" ? "bg-emerald-500" : status === "upcoming" ? "bg-indigo-500" : "bg-slate-400"
+              className={`absolute top-0 left-0 right-0 h-[3px] transition-all ${status === "active" ? "bg-emerald-500" : status === "upcoming" ? "bg-zinc-500" : "bg-slate-400"
                 }`}
             />
 
@@ -660,7 +660,7 @@ export default function CreateContest() {
 
                 {/* Dynamic Tag Pill */}
                 <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md border ${status === "active" ? "text-emerald-500 bg-emerald-500/10 border-emerald-500/20" :
-                  status === "upcoming" ? "text-indigo-500 bg-indigo-500/10 border-indigo-500/20" :
+                  status === "upcoming" ? "text-zinc-500 bg-zinc-500/10 border-zinc-500/20" :
                     "text-[var(--text-muted)] bg-slate-500/5 border-transparent"
                   }`}>
                   {status.toUpperCase()}
