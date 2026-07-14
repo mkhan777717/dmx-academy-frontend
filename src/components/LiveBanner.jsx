@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import {
   Radio,
@@ -10,6 +10,11 @@ import {
   Users,
   Play,
   CheckCircle2,
+  Maximize,
+  Minimize,
+  Pause,
+  Volume2,
+  VolumeX,
 } from "lucide-react";
 
 import { getApiBase } from "@/utils/api";
@@ -150,7 +155,7 @@ function PastSessionCard({ session, onWatchRecording }) {
             <button
               onClick={() => {
                 const url = session.recordingUrl.startsWith('/') ? `${API_BASE}${session.recordingUrl}` : session.recordingUrl;
-                onWatchRecording(url);
+                onWatchRecording(url, session);
               }}
               className="flex items-center justify-center gap-1.5 w-full py-2 rounded-lg bg-[var(--accent-primary)] hover:bg-[var(--accent-secondary)] text-white text-[10px] font-extrabold uppercase tracking-wider transition-colors shadow-md shadow-[var(--accent-glow)] text-center cursor-pointer border border-transparent"
             >
@@ -179,7 +184,151 @@ export default function LiveBanner() {
   const [pastSessions, setPastSessions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedVideoUrl, setSelectedVideoUrl] = useState(null);
+  const [selectedVideoSession, setSelectedVideoSession] = useState(null);
   const [watermarkPos, setWatermarkPos] = useState({ top: "15%", left: "15%" });
+
+  const containerRef = useRef(null);
+  const videoRef = useRef(null);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
+  useEffect(() => {
+    if (!selectedVideoUrl) return;
+
+    const handleFullscreenChange = () => {
+      const currentFullscreenEl =
+        document.fullscreenElement ||
+        document.webkitFullscreenElement ||
+        document.mozFullScreenElement ||
+        document.msFullscreenElement;
+
+      const isCurrentlyFullscreen = !!currentFullscreenEl;
+      setIsFullscreen(isCurrentlyFullscreen);
+    };
+
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    document.addEventListener("webkitfullscreenchange", handleFullscreenChange);
+    document.addEventListener("mozfullscreenchange", handleFullscreenChange);
+    document.addEventListener("MSFullscreenChange", handleFullscreenChange);
+
+    return () => {
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+      document.removeEventListener("webkitfullscreenchange", handleFullscreenChange);
+      document.removeEventListener("mozfullscreenchange", handleFullscreenChange);
+      document.removeEventListener("MSFullscreenChange", handleFullscreenChange);
+    };
+  }, [selectedVideoUrl]);
+
+  const toggleFullscreen = (e) => {
+    e.stopPropagation();
+    const container = containerRef.current;
+    if (!container) return;
+
+    const isCurrentlyFullscreen = !!(
+      document.fullscreenElement ||
+      document.webkitFullscreenElement ||
+      document.mozFullScreenElement ||
+      document.msFullscreenElement
+    );
+
+    if (!isCurrentlyFullscreen) {
+      const requestFullscreen =
+        container.requestFullscreen ||
+        container.webkitRequestFullscreen ||
+        container.mozRequestFullScreen ||
+        container.msRequestFullscreen;
+
+      if (requestFullscreen) {
+        requestFullscreen.call(container).catch((err) => {
+          console.error("Error entering container fullscreen:", err);
+        });
+      }
+    } else {
+      const exitFullscreen =
+        document.exitFullscreen ||
+        document.webkitExitFullscreen ||
+        document.mozCancelFullScreen ||
+        document.msExitFullscreen;
+
+      if (exitFullscreen) {
+        exitFullscreen.call(document).catch(console.error);
+      }
+    }
+  };
+
+  const [isPlaying, setIsPlaying] = useState(true);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [volume, setVolume] = useState(1);
+  const [isMuted, setIsMuted] = useState(false);
+
+  useEffect(() => {
+    if (!selectedVideoUrl) {
+      setIsPlaying(false);
+      setCurrentTime(0);
+      setDuration(0);
+    } else {
+      setIsPlaying(true);
+    }
+  }, [selectedVideoUrl]);
+
+  const handlePlayPause = () => {
+    if (videoRef.current) {
+      if (isPlaying) {
+        videoRef.current.pause();
+        setIsPlaying(false);
+      } else {
+        videoRef.current.play().then(() => {
+          setIsPlaying(true);
+        }).catch(console.error);
+      }
+    }
+  };
+
+  const handleTimeUpdate = () => {
+    if (videoRef.current) {
+      setCurrentTime(videoRef.current.currentTime);
+    }
+  };
+
+  const handleLoadedMetadata = () => {
+    if (videoRef.current) {
+      setDuration(videoRef.current.duration);
+    }
+  };
+
+  const handleSeek = (e) => {
+    const time = parseFloat(e.target.value);
+    if (videoRef.current) {
+      videoRef.current.currentTime = time;
+      setCurrentTime(time);
+    }
+  };
+
+  const handleVolumeChange = (e) => {
+    const vol = parseFloat(e.target.value);
+    setVolume(vol);
+    setIsMuted(vol === 0);
+    if (videoRef.current) {
+      videoRef.current.volume = vol;
+      videoRef.current.muted = vol === 0;
+    }
+  };
+
+  const handleToggleMute = () => {
+    const nextMute = !isMuted;
+    setIsMuted(nextMute);
+    if (videoRef.current) {
+      videoRef.current.muted = nextMute;
+      videoRef.current.volume = nextMute ? 0 : volume;
+    }
+  };
+
+  const formatTime = (secs) => {
+    if (isNaN(secs)) return "00:00";
+    const minutes = Math.floor(secs / 60);
+    const seconds = Math.floor(secs % 60);
+    return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+  };
 
   useEffect(() => {
     if (!selectedVideoUrl) return;
@@ -308,7 +457,10 @@ export default function LiveBanner() {
                   <PastSessionCard
                     key={session.id}
                     session={session}
-                    onWatchRecording={(url) => setSelectedVideoUrl(url)}
+                    onWatchRecording={(url, s) => {
+                      setSelectedVideoUrl(url);
+                      setSelectedVideoSession(s);
+                    }}
                   />
                 ))}
               </div>
@@ -340,31 +492,109 @@ export default function LiveBanner() {
             </div>
 
             {/* Video Container */}
-            <div className="relative aspect-video bg-black flex items-center justify-center">
+            <div 
+              ref={containerRef}
+              className={isFullscreen ? "relative w-full h-full bg-black flex items-center justify-center group" : "relative aspect-video bg-black flex items-center justify-center group"}
+            >
               <video
+                ref={videoRef}
                 src={selectedVideoUrl}
-                controls
                 autoPlay
                 crossOrigin="anonymous"
-                controlsList="nodownload"
+                onPlay={() => setIsPlaying(true)}
+                onPause={() => setIsPlaying(false)}
+                onTimeUpdate={handleTimeUpdate}
+                onLoadedMetadata={handleLoadedMetadata}
                 onContextMenu={(e) => e.preventDefault()}
-                className="w-full h-full object-contain"
+                onClick={handlePlayPause}
+                className="w-full h-full object-contain cursor-pointer"
               />
               
-              {/* Dynamic Watermark Overlay */}
-              {user && (
-                <div 
-                  className="absolute z-10 pointer-events-none select-none text-slate-100 font-mono text-[9px] sm:text-xs bg-slate-950/20 backdrop-blur-[1px] px-2.5 py-1.5 rounded-lg border border-white/5 opacity-[0.16] shadow-sm"
+              {/* Custom controls overlay at the bottom */}
+              <div className="absolute bottom-0 left-0 right-0 z-20 bg-gradient-to-t from-black/90 via-black/40 to-transparent px-4 py-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col gap-2 pointer-events-auto">
+                <input
+                  type="range"
+                  min={0}
+                  max={duration || 100}
+                  value={currentTime}
+                  onChange={handleSeek}
+                  className="w-full h-1 bg-slate-700/60 rounded-lg appearance-none cursor-pointer accent-indigo-500 hover:h-1.5 transition-all"
                   style={{
-                    top: watermarkPos.top,
-                    left: watermarkPos.left,
-                    transition: "top 2s ease-in-out, left 2s ease-in-out"
+                    background: `linear-gradient(to right, rgb(99, 102, 241) 0%, rgb(99, 102, 241) ${(currentTime / (duration || 1)) * 100}%, rgba(51, 65, 85, 0.6) ${(currentTime / (duration || 1)) * 100}%, rgba(51, 65, 85, 0.6) 100%)`
                   }}
-                >
-                  <div className="font-black uppercase tracking-wider">{user.username}</div>
-                  <div className="text-[7px] sm:text-[9px] font-bold opacity-80 mt-0.5">{user.email}</div>
+                />
+                <div className="flex items-center justify-between text-white text-xs select-none">
+                  <div className="flex items-center gap-3">
+                    <button 
+                      onClick={handlePlayPause}
+                      className="p-1 rounded hover:bg-white/10 transition-colors cursor-pointer"
+                    >
+                      {isPlaying ? <Pause size={14} /> : <Play size={14} />}
+                    </button>
+                    <span className="font-mono text-[10px] text-slate-300">
+                      {formatTime(currentTime)} / {formatTime(duration)}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2.5">
+                    <button 
+                      onClick={handleToggleMute}
+                      className="p-1 rounded hover:bg-white/10 transition-colors cursor-pointer"
+                    >
+                      {isMuted ? <VolumeX size={14} /> : <Volume2 size={14} />}
+                    </button>
+                    <input
+                      type="range"
+                      min={0}
+                      max={1}
+                      step={0.05}
+                      value={isMuted ? 0 : volume}
+                      onChange={handleVolumeChange}
+                      className="w-16 h-1 bg-slate-700/60 rounded-lg appearance-none cursor-pointer accent-indigo-500"
+                      style={{
+                        background: `linear-gradient(to right, rgb(99, 102, 241) 0%, rgb(99, 102, 241) ${(isMuted ? 0 : volume) * 100}%, rgba(51, 65, 85, 0.6) ${(isMuted ? 0 : volume) * 100}%, rgba(51, 65, 85, 0.6) 100%)`
+                      }}
+                    />
+                    <button 
+                      onClick={toggleFullscreen}
+                      className="p-1 rounded hover:bg-white/10 transition-colors cursor-pointer ml-1"
+                      title={isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
+                    >
+                      {isFullscreen ? <Minimize size={14} /> : <Maximize size={14} />}
+                    </button>
+                  </div>
                 </div>
-              )}
+              </div>
+              
+              {/* Dynamic Watermark Overlay */}
+              {user && selectedVideoSession?.showWatermark && (() => {
+                const watermarkOptsArray = selectedVideoSession?.watermarkOptions?.split(',') || ["inst", "username", "email"];
+                const showInst = watermarkOptsArray.includes("inst");
+                const showUsername = watermarkOptsArray.includes("username");
+                const showEmail = watermarkOptsArray.includes("email");
+
+                return (
+                  <div 
+                    className="absolute z-10 pointer-events-none select-none text-slate-100 font-mono text-[9px] sm:text-xs bg-slate-950/20 backdrop-blur-[1px] px-2.5 py-1.5 rounded-lg border border-white/5 opacity-[0.16] shadow-sm"
+                    style={{
+                      top: watermarkPos.top,
+                      left: watermarkPos.left,
+                      transition: "top 2s ease-in-out, left 2s ease-in-out"
+                    }}
+                  >
+                    {showInst && (user.institute?.name || user.role === "ADMIN") && (
+                      <div className="text-[7px] sm:text-[9px] font-bold opacity-70 tracking-widest uppercase mb-0.5">
+                        {user.role === "ADMIN" ? "EduVantix" : user.institute.name}
+                      </div>
+                    )}
+                    {showUsername && (
+                      <div className="font-black uppercase tracking-wider">{user.username}</div>
+                    )}
+                    {showEmail && (
+                      <div className="text-[7px] sm:text-[9px] font-bold opacity-80 mt-0.5">{user.email}</div>
+                    )}
+                  </div>
+                );
+              })()}
             </div>
           </div>
         </div>

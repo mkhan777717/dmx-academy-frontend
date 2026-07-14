@@ -187,6 +187,7 @@ export function AuthProvider({ children }) {
               const data = await res.json();
               if (data.success) {
                 setUser(data.user);
+                localStorage.setItem("dmx_auth_user", JSON.stringify(data.user));
                 setToken(storedToken);
                 setLegacySession(data.user);
                 setLoading(false);

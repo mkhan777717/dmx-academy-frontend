@@ -435,6 +435,10 @@ export default function LiveChat({
     return a.identity.localeCompare(b.identity);
   });
 
+  const studentParticipantsCount = sortedParticipants.filter(
+    (p) => p.identity?.toLowerCase().trim() !== hostUsername?.toLowerCase().trim()
+  ).length;
+
   // ─── Collapsed Toggle Button ───────────────────────────────────────
   if (canCollapse && !isOpen && !isPoppedOut && !isPopoutInstance) {
     return (
@@ -612,7 +616,7 @@ export default function LiveChat({
                 className="text-[9px] font-bold px-1.5 py-0.2 rounded-full"
                 style={{ backgroundColor: "var(--bg-badge)", color: "var(--text-accent)" }}
               >
-                {sortedParticipants.length}
+                {studentParticipantsCount}
               </span>
             </button>
 
