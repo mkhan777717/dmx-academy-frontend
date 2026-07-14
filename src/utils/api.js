@@ -35,7 +35,7 @@ export function buildAuthHeaders(token, user, extra = {}) {
   // Dev / demo bypass -- send userid so backend finds the actual institute-scoped user
   const bypassRole =
     user?.role === "MENTOR" ? "MENTOR" :
-    user?.role === "USER"   ? "USER"   : "ADMIN";
+      user?.role === "USER" ? "USER" : "ADMIN";
 
   const userId = user?.id;
   const isRealDbId =
