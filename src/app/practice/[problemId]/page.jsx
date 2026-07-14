@@ -81,7 +81,20 @@ export default function PracticeWorkspace() {
                 python: dbp.templatePython || `# Python Starter Code\ndef solve(input):\n    pass`,
                 go: dbp.templateGo || `// Go Starter Code\npackage main\n\nimport "fmt"\n\nfunc solve(input string) {\n  // Write your Go code here\n}`,
                 cpp: dbp.templateCPP || `// C++ Starter Code\n#include <iostream>\n#include <vector>\n#include <string>\n\nusing namespace std;\n\nint main() {\n  // Write your code here\n  return 0;\n}`,
-                java: dbp.templateJava || `// Java Starter Code\nimport java.util.*;\n\npublic class Main {\n  public static void main(String[] args) {\n    // Write your code here\n  }\n}`
+                java: dbp.templateJava || `// Java Starter Code\nimport java.util.*;\n\npublic class Main {\n  public static void main(String[] args) {\n    // Write your code here\n  }\n}`,
+                typescript: `// TypeScript Starter Code\nfunction solve(input: string): void {\n  // Write your code here\n  console.log(input);\n}`,
+                c: `// C Starter Code\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\nint main() {\n  // Write your code here\n  return 0;\n}`,
+                csharp: `// C# Starter Code\nusing System;\nusing System.Collections.Generic;\n\nclass Solution {\n  static void Main(string[] args) {\n    // Write your code here\n  }\n}`,
+                kotlin: `// Kotlin Starter Code\nfun main() {\n    // Write your code here\n}`,
+                swift: `// Swift Starter Code\nimport Foundation\n\n// Write your code here\nfunc solve() {\n}\n\nsolve()`,
+                rust: `// Rust Starter Code\nuse std::io::{self, BufRead};\n\nfn main() {\n    let stdin = io::stdin();\n    for line in stdin.lock().lines() {\n        let line = line.unwrap();\n        // Write your code here\n        println!("{}", line);\n    }\n}`,
+                ruby: `# Ruby Starter Code\ndef solve(input)\n  # Write your code here\nend\n\ninput = $stdin.read.strip\nputs solve(input)`,
+                php: `<?php\n// PHP Starter Code\n$input = trim(fgets(STDIN));\n// Write your code here\necho $input . PHP_EOL;\n?>`,
+                dart: `// Dart Starter Code\nimport 'dart:io';\n\nvoid main() {\n  String? input = stdin.readLineSync();\n  // Write your code here\n  print(input);\n}`,
+                scala: `// Scala Starter Code\nobject Solution {\n  def main(args: Array[String]): Unit = {\n    val input = scala.io.StdIn.readLine()\n    // Write your code here\n    println(input)\n  }\n}`,
+                elixir: `# Elixir Starter Code\ninput = IO.read(:line) |> String.trim()\n# Write your code here\nIO.puts(input)`,
+                erlang: `% Erlang Starter Code\n-module(main).\n-export([main/0]).\n\nmain() ->\n    {ok, Input} = io:fread("", "~s"),\n    % Write your code here\n    io:format("~s~n", [Input]).`,
+                racket: `; Racket Starter Code\n#lang racket\n\n(define input (read-line))\n; Write your code here\n(displayln input)`
               },
               testcases: dynamicTC,
               followup: dbp.followup,
@@ -1161,6 +1174,19 @@ export default function PracticeWorkspace() {
                 {problem.editorTemplates.go && <option value="go">Go</option>}
                 {problem.editorTemplates.cpp && <option value="cpp">C++</option>}
                 {problem.editorTemplates.java && <option value="java">Java</option>}
+                {problem.editorTemplates.typescript && <option value="typescript">TypeScript</option>}
+                {problem.editorTemplates.c && <option value="c">C</option>}
+                {problem.editorTemplates.csharp && <option value="csharp">C#</option>}
+                {problem.editorTemplates.kotlin && <option value="kotlin">Kotlin</option>}
+                {problem.editorTemplates.swift && <option value="swift">Swift</option>}
+                {problem.editorTemplates.rust && <option value="rust">Rust</option>}
+                {problem.editorTemplates.ruby && <option value="ruby">Ruby</option>}
+                {problem.editorTemplates.php && <option value="php">PHP</option>}
+                {problem.editorTemplates.dart && <option value="dart">Dart</option>}
+                {problem.editorTemplates.scala && <option value="scala">Scala</option>}
+                {problem.editorTemplates.elixir && <option value="elixir">Elixir</option>}
+                {problem.editorTemplates.erlang && <option value="erlang">Erlang</option>}
+                {problem.editorTemplates.racket && <option value="racket">Racket</option>}
               </select>
 
               <button

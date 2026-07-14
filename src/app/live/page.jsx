@@ -104,12 +104,16 @@ function SessionTimer({ startTime }) {
 }
 
 // ─── Viewer Count ────────────────────────────────────────────────────
-function ViewerCount() {
+function ViewerCount({ hostUsername }) {
   const participants = useParticipants();
+  const studentCount = participants.filter(
+    (p) => p.identity?.toLowerCase().trim() !== hostUsername?.toLowerCase().trim()
+  ).length;
+
   return (
     <div className="flex items-center gap-1.5 text-xs font-bold shrink-0" style={{ color: "var(--text-secondary)" }}>
       <Users size={12} />
-      <span>{participants.length} watching</span>
+      <span>{studentCount} watching</span>
     </div>
   );
 }
@@ -650,7 +654,7 @@ console.log(session)
         <div className="flex items-center gap-2.5 shrink-0">
           <div className="w-px h-6 bg-[var(--border-primary)] hidden xs:block" />
           <SessionTimer startTime={session.startedAt} />
-          <ViewerCount />
+          <ViewerCount hostUsername={normalizedHostUsername} />
         </div>
       </div>
 
@@ -872,19 +876,35 @@ console.log(session)
         )}
 
         {/* Dynamic Watermark Overlay */}
-        {user && (
-          <div 
-            className="absolute z-10 pointer-events-none select-none text-slate-100 font-mono text-[9px] sm:text-xs bg-slate-950/20 backdrop-blur-[1px] px-2.5 py-1.5 rounded-lg border border-[var(--border-primary)] border-white/5 opacity-[0.16] shadow-sm"
-            style={{
-              top: watermarkPos.top,
-              left: watermarkPos.left,
-              transition: "top 2s ease-in-out, left 2s ease-in-out"
-            }}
-          >
-            <div className="font-black uppercase tracking-wider">{user.username}</div>
-            <div className="text-[7px] sm:text-[9px] font-bold opacity-80 mt-0.5">{user.email}</div>
-          </div>
-        )}
+        {user && session?.showWatermark && (() => {
+          const watermarkOptsArray = session?.watermarkOptions?.split(',') || ["inst", "username", "email"];
+          const showInst = watermarkOptsArray.includes("inst");
+          const showUsername = watermarkOptsArray.includes("username");
+          const showEmail = watermarkOptsArray.includes("email");
+
+          return (
+            <div 
+              className="absolute z-10 pointer-events-none select-none text-slate-100 font-mono text-[9px] sm:text-xs bg-slate-950/20 backdrop-blur-[1px] px-2.5 py-1.5 rounded-lg border border-[var(--border-primary)] border-white/5 opacity-[0.16] shadow-sm"
+              style={{
+                top: watermarkPos.top,
+                left: watermarkPos.left,
+                transition: "top 2s ease-in-out, left 2s ease-in-out"
+              }}
+            >
+              {showInst && (user.institute?.name || user.role === "ADMIN") && (
+                <div className="text-[7px] sm:text-[9px] font-bold opacity-70 tracking-widest uppercase mb-0.5">
+                  {user.role === "ADMIN" ? "EduVantix" : user.institute.name}
+                </div>
+              )}
+              {showUsername && (
+                <div className="font-black uppercase tracking-wider">{user.username}</div>
+              )}
+              {showEmail && (
+                <div className="text-[7px] sm:text-[9px] font-bold opacity-80 mt-0.5">{user.email}</div>
+              )}
+            </div>
+          );
+        })()}
 
         <ReactionOverlay reactions={reactions} />
 
