@@ -5,14 +5,33 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
 import { Mail, Lock, User, ShieldAlert, ArrowRight, RefreshCw, AlertCircle, GraduationCap, Sparkles, Eye, EyeOff, Ban } from "lucide-react";
+import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 
 function LoginForm() {
-  const { login, register, user, logout, forgotPassword } = useAuth();
+  const { login, register, user, logout, forgotPassword, loginWithGoogle } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get("redirect") || "/";
 
   const [isRegistering, setIsRegistering] = useState(false);
+
+  const handleGoogleSuccess = async (response) => {
+    setLoading(true);
+    setErrorMsg("");
+    try {
+      const result = await loginWithGoogle(response.credential);
+      if (result.blocked) {
+        setIsBlocked(true);
+        setErrorMsg(result.message);
+      } else if (!result.success) {
+        setErrorMsg(result.message);
+      }
+    } catch (err) {
+      setErrorMsg("Google Authentication failed.");
+    } finally {
+      setLoading(false);
+    }
+  };
   const [isForgot, setIsForgot] = useState(false);
   const [forgotSuccess, setForgotSuccess] = useState(false);
 
@@ -316,6 +335,27 @@ function LoginForm() {
             </AnimatePresence>
 
             <SubmitButton loading={loading} gradient={theme.accentGradient} label={isRegistering ? `Register as ${theme.label}` : `Sign In as ${theme.label}`} />
+            
+            {!isForgot && (
+              <div className="relative flex items-center justify-center my-4">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-[var(--border-primary)] opacity-20"></div>
+                </div>
+                <span className="relative px-3 text-[10px] uppercase font-bold tracking-widest text-[var(--text-muted)] bg-[var(--bg-card)]">Or continue with</span>
+              </div>
+            )}
+
+            {!isForgot && (
+              <div className="flex justify-center w-full mt-2">
+                <GoogleLogin
+                  onSuccess={handleGoogleSuccess}
+                  onError={() => setErrorMsg("Google Login failed.")}
+                  theme="filled_blue"
+                  shape="pill"
+                  width="100%"
+                />
+              </div>
+            )}
           </form>
         )}
 
@@ -446,7 +486,9 @@ export default function LoginPage() {
 
         <div className="w-full max-w-md">
           <Suspense fallback={<div className="flex items-center justify-center p-8"><RefreshCw className="animate-spin" size={22} style={{ color: "var(--accent-primary)" }} /></div>}>
-            <LoginForm />
+            <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}>
+              <LoginForm />
+            </GoogleOAuthProvider>
           </Suspense>
         </div>
 

@@ -360,8 +360,40 @@ export function AuthProvider({ children }) {
     }
   };
 
+  // ---------------------------------------------------------------------------
+  const loginWithGoogle = async (credentialToken) => {
+    try {
+      const res = await fetch(`${API_BASE}/api/auth/google`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ credential: credentialToken }),
+        signal: AbortSignal.timeout(30000),
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data.success) {
+        setToken(data.token);
+        setUser(data.user);
+        setLegacySession(data.user);
+        setIsInstituteBlocked(false);
+        localStorage.setItem("dmx_auth_token", data.token);
+        localStorage.setItem("dmx_auth_user", JSON.stringify(data.user));
+        return { success: true, user: data.user };
+      }
+
+      if (data.code === 'INSTITUTE_BLOCKED') {
+        setIsInstituteBlocked(true);
+        return { success: false, message: 'Your institute has been blocked. Please contact the Super Administrator.', blocked: true };
+      }
+      return { success: false, message: data.message || "Google Login failed." };
+    } catch (e) {
+      return { success: false, message: "Network error occurred." };
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, token, loading, login, register, logout, API_BASE, activeSession, setActiveSession, isInstituteBlocked, setIsInstituteBlocked, forgotPassword, resetPassword }}>
+    <AuthContext.Provider value={{ user, token, loading, login, register, logout, API_BASE, activeSession, setActiveSession, isInstituteBlocked, setIsInstituteBlocked, forgotPassword, resetPassword, loginWithGoogle }}>
       {children}
 
       {/* Cross-Device Single Session Countdown Overlay */}
