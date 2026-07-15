@@ -1462,7 +1462,7 @@ export default function AdminLivePage() {
   // ─── Pre-Session Form (Setup) ──────────────────────────────────────
   if (!session || !livekitToken) {
     return (
-      <div className="flex-1 overflow-y-auto w-full custom-scrollbar pb-10 pr-1"div className="h-full w-full overflow-y-auto pb-32 pt-6">
+      <div className="flex-1 overflow-y-auto w-full custom-scrollbar pb-10 pr-1">
         <div className="max-w-7xl mx-auto space-y-12 lg:space-y-0 lg:grid lg:grid-cols-[1.3fr_1fr] lg:gap-12 animate-fade-in px-4 sm:px-6 lg:px-8">
           
           {/* Left Column: Setup Form */}
@@ -2027,7 +2027,7 @@ export default function AdminLivePage() {
           </div>
         </div>
       )}
-      </divdiv>
+      </div>
     );
   }
 
