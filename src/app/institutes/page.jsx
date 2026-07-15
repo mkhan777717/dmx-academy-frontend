@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { motion } from "framer-motion";
 import { ShieldAlert, Users, Layers, Trophy, Brain, Code, BookOpen, Radio, ArrowRight, CheckCircle2, Building2 } from "lucide-react";
+import { getApiBase } from "@/utils/api";
 
 export default function InstitutesPage() {
   const [formData, setFormData] = useState({
@@ -20,10 +21,23 @@ export default function InstitutesPage() {
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     setFormStatus("submitting");
-    // Simulate API call
-    setTimeout(() => {
-      setFormStatus("success");
-    }, 1500);
+    try {
+      const apiBase = getApiBase();
+      const res = await fetch(`${apiBase}/api/auth/request-institute-access`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData)
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setFormStatus("success");
+      } else {
+        setFormStatus("error");
+      }
+    } catch (err) {
+      console.error(err);
+      setFormStatus("error");
+    }
   };
 
   const features = [
@@ -234,6 +248,12 @@ export default function InstitutesPage() {
                       <button type="submit" disabled={formStatus === "submitting"} className="w-full py-4 rounded-xl font-bold text-white transition-opacity hover:opacity-90 disabled:opacity-50" style={{ background: "var(--accent-primary)" }}>
                         {formStatus === "submitting" ? "Submitting Request..." : "Request Institute Access"}
                       </button>
+
+                      {formStatus === "error" && (
+                        <p className="text-xs text-rose-500 text-center font-semibold mt-2">
+                          Failed to submit request. Please verify your connection or try again.
+                        </p>
+                      )}
                     </form>
                   )}
                 </div>
