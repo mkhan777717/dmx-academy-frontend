@@ -275,6 +275,7 @@ function VideoPlayer({
   disableHandraise = false,
   setDisableHandraise = () => { },
 }) {
+  const { user } = useAuth();
   const [isMuted, setIsMuted] = useState(false);
   const [isHostCameraHiddenLocal, setIsHostCameraHiddenLocal] = useState(false);
   const [isStudentCameraHiddenLocal, setIsStudentCameraHiddenLocal] = useState(false);
@@ -292,9 +293,10 @@ function VideoPlayer({
   }, []);
 
   const handleReaction = useCallback((emoji) => {
-    // username must be derived from props or session, since 'user' is not defined
     let username = null;
-    if (session?.user?.username) {
+    if (user?.username) {
+      username = user.username;
+    } else if (session?.user?.username) {
       username = session.user.username;
     } else if (session?.username) {
       username = session.username;
@@ -315,7 +317,7 @@ function VideoPlayer({
     setTimeout(() => {
       setReactions((prev) => prev.filter((r) => r.id !== reaction.id));
     }, 3000);
-  }, [session]);
+  }, [session, user]);
 
   const handleShareLink = useCallback(() => {
     if (!session?.id) return;
@@ -400,7 +402,6 @@ console.log(session)
   }, [isFullscreen]);
 
   const room = useRoomContext();
-  const { user } = useAuth();
   const [showAcceptedModal, setShowAcceptedModal] = useState(false);
 
   const participants = useParticipants();
