@@ -1,312 +1,312 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
-import { getApiBase } from "@/utils/api";
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 
-/* ─── Track Definitions ─────────────────────────── */
-const tracks = [
-  {
-    id: "frontend",
-    number: "01",
-    label: "Frontend Architecture",
-    tagline: "Build the interfaces of tomorrow",
-    desc: "React 19, Next.js App Router, Animation Engineering, Component Design Systems — from fundamentals to senior-level patterns.",
-    accent: "#4f46e5",
-    bg: "hsl(240 60% 8%)",
-    courses: ["React.js Foundations", "Next.js App Router", "Node.js & Express API", "Complete Web Dev", "Flutter", "React Native", "MongoDB"],
-    category: "Web & Mobile Development",
-    svg: (
-      <svg viewBox="0 0 200 160" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-        <rect x="20" y="20" width="160" height="120" rx="8" stroke="#4f46e5" strokeWidth="0.5" strokeOpacity="0.75"/>
-        <rect x="30" y="30" width="50" height="4" rx="2" fill="#4f46e5" fillOpacity="1.00"/>
-        <rect x="30" y="40" width="35" height="3" rx="1.5" fill="#4f46e5" fillOpacity="0.75"/>
-        <rect x="90" y="30" width="80" height="100" rx="4" fill="#4f46e5" fillOpacity="0.13" stroke="#4f46e5" strokeWidth="0.3" strokeOpacity="1.00"/>
-        <circle cx="130" cy="80" r="20" fill="#4f46e5" fillOpacity="0.25" stroke="#4f46e5" strokeWidth="0.5" strokeOpacity="1.00"/>
-        <text x="130" y="84" textAnchor="middle" fontSize="10" fill="#4f46e5" fillOpacity="1.00" fontWeight="700">&lt;/&gt;</text>
-        <rect x="30" y="55" width="45" height="3" rx="1.5" fill="#4f46e5" fillOpacity="0.50"/>
-        <rect x="30" y="64" width="35" height="3" rx="1.5" fill="#4f46e5" fillOpacity="0.38"/>
-        <rect x="30" y="73" width="50" height="3" rx="1.5" fill="#4f46e5" fillOpacity="0.25"/>
-        <line x1="30" y1="90" x2="75" y2="90" stroke="#4f46e5" strokeWidth="0.3" strokeOpacity="1.00"/>
-        <rect x="30" y="98" width="40" height="20" rx="4" fill="#4f46e5" fillOpacity="0.20" stroke="#4f46e5" strokeWidth="0.3" strokeOpacity="1.00"/>
-        <text x="50" y="111" textAnchor="middle" fontSize="7" fill="#4f46e5" fillOpacity="1.00">Deploy</text>
-      </svg>
-    ),
-  },
-  {
-    id: "ai",
-    number: "02",
-    label: "AI & Data Science",
-    tagline: "Engineer intelligence from scratch",
-    desc: "Machine Learning, Generative AI with LLMs, Data Science & Analytics — build real AI products, not just toy models.",
-    accent: "#7e22ce",
-    bg: "hsl(260 60% 8%)",
-    courses: ["Machine Learning & AI", "Generative AI Specialist", "Data Science & Analytics"],
-    category: "Data & AI",
-    svg: (
-      <svg viewBox="0 0 200 160" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-        <circle cx="100" cy="80" r="25" stroke="#7e22ce" strokeWidth="0.5" strokeOpacity="1.00"/>
-        <circle cx="100" cy="80" r="4" fill="#7e22ce" fillOpacity="1.00"/>
-        {[[55,48],[145,48],[55,112],[145,112],[38,80],[162,80]].map(([cx,cy],i)=>(
-          <g key={i}>
-            <circle cx={cx} cy={cy} r="5" fill="#7e22ce" fillOpacity="0.38" stroke="#7e22ce" strokeWidth="0.4" strokeOpacity="1.00"/>
-            <circle cx={cx} cy={cy} r="2" fill="#7e22ce" fillOpacity="1.00"/>
-            <line x1={cx} y1={cy} x2="100" y2="80" stroke="#7e22ce" strokeWidth="0.25" strokeOpacity="0.88"/>
-          </g>
-        ))}
-        <circle cx="100" cy="80" r="40" stroke="#7e22ce" strokeWidth="0.2" strokeOpacity="0.38" strokeDasharray="3 4"/>
-        <circle cx="100" cy="80" r="55" stroke="#7e22ce" strokeWidth="0.15" strokeOpacity="0.25" strokeDasharray="2 6"/>
-        <text x="100" y="145" textAnchor="middle" fontSize="8" fill="#7e22ce" fillOpacity="1.00" fontFamily="monospace">model.predict()</text>
-      </svg>
-    ),
-  },
-  {
-    id: "devops",
-    number: "03",
-    label: "Cloud & DevOps",
-    tagline: "Scale infrastructure with confidence",
-    desc: "Docker, Kubernetes, AWS, CI/CD pipelines, and Cybersecurity — become the engineer who ships and scales.",
-    accent: "#059669",
-    bg: "hsl(160 60% 6%)",
-    courses: ["DevOps & CI/CD", "Cybersecurity Foundations", "Cloud Computing"],
-    category: "Cloud & DevOps",
-    svg: (
-      <svg viewBox="0 0 200 160" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-        <path d="M100 30 L140 55 L140 105 L100 130 L60 105 L60 55 Z" stroke="#059669" strokeWidth="0.4" strokeOpacity="1.00"/>
-        <path d="M100 50 L125 65 L125 95 L100 110 L75 95 L75 65 Z" fill="#059669" fillOpacity="0.15" stroke="#059669" strokeWidth="0.3" strokeOpacity="1.00"/>
-        <circle cx="100" cy="80" r="8" fill="#059669" fillOpacity="0.38" stroke="#059669" strokeWidth="0.5" strokeOpacity="1.00"/>
-        <line x1="100" y1="30" x2="100" y2="50" stroke="#059669" strokeWidth="0.3" strokeOpacity="1.00"/>
-        <line x1="140" y1="55" x2="125" y2="65" stroke="#059669" strokeWidth="0.3" strokeOpacity="1.00"/>
-        <line x1="140" y1="105" x2="125" y2="95" stroke="#059669" strokeWidth="0.3" strokeOpacity="1.00"/>
-        <line x1="100" y1="130" x2="100" y2="110" stroke="#059669" strokeWidth="0.3" strokeOpacity="1.00"/>
-        <line x1="60" y1="105" x2="75" y2="95" stroke="#059669" strokeWidth="0.3" strokeOpacity="1.00"/>
-        <line x1="60" y1="55" x2="75" y2="65" stroke="#059669" strokeWidth="0.3" strokeOpacity="1.00"/>
-        <text x="100" y="83" textAnchor="middle" fontSize="7" fill="#059669" fillOpacity="1.00">CI/CD</text>
-      </svg>
-    ),
-  },
-  {
-    id: "creative",
-    number: "04",
-    label: "Creative Tech",
-    tagline: "Where design meets the blockchain",
-    desc: "Blockchain development, Web3 smart contracts, and emerging technology stacks — build for the decentralized web.",
-    accent: "#c2410c",
-    bg: "hsl(20 60% 7%)",
-    courses: ["Blockchain & Web3", "Trending Tech Stack"],
-    category: "Creative Tech",
-    svg: (
-      <svg viewBox="0 0 200 160" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-        {[
-          [60,50],[140,50],[100,80],[60,110],[140,110]
-        ].map(([x,y],i)=>(
-          <g key={i}>
-            <rect x={x-10} y={y-10} width="20" height="20" rx="3" fill="#c2410c" fillOpacity="0.20" stroke="#c2410c" strokeWidth="0.4" strokeOpacity="1.00"/>
-            <text x={x} y={y+4} textAnchor="middle" fontSize="8" fill="#c2410c" fillOpacity="1.00">⬡</text>
-          </g>
-        ))}
-        <line x1="60" y1="50" x2="100" y2="80" stroke="#c2410c" strokeWidth="0.25" strokeOpacity="1.00"/>
-        <line x1="140" y1="50" x2="100" y2="80" stroke="#c2410c" strokeWidth="0.25" strokeOpacity="1.00"/>
-        <line x1="60" y1="110" x2="100" y2="80" stroke="#c2410c" strokeWidth="0.25" strokeOpacity="1.00"/>
-        <line x1="140" y1="110" x2="100" y2="80" stroke="#c2410c" strokeWidth="0.25" strokeOpacity="1.00"/>
-        <line x1="60" y1="50" x2="60" y2="110" stroke="#c2410c" strokeWidth="0.25" strokeOpacity="0.75"/>
-        <line x1="140" y1="50" x2="140" y2="110" stroke="#c2410c" strokeWidth="0.25" strokeOpacity="0.75"/>
-        <text x="100" y="146" textAnchor="middle" fontSize="7" fill="#c2410c" fillOpacity="1.00" fontFamily="monospace">Web3</text>
-      </svg>
-    ),
-  },
-];
-
-/* ─── Track Card ─────────────────────────────── */
-function TrackCard({ track, isActive, onClick, index }) {
-  const cardRef = useRef(null);
-
-  return (
-    <motion.div
-      ref={cardRef}
-      onClick={onClick}
-      initial={{ opacity: 0, y: 40 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.6, delay: index * 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
-      className="relative flex-shrink-0 rounded-2xl overflow-hidden cursor-pointer group"
-      style={{
-        width: isActive ? "380px" : "240px",
-        minHeight: "480px",
-        border: `1px solid ${isActive ? track.accent : "var(--border-card)"}`,
-        backgroundColor: "var(--bg-card)",
-        transition: "width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.3s",
-      }}
-    >
-      {/* Top accent line */}
-      <div
-        className="absolute top-0 left-0 right-0 h-0.5 transition-opacity duration-300"
-        style={{ background: `linear-gradient(to right, ${track.accent}, transparent)`, opacity: isActive ? 1 : 0 }}
-      />
-
-      {/* Number */}
-      <div className="absolute top-6 left-6">
-        <span
-          className="text-[72px] font-black leading-none select-none"
-          style={{ color: track.accent, opacity: isActive ? 0.4 : 0.2, transition: "opacity 0.3s" }}
-        >
-          {track.number}
-        </span>
-      </div>
-
-      {/* SVG illustration */}
-      <div className="absolute top-4 right-4" style={{ width: isActive ? "160px" : "100px", height: isActive ? "120px" : "80px", transition: "width 0.5s, height 0.5s", opacity: isActive ? 1 : 0.5 }}>
-        {track.svg}
-      </div>
-
-      {/* Content */}
-      <div className="absolute bottom-0 left-0 right-0 p-6 space-y-3">
-        <div>
-          <span
-            className="text-[10px] font-bold uppercase tracking-[0.15em] mb-2 block"
-            style={{ color: track.accent }}
-          >
-            Track {track.number}
-          </span>
-          <h3
-            className="text-xl font-bold leading-tight"
-            style={{ color: "var(--text-primary)" }}
-          >
-            {track.label}
-          </h3>
-        </div>
-
-        {isActive && (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="space-y-3"
-          >
-            <p className="text-sm leading-relaxed" style={{ color: "var(--text-secondary)" }}>
-              {track.desc}
-            </p>
-            <div className="space-y-1.5">
-              {track.courses.slice(0, 4).map((c, i) => (
-                <div key={i} className="flex items-center gap-2 text-xs" style={{ color: "var(--text-muted)" }}>
-                  <div className="h-1 w-1 rounded-full" style={{ background: track.accent }} />
-                  {c}
-                </div>
-              ))}
-              {track.courses.length > 4 && (
-                <div className="text-xs" style={{ color: track.accent }}>+{track.courses.length - 4} more courses</div>
-              )}
-            </div>
-            <a
-              href={`/courses?category=${encodeURIComponent(track.category)}`}
-              className="inline-flex items-center gap-2 text-xs font-semibold mt-2 group/link"
-              style={{ color: track.accent }}
-            >
-              <span>Explore Track</span>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-200 group-hover/link:translate-x-1">
-                <path d="M5 12h14M12 5l7 7-7 7"/>
-              </svg>
-            </a>
-          </motion.div>
-        )}
-
-        {!isActive && (
-          <p className="text-xs leading-relaxed line-clamp-2" style={{ color: "var(--text-muted)" }}>
-            {track.tagline}
-          </p>
-        )}
-      </div>
-    </motion.div>
-  );
+function useTheme() {
+  const [dark, setDark] = useState(false);
+  useEffect(() => {
+    const check = () => setDark(document.documentElement.classList.contains("theme-dark"));
+    check();
+    const obs = new MutationObserver(check);
+    obs.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+    return () => obs.disconnect();
+  }, []);
+  return dark;
 }
 
-/* ─── Tracks Section ──────────────────────────── */
 export default function Tracks() {
-  const [activeTrack, setActiveTrack] = useState("frontend");
-  const railRef = useRef(null);
+  const dark = useTheme();
+
+  const ease = [0.16, 1, 0.3, 1];
 
   return (
-    <section id="tracks" className="relative py-12 overflow-hidden" style={{ backgroundColor: "var(--bg-primary)" }}>
+    <section
+      className="relative w-full overflow-hidden py-32"
+      style={{
+        background: dark ? "#000000" : "#f8fafc",
+        color: dark ? "#ffffff" : "#020617",
+        transition: "background 0.4s ease"
+      }}
+    >
+      {/* 1. Header (Ecosystem Intro) */}
+      <div className="max-w-[1400px] mx-auto px-6 md:px-12 mb-32 text-center relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, ease }}
+        >
+          <span className="text-[11px] font-bold tracking-[0.2em] uppercase text-emerald-500 mb-6 block">
+            The Complete Ecosystem
+          </span>
+          <h2 className="text-5xl md:text-8xl font-bold tracking-tighter leading-[0.9] mb-8">
+            One Platform.<br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-500">
+              Everything Developers Need.
+            </span>
+          </h2>
+          <p className="text-lg md:text-xl opacity-50 max-w-2xl mx-auto leading-relaxed">
+            Stop buying random courses. Get a complete, unified ecosystem with AI learning, real-world projects, live coding arenas, and interview prep.
+          </p>
+        </motion.div>
+      </div>
 
-      {/* Section intro — left-aligned editorial */}
-      <div className="mx-auto max-w-[1400px] px-6 md:px-12 mb-14">
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-8 items-end">
-          <div className="space-y-4">
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="flex items-center gap-3"
-            >
-              <div className="h-px w-8" style={{ background: "var(--accent-primary)" }} />
-              <span className="text-[11px] font-bold tracking-[0.2em] uppercase" style={{ color: "var(--text-muted)" }}>
-                Learning Tracks
-              </span>
-            </motion.div>
-
-            <motion.h2
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.7, delay: 0.1 }}
-              className="text-[clamp(2rem,4vw,3.5rem)] font-black tracking-[-0.03em] leading-[1.05]"
-              style={{ color: "var(--text-primary)" }}
-            >
-              Choose your<br />
-              <em className="font-serif-display not-italic" style={{ color: "var(--text-muted)" }}>specialization</em>
-            </motion.h2>
-          </div>
-
-          <motion.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
+      {/* 2. Success Numbers */}
+      <div className="max-w-[1200px] mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 px-6 mb-40 relative z-10">
+        {[
+          { val: "500+", label: "Lessons" },
+          { val: "200+", label: "Projects" },
+          { val: "50+", label: "Mentors" },
+          { val: "24/7", label: "AI Tutor" },
+        ].map((stat, i) => (
+          <motion.div
+            key={i}
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.7, delay: 0.2 }}
-            className="max-w-xs text-sm leading-relaxed"
-            style={{ color: "var(--text-secondary)" }}
+            transition={{ duration: 0.5, delay: i * 0.1, ease }}
+            className="text-center"
           >
-            Four deep-dive tracks built by industry practitioners. Click any card to explore the curriculum.
-          </motion.p>
+            <div className="text-5xl md:text-7xl font-bold font-sans mb-3 tracking-tighter">{stat.val}</div>
+            <div className="text-[11px] font-bold tracking-[0.2em] uppercase opacity-40">{stat.label}</div>
+          </motion.div>
+        ))}
+      </div>
+
+      {/* 3. Learning Journey Timeline */}
+      <div className="max-w-[1400px] mx-auto px-6 md:px-12 mb-40 relative z-10">
+        <div className="text-center mb-20">
+          <h3 className="text-4xl md:text-6xl font-bold tracking-tighter mb-4">Choose Your Journey.</h3>
+          <p className="text-lg opacity-50 max-w-2xl mx-auto">A structured roadmap designed for outcomes, not just certificates.</p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 relative">
+          <div className="hidden md:block absolute top-1/2 left-[10%] right-[10%] h-px bg-gradient-to-r from-transparent via-emerald-500/30 to-transparent -translate-y-1/2 z-0" />
+
+          {[
+            { step: "01", title: "Foundations", desc: "Watch & Practice fundamentals.", label: "Start" },
+            { step: "02", title: "Build", desc: "Develop real-world projects.", label: "Execute" },
+            { step: "03", title: "Master", desc: "Advanced concepts & logic.", label: "Refine" },
+            { step: "04", title: "Launch", desc: "Resume, Interview, Placement.", label: "Hired" }
+          ].map((item, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.7, delay: i * 0.15, ease }}
+              className="relative z-10 p-8 rounded-[2rem] border transition-transform hover:-translate-y-2 hover:shadow-2xl"
+              style={{
+                background: dark ? "rgba(255,255,255,0.02)" : "rgba(255,255,255,1)",
+                borderColor: dark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)",
+                boxShadow: dark ? "0 20px 40px rgba(0,0,0,0.4)" : "0 20px 40px rgba(0,0,0,0.05)",
+                backdropFilter: "blur(20px)"
+              }}
+            >
+              <div className="flex justify-between items-start mb-12">
+                <div className="text-emerald-500 font-mono text-sm opacity-80">{item.step}</div>
+                <div className="text-[9px] font-bold tracking-[0.2em] uppercase px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-500">
+                  {item.label}
+                </div>
+              </div>
+              <h4 className="text-3xl font-bold mb-3 tracking-tight">{item.title}</h4>
+              <p className="opacity-50 text-sm leading-relaxed">{item.desc}</p>
+            </motion.div>
+          ))}
         </div>
       </div>
 
-      {/* Horizontal scroll rail */}
-      <div
-        ref={railRef}
-        className="flex flex-row flex-nowrap md:justify-center overflow-x-auto px-6 md:px-12 gap-4 pb-6 hide-scrollbar"
-        style={{ maxWidth: "100vw" }}
-      >
-        {tracks.map((track, i) => (
-          <TrackCard
-            key={track.id}
-            track={track}
-            isActive={activeTrack === track.id}
-            onClick={() => setActiveTrack(track.id)}
-            index={i}
-          />
-        ))}
-        {/* End spacer */}
-        <div className="flex-shrink-0 w-6 md:w-12" />
+      {/* 4. Build Real Products */}
+      <div className="max-w-[1400px] mx-auto px-6 md:px-12 mb-40 relative z-10">
+        <div className="text-center mb-16">
+          <h3 className="text-4xl md:text-6xl font-bold tracking-tighter mb-4">Build Real Products.</h3>
+          <p className="text-lg opacity-50 max-w-2xl mx-auto">Don't just watch tutorials. Build the exact systems used by top tech companies.</p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[
+            { title: "Spotify Clone", lessons: 18, projs: 2, c1: "emerald", c2: "green" },
+            { title: "Uber Clone", lessons: 24, projs: 3, c1: "black", c2: "gray" },
+            { title: "Netflix Clone", lessons: 20, projs: 2, c1: "red", c2: "rose" },
+            { title: "AI Chatbot", lessons: 15, projs: 4, c1: "blue", c2: "indigo" },
+            { title: "Trading Dashboard", lessons: 30, projs: 1, c1: "amber", c2: "orange" },
+            { title: "Airbnb Clone", lessons: 22, projs: 2, c1: "pink", c2: "rose" }
+          ].map((prod, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: i * 0.1, ease }}
+              className="group relative p-8 rounded-[2rem] overflow-hidden border transition-all hover:-translate-y-2 hover:shadow-2xl flex flex-col justify-between min-h-[300px]"
+              style={{
+                background: dark ? "rgba(255,255,255,0.02)" : "rgba(255,255,255,1)",
+                borderColor: dark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)",
+                boxShadow: dark ? "0 20px 40px rgba(0,0,0,0.4)" : "0 20px 40px rgba(0,0,0,0.05)",
+              }}
+            >
+              <div className="relative z-10">
+                <h4 className="text-3xl font-bold mb-6 tracking-tight">{prod.title}</h4>
+                <div className="flex flex-wrap gap-2 mb-8">
+                  <span className="px-3 py-1.5 text-[10px] font-bold tracking-wider uppercase rounded-full bg-emerald-500/10 text-emerald-500">{prod.lessons} Lessons</span>
+                  <span className="px-3 py-1.5 text-[10px] font-bold tracking-wider uppercase rounded-full bg-blue-500/10 text-blue-500">{prod.projs} Projects</span>
+                  <span className="px-3 py-1.5 text-[10px] font-bold tracking-wider uppercase rounded-full bg-purple-500/10 text-purple-500">Certificate</span>
+                </div>
+              </div>
+              {/* Visual Placeholder Graphic */}
+              <div className="w-full h-32 rounded-2xl relative overflow-hidden mt-auto" style={{ background: dark ? "rgba(255,255,255,0.03)" : "rgba(0,0,0,0.03)" }}>
+                <div className={`absolute -right-10 -bottom-10 w-40 h-40 rounded-full bg-${prod.c1}-500/20 blur-2xl transition-transform group-hover:scale-150`} />
+                <div className={`absolute -left-10 -top-10 w-32 h-32 rounded-full bg-${prod.c2}-500/20 blur-2xl transition-transform group-hover:scale-150`} />
+              </div>
+            </motion.div>
+          ))}
+        </div>
       </div>
 
-      {/* Bottom rule */}
-      <div className="mx-auto max-w-[1400px] px-6 md:px-12 mt-12">
-        <div className="flex items-center justify-between">
-          <div className="h-px flex-1" style={{ background: "var(--border-primary)" }} />
-          <a
-            href="/courses"
-            className="mx-6 text-xs font-semibold flex items-center gap-2 underline-draw"
-            style={{ color: "var(--text-muted)" }}
-            onMouseEnter={e => e.currentTarget.style.color = "var(--text-accent)"}
-            onMouseLeave={e => e.currentTarget.style.color = "var(--text-muted)"}
+      {/* 5. Premium Bento Grid (Features) */}
+      <div className="max-w-[1400px] mx-auto px-6 md:px-12 mb-40 relative z-10">
+        <div className="text-center mb-16">
+          <h3 className="text-4xl md:text-6xl font-bold tracking-tighter mb-4">Platform Features.</h3>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[300px]">
+
+          {/* Large AI Mentor block */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, ease }}
+            className="md:col-span-2 md:row-span-2 rounded-[2.5rem] border p-12 relative overflow-hidden flex flex-col justify-between"
+            style={{
+              background: dark ? "rgba(255,255,255,0.02)" : "rgba(255,255,255,1)",
+              borderColor: dark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)"
+            }}
           >
-            View all courses
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M5 12h14M12 5l7 7-7 7"/>
-            </svg>
-          </a>
-          <div className="h-px flex-1" style={{ background: "var(--border-primary)" }} />
+            <div className="relative z-10 max-w-md">
+              <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-emerald-500 mb-4 block">AI Learning Experience</span>
+              <h4 className="text-4xl md:text-6xl font-bold mb-6 tracking-tighter">Meet your<br />AI Mentor.</h4>
+              <ul className="space-y-4 opacity-60 text-lg">
+                <li className="flex items-center gap-3"><div className="w-1.5 h-1.5 rounded-full bg-emerald-500" /> Explains code blocks visually</li>
+                <li className="flex items-center gap-3"><div className="w-1.5 h-1.5 rounded-full bg-emerald-500" /> Reviews and grades projects</li>
+                <li className="flex items-center gap-3"><div className="w-1.5 h-1.5 rounded-full bg-emerald-500" /> Conducts live mock interviews</li>
+                <li className="flex items-center gap-3"><div className="w-1.5 h-1.5 rounded-full bg-emerald-500" /> Personalizes your roadmap</li>
+              </ul>
+            </div>
+            {/* Visual illustration of AI avatar */}
+            <div className="absolute right-0 bottom-0 w-[400px] h-[400px] pointer-events-none">
+              <div className="absolute inset-0 bg-emerald-500/20 blur-[80px] rounded-full translate-x-1/4 translate-y-1/4 animate-pulse" style={{ animationDuration: '4s' }} />
+              <div className="absolute inset-20 bg-cyan-500/20 blur-[60px] rounded-full translate-x-1/3 translate-y-1/3" />
+            </div>
+          </motion.div>
+
+          {/* Coding Playground Preview */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, delay: 0.1, ease }}
+            className="rounded-[2.5rem] border p-8 flex flex-col justify-between relative overflow-hidden"
+            style={{
+              background: dark ? "#0a0a0a" : "#1e1e1e",
+              color: "#ffffff",
+              borderColor: dark ? "rgba(255,255,255,0.08)" : "transparent"
+            }}
+          >
+            <div>
+              <h4 className="text-2xl font-bold mb-2 tracking-tight">Coding Playground</h4>
+              <p className="opacity-60 text-sm">Large VS Code UI built directly into your browser.</p>
+            </div>
+            <div className="font-mono text-[11px] opacity-70 mt-8 bg-black/50 p-4 rounded-xl border border-white/10">
+              <span className="text-emerald-400">~/project</span> $ npm run dev<br />
+              <span className="text-blue-400">&gt; compiling...</span><br />
+              <span className="text-green-400">✓ ready in 234ms</span><br />
+              <span className="animate-pulse">_</span>
+            </div>
+          </motion.div>
+
+          {/* Career Dashboard */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, delay: 0.2, ease }}
+            className="rounded-[2.5rem] border p-8 flex flex-col justify-between relative overflow-hidden"
+            style={{
+              background: dark ? "rgba(255,255,255,0.02)" : "rgba(255,255,255,1)",
+              borderColor: dark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)"
+            }}
+          >
+            <h4 className="text-2xl font-bold mb-6 tracking-tight">Career Dashboard</h4>
+            <div className="space-y-4 mt-auto">
+              <div className="flex justify-between items-center p-3 rounded-xl" style={{ background: dark ? "rgba(255,255,255,0.03)" : "rgba(0,0,0,0.03)" }}>
+                <span className="opacity-60 text-sm font-medium">Progress</span>
+                <span className="font-bold text-emerald-500">86%</span>
+              </div>
+              <div className="flex justify-between items-center p-3 rounded-xl" style={{ background: dark ? "rgba(255,255,255,0.03)" : "rgba(0,0,0,0.03)" }}>
+                <span className="opacity-60 text-sm font-medium">Interview Score</span>
+                <span className="font-bold">91%</span>
+              </div>
+              <div className="flex justify-between items-center p-3 rounded-xl" style={{ background: dark ? "rgba(255,255,255,0.03)" : "rgba(0,0,0,0.03)" }}>
+                <span className="opacity-60 text-sm font-medium">Global Rank</span>
+                <span className="font-bold text-blue-500">Top 5%</span>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Bottom small blocks */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, delay: 0.3, ease }}
+            className="rounded-[2.5rem] border p-8 flex items-end relative overflow-hidden group"
+            style={{ background: dark ? "rgba(255,255,255,0.02)" : "rgba(255,255,255,1)", borderColor: dark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)" }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-t from-blue-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+            <h4 className="text-2xl font-bold tracking-tight z-10">Resume Builder</h4>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, delay: 0.4, ease }}
+            className="rounded-[2.5rem] border p-8 flex items-end relative overflow-hidden group"
+            style={{ background: dark ? "rgba(255,255,255,0.02)" : "rgba(255,255,255,1)", borderColor: dark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)" }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-t from-purple-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+            <h4 className="text-2xl font-bold tracking-tight z-10">Hackathons</h4>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, delay: 0.5, ease }}
+            className="rounded-[2.5rem] border p-8 flex items-end relative overflow-hidden group"
+            style={{ background: dark ? "rgba(255,255,255,0.02)" : "rgba(255,255,255,1)", borderColor: dark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)" }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-t from-amber-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+            <h4 className="text-2xl font-bold tracking-tight z-10">Certificates</h4>
+          </motion.div>
+        </div>
+      </div>
+
+      {/* 6. Companies Students Can Reach */}
+      <div className="max-w-[1400px] mx-auto px-6 md:px-12 text-center pb-32">
+        <h3 className="text-3xl md:text-5xl font-bold tracking-tighter mb-4">
+          Built to prepare you for<br />
+          <span className="text-emerald-500">world-class engineering teams.</span>
+        </h3>
+        <div className="flex flex-wrap justify-center items-center gap-12 md:gap-24 mt-20 opacity-30 grayscale transition-opacity hover:grayscale-0 hover:opacity-100 duration-500">
+          <span className="text-2xl md:text-4xl font-bold tracking-tight">Google</span>
+          <span className="text-2xl md:text-4xl font-bold tracking-tight">Microsoft</span>
+          <span className="text-2xl md:text-4xl font-bold tracking-tight">Amazon</span>
+          <span className="text-2xl md:text-4xl font-bold tracking-tight">Apple</span>
+          <span className="text-2xl md:text-4xl font-bold tracking-tight">Netflix</span>
+          <span className="text-2xl md:text-4xl font-bold tracking-tight">NVIDIA</span>
         </div>
       </div>
     </section>
