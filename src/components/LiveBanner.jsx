@@ -15,6 +15,7 @@ import {
   Pause,
   Volume2,
   VolumeX,
+  User,
 } from "lucide-react";
 
 import { getApiBase } from "@/utils/api";
@@ -140,6 +141,10 @@ function PastSessionCard({ session, onWatchRecording }) {
         <div className="space-y-3">
           {/* Metadata footer */}
           <div className="flex items-center gap-2.5 text-[9px] font-semibold pt-2 border-t" style={{ borderColor: "var(--border-primary)", color: "var(--text-muted)" }}>
+            <span className="flex items-center gap-0.5 max-w-[80px] truncate">
+              <User size={10} />
+              {session.host?.username || 'Unknown'}
+            </span>
             <span className="flex items-center gap-1">
               <CalendarDays size={10} />
               {formatDateTime(session.startedAt)}
