@@ -179,11 +179,10 @@ export default function AdminContestsPage() {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
-            className={`p-4 rounded-2xl border border-[var(--border-primary)] text-xs text-center font-bold ${
-              notification.type === "error"
+            className={`p-4 rounded-2xl border border-[var(--border-primary)] text-xs text-center font-bold ${notification.type === "error"
                 ? "bg-rose-500/10 border-rose-500/20 text-rose-400"
                 : "bg-emerald-500/10 border-emerald-500/20 text-emerald-400"
-            }`}
+              }`}
           >
             {notification.msg}
           </motion.div>
@@ -193,7 +192,7 @@ export default function AdminContestsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 shrink-0">
         <div className="flex flex-wrap gap-2">
           {[
-            { key: "all", label: "All Contests", color: "text-[var(--text-muted)]" },
+            { key: "all", label: "Contests", color: "text-[var(--text-muted)]" },
             { key: "active", label: "Active", color: "text-emerald-500" },
             { key: "upcoming", label: "Upcoming", color: "text-zinc-500" },
             { key: "past", label: "Past", color: "text-slate-500" },
@@ -201,11 +200,10 @@ export default function AdminContestsPage() {
             <button
               key={f.key}
               onClick={() => setFilterStatus(f.key)}
-              className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-xs font-semibold transition-colors cursor-pointer border border-[var(--border-primary)] ${
-                filterStatus === f.key
+              className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-xs font-semibold transition-colors cursor-pointer border border-[var(--border-primary)] ${filterStatus === f.key
                   ? "bg-[var(--bg-primary)] shadow-sm text-[var(--text-primary)] border-[var(--border-primary)]"
                   : "bg-transparent border-transparent text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
-              }`}
+                }`}
             >
               <span className={f.color}>{f.label}</span>
               <span className="px-1.5 py-0.5 rounded-md bg-[var(--bg-secondary)] text-[10px] font-bold">
@@ -254,19 +252,9 @@ export default function AdminContestsPage() {
                 No contests found
               </h3>
               <p className="text-xs max-w-xs" style={{ color: "var(--text-muted)" }}>
-                {search ? "Try adjusting your search or filter." : "Create your first contest."}
+                {search ? "Try adjusting your search or filter." : "No contests are currently registered."}
               </p>
             </div>
-            {!search && (
-              <button
-                onClick={() => router.push("/admin/contests/new")}
-                className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-lg border border-[var(--border-primary)] text-xs font-semibold transition-colors cursor-pointer hover:bg-[var(--bg-secondary)] mt-2"
-                style={{ borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
-              >
-                <Plus size={14} />
-                <span>Create Contest</span>
-              </button>
-            )}
           </div>
         ) : (
           <div className="w-full overflow-x-auto min-w-0">
@@ -328,19 +316,19 @@ export default function AdminContestsPage() {
                         </span>
                       </td>
                       <td className="px-6 py-4 text-right">
-                        <div className="flex items-center justify-end space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <div className="flex items-center justify-end space-x-1">
                           {contest.isDbContest && (
                             <>
                               <button
                                 onClick={() => router.push(`/admin/contests/${contest.id}/edit`)}
-                                className="p-2 rounded-lg text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-950/50 transition-colors cursor-pointer"
+                                className="p-2 rounded-lg text-emerald-500 hover:bg-emerald-500/10 transition-colors cursor-pointer"
                                 title="Edit Contest"
                               >
                                 <Edit3 size={16} />
                               </button>
                               <button
                                 onClick={() => router.push(`/admin/contests/${contest.id}`)}
-                                className="p-2 rounded-lg text-neutral-500 hover:bg-neutral-50 dark:hover:bg-neutral-950/50 transition-colors cursor-pointer"
+                                className="p-2 rounded-lg text-neutral-500 hover:bg-slate-500/10 transition-colors cursor-pointer"
                                 title="View Participants"
                               >
                                 <Users size={16} />
@@ -357,7 +345,7 @@ export default function AdminContestsPage() {
                           {(contest.isDbContest || contest.isLocalContest) && (
                             <button
                               onClick={() => setDeletingId(String(contest.id))}
-                              className="p-2 rounded-lg text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/50 transition-colors cursor-pointer"
+                              className="p-2 rounded-lg text-rose-500 hover:bg-rose-500/10 transition-colors cursor-pointer"
                               title="Delete Contest"
                             >
                               <Trash2 size={16} />

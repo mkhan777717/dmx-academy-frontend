@@ -215,28 +215,30 @@ export default function AdminProblemsPage() {
       {/* Stats overview cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 shrink-0">
         {[
-          { key: "all", label: "Total Problems", color: "text-[var(--text-primary)]", bg: "bg-[var(--bg-secondary)]", icon: Code },
-          { key: "easy", label: "Easy", color: "text-emerald-500", bg: "bg-emerald-50 dark:bg-emerald-950/50", icon: CheckCircle2 },
-          { key: "medium", label: "Medium", color: "text-amber-500", bg: "bg-amber-50 dark:bg-amber-950/50", icon: BarChart2 },
-          { key: "hard", label: "Hard", color: "text-rose-500", bg: "bg-rose-50 dark:bg-rose-950/50", icon: AlertCircle },
+          { key: "all", label: "Total Problems", color: "text-violet-500", bg: "bg-violet-500/10", icon: Code },
+          { key: "easy", label: "Easy", color: "text-emerald-500", bg: "bg-emerald-500/10", icon: CheckCircle2 },
+          { key: "medium", label: "Medium", color: "text-amber-500", bg: "bg-amber-500/10", icon: BarChart2 },
+          { key: "hard", label: "Hard", color: "text-rose-500", bg: "bg-rose-500/10", icon: AlertCircle },
         ].map(({ key, label, color, bg, icon: Icon }) => (
           <button
             key={key}
             onClick={() => setFilterDiff(key)}
-            className={`p-5 rounded-2xl border border-[var(--border-primary)] text-left transition-all cursor-pointer group ${filterDiff === key
+            className={`relative p-5 rounded-2xl border border-[var(--border-primary)] text-left transition-all cursor-pointer group ${filterDiff === key
               ? "ring-2 ring-[var(--accent-primary)] border-transparent bg-[var(--bg-secondary)]"
               : "hover:bg-[var(--bg-secondary)] bg-[var(--bg-card)]"
               }`}
             style={{ borderColor: filterDiff === key ? "transparent" : "var(--border-primary)" }}
           >
-            <div className={`p-2.5 rounded-xl ${bg} ${color} w-fit mb-4 transition-transform group-hover:scale-110`}>
+            <div className="space-y-1">
+              <div className="text-2xl font-serif" style={{ color: "var(--text-primary)" }}>
+                {counts[key]}
+              </div>
+              <div className="text-xs font-medium" style={{ color: "var(--text-muted)" }}>
+                {label}
+              </div>
+            </div>
+            <div className={`absolute top-5 right-5 p-2.5 rounded-xl ${bg} ${color} transition-transform group-hover:scale-110`}>
               <Icon size={16} />
-            </div>
-            <div className="text-2xl font-serif" style={{ color: "var(--text-primary)" }}>
-              {counts[key]}
-            </div>
-            <div className="text-xs font-medium mt-1" style={{ color: "var(--text-muted)" }}>
-              {label}
             </div>
           </button>
         ))}
@@ -390,7 +392,7 @@ export default function AdminProblemsPage() {
                           </span>
                         </td>
                         <td className="px-6 py-4 text-right">
-                          <div className="flex items-center justify-end space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <div className="flex items-center justify-end space-x-1">
                             <button
                               onClick={() => router.push(`/practice/${problem.slug || problem.id}`)}
                               className="p-2 rounded-lg text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-primary)] transition-colors cursor-pointer"
@@ -402,14 +404,14 @@ export default function AdminProblemsPage() {
                               <>
                                 <button
                                   onClick={() => router.push(`/admin/problems/${problem.id}/edit`)}
-                                  className="p-2 rounded-lg text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-950/50 transition-colors cursor-pointer"
+                                  className="p-2 rounded-lg text-emerald-500 hover:bg-emerald-500/10 transition-colors cursor-pointer"
                                   title="Edit Problem"
                                 >
                                   <Edit3 size={16} />
                                 </button>
                                 <button
                                   onClick={() => setDeletingId({ id: problem.id, slug: problem.slug, isDb: true })}
-                                  className="p-2 rounded-lg text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/50 transition-colors cursor-pointer"
+                                  className="p-2 rounded-lg text-rose-500 hover:bg-rose-500/10 transition-colors cursor-pointer"
                                   title="Delete Problem"
                                 >
                                   <Trash2 size={16} />

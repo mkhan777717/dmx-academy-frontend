@@ -185,33 +185,32 @@ export default function StudyMaterialsPage() {
   return (
     <div className="space-y-6 animate-fade-in pb-12">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div className="space-y-1">
-          <div className="flex items-center space-x-2">
-            <div className="p-1.5 rounded-lg" style={{ backgroundColor: "var(--bg-badge)", color: "var(--text-accent)" }}>
-              <FileText size={16} />
-            </div>
-            <span className="text-xs font-bold uppercase tracking-widest" style={{ color: "var(--text-accent)" }}>Notes Vault</span>
+      <section className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 border-b pb-6 shrink-0 mb-8" style={{ borderColor: "var(--border-primary)" }}>
+        <div className="space-y-2">
+          <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border border-[var(--border-primary)] mb-3 w-fit"
+            style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)", backgroundColor: "var(--bg-secondary)" }}>
+            <FileText size={12} className="text-violet-500" />
+            Notes Vault
           </div>
-          <h1 className="text-2xl font-black font-display" style={{ color: "var(--text-primary)" }}>Study Materials</h1>
-          <p className="text-sm" style={{ color: "var(--text-secondary)" }}>Upload class notes PDFs for reading and download.</p>
+          <h1 className="text-4xl font-serif tracking-tight" style={{ color: "var(--text-primary)" }}>Study Materials</h1>
+          <p className="text-sm max-w-xl" style={{ color: "var(--text-secondary)" }}>Upload class notes PDFs for reading and download.</p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 shrink-0">
           <button onClick={() => { setSubjectModalError(""); setNewFolderSubjectName(""); setSubjectModalOpen(true); }}
-                  className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-2xl font-bold text-sm transition-all border border-[var(--border-primary)] hover:scale-105 cursor-pointer"
-                  style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}>
-            <Plus size={15} className="text-zinc-400" />
+                  className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl border border-[var(--border-primary)] font-semibold text-xs transition-colors hover:bg-[var(--bg-secondary)] cursor-pointer"
+                  style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}>
+            <Plus size={14} className="text-[var(--text-secondary)]" />
             <span>Add Folder</span>
           </button>
           <button onClick={() => setUploadOpen(true)}
-                  className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-2xl font-bold text-sm text-[var(--text-on-accent)] shadow-md transition-all hover:scale-105 cursor-pointer"
-                  style={{ background: "var(--accent-gradient)" }}>
-            <Upload size={15} />
+                  className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-[var(--text-on-accent)] font-semibold text-xs transition-transform hover:-translate-y-0.5 shadow-md cursor-pointer"
+                  style={{ background: "var(--accent-primary)" }}>
+            <Upload size={14} />
             <span>Upload PDF</span>
           </button>
         </div>
-      </div>
+      </section>
 
       {error && (
         <div className="p-4 rounded-2xl border border-[var(--border-primary)] bg-rose-500/10 border-rose-500/20 flex items-center space-x-3">

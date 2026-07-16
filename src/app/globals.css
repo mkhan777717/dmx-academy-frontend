@@ -177,6 +177,15 @@ html {
   background-size: 28px 28px;
 }
 
+/* =============================================
+   EDITORIAL LINE
+   ============================================= */
+.editorial-line {
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--border-primary), transparent);
+}
+
+
 .dot-grid-fine {
   background-image: radial-gradient(var(--dot-color) 1px, transparent 1px);
   background-size: 18px 18px;

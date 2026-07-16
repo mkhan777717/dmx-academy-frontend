@@ -88,11 +88,11 @@ export default function InstitutesPage() {
       <Navbar />
 
       <main className="flex-grow pb-16">
-        
+
         {/* HERO SECTION */}
         <section className="mx-auto max-w-7xl px-6 md:px-12 py-16 md:py-24">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8 items-center">
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
@@ -114,8 +114,8 @@ export default function InstitutesPage() {
                 </a>
               </div>
             </motion.div>
-            
-            <motion.div 
+
+            <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.6, delay: 0.2 }}
@@ -140,7 +140,7 @@ export default function InstitutesPage() {
         {/* FEATURES SECTION */}
         <section className="py-20 border-y relative" style={{ borderColor: "var(--border-primary)", backgroundColor: "var(--bg-secondary)" }}>
           <div className="absolute top-0 left-0 right-0 h-[300px] pointer-events-none z-0" style={{ background: "linear-gradient(180deg, rgba(16,185,129,0.03) 0%, transparent 100%)" }} />
-          
+
           <div className="mx-auto max-w-7xl px-6 md:px-12 relative z-10">
             <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
               <h2 className="text-3xl md:text-4xl font-black tracking-tight" style={{ color: "var(--text-primary)" }}>
@@ -150,7 +150,7 @@ export default function InstitutesPage() {
                 From live class delivery to automated AI assessments, we provide all the tools your campus needs to scale high-quality technical education.
               </p>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {features.map((feature, i) => (
                 <div key={i} className="p-6 rounded-2xl border transition-all hover:-translate-y-1 hover:shadow-xl group bg-[var(--bg-card)] border-[var(--border-primary)] hover:border-emerald-500/30">
@@ -190,7 +190,7 @@ export default function InstitutesPage() {
                   ))}
                 </div>
               </div>
-              
+
               <div className="lg:col-span-3">
                 <div className="rounded-2xl border p-6 md:p-8 shadow-xl bg-[var(--bg-card)] border-[var(--border-primary)]">
                   {formStatus === "success" ? (
@@ -211,40 +211,40 @@ export default function InstitutesPage() {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div className="space-y-1.5">
                           <label className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">Full Name</label>
-                          <input required type="text" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} 
-                            className="w-full px-4 py-3 rounded-xl border bg-transparent outline-none transition-colors border-[var(--border-primary)] focus:border-emerald-500" 
+                          <input required type="text" value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })}
+                            className="w-full px-4 py-3 rounded-xl border bg-transparent outline-none transition-colors border-[var(--border-primary)] focus:border-emerald-500"
                             style={{ color: "var(--text-primary)" }} placeholder="Jane Doe" />
                         </div>
                         <div className="space-y-1.5">
                           <label className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">University / Institute</label>
-                          <input required type="text" value={formData.university} onChange={e => setFormData({...formData, university: e.target.value})} 
-                            className="w-full px-4 py-3 rounded-xl border bg-transparent outline-none transition-colors border-[var(--border-primary)] focus:border-emerald-500" 
+                          <input required type="text" value={formData.university} onChange={e => setFormData({ ...formData, university: e.target.value })}
+                            className="w-full px-4 py-3 rounded-xl border bg-transparent outline-none transition-colors border-[var(--border-primary)] focus:border-emerald-500"
                             style={{ color: "var(--text-primary)" }} placeholder="Global Tech University" />
                         </div>
                       </div>
-                      
+
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div className="space-y-1.5">
                           <label className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">Work Email</label>
-                          <input required type="email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} 
-                            className="w-full px-4 py-3 rounded-xl border bg-transparent outline-none transition-colors border-[var(--border-primary)] focus:border-emerald-500" 
+                          <input required type="email" value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })}
+                            className="w-full px-4 py-3 rounded-xl border bg-transparent outline-none transition-colors border-[var(--border-primary)] focus:border-emerald-500"
                             style={{ color: "var(--text-primary)" }} placeholder="jane@university.edu" />
                         </div>
                         <div className="space-y-1.5">
                           <label className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">Phone Number</label>
-                          <input type="tel" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} 
-                            className="w-full px-4 py-3 rounded-xl border bg-transparent outline-none transition-colors border-[var(--border-primary)] focus:border-emerald-500" 
+                          <input type="tel" value={formData.phone} onChange={e => setFormData({ ...formData, phone: e.target.value })}
+                            className="w-full px-4 py-3 rounded-xl border bg-transparent outline-none transition-colors border-[var(--border-primary)] focus:border-emerald-500"
                             style={{ color: "var(--text-primary)" }} placeholder="+1 (555) 000-0000" />
                         </div>
                       </div>
-                      
+
                       <div className="space-y-1.5">
                         <label className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">Message (Optional)</label>
-                        <textarea value={formData.message} onChange={e => setFormData({...formData, message: e.target.value})} 
-                          className="w-full px-4 py-3 rounded-xl border bg-transparent outline-none transition-colors resize-none border-[var(--border-primary)] focus:border-emerald-500" 
+                        <textarea value={formData.message} onChange={e => setFormData({ ...formData, message: e.target.value })}
+                          className="w-full px-4 py-3 rounded-xl border bg-transparent outline-none transition-colors resize-none border-[var(--border-primary)] focus:border-emerald-500"
                           rows={4} style={{ color: "var(--text-primary)" }} placeholder="Tell us about your campus size and specific requirements..." />
                       </div>
-                      
+
                       <button type="submit" disabled={formStatus === "submitting"} className="w-full py-4 rounded-xl font-bold text-white transition-opacity hover:opacity-90 disabled:opacity-50" style={{ background: "var(--accent-primary)" }}>
                         {formStatus === "submitting" ? "Submitting Request..." : "Request Institute Access"}
                       </button>

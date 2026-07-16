@@ -49,6 +49,7 @@ import {
   Pause,
   Volume2,
   VolumeX,
+  User,
 } from "lucide-react";
 import { ReactionOverlay, ReactionPicker } from "@/components/LiveReactions";
 
@@ -1768,7 +1769,7 @@ export default function AdminLivePage() {
               {pastSessions.map((past) => (
                 <div
                   key={past.id}
-                  className="flex items-center justify-between p-4 rounded-2xl border border-[var(--border-primary)] transition-colors hover:bg-[var(--bg-secondary)]"
+                  className="flex items-center justify-between p-4 rounded-2xl border border-[var(--border-primary)] transition-colors hover:bg-[var(--bg-secondary)] gap-4"
                   style={{
                     backgroundColor: "var(--bg-primary)",
                     borderColor: "var(--border-primary)",
@@ -1790,15 +1791,16 @@ export default function AdminLivePage() {
                     )}
                     <div className="min-w-0">
                       <h4 className="text-xs font-black truncate" style={{ color: "var(--text-primary)" }}>
-                        {past.title}
+                        {past.title} <span className="text-[9px] font-normal text-[var(--text-muted)] opacity-80 ml-2">by {past.host?.username || 'Unknown'}</span>
                       </h4>
-                      <p className="text-[10px] truncate" style={{ color: "var(--text-muted)" }}>
-                        Started {new Date(past.startedAt).toLocaleString()} • Duration: {
-                          past.endedAt 
-                            ? `${Math.round((new Date(past.endedAt) - new Date(past.startedAt)) / 60000)} mins`
-                            : "Unknown"
-                        }
+                      <p className="text-[10px] text-[var(--text-muted)] leading-tight mt-0.5">
+                        {new Date(past.startedAt).toLocaleDateString()} at {new Date(past.startedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                       </p>
+                      {past.endedAt && (
+                        <p className="text-[9px] text-[var(--text-muted)] font-semibold opacity-70 mt-0.5">
+                          Duration: {Math.round((new Date(past.endedAt) - new Date(past.startedAt)) / 60000)} mins
+                        </p>
+                      )}
                     </div>
                   </div>
 

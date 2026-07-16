@@ -97,7 +97,13 @@ function LoginForm() {
     return {
       accentColor: "#10b981", accentGradient: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
       bgBadge: "rgba(16, 185, 129, 0.08)", borderAccent: "rgba(16, 185, 129, 0.2)",
-      icon: <Sparkles size={20} className="text-white" />,
+      icon: (
+        <img
+          src="/logo.webp"
+          alt="Eduvantix Logo"
+          style={{ background: "transparent", borderRadius: 4 }}
+        />
+      ),
       title: isRegistering ? "Create an Account" : "Welcome Back",
       desc: isRegistering ? "Join the Eduvantix network" : "Sign in to access your portal",
       demoEmail: "user@eduvantix.com", label: "User"
@@ -200,7 +206,7 @@ function LoginForm() {
         {/* Header */}
         <div className="space-y-1">
           <div className="flex items-center gap-3 mb-3">
-            <div className="h-10 w-10 rounded-xl flex items-center justify-center" style={{ background: theme.accentGradient }}>
+            <div className="h-13 w-14 rounded-xl flex items-center justify-center">
               {isForgot ? <RefreshCw size={18} className="text-white" /> : React.cloneElement(theme.icon, { size: 18, className: "text-white" })}
             </div>
             <div>

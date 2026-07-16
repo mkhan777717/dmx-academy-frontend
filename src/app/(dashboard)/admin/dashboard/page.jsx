@@ -275,14 +275,6 @@ export default function AdminDashboard() {
         </div>
         <div className="flex items-center gap-3 shrink-0">
           <button
-            onClick={() => router.push("/admin/contests/new")}
-            className="px-5 py-2.5 rounded-xl font-semibold text-xs text-[var(--text-on-accent)] shadow-md transition-transform hover:-translate-y-0.5 flex items-center space-x-1.5 cursor-pointer"
-            style={{ background: "var(--accent-primary)" }}
-          >
-            <Plus size={14} />
-            <span>Create Contest</span>
-          </button>
-          <button
             onClick={() => router.push("/contest")}
             className="px-5 py-2.5 rounded-xl font-semibold text-xs border border-[var(--border-primary)] transition-colors hover:bg-[var(--bg-secondary)] flex items-center space-x-1.5 cursor-pointer"
             style={{ borderColor: "var(--border-primary)", color: "var(--text-primary)" }}

@@ -152,30 +152,31 @@ export default function PracticeCatalogPage() {
         <div className="mx-auto max-w-7xl px-4 md:px-8 space-y-8">
           
           {/* Header Description */}
-          <motion.div 
+          <motion.section 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: "easeOut" }}
-            className="text-center max-w-3xl mx-auto space-y-4"
+            className="flex flex-col gap-2 border-b pb-6 shrink-0 mb-8"
+            style={{ borderColor: "var(--border-primary)" }}
           >
             <div 
-              className="inline-flex items-center space-x-1.5 rounded-full border border-[var(--border-primary)] px-4 py-1.5 text-xs font-semibold"
+              className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border border-[var(--border-primary)] mb-3 w-fit"
               style={{
-                backgroundColor: "var(--bg-badge)",
-                borderColor: "var(--border-accent)",
-                color: "var(--text-accent)"
+                borderColor: "var(--border-primary)",
+                color: "var(--text-secondary)",
+                backgroundColor: "var(--bg-secondary)"
               }}
             >
-              <Zap size={13} className="text-[var(--text-accent)] animate-pulse" />
+              <Zap size={12} className="text-violet-500 animate-pulse" />
               <span>Interactive Practice Sandbox</span>
             </div>
-            <h1 className="text-4xl sm:text-5xl font-black font-display tracking-tight" style={{ color: "var(--text-primary)" }}>
+            <h1 className="text-4xl font-serif tracking-tight" style={{ color: "var(--text-primary)" }}>
               Interactive Code Zone
             </h1>
-            <p className="text-sm sm:text-base leading-relaxed" style={{ color: "var(--text-secondary)" }}>
+            <p className="text-sm max-w-xl leading-relaxed" style={{ color: "var(--text-secondary)" }}>
               Solve system design scenarios, coding algorithms, and security reviews. Test solutions against live assertions and ask our voice-enabled AI developer assistant for guidance.
             </p>
-          </motion.div>
+          </motion.section>
 
           {/* Filtering bar */}
           <div className="flex flex-col lg:flex-row gap-4 justify-between items-center bg-white/5 p-4 rounded-3xl border border-[var(--border-primary)] backdrop-blur-md"

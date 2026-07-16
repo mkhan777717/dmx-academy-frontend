@@ -167,13 +167,13 @@ export default function Testimonials() {
                 <svg key={i} width="16" height="16" viewBox="0 0 24 24" fill="#f59e0b"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
               ))}
             </div>
-            <span><strong style={{ color: "var(--text-primary)" }}>4.9 / 5</strong> across 12,000+ learners</span>
+            <span><strong style={{ color: "var(--text-primary)" }}>4.9 / 5</strong> across 20+ learners</span>
           </motion.div>
         </div>
       </div>
 
       {/* Carousel */}
-      <div ref={ref} className="w-full relative pb-8 mt-16 md:mt-24 max-w-[1400px] mx-auto">
+      <div ref={ref} className="w-full relative pb-8 mt-16 md:mt-32 max-w-[1400px] mx-auto">
         
         <div className="relative h-[480px] md:h-[400px] w-full flex items-center justify-center overflow-x-hidden md:overflow-visible px-4 max-w-[100vw] group">
           

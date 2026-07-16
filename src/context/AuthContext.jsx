@@ -103,15 +103,15 @@ export function AuthProvider({ children }) {
     }
     const socket = getSocket();
     if (socket) {
-      socket.emit("joinUser", user.id);
+      const storedUser = localStorage.getItem("dmx_auth_user");
+      let mySessionId = "";
+      try {
+        mySessionId = JSON.parse(storedUser)?.sessionId;
+      } catch { }
+
+      socket.emit("joinUser", { userId: user.id, sessionId: mySessionId });
 
       socket.on("newSessionLoggedIn", (data) => {
-        const storedUser = localStorage.getItem("dmx_auth_user");
-        let mySessionId = "";
-        try {
-          mySessionId = JSON.parse(storedUser)?.sessionId;
-        } catch { }
-
         if (data.newSessionId && mySessionId && data.newSessionId !== mySessionId) {
           setSessionConflict(true);
           setCountdown(3);

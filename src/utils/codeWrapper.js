@@ -840,7 +840,15 @@ if (_fn) {
       _parsedInput = JSON.parse("[" + _rawInput + "]");
       _parsedSuccess = true;
     } catch {
-      _parsedInput = _rawInput;
+      try {
+        const _lines = _rawInput.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+        _parsedInput = _lines.map(l => {
+          try { return JSON.parse(l); } catch { return l; }
+        });
+        _parsedSuccess = true;
+      } catch {
+        _parsedInput = _rawInput;
+      }
     }
   }
 
@@ -911,7 +919,18 @@ if _fn is not None:
             _parsed = json.loads(f"[{_raw}]")
             _parsed_success = True
         except Exception:
-            _parsed = _raw
+            try:
+                _lines = [l.strip() for l in _raw.splitlines() if l.strip()]
+                _parsed_list = []
+                for _l in _lines:
+                    try:
+                        _parsed_list.append(json.loads(_l))
+                    except Exception:
+                        _parsed_list.append(_l)
+                _parsed = _parsed_list
+                _parsed_success = True
+            except Exception:
+                _parsed = _raw
 
     try:
         _sig = inspect.signature(_fn)

@@ -81,32 +81,29 @@ export default function VivaHistoryPage() {
     <div className="space-y-8 animate-fade-in pb-12">
 
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div className="space-y-1">
-          <div className="flex items-center space-x-2">
-            <div className="p-1.5 rounded-lg" style={{ backgroundColor: "var(--bg-badge)", color: "var(--text-accent)" }}>
-              <Brain size={16} />
-            </div>
-            <span className="text-xs font-bold uppercase tracking-widest" style={{ color: "var(--text-accent)" }}>
-              AI Viva
-            </span>
+      <section className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 border-b pb-6 shrink-0 mb-8" style={{ borderColor: "var(--border-primary)" }}>
+        <div className="space-y-2">
+          <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border border-[var(--border-primary)] mb-3 w-fit"
+            style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)", backgroundColor: "var(--bg-secondary)" }}>
+            <Brain size={12} className="text-violet-500" />
+            AI Viva
           </div>
-          <h1 className="text-2xl font-black font-display" style={{ color: "var(--text-primary)" }}>
+          <h1 className="text-4xl font-serif tracking-tight" style={{ color: "var(--text-primary)" }}>
             Session History
           </h1>
-          <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
+          <p className="text-sm max-w-xl" style={{ color: "var(--text-secondary)" }}>
             Review your past viva sessions and track your progress.
           </p>
         </div>
         <Link
           href="/student/viva"
-          className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-2xl font-bold text-sm text-[var(--text-on-accent)] shadow-md transition-all hover:scale-105"
-          style={{ background: "var(--accent-gradient)" }}
+          className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-xl font-semibold text-xs text-[var(--text-on-accent)] transition-transform hover:-translate-y-0.5 shadow-md shrink-0 cursor-pointer"
+          style={{ background: "var(--accent-primary)" }}
         >
-          <Sparkles size={15} />
+          <Sparkles size={14} />
           <span>New Session</span>
         </Link>
-      </div>
+      </section>
 
       {/* Stats Cards */}
       {completedSessions.length > 0 && (

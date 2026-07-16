@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
-import { Activity, Award, Zap } from "lucide-react";
+import { Activity, Award, Zap, User } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 function timeAgo(dateStr) {
@@ -237,10 +237,17 @@ export default function StudentProfile() {
     <div className="max-w-6xl mx-auto space-y-8 animate-in fade-in duration-500">
       
       {/* ── Page Header ───────────────────────────── */}
-      <div className="flex flex-col gap-2 pb-6 border-b" style={{ borderColor: "var(--border-primary)" }}>
-        <h1 className="text-3xl font-black font-serif-display tracking-tight" style={{ color: "var(--text-primary)" }}>Student Profile</h1>
-        <p className="text-sm" style={{ color: "var(--text-secondary)" }}>Manage your account and view your learning statistics.</p>
-      </div>
+      <section className="flex flex-col gap-2 border-b pb-6 shrink-0" style={{ borderColor: "var(--border-primary)" }}>
+        <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border border-[var(--border-primary)] mb-3 w-fit"
+          style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)", backgroundColor: "var(--bg-secondary)" }}>
+          <User size={12} className="text-violet-500" />
+          Scholar Profile
+        </div>
+        <h1 className="text-4xl font-serif tracking-tight" style={{ color: "var(--text-primary)" }}>Student Profile</h1>
+        <p className="text-sm max-w-xl" style={{ color: "var(--text-secondary)" }}>
+          Manage your account and view your learning statistics.
+        </p>
+      </section>
 
       <div className="flex flex-col lg:flex-row gap-8">
         

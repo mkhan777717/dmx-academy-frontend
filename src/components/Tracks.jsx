@@ -1,24 +1,82 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
+import useTheme from "@/customHooks/useTheme";
+import TickerStrip from "./TickerStrip";
+import { getThemeTokens } from "@/utils/themeTokens";
 
-function useTheme() {
-  const [dark, setDark] = useState(false);
-  useEffect(() => {
-    const check = () => setDark(document.documentElement.classList.contains("theme-dark"));
-    check();
-    const obs = new MutationObserver(check);
-    obs.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
-    return () => obs.disconnect();
-  }, []);
-  return dark;
+// Infinite scroll ticker for company logos
+function InfiniteCompanyTicker({ companies, dark }) {
+  const tickerRef = useRef(null);
+
+  return (
+    <div
+      className="relative mt-20 overflow-x-hidden w-full pointer-events-none"
+      style={{
+        opacity: 0.3,
+        filter: "grayscale(1)",
+        transition: "filter 0.5s, opacity 0.5s"
+      }}
+    >
+      <div
+        ref={tickerRef}
+        className="group hover:opacity-100 hover:grayscale-0 flex items-center"
+        style={{
+          animation: "companyTickerScroll 32s linear infinite",
+          display: "flex",
+          width: "max-content",
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.animationPlayState = "paused";
+          e.currentTarget.parentElement.style.opacity = "1";
+          e.currentTarget.parentElement.style.filter = "grayscale(0)";
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.animationPlayState = "running";
+          e.currentTarget.parentElement.style.opacity = "";
+          e.currentTarget.parentElement.style.filter = "";
+        }}
+      >
+        {[...companies, ...companies].map((company, idx) => (
+          <span
+            key={company + idx}
+            className="mx-12 md:mx-24 text-2xl md:text-4xl font-bold tracking-tight whitespace-nowrap"
+            style={{
+              color: dark ? "#fff" : "#111",
+              transition: "color 0.3s"
+            }}
+          >
+            {company}
+          </span>
+        ))}
+      </div>
+      {/* Inline style for keyframes */}
+      <style>
+        {`
+        @keyframes companyTickerScroll {
+          100% { transform: translateX(-50%); }
+        }
+        `}
+      </style>
+    </div>
+  );
 }
 
 export default function Tracks() {
   const dark = useTheme();
-
   const ease = [0.16, 1, 0.3, 1];
+  const tok = getThemeTokens(dark);
+
+  // For built to prepare you for section
+  const companies = [
+    "Google",
+    "Microsoft",
+    "Amazon",
+    "Apple",
+    "Netflix",
+    "NVIDIA",
+  ];
 
   return (
     <section
@@ -55,9 +113,9 @@ export default function Tracks() {
       {/* 2. Success Numbers */}
       <div className="max-w-[1200px] mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 px-6 mb-40 relative z-10">
         {[
-          { val: "500+", label: "Lessons" },
-          { val: "200+", label: "Projects" },
-          { val: "50+", label: "Mentors" },
+          { val: "100+", label: "Lessons" },
+          { val: "100+", label: "Projects" },
+          { val: "10+", label: "Mentors" },
           { val: "24/7", label: "AI Tutor" },
         ].map((stat, i) => (
           <motion.div
@@ -73,6 +131,10 @@ export default function Tracks() {
           </motion.div>
         ))}
       </div>
+
+      <TickerStrip tok={tok}/>
+
+      <div className="editorial-line  mb-40" />
 
       {/* 3. Learning Journey Timeline */}
       <div className="max-w-[1400px] mx-auto px-6 md:px-12 mb-40 relative z-10">
@@ -116,6 +178,8 @@ export default function Tracks() {
           ))}
         </div>
       </div>
+
+      <div className="editorial-line  mb-40" />
 
       {/* 4. Build Real Products */}
       <div className="max-w-[1400px] mx-auto px-6 md:px-12 mb-40 relative z-10">
@@ -163,6 +227,8 @@ export default function Tracks() {
           ))}
         </div>
       </div>
+
+      <div className="editorial-line  mb-40" />
 
       {/* 5. Premium Bento Grid (Features) */}
       <div className="max-w-[1400px] mx-auto px-6 md:px-12 mb-40 relative z-10">
@@ -294,20 +360,16 @@ export default function Tracks() {
         </div>
       </div>
 
+      <div className="editorial-line  mb-40" />
+
       {/* 6. Companies Students Can Reach */}
       <div className="max-w-[1400px] mx-auto px-6 md:px-12 text-center pb-32">
         <h3 className="text-3xl md:text-5xl font-bold tracking-tighter mb-4">
           Built to prepare you for<br />
           <span className="text-emerald-500">world-class engineering teams.</span>
         </h3>
-        <div className="flex flex-wrap justify-center items-center gap-12 md:gap-24 mt-20 opacity-30 grayscale transition-opacity hover:grayscale-0 hover:opacity-100 duration-500">
-          <span className="text-2xl md:text-4xl font-bold tracking-tight">Google</span>
-          <span className="text-2xl md:text-4xl font-bold tracking-tight">Microsoft</span>
-          <span className="text-2xl md:text-4xl font-bold tracking-tight">Amazon</span>
-          <span className="text-2xl md:text-4xl font-bold tracking-tight">Apple</span>
-          <span className="text-2xl md:text-4xl font-bold tracking-tight">Netflix</span>
-          <span className="text-2xl md:text-4xl font-bold tracking-tight">NVIDIA</span>
-        </div>
+        {/* Infinite scroll company ticker */}
+        <InfiniteCompanyTicker companies={companies} dark={dark} />
       </div>
     </section>
   );

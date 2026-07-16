@@ -17,7 +17,7 @@ import { buildAuthHeaders } from "@/utils/api";
 function computeContestTiming(c) {
   const now = new Date();
   const start = c.startTime ? new Date(c.startTime) : null;
-  const end   = c.endTime   ? new Date(c.endTime)   : null;
+  const end = c.endTime ? new Date(c.endTime) : null;
 
   // If timestamps are invalid ISO (old static strings), preserve legacy fields
   if (!start || isNaN(start.getTime()) || !end || isNaN(end.getTime())) {
@@ -89,7 +89,7 @@ export default function ContestLobby() {
   const [registeredContests, setRegisteredContests] = useState([]);
   const [pastContestResults, setPastContestResults] = useState(null);
   const [isStudentLoggedIn, setIsStudentLoggedIn] = useState(false);
-  
+
   // Leaderboard states
   const [leaderboard, setLeaderboard] = useState([]);
   const [leaderboardLoading, setLeaderboardLoading] = useState(true);
@@ -359,30 +359,31 @@ export default function ContestLobby() {
         <div className="mx-auto max-w-7xl px-4 md:px-8 space-y-8">
 
           {/* Main header block */}
-          <motion.div
+          <motion.section
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: "easeOut" }}
-            className="text-center max-w-3xl mx-auto space-y-4"
+            className="flex flex-col gap-2 border-b pb-6 shrink-0 mb-8"
+            style={{ borderColor: "var(--border-primary)" }}
           >
             <div
-              className="inline-flex items-center space-x-1.5 rounded-full border border-[var(--border-primary)] px-4 py-1.5 text-xs font-semibold"
+              className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border border-[var(--border-primary)] mb-3 w-fit"
               style={{
-                backgroundColor: "var(--bg-badge)",
-                borderColor: "var(--border-accent)",
-                color: "var(--text-accent)"
+                borderColor: "var(--border-primary)",
+                color: "var(--text-secondary)",
+                backgroundColor: "var(--bg-secondary)"
               }}
             >
-              <Trophy size={13} className="text-[var(--text-accent)] animate-bounce" />
+              <Trophy size={12} className="text-violet-500 animate-bounce" />
               <span>Eduvantix Competitive Coding</span>
             </div>
-            <h1 className="text-4xl sm:text-5xl font-black font-display tracking-tight" style={{ color: "var(--text-primary)" }}>
+            <h1 className="text-4xl font-serif tracking-tight" style={{ color: "var(--text-primary)" }}>
               Contest Arena
             </h1>
-            <p className="text-sm sm:text-base leading-relaxed" style={{ color: "var(--text-secondary)" }}>
+            <p className="text-sm max-w-xl leading-relaxed" style={{ color: "var(--text-secondary)" }}>
               Challenge other students, solve system architectures under pressure, and climb the Eduvantix leaderboard in timed hackathons.
             </p>
-          </motion.div>
+          </motion.section>
 
           {/* Lobby controls bar */}
           <div className="flex flex-col lg:flex-row gap-4 justify-between items-center p-4 rounded-3xl border border-[var(--border-primary)] backdrop-blur-md"
@@ -394,7 +395,7 @@ export default function ContestLobby() {
             {/* Tab links */}
             <div className="flex flex-wrap gap-1 items-center p-1 rounded-full border" style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)" }}>
               {[
-                { id: "all", label: "All Contests" },
+                { id: "all", label: "Contests" },
                 { id: "active", label: "Active" },
                 { id: "upcoming", label: "Upcoming" },
                 { id: "past", label: "Past Events" },
@@ -578,8 +579,8 @@ export default function ContestLobby() {
 
                             {/* Dynamic Tag Pill */}
                             <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md border border-[var(--border-primary)] ${isActive ? "text-emerald-500 bg-emerald-500/10 border-emerald-500/20" :
-                                isUpcoming ? "text-zinc-500 bg-zinc-500/10 border-zinc-500/20" :
-                                  "text-[var(--text-muted)] bg-slate-500/5 border-transparent"
+                              isUpcoming ? "text-zinc-500 bg-zinc-500/10 border-zinc-500/20" :
+                                "text-[var(--text-muted)] bg-slate-500/5 border-transparent"
                               }`}>
                               {contest.status.toUpperCase()}
                             </span>

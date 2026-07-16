@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Gamepad2, Plus, Trash2, Edit3, CheckCircle2, XCircle,
   RefreshCw, ChevronDown, ChevronUp, Save, X, AlertCircle,
-  BookOpen, Code, Terminal, Layers, Search
+  BookOpen, Code, Terminal, Layers, Search, Info
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { getApiBase, buildAuthHeaders } from "@/utils/api";
@@ -62,6 +62,33 @@ const GAME_TYPES = [
     langs: ["Python", "JavaScript", "SQL"],
   },
 ];
+
+const GAME_INSTRUCTIONS = {
+  quiz: [
+    "Choose a track (JavaScript, React.js, Node.js, MongoDB) to begin.",
+    "Answer multiple-choice questions within the countdown timer (default 20s).",
+    "Maintain your streak multiplier by answering consecutive questions correctly.",
+    "Immediate validation and detailed explanations are provided after each submission."
+  ],
+  match: [
+    "Test your memory by matching programming terminology with their correct definitions.",
+    "Cards are placed face-down in a neon grid. Click a card to flip it and reveal the content.",
+    "Click a second card to find a match. Correct matches remain face-up.",
+    "Finish matching all pairs in the shortest time with the fewest card flips."
+  ],
+  debug: [
+    "Fix syntactical, logical, or runtime errors in code snippets within an interactive IDE.",
+    "Read the compiler error output or debug details provided in the instructions.",
+    "Highlight and edit the specific buggy lines of code to repair the program.",
+    "Run and validate the workspace until all tests/assertions pass."
+  ],
+  fillin: [
+    "Complete missing operators, variables, or keywords in code snippets.",
+    "Review the syntax code which has blank slots (labeled e.g., ____, ____2).",
+    "Select the correct answer from 4 multiple-choice options for each blank.",
+    "Submit and get instant evaluation with syntax formatting and speed rewards."
+  ]
+};
 
 // ─── Empty form templates ─────────────────────────────────────────────────────
 const EMPTY_FORMS = {
@@ -509,38 +536,138 @@ function validateForm(type, form) {
 
 // ─── Question card display ─────────────────────────────────────────────────────
 function QuestionCard({ q, type, onEdit, onDelete, canManage }) {
-  const preview = {
-    quiz: `[Lvl ${q.level || 1}] ${q.track} • ${q.question?.slice(0, 80)}${q.question?.length > 80 ? "…" : ""}`,
-    match: `[Lvl ${q.level || 1}] ${q.track} • ${q.term} → ${q.definition?.slice(0, 60)}${q.definition?.length > 60 ? "…" : ""}`,
-    debug: `[Lvl ${q.level || 1}] ${q.track} • ${q.title} (${(q.buggy_lines?.length || 1)} bug${(q.buggy_lines?.length || 1) > 1 ? 's' : ''} on line${(q.buggy_lines?.length || 1) > 1 ? 's' : ''} ${(q.buggy_lines || [{line_number: q.buggy_line_number}]).map(b => b.line_number).join(', ')})`,
-    fillin: `[Lvl ${q.level || 1}] ${q.track || q.lang} • ${q.title} — ${q.blanks?.length || 1} blank${(q.blanks?.length || 1) > 1 ? "s" : ""}`,
-  }[type];
+  const trackName = q.track || q.lang || "General";
+  const badgeStyle = (name) => {
+    const n = (name || "").toLowerCase();
+    if (n.includes("javascript") || n.includes("react") || n.includes("js")) {
+      return "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20";
+    }
+    if (n.includes("node")) {
+      return "bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20";
+    }
+    if (n.includes("mongo")) {
+      return "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-500/20";
+    }
+    if (n.includes("python")) {
+      return "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20";
+    }
+    if (n.includes("sql")) {
+      return "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20";
+    }
+    return "bg-zinc-500/10 text-zinc-600 dark:text-zinc-400 border-zinc-500/20";
+  };
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.97 }}
-      className="flex items-start justify-between gap-4 p-4 rounded-xl border border-[var(--border-primary)] group transition-colors hover:bg-[var(--bg-secondary)]"
+      className="flex items-start justify-between gap-4 p-5 rounded-2xl border border-[var(--border-primary)] group transition-colors hover:bg-[var(--bg-secondary)]"
       style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}
     >
-      <div className="flex items-center gap-2 flex-1 min-w-0">
-        <p className="text-xs font-mono flex-1 leading-relaxed" style={{ color: "var(--text-secondary)" }}>{preview}</p>
-        {!canManage && (
-          <span className="shrink-0 text-[9px] font-bold text-amber-400/60 bg-amber-400/10 border border-[var(--border-primary)] border-amber-400/20 px-1.5 py-0.5 rounded uppercase tracking-wide">Built-in</span>
-        )}
+      <div className="flex-1 min-w-0 space-y-3">
+        {/* Badges / Header line */}
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="shrink-0 text-[10px] font-bold bg-zinc-500/5 text-[var(--text-secondary)] border border-[var(--border-primary)] px-2 py-0.5 rounded-full uppercase tracking-wider">
+            Lvl {q.level || 1}
+          </span>
+          <span className={`shrink-0 text-[10px] font-bold border px-2 py-0.5 rounded-full uppercase tracking-wider ${badgeStyle(trackName)}`}>
+            {trackName}
+          </span>
+          {!canManage && (
+            <span className="shrink-0 text-[9px] font-bold text-amber-400/60 bg-amber-400/10 border border-amber-400/20 px-1.5 py-0.5 rounded uppercase tracking-wide">
+              Built-in
+            </span>
+          )}
+        </div>
+
+        {/* Content specific to type */}
+        <div className="space-y-2">
+          {type === "quiz" && (
+            <>
+              <p className="text-sm font-medium text-[var(--text-primary)] leading-relaxed">
+                {q.question}
+              </p>
+              {q.code && (
+                <pre className="p-3 rounded-xl bg-[var(--bg-secondary)] border border-[var(--border-primary)] font-mono text-[11px] overflow-x-auto text-[var(--text-primary)] max-h-40">
+                  <code>{q.code}</code>
+                </pre>
+              )}
+            </>
+          )}
+
+          {type === "match" && (
+            <div className="space-y-2">
+              <p className="text-sm font-semibold text-[var(--text-primary)]">
+                {q.term}
+              </p>
+            </div>
+          )}
+
+          {type === "debug" && (
+            <div className="space-y-2">
+              <p className="text-sm font-semibold text-[var(--text-primary)]">
+                {q.title}
+              </p>
+              {q.code && (
+                <pre className="p-3 rounded-xl bg-[var(--bg-secondary)] border border-[var(--border-primary)] font-mono text-[11px] overflow-x-auto text-[var(--text-primary)] max-h-40">
+                  <code>{q.code}</code>
+                </pre>
+              )}
+              <div className="flex flex-wrap items-center gap-1.5 text-xs text-[var(--text-secondary)]">
+                <span className="font-semibold text-[var(--text-primary)] text-[10px] uppercase tracking-wider">Buggy Lines:</span>
+                {(q.buggy_lines || [{ line_number: q.buggy_line_number }]).map((b, bi) => (
+                  <span key={bi} className="inline-block bg-rose-500/10 text-rose-500 px-2 py-0.5 rounded-lg border border-rose-500/20 text-[10px] font-mono font-bold">
+                    Line {b.line_number} {b.line_content ? `("${b.line_content}")` : ""}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {type === "fillin" && (
+            <div className="space-y-2">
+              <p className="text-sm font-semibold text-[var(--text-primary)]">
+                {q.title}
+              </p>
+              {q.code && (
+                <pre className="p-3 rounded-xl bg-[var(--bg-secondary)] border border-[var(--border-primary)] font-mono text-[11px] overflow-x-auto text-[var(--text-primary)] max-h-40">
+                  <code>{q.code}</code>
+                </pre>
+              )}
+              <div className="space-y-2">
+                <span className="font-semibold text-[var(--text-primary)] text-[10px] uppercase tracking-wider block">Blanks Configured</span>
+                <div className="flex flex-wrap gap-2">
+                  {(q.blanks || [{ placeholder: "____", answer: q.correct_option }]).map((b, bi) => (
+                    <div key={bi} className="bg-[var(--bg-secondary)] border border-[var(--border-primary)] rounded-xl p-2.5 text-xs flex flex-col gap-1 min-w-[120px]">
+                      <span className="text-[10px] font-black text-violet-400 uppercase tracking-wider">Blank {bi + 1} ({b.placeholder})</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              {q.hint && (
+                <div className="p-3 rounded-xl bg-[var(--bg-secondary)]/50 border border-[var(--border-primary)] text-[11px] text-[var(--text-muted)] leading-relaxed">
+                  <span className="font-semibold text-amber-500 uppercase tracking-wider text-[9px] mr-1">Hint:</span>
+                  {q.hint}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
       </div>
+
+      {/* Action buttons */}
       {canManage && (
-        <div className="flex items-center gap-2 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="flex items-center gap-2 shrink-0 opacity-60 group-hover:opacity-100 transition-opacity self-start mt-1">
           <button onClick={() => onEdit(q)} title="Edit"
-            className="p-1.5 rounded-lg hover:bg-zinc-500/10 hover:text-zinc-400 transition-colors cursor-pointer"
-            style={{ color: "var(--text-muted)" }}>
-            <Edit3 size={13} />
+            className="p-2 rounded-xl hover:bg-zinc-500/10 hover:text-[var(--text-primary)] text-[var(--text-muted)] transition-colors cursor-pointer"
+          >
+            <Edit3 size={15} />
           </button>
           <button onClick={() => onDelete(q.id)} title="Delete"
-            className="p-1.5 rounded-lg hover:bg-rose-500/10 hover:text-rose-400 transition-colors cursor-pointer"
-            style={{ color: "var(--text-muted)" }}>
-            <Trash2 size={13} />
+            className="p-2 rounded-xl hover:bg-rose-500/10 hover:text-rose-400 text-[var(--text-muted)] transition-colors cursor-pointer"
+          >
+            <Trash2 size={15} />
           </button>
         </div>
       )}
@@ -563,6 +690,7 @@ export default function ArcadeQuestionsPage() {
   const [search, setSearch] = useState("");
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [infoGame, setInfoGame] = useState(null);
 
   const fetchQuestions = useCallback(async () => {
     if (!token || !user) return;
@@ -833,6 +961,72 @@ export default function ArcadeQuestionsPage() {
           </motion.div>
         )}
       </AnimatePresence>
+ 
+      {/* ── Game Info modal ────────────────────────────────────────────── */}
+      <AnimatePresence>
+        {infoGame && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[9998] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.9, y: 15 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 15 }}
+              className="w-full max-w-md rounded-2xl p-6 border border-[var(--border-primary)] shadow-2xl space-y-6 relative overflow-hidden"
+              style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}
+            >
+              {/* Close Button */}
+              <button
+                onClick={() => setInfoGame(null)}
+                className="absolute top-4 right-4 p-1.5 rounded-full hover:bg-[var(--bg-secondary)] text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors cursor-pointer"
+              >
+                <X size={16} />
+              </button>
+
+              <div className="flex items-center gap-3">
+                <div className={`p-3 rounded-xl ${infoGame.bg} ${infoGame.accent}`}>
+                  {React.createElement(infoGame.icon, { size: 24 })}
+                </div>
+                <div>
+                  <h3 className="text-xl font-serif text-[var(--text-primary)]">{infoGame.label}</h3>
+                  <p className="text-xs text-[var(--text-muted)]">Game Details & Rules</p>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)] mb-1">Concept</h4>
+                  <p className="text-sm leading-relaxed text-[var(--text-primary)]">{infoGame.description}</p>
+                </div>
+
+                <div>
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)] mb-2">How It Works</h4>
+                  <ul className="space-y-2.5">
+                    {(GAME_INSTRUCTIONS[infoGame.key] || []).map((item, idx) => (
+                      <li key={idx} className="flex items-start gap-2.5 text-xs text-[var(--text-muted)]">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0 mt-1.5" />
+                        <span className="leading-relaxed">{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+
+              <div className="pt-2">
+                <button
+                  onClick={() => setInfoGame(null)}
+                  className="w-full py-2.5 rounded-xl bg-[var(--accent-primary)] text-[var(--text-on-accent)] font-semibold text-xs transition-transform hover:-translate-y-0.5 cursor-pointer"
+                >
+                  Got it, thanks!
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* ── Page Header ──────────────────────────────────────────────────── */}
       <section className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b pb-6" style={{ borderColor: "var(--border-primary)" }}>
@@ -870,15 +1064,36 @@ export default function ArcadeQuestionsPage() {
           const count = customData[gt.key]?.length || 0;
           const isActive = activeType === gt.key;
           return (
-            <button
+            <div
               key={gt.key}
               onClick={() => { setActiveType(gt.key); setSearch(""); setShowForm(false); }}
-              className={`p-5 rounded-2xl border border-[var(--border-primary)] text-left transition-colors cursor-pointer flex flex-col items-start ${isActive ? "shadow-md" : "hover:bg-[var(--bg-secondary)]"}`}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  setActiveType(gt.key);
+                  setSearch("");
+                  setShowForm(false);
+                }
+              }}
+              role="button"
+              tabIndex={0}
+              className={`p-5 rounded-2xl border border-[var(--border-primary)] text-left transition-colors cursor-pointer flex flex-col items-start relative select-none outline-none focus:ring-1 focus:ring-[var(--accent-primary)] ${isActive ? "shadow-md" : "hover:bg-[var(--bg-secondary)]"}`}
               style={{
                 backgroundColor: isActive ? "var(--bg-secondary)" : "var(--bg-primary)",
                 borderColor: isActive ? "var(--accent-primary)" : "var(--border-primary)"
               }}
             >
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setInfoGame(gt);
+                }}
+                className="absolute top-4 right-4 p-1.5 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors cursor-pointer"
+                title="How it works"
+              >
+                <Info size={16} />
+              </button>
+
               <div className={`p-2.5 rounded-xl mb-4 ${gt.bg} ${gt.accent}`}>
                 <Icon size={18} />
               </div>
@@ -887,7 +1102,7 @@ export default function ArcadeQuestionsPage() {
               <div className="mt-4 inline-flex items-center gap-1 text-[10px] font-bold px-2.5 py-1 rounded-full bg-[var(--bg-primary)] border" style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}>
                 {count} custom
               </div>
-            </button>
+            </div>
           );
         })}
       </div>

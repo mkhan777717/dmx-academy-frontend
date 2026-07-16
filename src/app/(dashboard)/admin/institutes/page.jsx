@@ -390,11 +390,11 @@ export default function InstitutesPage() {
                         <span>{new Date(adm.createdAt).toLocaleDateString()}</span>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-right">
-                      <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                     <td className="px-6 py-4 text-right">
+                      <div className="flex items-center justify-end gap-1">
                         <button
                           onClick={() => handleEditClick(adm)}
-                          className="p-2 rounded-lg text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-950/50 transition-colors cursor-pointer"
+                          className="p-2 rounded-lg text-emerald-500 hover:bg-emerald-500/10 transition-colors cursor-pointer"
                           title="Edit"
                         >
                           <Edit size={16} />
@@ -404,8 +404,8 @@ export default function InstitutesPage() {
                           disabled={blockLoading === adm.institute?.id}
                           className={`p-2 rounded-lg transition-colors cursor-pointer disabled:opacity-50 ${
                             adm.institute?.isBlocked
-                              ? "text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-950/50"
-                              : "text-amber-500 hover:bg-amber-50 dark:hover:bg-amber-950/50"
+                              ? "text-emerald-500 hover:bg-emerald-500/10"
+                              : "text-amber-500 hover:bg-amber-500/10"
                           }`}
                           title={adm.institute?.isBlocked ? "Unblock" : "Block"}
                         >

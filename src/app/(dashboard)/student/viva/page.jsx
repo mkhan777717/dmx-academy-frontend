@@ -779,8 +779,8 @@ const formatTime = (seconds) => {
           <section className="flex flex-col gap-2 border-b pb-6 shrink-0 relative" style={{ borderColor: "var(--border-primary)" }}>
             <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border border-[var(--border-primary)] mb-3 w-fit"
               style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)", backgroundColor: "var(--bg-secondary)" }}>
-              <Sparkles size={12} className="text-violet-500 animate-pulse" />
-              Next-Gen Assessment Engine
+              <Brain size={12} className="text-violet-500" />
+              AI Viva
             </div>
             <h1 className="text-4xl font-serif tracking-tight" style={{ color: "var(--text-primary)" }}>AI Viva System</h1>
             <p className="text-sm max-w-xl" style={{ color: "var(--text-secondary)" }}>
@@ -1073,12 +1073,14 @@ const formatTime = (seconds) => {
             <motion.div key="answering" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-4">
 
               {/* Mic status banner */}
-              <div className={`flex items-center justify-between p-3 rounded-2xl border border-[var(--border-primary)] transition-colors ${micEnabled
+              <div className={`flex items-center justify-between p-3 rounded-2xl border transition-colors ${micEnabled
                 ? "bg-rose-500/10 border-rose-500/30"
-                : "bg-slate-500/10 border-slate-500/20"
-                }`}>
+                : "bg-[var(--bg-secondary)] border-[var(--border-primary)]"
+                }`}
+                style={{ borderColor: micEnabled ? undefined : "var(--border-primary)" }}
+              >
                 <div className="flex items-center space-x-3">
-                  <div className={`relative flex items-center justify-center w-10 h-10 rounded-full ${micEnabled ? "bg-rose-500 text-white" : "bg-slate-300 dark:bg-slate-700 text-slate-500"
+                  <div className={`relative flex items-center justify-center w-10 h-10 rounded-full ${micEnabled ? "bg-rose-500 text-white" : "bg-[var(--bg-hover)] text-[var(--text-secondary)]"
                     }`}>
                     {micEnabled ? <Mic size={18} /> : <MicOff size={18} />}
                     {micEnabled && (
@@ -1104,7 +1106,7 @@ const formatTime = (seconds) => {
                   disabled={evaluating}
                   className={`shrink-0 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${micEnabled
                     ? "bg-rose-500 text-white hover:bg-rose-600"
-                    : "bg-zinc-500 text-white hover:bg-[var(--accent-primary)]"
+                    : "bg-[var(--bg-hover)] hover:bg-[var(--accent-primary)] hover:text-white text-[var(--text-secondary)] border border-[var(--border-primary)]"
                     }`}
                 >
                   {micEnabled ? "Turn Off Mic" : "Turn On Mic"}

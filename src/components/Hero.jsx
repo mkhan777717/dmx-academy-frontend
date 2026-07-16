@@ -5,127 +5,14 @@ import { motion, useMotionValue, useSpring, animate, useMotionTemplate, AnimateP
 import Link from "next/link";
 import FloatingObjects from "./FloatingObjects";
 import CodeWindow from "./CodeWindow";
+import { getThemeTokens } from "@/utils/themeTokens";
+import useTheme from "@/customHooks/useTheme";
 
 /* ─── Premium easing tokens ───────────────────────────── */
 const ease = {
   out: [0.16, 1, 0.3, 1],
   soft: [0.25, 0.46, 0.45, 0.94],
 };
-
-/* ─── Theme hook ─────────────────────────────────────── */
-function useTheme() {
-  const [dark, setDark] = useState(false);
-  useEffect(() => {
-    const check = () =>
-      setDark(document.documentElement.classList.contains("theme-dark"));
-    check();
-    const obs = new MutationObserver(check);
-    obs.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
-    return () => obs.disconnect();
-  }, []);
-  return dark;
-}
-
-/* ─── Theme color palette ────────────────────────────── */
-function getThemeTokens(dark) {
-  if (dark) {
-    return {
-      bg: "#000000",
-      bgFade: "#000000",
-      textPrimary: "rgba(255,255,255,0.92)",
-      textSecondary: "rgba(255,255,255,0.38)",
-      textMuted: "rgba(255,255,255,0.2)",
-      textVeryMuted: "rgba(255,255,255,0.1)",
-      accent: "rgba(16,185,129,0.65)",
-      accentFaint: "rgba(16,185,129,0.55)",
-      divider: "rgba(255,255,255,0.12)",
-      statBg: "rgba(255,255,255,0.018)",
-      statBorder: "rgba(255,255,255,0.06)",
-      statNum: "rgba(255,255,255,0.82)",
-      statLabel: "rgba(255,255,255,0.22)",
-      ctaPrimary: { bg: "rgba(16,185,129,0.18)", border: "rgba(16,185,129,0.28)", text: "rgba(16,185,129,0.92)", bgHover: "rgba(16,185,129,0.32)", borderHover: "rgba(16,185,129,0.58)" },
-      ctaSecondary: { color: "rgba(255,255,255,0.72)", colorHover: "rgba(255,255,255,1)" },
-      tickerBorder: "rgba(255,255,255,0.07)",
-      tickerText: "rgba(255,255,255,0.22)",
-      tickerDot: "rgba(255,255,255,0.08)",
-      cornerText: "rgba(255,255,255,0.12)",
-      cornerSubtext: "rgba(255,255,255,0.06)",
-      vortexNode: "rgba(16,185,129,0.9)",
-      vortexLine: "rgba(16,185,129,0.15)",
-    };
-  }
-  return {
-    bg: "#f8fafc",
-    bgFade: "#f8fafc",
-    textPrimary: "rgba(2,6,23,0.92)",
-    textSecondary: "rgba(2,6,23,0.52)",
-    textMuted: "rgba(2,6,23,0.32)",
-    textVeryMuted: "rgba(2,6,23,0.15)",
-    accent: "rgba(5,150,105,0.75)",
-    accentFaint: "rgba(5,150,105,0.65)",
-    divider: "rgba(2,6,23,0.12)",
-    statBg: "rgba(2,6,23,0.018)",
-    statBorder: "rgba(2,6,23,0.07)",
-    statNum: "rgba(2,6,23,0.82)",
-    statLabel: "rgba(2,6,23,0.32)",
-    ctaPrimary: { bg: "rgba(16,185,129,0.10)", border: "rgba(16,185,129,0.25)", text: "rgba(4,120,87,0.92)", bgHover: "rgba(16,185,129,0.18)", borderHover: "rgba(16,185,129,0.5)" },
-    ctaSecondary: { color: "rgba(2,6,23,0.75)", colorHover: "rgba(2,6,23,1)" },
-    tickerBorder: "rgba(2,6,23,0.07)",
-    tickerText: "rgba(2,6,23,0.28)",
-    tickerDot: "rgba(2,6,23,0.12)",
-    cornerText: "rgba(2,6,23,0.2)",
-    cornerSubtext: "rgba(2,6,23,0.1)",
-    vortexNode: "rgba(5,150,105,0.9)",
-    vortexLine: "rgba(16,185,129,0.15)",
-  };
-}
-
-
-/* ─── Ticker Strip ───────────────────────────────────── */
-const tickers = [
-  "Interactive Browser Sandboxes",
-  "Live Cohort Sessions",
-  "Real-Time Feedback",
-  "50+ Real Projects",
-  "Learn from Industry Experts",
-  "AI-Powered Learning",
-  "Code. Build. Deploy."
-];
-
-function TickerStrip({ tok }) {
-  const items = [...tickers, ...tickers];
-  return (
-    <div className="overflow-hidden border-y" style={{ borderColor: tok.tickerBorder }}>
-      <div className="ticker-track py-2.5">
-        {items.map((t, i) => (
-          <span key={i} className="mx-8 text-[14px] font-medium tracking-[0.18em] uppercase whitespace-nowrap" style={{ color: tok.tickerText }}>
-            {t}
-            <span className="mx-8" style={{ color: tok.tickerDot }}>·</span>
-          </span>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-/* ─── Animated counter ──────────────────────────────── */
-function Counter({ to, suffix = "", delay = 0, isDecimal = false }) {
-  const [count, setCount] = useState(0);
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      let start = null;
-      const step = (ts) => {
-        if (!start) start = ts;
-        const p = Math.min((ts - start) / 1500, 1);
-        setCount(Math.floor((1 - Math.pow(1 - p, 3)) * to));
-        if (p < 1) requestAnimationFrame(step);
-      };
-      requestAnimationFrame(step);
-    }, delay);
-    return () => clearTimeout(timer);
-  }, [to, delay]);
-  return <>{count.toLocaleString()}{isDecimal ? ".9" : ""}{suffix}</>;
-}
 
 /* ─── Main Hero ──────────────────────────────────────── */
 export default function Hero() {
@@ -426,11 +313,6 @@ export default function Hero() {
               </div>
             </motion.div>
           </motion.div>
-
-          {/* Ticker */}
-          <div className="mt-10 left-0 right-0 z-10">
-            <TickerStrip tok={tok} />
-          </div>
         </div>
       </div>
     </section>

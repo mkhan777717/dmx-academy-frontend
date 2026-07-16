@@ -647,7 +647,7 @@ export default function ManageBatchesPage() {
                               e.stopPropagation();
                               triggerEdit(batch);
                             }}
-                            className="p-2 rounded-lg text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-950/50 transition-colors cursor-pointer"
+                            className="p-2 rounded-lg text-emerald-500 hover:bg-emerald-500/10 transition-colors cursor-pointer"
                           >
                             <Edit size={16} />
                           </button>
@@ -656,7 +656,7 @@ export default function ManageBatchesPage() {
                               e.stopPropagation();
                               triggerDelete(batch);
                             }}
-                            className="p-2 rounded-lg text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/50 transition-colors cursor-pointer"
+                            className="p-2 rounded-lg text-rose-500 hover:bg-rose-500/10 transition-colors cursor-pointer"
                           >
                             <Trash2 size={16} />
                           </button>

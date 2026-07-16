@@ -8,7 +8,7 @@ import CTA from "@/components/CTA";
 import Footer from "@/components/Footer";
 import CinematicCursor from "@/components/CinematicCursor";
 import ScrollProgress from "@/components/ScrollProgress";
-import Link from "next/link";
+
 export default function Home() {
   return (
     <div className="relative flex min-h-screen flex-col overflow-hidden" style={{ backgroundColor: "var(--bg-primary)" }}>

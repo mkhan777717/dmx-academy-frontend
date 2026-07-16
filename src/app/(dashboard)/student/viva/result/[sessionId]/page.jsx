@@ -115,6 +115,19 @@ export default function VivaResultPage() {
           <span>Back to AI Viva</span>
         </Link>
       </div>
+
+      {/* Page Header */}
+      <section className="flex flex-col gap-2 border-b pb-6 shrink-0" style={{ borderColor: "var(--border-primary)" }}>
+        <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border border-[var(--border-primary)] mb-3 w-fit"
+          style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)", backgroundColor: "var(--bg-secondary)" }}>
+          <Brain size={12} className="text-violet-500" />
+          AI Viva Result
+        </div>
+        <h1 className="text-4xl font-serif tracking-tight" style={{ color: "var(--text-primary)" }}>Assessment Feedback</h1>
+        <p className="text-sm max-w-xl" style={{ color: "var(--text-secondary)" }}>
+          Review your verbal responses, technical correctness evaluation, and conceptual suggestions from the AI evaluator.
+        </p>
+      </section>
       {isDisqualified && (
         <div className="p-6 rounded-3xl border border-[var(--border-primary)] bg-rose-500/10 border-rose-500/25 flex items-start space-x-4 text-rose-500">
           <AlertCircle size={24} className="shrink-0 mt-0.5" />

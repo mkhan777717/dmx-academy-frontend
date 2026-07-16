@@ -1141,18 +1141,17 @@ export default function AIAllInOneVivaPage() {
       <div className="max-w-7xl mx-auto space-y-8">
         
         {/* Page Title / Header */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-[var(--border-primary)] pb-6">
-          <div className="space-y-1.5">
-            <div className="flex items-center space-x-2">
-              <div className="p-1.5 rounded-lg bg-zinc-500/10 text-[var(--text-muted)]">
-                <Brain size={18} />
-              </div>
-              <span className="text-xs font-bold uppercase tracking-widest text-[var(--text-muted)]">AI Viva</span>
+        <section className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 border-b pb-6 shrink-0 mb-8" style={{ borderColor: "var(--border-primary)" }}>
+          <div className="space-y-2">
+            <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border border-[var(--border-primary)] mb-3 w-fit"
+              style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)", backgroundColor: "var(--bg-secondary)" }}>
+              <Brain size={12} className="text-violet-500" />
+              AI Viva
             </div>
-            <h1 className="text-3xl font-extrabold tracking-tight text-[var(--text-primary)]">
+            <h1 className="text-4xl font-serif tracking-tight" style={{ color: "var(--text-primary)" }}>
               Viva Management Dashboard
             </h1>
-            <p className="text-[var(--text-muted)] text-sm">
+            <p className="text-sm max-w-xl" style={{ color: "var(--text-secondary)" }}>
               Manage question banks and schedule student assessments.
             </p>
           </div>
@@ -1209,7 +1208,7 @@ export default function AIAllInOneVivaPage() {
               </button>
             )}
           </div>
-        </div>
+        </section>
 
         {/* Tab Switcher: Question Bank vs Schedule Viva */}
         <div className="flex space-x-1 p-1 bg-[var(--bg-card)] border border-[var(--border-primary)] rounded-xl max-w-md">
