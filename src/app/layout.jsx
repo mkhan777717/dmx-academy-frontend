@@ -42,6 +42,14 @@ export default function RootLayout({ children }) {
         <link rel="icon" href="/favicon.ico" />
         {/* Theme initialiser – runs before React hydration to prevent flash */}
         <Script id="theme-initializer" strategy="beforeInteractive" dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+        <Script id="google-analytics" strategy="afterInteractive">
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-ML5J2QTMNW');
+        `}
+      </Script>
       </head>
       <body className="min-h-full flex flex-col selection:bg-[var(--selection-bg)] selection:text-[var(--selection-text)]"
         style={{ backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }}

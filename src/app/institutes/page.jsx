@@ -14,7 +14,7 @@ import {
   Monitor, BarChart2, GraduationCap, Image as ImageIcon,
   Zap, ArrowDown, LayoutDashboard, Plus, Search, RefreshCw,
   Edit, Trash2, Mic, MicOff, Clock, FileText, FolderOpen, Folder, ChevronDown, Video,
-  Send, X, Calendar, MessageSquare, Volume2, ChevronRight, ChevronLeft, Terminal, Play, CheckSquare, Code2, BookOpen
+  Send, X, Calendar, MessageSquare, Volume2, ChevronRight, ChevronLeft, Terminal, Play, CheckSquare, Code2, BookOpen, Trophy
 } from "lucide-react";
 import { getApiBase } from "@/utils/api";
 import Lenis from "lenis";
@@ -207,7 +207,10 @@ function FloatingParticles({ count = 12 }) {
 
 // ─── Scroll Progress Indicator ────────────────────────────────────────
 function ScrollProgress() {
-  const { scrollYProgress } = useScroll();
+  const ref = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+  });
   const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
   return (
     <motion.div
@@ -2411,8 +2414,15 @@ export default function InstitutesPage() {
 
   useLenis();
 
+  const [heroElement, setHeroElement] = useState(null);
   const heroRef = useRef(null);
-  const { scrollYProgress: heroProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
+  useEffect(() => {
+    heroRef.current = heroElement;
+  }, [heroElement]);
+  const { scrollYProgress: heroProgress } = useScroll({ 
+    target: heroElement ? heroRef : undefined, 
+    offset: ["start start", "end start"] 
+  });
   const heroY = useTransform(heroProgress, [0, 1], [0, 200]);
   const heroOpacity = useTransform(heroProgress, [0, 0.6], [1, 0]);
   const heroScale = useTransform(heroProgress, [0, 1], [1, 0.95]);
@@ -2458,50 +2468,148 @@ export default function InstitutesPage() {
         <NoiseOverlay />
         <Navbar />
 
-      <main className="flex-grow pb-16">
-        
-        {/* HERO SECTION */}
-        <section className="mx-auto max-w-7xl px-6 md:px-12 py-16 md:py-24">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8 items-center">
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="space-y-6"
+        <main className="flex-grow">
+
+          {/* ─── HERO SECTION ──────────────────────────────────── */}
+          <section ref={heroRef} className="relative mx-auto max-w-7xl px-6 md:px-12 pt-20 pb-28 md:pt-28 md:pb-36 overflow-hidden">
+            <MeshBackground />
+            <FloatingParticles count={15} />
+
+            <div className="relative z-10 flex flex-col lg:flex-row items-center gap-12 lg:gap-8">
+              {/* Left Content */}
+              <motion.div
+                className="w-full lg:w-[55%] text-left space-y-8"
+                style={{
+                  y: reduced ? 0 : smoothHeroY,
+                  opacity: reduced ? 1 : heroOpacity,
+                  scale: reduced ? 1 : heroScale,
+                  filter: reduced ? "none" : heroFilter,
+                }}
+              >
+                {/* Badge */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20, scale: 0.8, filter: "blur(10px)" }}
+                  animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
+                  transition={{ duration: 0.8, ease: EASE_OUT_EXPO }}
+                >
+                  <motion.div
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-full border mb-2"
+                    style={{ borderColor: "var(--border-accent)", backgroundColor: "rgba(16, 185, 129, 0.08)" }}
+                    whileHover={{ scale: 1.05, boxShadow: "0 0 30px rgba(16,185,129,0.15)" }}
+                    animate={reduced ? {} : {
+                      boxShadow: [
+                        "0 0 0px rgba(16,185,129,0)",
+                        "0 0 25px rgba(16,185,129,0.12)",
+                        "0 0 0px rgba(16,185,129,0)",
+                      ],
+                    }}
+                    transition={{ boxShadow: { duration: 4, repeat: Infinity, ease: "easeInOut" } }}
+                  >
+                    <Building2 size={14} className="text-emerald-500" />
+                    <span className="text-[11px] font-bold tracking-wider uppercase text-emerald-500">Eduvantix for Campus</span>
+                  </motion.div>
+                </motion.div>
+
+                {/* Main headline — kinetic typography with clip-path reveal */}
+                <div className="overflow-hidden">
+                  <motion.h1
+                    className="text-4xl md:text-5xl lg:text-[3.5rem] font-black leading-[1.08] tracking-tight"
+                    style={{ color: "var(--text-primary)" }}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    {"Your entire campus,".split("").map((char, i) => (
+                      <motion.span
+                        key={i}
+                        className="inline-block"
+                        style={{ marginRight: char === " " ? "0.25em" : "0" }}
+                        initial={{ opacity: 0, y: 50, rotateX: -40 }}
+                        animate={{ opacity: 1, y: 0, rotateX: 0 }}
+                        transition={{
+                          delay: 0.2 + i * 0.025,
+                          duration: 0.6,
+                          ease: EASE_OUT_EXPO,
+                        }}
+                      >
+                        {char === " " ? "\u00A0" : char}
+                      </motion.span>
+                    ))}
+                    <br />
+                    <motion.span
+                      className="inline-block bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 bg-clip-text text-transparent"
+                      initial={{ opacity: 0, y: 60, scale: 0.9, filter: "blur(12px)" }}
+                      animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
+                      transition={{ delay: 0.8, duration: 1, ease: EASE_OUT_EXPO }}
+                    >
+                      one powerful platform.
+                    </motion.span>
+                  </motion.h1>
+                </div>
+
+                <motion.p
+                  initial={{ opacity: 0, y: 30, filter: "blur(8px)" }}
+                  animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                  transition={{ duration: 0.9, delay: 1.1, ease: EASE_OUT_EXPO }}
+                  className="text-lg md:text-xl max-w-2xl leading-relaxed"
+                  style={{ color: "var(--text-secondary)" }}
+                >
+                  Manage students, run live classes, conduct AI-powered vivas, and host coding tests — all from a single, intelligent admin portal built for modern institutions.
+                </motion.p>
+
+                {/* CTAs with magnetic effect */}
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 1.3, ease: EASE_OUT_EXPO }}
+                  className="flex flex-wrap items-center gap-4 pt-4"
+                >
+                  <MagneticButton
+                    href="#contact"
+                    className="px-8 py-4 rounded-xl font-bold text-white flex items-center gap-2 shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/40 transition-shadow duration-500"
+                    style={{ background: "linear-gradient(135deg, #10b981, #059669)" }}
+                  >
+                    Get Started <ArrowRight size={18} />
+                  </MagneticButton>
+                  <MagneticButton
+                    href="#features"
+                    className="px-8 py-4 rounded-xl font-bold border flex items-center gap-2 hover:border-emerald-500/40 transition-colors duration-500"
+                    style={{ color: "var(--text-primary)", borderColor: "var(--border-primary)" }}
+                  >
+                    Explore Features
+                  </MagneticButton>
+                </motion.div>
+              </motion.div>
+
+              {/* Right Content */}
+              <motion.div
+                className="w-full lg:w-[45%] hidden md:block"
+                initial={{ opacity: 0, x: 50, filter: "blur(10px)" }}
+                animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
+                transition={{ duration: 1, delay: 0.5, ease: EASE_OUT_EXPO }}
+              >
+                <HeroRightGraphic />
+              </motion.div>
+            </div>
+
+            {/* Stats bar */}
+            <motion.div
+              initial={{ opacity: 0, y: 60, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ duration: 1, delay: 1.5, ease: EASE_OUT_EXPO }}
+              className="relative z-10 mt-16 max-w-3xl mx-auto"
             >
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border" style={{ borderColor: "var(--border-accent)", backgroundColor: "rgba(16, 185, 129, 0.1)" }}>
-                <Building2 size={14} className="text-emerald-500" />
-                <span className="text-[11px] font-bold tracking-wider uppercase text-emerald-500">Eduvantix for Campus</span>
-              </div>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-black leading-[1.1] tracking-tight" style={{ color: "var(--text-primary)" }}>
-                Empower employability with online learning for universities
-              </h1>
-              <p className="text-lg md:text-xl max-w-lg leading-relaxed" style={{ color: "var(--text-secondary)" }}>
-                Equip your students with the most in-demand technical skills and prepare them for job success through interactive sandboxes and AI-driven feedback.
-              </p>
-              <div className="pt-4 flex items-center gap-4">
-                <a href="#contact" className="px-6 py-3.5 rounded-xl font-bold transition-all text-white hover:opacity-90 flex items-center gap-2" style={{ background: "var(--accent-primary)" }}>
-                  Contact Us <ArrowRight size={18} />
-                </a>
-              </div>
-            </motion.div>
-            
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="relative aspect-video rounded-2xl overflow-hidden border shadow-2xl"
-              style={{ borderColor: "var(--border-primary)" }}
-            >
-              <div className="absolute inset-0 bg-slate-900 flex items-center justify-center group overflow-hidden">
-                <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=2070&auto=format&fit=crop" alt="University Students Coding" className="w-full h-full object-cover opacity-80 mix-blend-overlay transition-transform duration-700 group-hover:scale-105" />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-transparent to-transparent pointer-events-none" />
-                <div className="absolute bottom-6 left-6 right-6 text-left">
-                  <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-emerald-500/20 border border-emerald-500/30 backdrop-blur-md mb-3">
-                    <Building2 size={24} className="text-emerald-400" />
-                  </div>
-                  <h3 className="text-xl font-bold text-white mb-1">Campus Enterprise</h3>
-                  <p className="text-sm text-slate-300 max-w-sm">Seamlessly integrate industry-grade tools and automated AI feedback directly into your curriculum.</p>
+              <TiltCard
+                className="rounded-2xl"
+                style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}
+              >
+                <div
+                  className="grid grid-cols-3 gap-6 p-8 rounded-2xl border backdrop-blur-sm"
+                  style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}
+                >
+                  <AnimatedCounter value="100%" label="Integrated Platform" />
+                  <AnimatedCounter value="AI" label="Powered Assessments" />
+                  <AnimatedCounter value="Live" label="HD Streaming" />
                 </div>
               </TiltCard>
             </motion.div>
@@ -2526,117 +2634,248 @@ export default function InstitutesPage() {
             </motion.div>
           </section>
 
-        {/* FEATURES SECTION */}
-        <section className="py-20 border-y relative" style={{ borderColor: "var(--border-primary)", backgroundColor: "var(--bg-secondary)" }}>
-          <div className="absolute top-0 left-0 right-0 h-[300px] pointer-events-none z-0" style={{ background: "linear-gradient(180deg, rgba(16,185,129,0.03) 0%, transparent 100%)" }} />
-          
-          <div className="mx-auto max-w-7xl px-6 md:px-12 relative z-10">
-            <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
-              <h2 className="text-3xl md:text-4xl font-black tracking-tight" style={{ color: "var(--text-primary)" }}>
-                A complete ecosystem for your institution
-              </h2>
-              <p className="text-lg" style={{ color: "var(--text-secondary)" }}>
-                From live class delivery to automated AI assessments, we provide all the tools your campus needs to scale high-quality technical education.
-              </p>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {features.map((feature, i) => (
-                <div key={i} className="p-6 rounded-2xl border transition-all hover:-translate-y-1 hover:shadow-xl group bg-[var(--bg-card)] border-[var(--border-primary)] hover:border-emerald-500/30">
-                  <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5 bg-emerald-500/10 transition-colors group-hover:bg-emerald-500/20">
-                    {feature.icon}
-                  </div>
-                  <h3 className="text-lg font-bold mb-2" style={{ color: "var(--text-primary)" }}>{feature.title}</h3>
-                  <p className="text-sm leading-relaxed" style={{ color: "var(--text-secondary)" }}>{feature.desc}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
 
-        {/* CONTACT SECTION */}
-        <section id="contact" className="py-20 md:py-32">
-          <div className="mx-auto max-w-5xl px-6 md:px-12">
-            <div className="grid grid-cols-1 lg:grid-cols-5 gap-12">
-              <div className="lg:col-span-2 space-y-6">
-                <h2 className="text-3xl font-black tracking-tight" style={{ color: "var(--text-primary)" }}>
-                  Partner with Eduvantix
-                </h2>
-                <p className="leading-relaxed" style={{ color: "var(--text-secondary)" }}>
-                  Reach out to us to get an Institute Admin account provisioned for your university. Start adding mentors, batch managers, and students to your dedicated portal immediately.
-                </p>
-                <div className="space-y-4 pt-4">
-                  {[
-                    "Custom campus onboarding",
-                    "Dedicated support manager",
-                    "Bulk student provisioning",
-                    "Customized tracking & analytics"
-                  ].map((item, idx) => (
-                    <div key={idx} className="flex items-center gap-3">
-                      <CheckCircle2 size={18} className="text-emerald-500" />
-                      <span className="font-medium text-sm" style={{ color: "var(--text-primary)" }}>{item}</span>
+          {/* ─── FEATURE SHOWCASES (Scroll-Stack) ─────────────────── */}
+          <section id="features">
+            <FeatureScrollStack />
+          </section>
+
+
+          {/* ─── MORE FEATURES GRID ────────────────────────────── */}
+          <section className="py-20">
+            <SectionDivider />
+            <div className="mx-auto max-w-7xl px-6 md:px-12 pt-20">
+              {(() => {
+                const ref = useRef(null);
+                const isInView = useInView(ref, { once: true, margin: "-80px" });
+                return (
+                  <div ref={ref}>
+                    <motion.div
+                      className="text-center max-w-3xl mx-auto mb-14 space-y-4"
+                      initial="hidden"
+                      animate={isInView ? "visible" : "hidden"}
+                      variants={stagger}
+                    >
+                      <motion.div variants={fadeUp}>
+                        <div
+                          className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border mb-4"
+                          style={{ borderColor: "var(--border-accent)", backgroundColor: "rgba(16, 185, 129, 0.08)" }}
+                        >
+                          <Zap size={14} className="text-emerald-500" />
+                          <span className="text-[11px] font-bold tracking-wider uppercase text-emerald-500">More Features</span>
+                        </div>
+                      </motion.div>
+                      <motion.h2
+                        variants={fadeUp}
+                        className="text-3xl md:text-4xl font-black tracking-tight"
+                        style={{ color: "var(--text-primary)" }}
+                      >
+                        And so much more...
+                      </motion.h2>
+                      <motion.p
+                        variants={fadeUp}
+                        className="text-lg"
+                        style={{ color: "var(--text-secondary)" }}
+                      >
+                        Everything your institution needs to deliver world-class technical education.
+                      </motion.p>
+                    </motion.div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                      {[
+                        { icon: <Users size={22} className="text-emerald-500" />, title: "Mentor Portal", desc: "Dedicated dashboard for instructors to manage submissions, guide students, and track engagement." },
+                        { icon: <Layers size={22} className="text-emerald-500" />, title: "Batch Manager", desc: "Organize students into cohorts, assign tracks, and monitor batch-wise progress effortlessly." },
+                        { icon: <BarChart2 size={22} className="text-emerald-500" />, title: "Analytics & Reports", desc: "Comprehensive dashboards with real-time insights into student performance and campus metrics." },
+                        { icon: <GraduationCap size={22} className="text-emerald-500" />, title: "Study Materials", desc: "Centralized distribution of curriculum, notes, and references directly to specific batches." },
+                        { icon: <Calendar size={22} className="text-emerald-500" />, title: "Attendance Tracking", desc: "Track and monitor student attendance seamlessly across all live sessions, contests, and assignments." },
+                        { icon: <ShieldAlert size={22} className="text-emerald-500" />, title: "Role-Based Access", desc: "Granular control over permissions for admins, mentors, and students with secure authentication." },
+                      ].map((feature, i) => (
+                        <motion.div
+                          key={i}
+                          initial={reduced ? { opacity: 0 } : { opacity: 0, y: 50, scale: 0.9, filter: "blur(6px)" }}
+                          animate={isInView ? { opacity: 1, y: 0, scale: 1, filter: "blur(0px)" } : {}}
+                          transition={{ delay: 0.15 * i, duration: 0.8, ease: EASE_OUT_EXPO }}
+                        >
+                          <TiltCard
+                            className="p-6 rounded-2xl border group h-full cursor-default"
+                            style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}
+                          >
+                            <motion.div
+                              className="w-11 h-11 rounded-xl flex items-center justify-center mb-4 bg-emerald-500/10 transition-colors group-hover:bg-emerald-500/20"
+                              whileHover={{ rotate: 8, scale: 1.15 }}
+                              transition={{ type: "spring", ...SPRING_SNAPPY }}
+                            >
+                              {feature.icon}
+                            </motion.div>
+                            <h3 className="text-base font-bold mb-2" style={{ color: "var(--text-primary)" }}>{feature.title}</h3>
+                            <p className="text-sm leading-relaxed" style={{ color: "var(--text-secondary)" }}>{feature.desc}</p>
+                          </TiltCard>
+                        </motion.div>
+                      ))}
                     </div>
-                  ))}
-                </div>
-              </div>
-              
-              <div className="lg:col-span-3">
-                <div className="rounded-2xl border p-6 md:p-8 shadow-xl bg-[var(--bg-card)] border-[var(--border-primary)]">
-                  {formStatus === "success" ? (
-                    <div className="flex flex-col items-center justify-center py-12 text-center space-y-4">
-                      <div className="w-16 h-16 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-500 mb-2">
-                        <CheckCircle2 size={32} />
+                  </div>
+                );
+              })()}
+            </div>
+          </section>
+
+
+          {/* ─── CONTACT / CTA SECTION ─────────────────────────── */}
+          <section id="contact" className="py-20 md:py-28 relative overflow-hidden" style={{ backgroundColor: "var(--bg-secondary)" }}>
+            <SectionDivider />
+            <MeshBackground />
+            <FloatingParticles count={6} />
+            <div className="mx-auto max-w-5xl px-6 md:px-12 relative z-10 pt-20 md:pt-28">
+              <div className="grid grid-cols-1 lg:grid-cols-5 gap-12">
+                {(() => {
+                  const contactRef = useRef(null);
+                  const contactInView = useInView(contactRef, { once: true, margin: "-80px" });
+                  return (
+                    <>
+                      <div ref={contactRef} className="lg:col-span-2 space-y-6">
+                        <motion.div
+                          className="space-y-6"
+                          initial={reduced ? { opacity: 0 } : { opacity: 0, x: -60, filter: "blur(8px)" }}
+                          animate={contactInView ? { opacity: 1, x: 0, filter: "blur(0px)" } : {}}
+                          transition={{ duration: 1, ease: EASE_OUT_EXPO }}
+                        >
+                          <h2 className="text-3xl md:text-4xl font-black tracking-tight flex items-center gap-3 flex-wrap" style={{ color: "var(--text-primary)" }}>
+                            Partner with 
+                            <img src={isDark ? "/logo-white-text.webp" : "/logo-black-text.webp"} alt="Eduvantix" className="h-8 md:h-10 inline-block mt-0.5" />
+                          </h2>
+                          <p className="leading-relaxed" style={{ color: "var(--text-secondary)" }}>
+                            Reach out to us to get an Institute Admin account provisioned for your university. Start adding mentors, batch managers, and students to your dedicated portal immediately.
+                          </p>
+                          <div className="space-y-4 pt-4">
+                            {[
+                              "Custom campus onboarding",
+                              "Dedicated support manager",
+                              "Bulk student provisioning",
+                              "Customized tracking & analytics"
+                            ].map((item, idx) => (
+                              <motion.div
+                                key={idx}
+                                initial={reduced ? { opacity: 0 } : { opacity: 0, x: -25, filter: "blur(4px)" }}
+                                animate={contactInView ? { opacity: 1, x: 0, filter: "blur(0px)" } : {}}
+                                transition={{ delay: 0.3 + 0.1 * idx, duration: 0.6, ease: EASE_OUT_EXPO }}
+                                className="flex items-center gap-3"
+                              >
+                                <motion.div
+                                  initial={{ scale: 0, rotate: -90 }}
+                                  animate={contactInView ? { scale: 1, rotate: 0 } : {}}
+                                  transition={{ delay: 0.4 + 0.1 * idx, type: "spring", ...SPRING_SNAPPY }}
+                                >
+                                  <CheckCircle2 size={18} className="text-emerald-500" />
+                                </motion.div>
+                                <span className="font-medium text-sm" style={{ color: "var(--text-primary)" }}>{item}</span>
+                              </motion.div>
+                            ))}
+                          </div>
+                        </motion.div>
                       </div>
-                      <h3 className="text-2xl font-bold" style={{ color: "var(--text-primary)" }}>Request Received!</h3>
-                      <p style={{ color: "var(--text-secondary)" }}>
-                        Our university relations team will reach out to you shortly to set up your Institute Admin account.
-                      </p>
-                      <button onClick={() => setFormStatus(null)} className="mt-4 text-emerald-500 font-bold hover:underline">
-                        Submit another request
-                      </button>
-                    </div>
-                  ) : (
-                    <form onSubmit={handleFormSubmit} className="space-y-5">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                        <div className="space-y-1.5">
-                          <label className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">Full Name</label>
-                          <input required type="text" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} 
-                            className="w-full px-4 py-3 rounded-xl border bg-transparent outline-none transition-colors border-[var(--border-primary)] focus:border-emerald-500" 
-                            style={{ color: "var(--text-primary)" }} placeholder="Jane Doe" />
-                        </div>
-                        <div className="space-y-1.5">
-                          <label className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">University / Institute</label>
-                          <input required type="text" value={formData.university} onChange={e => setFormData({...formData, university: e.target.value})} 
-                            className="w-full px-4 py-3 rounded-xl border bg-transparent outline-none transition-colors border-[var(--border-primary)] focus:border-emerald-500" 
-                            style={{ color: "var(--text-primary)" }} placeholder="Global Tech University" />
-                        </div>
-                      </div>
-                      
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                        <div className="space-y-1.5">
-                          <label className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">Work Email</label>
-                          <input required type="email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} 
-                            className="w-full px-4 py-3 rounded-xl border bg-transparent outline-none transition-colors border-[var(--border-primary)] focus:border-emerald-500" 
-                            style={{ color: "var(--text-primary)" }} placeholder="jane@university.edu" />
-                        </div>
-                        <div className="space-y-1.5">
-                          <label className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">Phone Number</label>
-                          <input type="tel" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} 
-                            className="w-full px-4 py-3 rounded-xl border bg-transparent outline-none transition-colors border-[var(--border-primary)] focus:border-emerald-500" 
-                            style={{ color: "var(--text-primary)" }} placeholder="+1 (555) 000-0000" />
-                        </div>
-                      </div>
-                      
-                      <div className="space-y-1.5">
-                        <label className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">Message (Optional)</label>
-                        <textarea value={formData.message} onChange={e => setFormData({...formData, message: e.target.value})} 
-                          className="w-full px-4 py-3 rounded-xl border bg-transparent outline-none transition-colors resize-none border-[var(--border-primary)] focus:border-emerald-500" 
-                          rows={4} style={{ color: "var(--text-primary)" }} placeholder="Tell us about your campus size and specific requirements..." />
-                      </div>
-                      
-                      <button type="submit" disabled={formStatus === "submitting"} className="w-full py-4 rounded-xl font-bold text-white transition-opacity hover:opacity-90 disabled:opacity-50" style={{ background: "var(--accent-primary)" }}>
-                        {formStatus === "submitting" ? "Submitting Request..." : "Request Institute Access"}
-                      </button>
+
+                      <div className="lg:col-span-3">
+                        <motion.div
+                          initial={reduced ? { opacity: 0 } : { opacity: 0, x: 60, scale: 0.95, filter: "blur(8px)" }}
+                          animate={contactInView ? { opacity: 1, x: 0, scale: 1, filter: "blur(0px)" } : {}}
+                          transition={{ duration: 1, delay: 0.15, ease: EASE_OUT_EXPO }}
+                        >
+                          <TiltCard
+                            className="rounded-2xl border p-6 md:p-8 shadow-xl"
+                            style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}
+                          >
+                            {formStatus === "success" ? (
+                              <div className="flex flex-col items-center justify-center py-12 text-center space-y-4">
+                                <motion.div
+                                  initial={{ scale: 0, rotate: -180 }}
+                                  animate={{ scale: 1, rotate: 0 }}
+                                  transition={{ type: "spring", ...SPRING_CONFIG }}
+                                  className="w-16 h-16 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-500 mb-2"
+                                >
+                                  <CheckCircle2 size={32} />
+                                </motion.div>
+                                <motion.h3
+                                  initial={{ opacity: 0, y: 15, filter: "blur(6px)" }}
+                                  animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                                  transition={{ delay: 0.3, duration: 0.6, ease: EASE_OUT_EXPO }}
+                                  className="text-2xl font-bold" style={{ color: "var(--text-primary)" }}
+                                >
+                                  Request Received!
+                                </motion.h3>
+                                <motion.p
+                                  initial={{ opacity: 0 }}
+                                  animate={{ opacity: 1 }}
+                                  transition={{ delay: 0.5 }}
+                                  style={{ color: "var(--text-secondary)" }}
+                                >
+                                  Our university relations team will reach out to you shortly to set up your Institute Admin account.
+                                </motion.p>
+                                <motion.button
+                                  initial={{ opacity: 0 }}
+                                  animate={{ opacity: 1 }}
+                                  transition={{ delay: 0.7 }}
+                                  onClick={() => setFormStatus(null)}
+                                  className="mt-4 text-emerald-500 font-bold hover:underline"
+                                >
+                                  Submit another request
+                                </motion.button>
+                              </div>
+                            ) : (
+                              <form onSubmit={handleFormSubmit} className="space-y-5">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                  <div className="space-y-1.5">
+                                    <label className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">Full Name</label>
+                                    <input required type="text" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})}
+                                      className="w-full px-4 py-3 rounded-xl border bg-transparent outline-none transition-all duration-300 border-[var(--border-primary)] focus:border-emerald-500 focus:shadow-[0_0_0_3px_rgba(16,185,129,0.1)]"
+                                      style={{ color: "var(--text-primary)" }} placeholder="Jane Doe" />
+                                  </div>
+                                  <div className="space-y-1.5">
+                                    <label className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">University / Institute</label>
+                                    <input required type="text" value={formData.university} onChange={e => setFormData({...formData, university: e.target.value})}
+                                      className="w-full px-4 py-3 rounded-xl border bg-transparent outline-none transition-all duration-300 border-[var(--border-primary)] focus:border-emerald-500 focus:shadow-[0_0_0_3px_rgba(16,185,129,0.1)]"
+                                      style={{ color: "var(--text-primary)" }} placeholder="Global Tech University" />
+                                  </div>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                  <div className="space-y-1.5">
+                                    <label className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">Work Email</label>
+                                    <input required type="email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})}
+                                      className="w-full px-4 py-3 rounded-xl border bg-transparent outline-none transition-all duration-300 border-[var(--border-primary)] focus:border-emerald-500 focus:shadow-[0_0_0_3px_rgba(16,185,129,0.1)]"
+                                      style={{ color: "var(--text-primary)" }} placeholder="jane@university.edu" />
+                                  </div>
+                                  <div className="space-y-1.5">
+                                    <label className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">Phone Number</label>
+                                    <input type="tel" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})}
+                                      className="w-full px-4 py-3 rounded-xl border bg-transparent outline-none transition-all duration-300 border-[var(--border-primary)] focus:border-emerald-500 focus:shadow-[0_0_0_3px_rgba(16,185,129,0.1)]"
+                                      style={{ color: "var(--text-primary)" }} placeholder="+1 (555) 000-0000" />
+                                  </div>
+                                </div>
+
+                                <div className="space-y-1.5">
+                                  <label className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">Message (Optional)</label>
+                                  <textarea value={formData.message} onChange={e => setFormData({...formData, message: e.target.value})}
+                                    className="w-full px-4 py-3 rounded-xl border bg-transparent outline-none transition-all duration-300 resize-none border-[var(--border-primary)] focus:border-emerald-500 focus:shadow-[0_0_0_3px_rgba(16,185,129,0.1)]"
+                                    rows={4} style={{ color: "var(--text-primary)" }} placeholder="Tell us about your campus size and specific requirements..." />
+                                </div>
+
+                                <MagneticButton
+                                  type="submit"
+                                  disabled={formStatus === "submitting"}
+                                  className="w-full py-4 rounded-xl font-bold text-white disabled:opacity-50 shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/40 transition-shadow duration-500"
+                                  style={{ background: "linear-gradient(135deg, #10b981, #059669)" }}
+                                >
+                                  {formStatus === "submitting" ? (
+                                    <span className="flex items-center justify-center gap-2">
+                                      <motion.span
+                                        className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full inline-block"
+                                        animate={{ rotate: 360 }}
+                                        transition={{ duration: 0.8, repeat: Infinity, ease: "linear" }}
+                                      />
+                                      Submitting Request...
+                                    </span>
+                                  ) : "Request Institute Access"}
+                                </MagneticButton>
 
                                 {formStatus === "error" && (
                                   <motion.p
@@ -2658,9 +2897,7 @@ export default function InstitutesPage() {
               </div>
             </div>
           </section>
-
         </main>
-
         <Footer />
       </div>
     </PageReveal>
