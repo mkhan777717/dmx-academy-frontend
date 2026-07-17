@@ -110,6 +110,10 @@ export default function ResumeForm({ data, onChange }) {
             <label className={labelClasses}>Last Name</label>
             <input type="text" value={data.personalInfo.lastName || ''} onChange={e => handleChange('personalInfo', 'lastName', e.target.value)} className={inputClasses} placeholder="Doe" />
           </div>
+          <div className="md:col-span-2">
+            <label className={labelClasses}>Professional Title</label>
+            <input type="text" value={data.personalInfo.title || ''} onChange={e => handleChange('personalInfo', 'title', e.target.value)} className={inputClasses} placeholder="Software Engineer" />
+          </div>
           <div>
             <label className={labelClasses}>Email</label>
             <input type="email" value={data.personalInfo.email || ''} onChange={e => handleChange('personalInfo', 'email', e.target.value)} className={inputClasses} placeholder="john@example.com" />

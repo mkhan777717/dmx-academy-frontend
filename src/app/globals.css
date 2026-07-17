@@ -12,6 +12,7 @@
   /* ---- LIGHT THEME (default) ---- */
   :root,
   html.theme-light {
+    color-scheme: light;
     --bg-primary: #f8fafc;
     --bg-secondary: #ffffff;
     --bg-card: #ffffff;
@@ -58,6 +59,7 @@
 
   /* ---- DARK THEME ---- */
   html.theme-dark {
+    color-scheme: dark;
     --bg-primary: #000000;
     --bg-secondary: #0a0a0a;
     --bg-card: #0a0a0a;
@@ -448,4 +450,18 @@ html.theme-dark .live-chat-sidebar-fullscreen {
 @keyframes animScaleSlow { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
 @keyframes animScaleHover { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
 @keyframes animSlideInDelay { 0% { opacity: 0; transform: translateX(-10px); } 14% { opacity: 1; transform: translateX(0); } 100% { opacity: 1; transform: translateX(0); } }
+
+/* =============================================
+   PRINT STYLES
+   ============================================= */
+@media print {
+  @page {
+    margin: 0;
+  }
+  
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}
 

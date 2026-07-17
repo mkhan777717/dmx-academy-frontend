@@ -5,10 +5,10 @@ import { useAuth } from '@/context/AuthContext';
 import { getApiBase, buildAuthHeaders } from '@/utils/api';
 import ResumeForm from '@/components/ResumeBuilder/ResumeForm';
 import ResumePreview from '@/components/ResumeBuilder/ResumePreview';
-import { Download, Save, Loader2, CheckCircle2, FileText } from 'lucide-react';
+import { Download, Save, Loader2, CheckCircle2, FileText, Target, LayoutTemplate, Star } from 'lucide-react';
 
 const defaultResume = {
-  personalInfo: { firstName: '', lastName: '', email: '', phone: '', location: '', linkedin: '', github: '', portfolio: '' },
+  personalInfo: { firstName: '', lastName: '', title: '', email: '', phone: '', location: '', linkedin: '', github: '', portfolio: '' },
   summary: '',
   experience: [],
   education: [],
@@ -24,6 +24,46 @@ export default function ResumeBuilderPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const [selectedTemplate, setSelectedTemplate] = useState('executive');
+
+  const calculateATSScore = () => {
+    let score = 20; 
+    
+    if (resumeData.personalInfo) {
+      if (resumeData.personalInfo.email && resumeData.personalInfo.phone) score += 5;
+      if (resumeData.personalInfo.linkedin || resumeData.personalInfo.github || resumeData.personalInfo.portfolio) score += 5;
+    }
+    
+    if (resumeData.summary && resumeData.summary.length > 50) score += 15;
+    
+    if (resumeData.experience && resumeData.experience.length > 0) {
+      score += 15;
+      if (resumeData.experience.some(exp => exp.description && exp.description.length > 80)) score += 10;
+    }
+    
+    if (resumeData.education && resumeData.education.length > 0) score += 10;
+    if (resumeData.skills && resumeData.skills.length > 3) score += 10;
+    
+    if (resumeData.projects && resumeData.projects.length > 0) {
+      score += 5;
+      if (resumeData.projects.some(p => p.description && p.description.length > 50)) score += 5;
+    }
+    
+    return Math.min(100, score);
+  };
+  
+  const atsScore = calculateATSScore();
+  
+  const getATSColor = (score) => {
+    if (score >= 80) return "text-emerald-500";
+    if (score >= 50) return "text-amber-500";
+    return "text-rose-500";
+  };
+  const getATSBg = (score) => {
+    if (score >= 80) return "bg-emerald-500";
+    if (score >= 50) return "bg-amber-500";
+    return "bg-rose-500";
+  };
 
   useEffect(() => {
     if (!user) return;
@@ -145,10 +185,32 @@ export default function ResumeBuilderPage() {
             </button>
           </div>
         </div>
-        <h1 className="text-4xl font-serif tracking-tight" style={{ color: "var(--text-primary)" }}>Resume Builder</h1>
-        <p className="text-sm max-w-xl" style={{ color: "var(--text-secondary)" }}>
-          Create an ATS-friendly resume to showcase your skills and experience.
-        </p>
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+          <div>
+            <h1 className="text-4xl font-serif tracking-tight" style={{ color: "var(--text-primary)" }}>Resume Builder</h1>
+            <p className="text-sm max-w-xl mt-1" style={{ color: "var(--text-secondary)" }}>
+              Create an ATS-friendly resume to showcase your skills and experience.
+            </p>
+          </div>
+          
+          {/* ATS Score Indicator */}
+          <div className="flex items-center gap-4 bg-[var(--bg-secondary)] border border-[var(--border-primary)] rounded-2xl p-4 shadow-sm w-full sm:w-auto">
+            <div className="flex items-center justify-center w-12 h-12 rounded-full border-4" style={{ borderColor: "var(--bg-primary)" }}>
+              <div className={`w-full h-full rounded-full flex items-center justify-center font-bold text-lg text-white ${getATSBg(atsScore)} shadow-inner`}>
+                {atsScore}
+              </div>
+            </div>
+            <div className="flex flex-col">
+              <div className="flex items-center gap-1.5 font-bold text-sm" style={{ color: "var(--text-primary)" }}>
+                <Target size={14} className={getATSColor(atsScore)} />
+                ATS Score
+              </div>
+              <p className="text-[11px]" style={{ color: "var(--text-muted)" }}>
+                {atsScore >= 80 ? "Excellent! You're ready to apply." : atsScore >= 50 ? "Good, but add more details." : "Needs more sections & keywords."}
+              </p>
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* Main Content Area */}
@@ -161,8 +223,33 @@ export default function ResumeBuilderPage() {
           </div>
 
           {/* Right Column: Live Preview */}
-          <div className="print:m-0 print:p-0 flex justify-center xl:sticky xl:top-24 xl:h-[calc(100vh-8rem)] xl:overflow-y-auto custom-scrollbar pb-20 print:pb-0">
-            <ResumePreview data={resumeData} />
+          <div className="print:m-0 print:p-0 flex flex-col items-center xl:sticky xl:top-24 xl:h-[calc(100vh-8rem)] xl:overflow-y-auto custom-scrollbar pb-20 print:pb-0">
+            
+            {/* Template Selector */}
+            <div className="w-full max-w-[210mm] flex items-center justify-between mb-4 print:hidden bg-[var(--bg-card)] border border-[var(--border-primary)] rounded-xl p-3 shadow-sm">
+              <div className="flex items-center gap-2 text-sm font-semibold" style={{ color: "var(--text-primary)" }}>
+                <LayoutTemplate size={16} className="text-violet-500" />
+                Templates
+              </div>
+              <div className="flex items-center gap-2 flex-wrap justify-end">
+                {['executive', 'professional', 'contemporary', 'elegant', 'split', 'creative'].map(t => (
+                  <button
+                    key={t}
+                    onClick={() => setSelectedTemplate(t)}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-medium capitalize transition-all ${
+                      selectedTemplate === t 
+                        ? "bg-violet-500 text-white shadow-md shadow-violet-500/20" 
+                        : "bg-[var(--bg-secondary)] hover:bg-[var(--bg-hover)]"
+                    }`}
+                    style={selectedTemplate !== t ? { color: "var(--text-secondary)" } : {}}
+                  >
+                    {t}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <ResumePreview data={resumeData} template={selectedTemplate} />
           </div>
           
         </div>
