@@ -280,16 +280,12 @@ export default function QuizBlitz({ onProgressChange, savedProgress, onBack }) {
   };
 
   return (
-    <div className="relative min-h-[70vh] w-full bg-[#0a0714] border border-[var(--border-primary)] border-slate-500/20 rounded-3xl overflow-hidden font-mono text-[#E8E6E1]">
-      {/* Retro Arcade Scanline overlay effect */}
-      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.4)_100%)] z-20" />
-      <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(18,10,36,0)_97%,rgba(18,10,36,0.3)_98%)] bg-[size:100%_4px] opacity-35 z-20" />
-
+    <div className="relative min-h-[70vh] w-full bg-[var(--bg-card)] border border-[var(--border-primary)] rounded-3xl overflow-hidden font-mono text-[var(--text-primary)]">
       {/* sound toggle */}
       <div className="absolute top-4 right-4 z-30">
         <button
           onClick={() => setSoundEnabled(!soundEnabled)}
-          className="p-2 rounded-xl border border-[var(--border-primary)] border-slate-500/20 bg-slate-950/20 hover:bg-slate-950/40 text-slate-300 hover:text-white transition-all cursor-pointer shadow-sm"
+          className="p-2 rounded-xl border border-[var(--border-primary)] bg-[var(--bg-secondary)] hover:bg-[var(--bg-hover)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all cursor-pointer shadow-sm"
         >
           {soundEnabled ? <Volume2 size={16} /> : <VolumeX size={16} />}
         </button>
@@ -308,18 +304,18 @@ export default function QuizBlitz({ onProgressChange, savedProgress, onBack }) {
             {loading ? (
               <div className="flex flex-col items-center gap-3">
                 <RefreshCw size={24} className="animate-spin text-slate-400" />
-                <p className="text-xs text-slate-300/60 font-mono">Syncing question pool from database...</p>
+                <p className="text-xs text-[var(--text-muted)] font-mono">Syncing question pool from database...</p>
               </div>
             ) : !selectedTrack ? (
               <>
                 <div className="space-y-3">
-                  <span className="text-[10px] font-bold tracking-widest text-[#7CFFB2] border border-[var(--border-primary)] border-[#7CFFB2]/20 bg-[#7CFFB2]/5 px-3 py-1 rounded-full uppercase">
+                  <span className="text-[10px] font-bold tracking-widest text-[var(--accent-primary)] border border-[var(--border-primary)] bg-[var(--accent-glow)] px-3 py-1 rounded-full uppercase">
                     Mode: Quiz Blitz
                   </span>
-                  <h2 className="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-slate-400 via-[var(--text-secondary)] to-cyan-400 uppercase tracking-tight">
+                  <h2 className="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[var(--text-primary)] via-[var(--text-secondary)] to-[var(--accent-primary)] uppercase tracking-tight">
                     Speed Trivia Core
                   </h2>
-                  <p className="text-xs text-slate-300/50 max-w-md mx-auto">
+                  <p className="text-xs text-[var(--text-secondary)] max-w-md mx-auto">
                     Select a track to launch your level progress. Solve timed questions, maintain your streak, and unlock the next stages!
                   </p>
                 </div>
@@ -331,12 +327,12 @@ export default function QuizBlitz({ onProgressChange, savedProgress, onBack }) {
                       <button
                         key={track}
                         onClick={() => setSelectedTrack(track)}
-                        className="relative p-5 rounded-2xl border border-[var(--border-primary)] border-slate-500/25 bg-gradient-to-br from-[#1a0e30]/40 to-[#0e071e]/70 text-left hover:scale-[1.03] transition-all cursor-pointer hover:border-slate-400 group overflow-hidden shadow-lg"
+                        className="relative p-5 rounded-2xl border border-[var(--border-primary)] bg-[var(--bg-secondary)] text-left hover:scale-[1.03] transition-all cursor-pointer hover:border-[var(--accent-primary)] group overflow-hidden shadow-lg"
                       >
-                        <div className="absolute top-0 right-0 w-24 h-24 bg-slate-500/5 rounded-full blur-2xl group-hover:bg-slate-500/10 transition-all" />
-                        <span className="text-xs font-bold text-slate-400/60 uppercase">Track</span>
-                        <h4 className="text-lg font-black text-white group-hover:text-[#7CFFB2] transition-colors">{track}</h4>
-                        <div className="flex items-center gap-1 mt-3 text-[10px] text-slate-300/40">
+                        <div className="absolute top-0 right-0 w-24 h-24 bg-[var(--accent-glow)] rounded-full blur-2xl group-hover:opacity-80 transition-all" />
+                        <span className="text-xs font-bold text-[var(--text-muted)] uppercase">Track</span>
+                        <h4 className="text-lg font-black text-[var(--text-primary)] group-hover:text-[var(--accent-primary)] transition-colors">{track}</h4>
+                        <div className="flex items-center gap-1 mt-3 text-[10px] text-[var(--text-muted)]">
                           <span>{totalLvs} Level{totalLvs > 1 ? 's' : ''} available</span>
                         </div>
                       </button>
@@ -346,7 +342,7 @@ export default function QuizBlitz({ onProgressChange, savedProgress, onBack }) {
 
                 <button
                   onClick={onBack}
-                  className="flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-white transition-colors cursor-pointer mt-4"
+                  className="flex items-center gap-2 text-xs font-bold text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors cursor-pointer mt-4"
                 >
                   <ArrowLeft size={14} /> Back to Hub Lobby
                 </button>
@@ -354,13 +350,13 @@ export default function QuizBlitz({ onProgressChange, savedProgress, onBack }) {
             ) : (
               <>
                 <div className="space-y-3">
-                  <span className="text-[10px] font-bold tracking-widest text-[#7CFFB2] border border-[var(--border-primary)] border-[#7CFFB2]/20 bg-[#7CFFB2]/5 px-3 py-1 rounded-full uppercase">
+                  <span className="text-[10px] font-bold tracking-widest text-[var(--accent-primary)] border border-[var(--border-primary)] bg-[var(--accent-glow)] px-3 py-1 rounded-full uppercase">
                     Track: {selectedTrack}
                   </span>
-                  <h2 className="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-slate-400 via-[var(--text-secondary)] to-cyan-400 uppercase tracking-tight">
+                  <h2 className="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[var(--text-primary)] via-[var(--text-secondary)] to-[var(--accent-primary)] uppercase tracking-tight">
                     Select Level
                   </h2>
-                  <p className="text-xs text-slate-300/50 max-w-md mx-auto">
+                  <p className="text-xs text-[var(--text-secondary)] max-w-md mx-auto">
                     Complete levels sequentially. Clear one level to unlock the next!
                   </p>
                 </div>
@@ -374,19 +370,19 @@ export default function QuizBlitz({ onProgressChange, savedProgress, onBack }) {
                         key={lvl}
                         disabled={!isUnlocked}
                         onClick={() => handleStartGame(selectedTrack, lvl)}
-                        className={`relative p-5 rounded-2xl border border-[var(--border-primary)] flex flex-col items-center justify-center transition-all ${
+                        className={`relative p-5 rounded-2xl border flex flex-col items-center justify-center transition-all ${
                           isUnlocked
-                            ? "bg-slate-950/20 border-slate-500/30 hover:border-[#7CFFB2] hover:scale-105 cursor-pointer text-white"
-                            : "bg-[#180f2d]/40 border-slate-950/20 text-slate-500/20 cursor-not-allowed"
+                            ? "bg-[var(--bg-secondary)] border-[var(--border-primary)] hover:border-[var(--accent-primary)] hover:scale-105 cursor-pointer text-[var(--text-primary)]"
+                            : "bg-[var(--bg-primary)] opacity-40 border-[var(--border-primary)] text-[var(--text-muted)] cursor-not-allowed"
                         }`}
                       >
                         <span className="text-xs font-bold uppercase tracking-wider mb-2">Lvl {lvl}</span>
                         {isCompleted ? (
-                          <span className="text-[9px] font-bold text-[#7CFFB2] bg-[#7CFFB2]/10 border border-[var(--border-primary)] border-[#7CFFB2]/20 px-2 py-0.5 rounded uppercase">Cleared</span>
+                          <span className="text-[9px] font-bold text-[var(--accent-primary)] bg-[var(--accent-glow)] border border-[var(--border-primary)] px-2 py-0.5 rounded uppercase">Cleared</span>
                         ) : isUnlocked ? (
-                          <span className="text-[9px] font-bold text-cyan-400 bg-cyan-500/10 border border-[var(--border-primary)] border-cyan-500/20 px-2 py-0.5 rounded uppercase">Play</span>
+                          <span className="text-[9px] font-bold text-[var(--text-primary)] bg-[var(--bg-hover)] border border-[var(--border-primary)] px-2 py-0.5 rounded uppercase">Play</span>
                         ) : (
-                          <span className="text-[9px] font-bold text-slate-500/10 uppercase">Locked</span>
+                          <span className="text-[9px] font-bold text-[var(--text-muted)] uppercase">Locked</span>
                         )}
                       </button>
                     );
@@ -395,7 +391,7 @@ export default function QuizBlitz({ onProgressChange, savedProgress, onBack }) {
 
                 <button
                   onClick={() => setSelectedTrack(null)}
-                  className="flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-white transition-colors cursor-pointer mt-4"
+                  className="flex items-center gap-2 text-xs font-bold text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors cursor-pointer mt-4"
                 >
                   <ArrowLeft size={14} /> Back to Tracks Selection
                 </button>
@@ -414,26 +410,26 @@ export default function QuizBlitz({ onProgressChange, savedProgress, onBack }) {
             className="p-6 md:p-8 flex flex-col justify-between min-h-[70vh] relative z-10"
           >
             {/* Header info */}
-            <div className="flex items-center justify-between border-b border-slate-500/15 pb-4">
+            <div className="flex items-center justify-between border-b border-[var(--border-primary)] pb-4">
               <div className="flex items-center space-x-3">
-                <span className="text-xs font-black uppercase text-slate-400 tracking-wider">
+                <span className="text-xs font-black uppercase text-[var(--text-secondary)] tracking-wider">
                   {selectedTrack} — Level {currentLevel}
                 </span>
-                <span className="text-[10px] font-bold text-[#7CFFB2] border border-[var(--border-primary)] border-[#7CFFB2]/20 px-2 py-0.5 rounded bg-[#7CFFB2]/5 uppercase">
+                <span className="text-[10px] font-bold text-[var(--accent-primary)] border border-[var(--border-primary)] bg-[var(--accent-glow)] px-2 py-0.5 rounded uppercase">
                   Q {qIdx + 1}/{questions.length}
                 </span>
               </div>
 
               <div className="flex items-center space-x-6">
                 {/* Score */}
-                <div className="flex items-center gap-1.5 text-amber-400 font-bold text-sm">
-                  <Zap size={14} className="fill-amber-400/10" />
+                <div className="flex items-center gap-1.5 text-amber-500 font-bold text-sm">
+                  <Zap size={14} className="fill-amber-500/10" />
                   <span>{score} pts</span>
                 </div>
                 {/* Streak */}
                 {streak > 0 && (
-                  <div className="flex items-center gap-1 text-orange-400 font-bold text-xs">
-                    <Star size={12} className="fill-orange-400" />
+                  <div className="flex items-center gap-1 text-orange-500 font-bold text-xs">
+                    <Star size={12} className="fill-orange-500" />
                     <span>{streak}x Streak</span>
                   </div>
                 )}
@@ -441,9 +437,9 @@ export default function QuizBlitz({ onProgressChange, savedProgress, onBack }) {
             </div>
 
             {/* Timer Progress Bar */}
-            <div className="w-full h-1 bg-slate-950 rounded-full overflow-hidden mt-3">
+            <div className="w-full h-1 bg-[var(--bg-primary)] rounded-full overflow-hidden mt-3">
               <motion.div
-                className={`h-full bg-gradient-to-r ${timeLeft <= 5 ? "from-red-500 to-rose-600" : "from-slate-500 to-cyan-400"}`}
+                className={`h-full bg-gradient-to-r ${timeLeft <= 5 ? "from-red-500 to-rose-600" : "from-[var(--accent-primary)] to-[var(--accent-secondary)]"}`}
                 animate={{ width: `${(timeLeft / (currentQuestion.time_limit || 20)) * 100}%` }}
                 transition={{ duration: phase === "playing" ? 1 : 0.2, ease: "linear" }}
               />
@@ -451,14 +447,14 @@ export default function QuizBlitz({ onProgressChange, savedProgress, onBack }) {
 
             {/* Question Box */}
             <div className="my-6 space-y-4 flex-grow flex flex-col justify-center">
-              <h3 className="text-base md:text-lg font-bold text-white leading-relaxed">
+              <h3 className="text-base md:text-lg font-bold text-[var(--text-primary)] leading-relaxed">
                 {currentQuestion.question}
               </h3>
 
               {/* Optional Code Block */}
               {currentQuestion.code && (
-                <div className="relative rounded-xl border border-[var(--border-primary)] border-slate-950 bg-[#0d071b] p-4 font-mono text-xs overflow-x-auto shadow-inner text-slate-300">
-                  <div className="absolute top-2 right-3 text-[9px] uppercase tracking-wider text-slate-600 font-bold">
+                <div className="relative rounded-xl border border-[var(--border-primary)] bg-[var(--bg-primary)] p-4 font-mono text-xs overflow-x-auto shadow-inner text-[var(--text-primary)]">
+                  <div className="absolute top-2 right-3 text-[9px] uppercase tracking-wider text-[var(--text-muted)] font-bold">
                     code_sandbox
                   </div>
                   <pre className="whitespace-pre-wrap">{currentQuestion.code}</pre>
@@ -476,18 +472,18 @@ export default function QuizBlitz({ onProgressChange, savedProgress, onBack }) {
                 const isCorrectOpt = optLetter === currentQuestion.correct_option;
                 const revealMode = phase === "answer_reveal";
 
-                let btnStyles = "border-slate-500/20 bg-slate-950/10 hover:border-slate-500/50 hover:bg-slate-950/20 text-[#E8E6E1]";
+                let btnStyles = "border-[var(--border-primary)] bg-[var(--bg-secondary)] hover:bg-[var(--bg-hover)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--accent-primary)]";
                 let iconEl = null;
 
                 if (revealMode) {
                   if (isCorrectOpt) {
-                    btnStyles = "border-emerald-500/50 bg-emerald-950/20 text-emerald-300 shadow-[0_0_12px_rgba(16,185,129,0.15)]";
-                    iconEl = <CheckCircle2 size={16} className="text-emerald-400 shrink-0" />;
+                    btnStyles = "border-emerald-500/50 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold";
+                    iconEl = <CheckCircle2 size={16} className="text-emerald-500 shrink-0" />;
                   } else if (isSelected) {
-                    btnStyles = "border-rose-500/50 bg-rose-950/20 text-rose-300 shadow-[0_0_12px_rgba(244,63,94,0.15)]";
-                    iconEl = <XCircle size={16} className="text-rose-400 shrink-0" />;
+                    btnStyles = "border-rose-500/50 bg-rose-500/10 text-rose-600 dark:text-rose-400";
+                    iconEl = <XCircle size={16} className="text-rose-500 shrink-0" />;
                   } else {
-                    btnStyles = "border-slate-500/5 bg-[#120921]/10 text-slate-300/30 cursor-not-allowed";
+                    btnStyles = "opacity-40 cursor-not-allowed";
                   }
                 } else {
                   btnStyles += " active:scale-[0.98] cursor-pointer";
@@ -498,12 +494,12 @@ export default function QuizBlitz({ onProgressChange, savedProgress, onBack }) {
                     key={optLetter}
                     disabled={revealMode}
                     onClick={() => handleSelectOption(optLetter)}
-                    className={`flex items-start gap-3 p-4 rounded-xl border border-[var(--border-primary)] text-xs font-semibold text-left transition-all duration-150 ${btnStyles}`}
+                    className={`flex items-start gap-3 p-4 rounded-xl border text-xs font-semibold text-left transition-all duration-150 ${btnStyles}`}
                   >
-                    <span className={`h-5 w-5 rounded border border-[var(--border-primary)] flex items-center justify-center shrink-0 text-[10px] font-bold ${
-                      revealMode && isCorrectOpt ? "border-emerald-500/40 bg-emerald-500/10" :
-                      revealMode && isSelected ? "border-rose-500/40 bg-rose-500/10" :
-                      "border-slate-500/20 bg-slate-500/5"
+                    <span className={`h-5 w-5 rounded border flex items-center justify-center shrink-0 text-[10px] font-bold ${
+                      revealMode && isCorrectOpt ? "border-emerald-500/40 bg-emerald-500/20" :
+                      revealMode && isSelected ? "border-rose-500/40 bg-rose-500/20" :
+                      "border-[var(--border-primary)] bg-[var(--bg-primary)] text-[var(--text-muted)]"
                     }`}>
                       {optLetter}
                     </span>
@@ -515,15 +511,15 @@ export default function QuizBlitz({ onProgressChange, savedProgress, onBack }) {
             </div>
 
             {/* Bottom info panel (reveals explanation and next button) */}
-            <div className="h-16 flex items-center justify-between border-t border-slate-500/10 pt-4">
+            <div className="h-16 flex items-center justify-between border-t border-[var(--border-primary)] pt-4">
               {phase === "answer_reveal" ? (
                 <div className="flex flex-col md:flex-row md:items-center justify-between w-full gap-3">
-                  <div className="text-[10px] text-slate-300/60 leading-relaxed font-sans max-w-lg line-clamp-2">
-                    <span className="font-bold text-[#7CFFB2]">EXPLANATION:</span> {currentQuestion.explanation}
+                  <div className="text-[10px] text-[var(--text-muted)] leading-relaxed font-sans max-w-lg line-clamp-2">
+                    <span className="font-bold text-[var(--accent-primary)]">EXPLANATION:</span> {currentQuestion.explanation}
                   </div>
                   <button
                     onClick={handleNextQuestion}
-                    className="px-5 py-2.5 rounded-xl text-xs font-bold bg-slate-600 hover:bg-slate-500 text-white flex items-center gap-1.5 self-end shrink-0 hover:shadow-[0_0_12px_rgba(168,85,247,0.3)] transition-all cursor-pointer"
+                    className="px-5 py-2.5 rounded-xl text-xs font-bold bg-[var(--accent-primary)] text-[var(--text-on-accent)] flex items-center gap-1.5 self-end shrink-0 hover:opacity-95 transition-all cursor-pointer shadow-md font-mono"
                   >
                     <span>{qIdx + 1 === questions.length ? "Finish Blitz" : "Next Question"}</span>
                     <ArrowRight size={13} />
@@ -531,10 +527,10 @@ export default function QuizBlitz({ onProgressChange, savedProgress, onBack }) {
                 </div>
               ) : (
                 <div className="flex items-center justify-between w-full">
-                  <span className="text-[10px] text-slate-300/40 flex items-center gap-1">
+                  <span className="text-[10px] text-[var(--text-muted)] flex items-center gap-1">
                     <Clock size={11} /> Time Left: {timeLeft}s
                   </span>
-                  <span className="text-[9px] uppercase tracking-wider text-slate-500/50">
+                  <span className="text-[9px] uppercase tracking-wider text-[var(--text-muted)]/50">
                     Awaiting Input
                   </span>
                 </div>
@@ -553,36 +549,36 @@ export default function QuizBlitz({ onProgressChange, savedProgress, onBack }) {
             className="flex flex-col items-center justify-center p-8 text-center h-[70vh] space-y-6"
           >
             <div className="p-4 rounded-full bg-amber-500/10 border border-[var(--border-primary)] border-amber-500/20">
-              <Trophy size={36} className="text-amber-400" />
+              <Trophy size={36} className="text-amber-500" />
             </div>
 
             <div>
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+              <span className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest">
                 Arena Cleared
               </span>
-              <h2 className="text-2xl md:text-3xl font-black text-white mt-1">
+              <h2 className="text-2xl md:text-3xl font-black text-[var(--text-primary)] mt-1">
                 QUIZ BLITZ COMPLETE
               </h2>
-              <p className="text-xs text-slate-300/40 font-mono mt-1 uppercase">
+              <p className="text-xs text-[var(--text-muted)] font-mono mt-1 uppercase">
                 Track: {selectedTrack} — Level {currentLevel}
               </p>
             </div>
 
             {/* Performance metrics */}
             <div className="grid grid-cols-3 gap-3 w-full max-w-md">
-              <div className="bg-slate-950/15 border border-[var(--border-primary)] border-slate-500/10 rounded-2xl p-4">
-                <div className="text-2xl font-black text-cyan-300">{score}</div>
-                <div className="text-[9px] uppercase tracking-wider text-slate-300/40 font-bold mt-1">Score</div>
+              <div className="bg-[var(--bg-secondary)] border border-[var(--border-primary)] rounded-2xl p-4">
+                <div className="text-2xl font-black text-[var(--text-primary)]">{score}</div>
+                <div className="text-[9px] uppercase tracking-wider text-[var(--text-muted)] font-bold mt-1">Score</div>
               </div>
-              <div className="bg-slate-950/15 border border-[var(--border-primary)] border-slate-500/10 rounded-2xl p-4">
-                <div className="text-2xl font-black text-[#7CFFB2]">
+              <div className="bg-[var(--bg-secondary)] border border-[var(--border-primary)] rounded-2xl p-4">
+                <div className="text-2xl font-black text-[var(--accent-primary)]">
                   {Math.round((results.filter(r => r.correct).length / questions.length) * 100)}%
                 </div>
-                <div className="text-[9px] uppercase tracking-wider text-slate-300/40 font-bold mt-1">Accuracy</div>
+                <div className="text-[9px] uppercase tracking-wider text-[var(--text-muted)] font-bold mt-1">Accuracy</div>
               </div>
-              <div className="bg-slate-950/15 border border-[var(--border-primary)] border-slate-500/10 rounded-2xl p-4">
-                <div className="text-2xl font-black text-orange-400">{bestStreak}</div>
-                <div className="text-[9px] uppercase tracking-wider text-slate-300/40 font-bold mt-1">Best Streak</div>
+              <div className="bg-[var(--bg-secondary)] border border-[var(--border-primary)] rounded-2xl p-4">
+                <div className="text-2xl font-black text-orange-500">{bestStreak}</div>
+                <div className="text-[9px] uppercase tracking-wider text-[var(--text-muted)] font-bold mt-1">Best Streak</div>
               </div>
             </div>
 
@@ -596,7 +592,7 @@ export default function QuizBlitz({ onProgressChange, savedProgress, onBack }) {
                   return (
                     <button
                       onClick={() => handleStartGame(selectedTrack, nextLvl)}
-                      className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs transition-all cursor-pointer flex items-center gap-2 hover:shadow-[0_0_12px_rgba(16,185,129,0.3)] font-mono"
+                      className="px-5 py-2.5 rounded-xl bg-[var(--accent-primary)] text-[var(--text-on-accent)] font-black text-xs transition-all cursor-pointer flex items-center gap-2 hover:opacity-95 shadow-md font-mono"
                     >
                       <Play size={13} /> Proceed to Level {nextLvl}
                     </button>
@@ -606,13 +602,13 @@ export default function QuizBlitz({ onProgressChange, savedProgress, onBack }) {
               })()}
               <button
                 onClick={() => handleStartGame(selectedTrack, currentLevel)}
-                className="px-5 py-2.5 rounded-xl border border-[var(--border-primary)] border-slate-500/25 bg-[#1b0d35]/30 text-slate-300 hover:text-white hover:border-slate-400 text-xs font-bold transition-all cursor-pointer flex items-center gap-2 font-mono"
+                className="px-5 py-2.5 rounded-xl border border-[var(--border-primary)] bg-[var(--bg-secondary)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] text-xs font-bold transition-all cursor-pointer flex items-center gap-2 font-mono"
               >
                 <RotateCcw size={13} /> Replay Level {currentLevel}
               </button>
               <button
                 onClick={() => setPhase("lobby")}
-                className="px-5 py-2.5 rounded-xl bg-slate-600 hover:bg-slate-500 text-white font-black text-xs transition-all cursor-pointer flex items-center gap-2 hover:shadow-[0_0_12px_rgba(168,85,247,0.3)] font-mono"
+                className="px-5 py-2.5 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-primary)] text-[var(--text-primary)] hover:bg-[var(--bg-hover)] font-black text-xs transition-all cursor-pointer flex items-center gap-2 font-mono shadow-sm"
               >
                 <Play size={13} /> Levels Selection
               </button>
@@ -620,7 +616,7 @@ export default function QuizBlitz({ onProgressChange, savedProgress, onBack }) {
 
             <button
               onClick={onBack}
-              className="text-xs font-bold text-slate-500 hover:text-white transition-colors cursor-pointer mt-2"
+              className="text-xs font-bold text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors cursor-pointer mt-2"
             >
               Exit to Arcade Lobby
             </button>

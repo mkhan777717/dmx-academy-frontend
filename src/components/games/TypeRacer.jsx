@@ -211,33 +211,29 @@ export default function TypeRacer({ onBack }) {
 
   // ─── Render ─────────────────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#090B14] via-[#0C1021] to-[#070A12] text-white p-4 md:p-8 select-none">
-      {/* Ambient glows */}
-      <div className="fixed top-[-10%] left-[-10%] w-[55%] h-[55%] rounded-full bg-cyan-500/6 blur-[140px] pointer-events-none" />
-      <div className="fixed bottom-[-10%] right-[-10%] w-[55%] h-[55%] rounded-full bg-violet-600/8 blur-[140px] pointer-events-none" />
-
+    <div className="w-full bg-[var(--bg-card)] border border-[var(--border-primary)] text-[var(--text-primary)] p-4 md:p-8 rounded-3xl relative overflow-hidden select-none">
       <div className="max-w-4xl mx-auto space-y-6 relative z-10">
 
         {/* ── Nav Bar ─────────────────────────────────────────────────── */}
-        <div className="flex items-center justify-between border-b border-white/5 pb-4">
+        <div className="flex items-center justify-between border-b border-[var(--border-primary)] pb-4">
           <button
             onClick={onBack}
-            className="flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[var(--border-primary)] border-cyan-500/20 bg-cyan-950/20 text-cyan-300 hover:text-white hover:border-cyan-400/40 transition-all text-xs font-bold font-mono cursor-pointer"
+            className="flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[var(--border-primary)] bg-[var(--bg-secondary)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-hover)] transition-all text-xs font-bold font-mono cursor-pointer"
           >
             <ArrowLeft size={13} />
             <span>Exit Arena</span>
           </button>
 
           {/* Language Toggle */}
-          <div className="flex items-center gap-1 bg-white/3 border border-[var(--border-primary)] border-white/8 rounded-full p-1">
+          <div className="flex items-center gap-1 bg-[var(--bg-primary)] border border-[var(--border-primary)] rounded-full p-1">
             {["python", "javascript"].map(l => (
               <button
                 key={l}
                 onClick={() => switchLang(l)}
                 className={`px-4 py-1.5 rounded-full text-xs font-bold font-mono transition-all cursor-pointer ${
                   lang === l
-                    ? "bg-cyan-500 text-black shadow-[0_0_12px_rgba(6,182,212,0.4)]"
-                    : "text-white/50 hover:text-white/80"
+                    ? "bg-[var(--accent-primary)] text-[var(--text-on-accent)] shadow-sm"
+                    : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
                 }`}
               >
                 {l === "python" ? "Python" : "JavaScript"}
@@ -246,8 +242,8 @@ export default function TypeRacer({ onBack }) {
           </div>
 
           {/* Progress */}
-          <div className="flex items-center gap-1.5 text-xs font-mono text-white/40">
-            <Flame size={12} className="text-orange-400" />
+          <div className="flex items-center gap-1.5 text-xs font-mono text-[var(--text-muted)]">
+            <Flame size={12} className="text-orange-500" />
             <span>{completedForLang}/{totalLevels} done</span>
           </div>
         </div>
@@ -255,12 +251,12 @@ export default function TypeRacer({ onBack }) {
         {/* ── Header ──────────────────────────────────────────────────── */}
         <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <div className="p-2 rounded-xl bg-cyan-500/10 border border-[var(--border-primary)] border-cyan-500/20">
-              <Zap size={20} className="text-cyan-400" />
+            <div className="p-2 rounded-xl bg-[var(--accent-glow)] border border-[var(--border-primary)]">
+              <Zap size={20} className="text-[var(--accent-primary)]" />
             </div>
             <div>
-              <h1 className="text-2xl font-black tracking-tight">TypeRacer Pro</h1>
-              <p className="text-xs text-white/35 font-mono">
+              <h1 className="text-2xl font-black tracking-tight text-[var(--text-primary)]">TypeRacer Pro</h1>
+              <p className="text-xs text-[var(--text-muted)] font-mono">
                 Level {levelIdx + 1}/{totalLevels} · {snippet.title}
               </p>
             </div>
@@ -276,12 +272,12 @@ export default function TypeRacer({ onBack }) {
               <button
                 key={i}
                 onClick={() => { setLevelIdx(i); setPhase("lobby"); setTyped(""); }}
-                className={`w-7 h-7 rounded-full text-[10px] font-bold font-mono border border-[var(--border-primary)] transition-all cursor-pointer ${
+                className={`w-7 h-7 rounded-full text-[10px] font-bold font-mono border transition-all cursor-pointer ${
                   isActive
-                    ? "bg-cyan-500 border-cyan-400 text-black shadow-[0_0_10px_rgba(6,182,212,0.5)]"
+                    ? "bg-[var(--accent-primary)] border-[var(--accent-primary)] text-[var(--text-on-accent)] shadow-sm"
                     : done
-                    ? "bg-cyan-900/40 border-cyan-500/30 text-cyan-400"
-                    : "bg-white/3 border-white/10 text-white/30 hover:text-white/60"
+                    ? "bg-[var(--accent-glow)] border border-[var(--border-primary)] text-[var(--accent-primary)]"
+                    : "bg-[var(--bg-primary)] border-[var(--border-primary)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
                 }`}
               >
                 {done && !isActive ? <CheckCircle2 size={12} className="mx-auto" /> : i + 1}
@@ -298,37 +294,37 @@ export default function TypeRacer({ onBack }) {
             className="grid grid-cols-4 gap-3"
           >
             {[
-              { label: "WPM", value: wpm, icon: <Zap size={14} className="text-cyan-400" />, accent: "text-cyan-300" },
-              { label: "Accuracy", value: `${accuracy}%`, icon: <Target size={14} className="text-emerald-400" />, accent: "text-emerald-300" },
-              { label: "Progress", value: `${progressPct}%`, icon: <ChevronRight size={14} className="text-violet-400" />, accent: "text-violet-300" },
-              { label: "Mistakes", value: mistakes, icon: <RefreshCw size={14} className="text-rose-400" />, accent: "text-rose-300" },
+              { label: "WPM", value: wpm, icon: <Zap size={14} className="text-cyan-500" />, accent: "text-cyan-500" },
+              { label: "Accuracy", value: `${accuracy}%`, icon: <Target size={14} className="text-emerald-500" />, accent: "text-emerald-500" },
+              { label: "Progress", value: `${progressPct}%`, icon: <ChevronRight size={14} className="text-violet-500" />, accent: "text-violet-500" },
+              { label: "Mistakes", value: mistakes, icon: <RefreshCw size={14} className="text-rose-500" />, accent: "text-rose-500" },
             ].map(stat => (
-              <div key={stat.label} className="bg-white/3 border border-[var(--border-primary)] border-white/6 rounded-2xl p-3 text-center">
+              <div key={stat.label} className="bg-[var(--bg-secondary)] border border-[var(--border-primary)] rounded-2xl p-3 text-center">
                 <div className="flex justify-center mb-1">{stat.icon}</div>
                 <div className={`text-xl font-black font-mono ${stat.accent}`}>{stat.value}</div>
-                <div className="text-[9px] uppercase tracking-wider text-white/30 font-bold">{stat.label}</div>
+                <div className="text-[9px] uppercase tracking-wider text-[var(--text-muted)] font-bold">{stat.label}</div>
               </div>
             ))}
           </motion.div>
         )}
 
         {/* ── Code Display ─────────────────────────────────────────────── */}
-        <div className="relative bg-[#0D1117]/80 border border-[var(--border-primary)] border-white/8 rounded-3xl p-6 overflow-hidden">
+        <div className="relative bg-[var(--bg-primary)] border border-[var(--border-primary)] rounded-3xl p-6 overflow-hidden">
           {/* Header bar */}
           <div className="flex items-center gap-1.5 mb-4">
             <span className="w-2.5 h-2.5 rounded-full bg-rose-500/70" />
             <span className="w-2.5 h-2.5 rounded-full bg-amber-500/70" />
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/70" />
-            <span className="ml-3 text-[10px] font-mono text-white/20">
+            <span className="ml-3 text-[10px] font-mono text-[var(--text-muted)]/40">
               {lang === "python" ? "snippet.py" : "snippet.js"}
             </span>
           </div>
 
           {/* Progress bar */}
           {phase === "playing" && (
-            <div className="mb-4 h-0.5 bg-white/5 rounded-full overflow-hidden">
+            <div className="mb-4 h-0.5 bg-[var(--bg-secondary)] rounded-full overflow-hidden">
               <motion.div
-                className="h-full bg-gradient-to-r from-cyan-500 to-violet-500"
+                className="h-full bg-[var(--accent-primary)]"
                 animate={{ width: `${progressPct}%` }}
                 transition={{ duration: 0.1 }}
               />
@@ -336,7 +332,7 @@ export default function TypeRacer({ onBack }) {
           )}
 
           {/* Characters */}
-          <pre className="font-mono text-sm leading-7 whitespace-pre-wrap break-all select-none">
+          <pre className="font-mono text-sm leading-7 whitespace-pre-wrap break-all select-none text-[var(--text-secondary)]">
             {target.split("").map((ch, i) => {
               const state = charMap[i];
               const isCursor = i === typed.length && phase === "playing";
@@ -344,10 +340,10 @@ export default function TypeRacer({ onBack }) {
                 <span
                   key={i}
                   className={`relative ${
-                    state === "correct" ? "text-cyan-300" :
-                    state === "wrong"   ? "text-rose-400 bg-rose-500/20 rounded" :
-                    "text-white/20"
-                  } ${isCursor ? "border-l-2 border-cyan-400" : ""}`}
+                    state === "correct" ? "text-[var(--accent-primary)] font-bold" :
+                    state === "wrong"   ? "text-rose-500 bg-rose-500/10 rounded" :
+                    "opacity-35"
+                  } ${isCursor ? "border-l-2 border-[var(--accent-primary)]" : ""}`}
                 >
                   {ch === " " ? "\u00A0" : ch}
                 </span>
@@ -357,20 +353,20 @@ export default function TypeRacer({ onBack }) {
 
           {/* Overlay when not playing */}
           {phase === "lobby" && (
-            <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#0D1117]/75 backdrop-blur-sm rounded-3xl">
+            <div className="absolute inset-0 flex flex-col items-center justify-center bg-[var(--bg-primary)]/80 backdrop-blur-sm rounded-3xl">
               <div className="text-center space-y-4">
-                <div className="p-3 rounded-2xl bg-cyan-500/10 border border-[var(--border-primary)] border-cyan-500/20 inline-block">
-                  <Zap size={28} className="text-cyan-400" />
+                <div className="p-3 rounded-2xl bg-[var(--accent-glow)] border border-[var(--border-primary)] text-[var(--accent-primary)] inline-block">
+                  <Zap size={28} className="text-[var(--accent-primary)]" />
                 </div>
                 <div>
-                  <p className="text-white font-bold text-lg">Level {levelIdx + 1}: {snippet.title}</p>
+                  <p className="text-[var(--text-primary)] font-bold text-lg">Level {levelIdx + 1}: {snippet.title}</p>
                   {bestWpm > 0 && (
-                    <p className="text-xs text-white/40 font-mono mt-1">Personal best: {bestWpm} WPM</p>
+                    <p className="text-xs text-[var(--text-muted)] font-mono mt-1">Personal best: {bestWpm} WPM</p>
                   )}
                 </div>
                 <button
                   onClick={startGame}
-                  className="px-8 py-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-black font-black text-sm transition-all hover:scale-105 hover:shadow-[0_0_20px_rgba(6,182,212,0.5)] cursor-pointer"
+                  className="px-8 py-3 rounded-xl bg-[var(--accent-primary)] text-[var(--text-on-accent)] font-black text-sm transition-all hover:scale-105 shadow-md cursor-pointer"
                 >
                   Start Typing
                 </button>
@@ -408,46 +404,46 @@ export default function TypeRacer({ onBack }) {
               initial={{ opacity: 0, scale: 0.92, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-gradient-to-br from-cyan-900/30 to-violet-900/30 border border-[var(--border-primary)] border-cyan-500/25 rounded-3xl p-8 text-center space-y-6"
+              className="bg-[var(--bg-secondary)] border border-[var(--border-primary)] rounded-3xl p-8 text-center space-y-6 shadow-md"
             >
               <div className="flex justify-center">
-                <div className="p-4 rounded-full bg-cyan-500/15 border border-[var(--border-primary)] border-cyan-500/25">
-                  <Trophy size={32} className="text-cyan-300" />
+                <div className="p-4 rounded-full bg-[var(--accent-glow)] border border-[var(--border-primary)] text-[var(--accent-primary)]">
+                  <Trophy size={32} className="text-[var(--accent-primary)]" />
                 </div>
               </div>
 
               <div>
-                <h2 className="text-2xl font-black text-white">Level Complete!</h2>
-                <p className="text-sm text-white/40 font-mono mt-1">{snippet.title}</p>
+                <h2 className="text-2xl font-black text-[var(--text-primary)]">Level Complete!</h2>
+                <p className="text-sm text-[var(--text-muted)] font-mono mt-1">{snippet.title}</p>
               </div>
 
               <div className="grid grid-cols-3 gap-4">
-                <div className="bg-white/5 border border-[var(--border-primary)] border-white/8 rounded-2xl p-4">
-                  <div className="text-3xl font-black text-cyan-300 font-mono">{wpm}</div>
-                  <div className="text-[10px] uppercase tracking-wider text-white/30 font-bold mt-1">WPM</div>
+                <div className="bg-[var(--bg-primary)] border border-[var(--border-primary)] rounded-2xl p-4">
+                  <div className="text-3xl font-black text-[var(--text-primary)] font-mono">{wpm}</div>
+                  <div className="text-[10px] uppercase tracking-wider text-[var(--text-muted)] font-bold mt-1">WPM</div>
                 </div>
-                <div className="bg-white/5 border border-[var(--border-primary)] border-white/8 rounded-2xl p-4">
-                  <div className="text-3xl font-black text-emerald-300 font-mono">{accuracy}%</div>
-                  <div className="text-[10px] uppercase tracking-wider text-white/30 font-bold mt-1">Accuracy</div>
+                <div className="bg-[var(--bg-primary)] border border-[var(--border-primary)] rounded-2xl p-4">
+                  <div className="text-3xl font-black text-emerald-500 font-mono">{accuracy}%</div>
+                  <div className="text-[10px] uppercase tracking-wider text-[var(--text-muted)] font-bold mt-1">Accuracy</div>
                 </div>
-                <div className="bg-white/5 border border-[var(--border-primary)] border-white/8 rounded-2xl p-4">
-                  <div className="text-3xl font-black text-violet-300 font-mono">{Math.round(elapsed)}s</div>
-                  <div className="text-[10px] uppercase tracking-wider text-white/30 font-bold mt-1">Time</div>
+                <div className="bg-[var(--bg-primary)] border border-[var(--border-primary)] rounded-2xl p-4">
+                  <div className="text-3xl font-black text-violet-500 font-mono">{Math.round(elapsed)}s</div>
+                  <div className="text-[10px] uppercase tracking-wider text-[var(--text-muted)] font-bold mt-1">Time</div>
                 </div>
               </div>
 
               {bestWpm === wpm && wpm > 0 && (
-                <div className="flex items-center justify-center gap-2 text-amber-400 text-xs font-bold">
-                  <Star size={14} className="fill-amber-400" />
+                <div className="flex items-center justify-center gap-2 text-amber-500 text-xs font-bold">
+                  <Star size={14} className="fill-amber-500" />
                   <span>New Personal Best!</span>
-                  <Star size={14} className="fill-amber-400" />
+                  <Star size={14} className="fill-amber-500" />
                 </div>
               )}
 
               <div className="flex items-center justify-center gap-3">
                 <button
                   onClick={restart}
-                  className="px-5 py-2.5 rounded-xl border border-[var(--border-primary)] border-white/10 bg-white/5 text-white/70 hover:text-white hover:border-white/20 text-xs font-bold transition-all cursor-pointer flex items-center gap-2"
+                  className="px-5 py-2.5 rounded-xl border border-[var(--border-primary)] bg-[var(--bg-primary)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] text-xs font-bold transition-all cursor-pointer flex items-center gap-2"
                 >
                   <RotateCcw size={13} />
                   Retry
@@ -455,7 +451,7 @@ export default function TypeRacer({ onBack }) {
                 {levelIdx + 1 < totalLevels ? (
                   <button
                     onClick={nextLevel}
-                    className="px-6 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-black font-black text-xs transition-all hover:shadow-[0_0_16px_rgba(6,182,212,0.5)] cursor-pointer flex items-center gap-2"
+                    className="px-6 py-2.5 rounded-xl bg-[var(--accent-primary)] text-[var(--text-on-accent)] font-black text-xs transition-all shadow-sm hover:opacity-95 cursor-pointer flex items-center gap-2"
                   >
                     Next Level
                     <ArrowRight size={13} />
@@ -463,7 +459,7 @@ export default function TypeRacer({ onBack }) {
                 ) : (
                   <button
                     onClick={() => setPhase("finished")}
-                    className="px-6 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-black font-black text-xs transition-all hover:shadow-[0_0_16px_rgba(6,182,212,0.5)] cursor-pointer flex items-center gap-2"
+                    className="px-6 py-2.5 rounded-xl bg-[var(--accent-primary)] text-[var(--text-on-accent)] font-black text-xs transition-all shadow-sm hover:opacity-95 cursor-pointer flex items-center gap-2"
                   >
                     Finish
                     <Trophy size={13} />
@@ -480,16 +476,16 @@ export default function TypeRacer({ onBack }) {
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="bg-gradient-to-br from-violet-900/30 to-cyan-900/30 border border-[var(--border-primary)] border-violet-500/25 rounded-3xl p-10 text-center space-y-6"
+              className="bg-[var(--bg-secondary)] border border-[var(--border-primary)] rounded-3xl p-10 text-center space-y-6 shadow-lg"
             >
               <div className="flex justify-center">
-                <div className="p-5 rounded-full bg-amber-500/15 border border-[var(--border-primary)] border-amber-500/25">
-                  <Trophy size={40} className="text-amber-300" />
+                <div className="p-5 rounded-full bg-amber-500/10 border border-[var(--border-primary)] text-amber-500">
+                  <Trophy size={40} className="text-amber-500" />
                 </div>
               </div>
               <div>
-                <h2 className="text-3xl font-black text-white">Course Complete!</h2>
-                <p className="text-sm text-white/40 font-mono mt-2">
+                <h2 className="text-3xl font-black text-[var(--text-primary)]">Course Complete!</h2>
+                <p className="text-sm text-[var(--text-muted)] font-mono mt-2">
                   You finished all {totalLevels} levels in {lang === "python" ? "Python" : "JavaScript"} mode.
                 </p>
               </div>
@@ -500,9 +496,9 @@ export default function TypeRacer({ onBack }) {
                   const k = `${lang}_${i}`;
                   const b = progress[k];
                   return (
-                    <div key={i} className="bg-white/4 border border-[var(--border-primary)] border-white/6 rounded-xl p-3 flex items-center justify-between">
-                      <span className="text-xs font-mono text-white/50">{s.title}</span>
-                      <span className="text-xs font-black text-cyan-300">{b?.bestWpm || "—"} WPM</span>
+                    <div key={i} className="bg-[var(--bg-primary)] border border-[var(--border-primary)] rounded-xl p-3 flex items-center justify-between">
+                      <span className="text-xs font-mono text-[var(--text-secondary)]">{s.title}</span>
+                      <span className="text-xs font-black text-[var(--accent-primary)]">{b?.bestWpm || "—"} WPM</span>
                     </div>
                   );
                 })}
@@ -511,14 +507,14 @@ export default function TypeRacer({ onBack }) {
               <div className="flex items-center justify-center gap-3">
                 <button
                   onClick={() => { setLevelIdx(0); setPhase("lobby"); }}
-                  className="px-5 py-2.5 rounded-xl border border-[var(--border-primary)] border-white/10 bg-white/5 text-white/70 hover:text-white text-xs font-bold transition-all cursor-pointer flex items-center gap-2"
+                  className="px-5 py-2.5 rounded-xl border border-[var(--border-primary)] bg-[var(--bg-primary)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] text-xs font-bold transition-all cursor-pointer flex items-center gap-2"
                 >
                   <RotateCcw size={13} />
                   Play Again
                 </button>
                 <button
                   onClick={onBack}
-                  className="px-6 py-2.5 rounded-xl bg-violet-500 hover:bg-violet-400 text-white font-black text-xs transition-all hover:shadow-[0_0_16px_rgba(139,92,246,0.5)] cursor-pointer flex items-center gap-2"
+                  className="px-6 py-2.5 rounded-xl bg-[var(--accent-primary)] text-[var(--text-on-accent)] font-black text-xs transition-all shadow-md cursor-pointer flex items-center gap-2"
                 >
                   <ArrowLeft size={13} />
                   Arcade Hub
@@ -530,11 +526,11 @@ export default function TypeRacer({ onBack }) {
 
         {/* ── Restart / Hint controls while playing ───────────────────── */}
         {phase === "playing" && (
-          <div className="flex items-center justify-between text-xs font-mono text-white/30">
+          <div className="flex items-center justify-between text-xs font-mono text-[var(--text-muted)]">
             <span>Click anywhere on screen to focus · Press any key to type</span>
             <button
               onClick={restart}
-              className="flex items-center gap-1 hover:text-white/60 transition-colors cursor-pointer"
+              className="flex items-center gap-1 hover:text-[var(--text-primary)] transition-colors cursor-pointer"
             >
               <RotateCcw size={12} />
               Restart

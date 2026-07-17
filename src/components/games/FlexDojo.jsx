@@ -313,44 +313,41 @@ export default function FlexDojo({ onProgressChange, savedProgress }) {
   };
 
   return (
-<div className="grid grid-cols-1 lg:grid-cols-12 gap-6 text-[#E8E6E1] bg-[#24133F]/20 backdrop-blur-md p-3 md:p-6 rounded-3xl border border-[var(--border-primary)] border-slate-500/20 shadow-2xl relative overflow-hidden font-sans">
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 text-[var(--text-primary)] bg-[var(--bg-card)] p-3 md:p-6 rounded-3xl border border-[var(--border-primary)] shadow-2xl relative overflow-hidden font-sans">
       
-      {/* Decorative CRT scanline background glow */}
-      <div className="absolute inset-0 pointer-events-none opacity-5 bg-[linear-gradient(rgba(18,20,28,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[size:100%_4px,6px_100%] z-50"></div>
-
       {/* Top Arcade/Terminal HUD Info Row */}
-      <div className="lg:col-span-12 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 bg-[#2C184E]/40 p-4 rounded-2xl border border-[var(--border-primary)] border-slate-500/20 z-10">
+      <div className="lg:col-span-12 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 bg-[var(--bg-secondary)] p-4 rounded-2xl border border-[var(--border-primary)] z-10">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-slate-500/10 border border-[var(--border-primary)] border-slate-500/20 flex items-center justify-center text-slate-400 shadow-[0_0_15px_rgba(168,85,247,0.15)] animate-pulse">
+          <div className="w-10 h-10 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-primary)] flex items-center justify-center text-[var(--accent-primary)] shadow-sm animate-pulse">
             <Trophy size={18} />
           </div>
           <div>
-            <h2 className="font-display font-black text-sm tracking-tight text-white uppercase">
+            <h2 className="font-display font-black text-sm tracking-tight text-[var(--text-primary)] uppercase">
               FLEX DOJO COMPILER
             </h2>
-            <p className="text-[10px] font-mono text-slate-300/50 uppercase tracking-wider">
-              Quadrant Alignment Protocol // Streak: <span className="text-slate-300 font-bold">{streak}</span>
+            <p className="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-wider">
+              Quadrant Alignment Protocol // Streak: <span className="text-[var(--text-primary)] font-bold">{streak}</span>
             </p>
           </div>
         </div>
 
         {/* Level Controls */}
         <div className="flex items-center justify-between md:justify-end gap-3 font-mono">
-          <div className="flex items-center gap-1.5 bg-[#341B5C]/35 p-1 rounded-xl border border-[var(--border-primary)] border-slate-500/15">
+          <div className="flex items-center gap-1.5 bg-[var(--bg-primary)] p-1 rounded-xl border border-[var(--border-primary)]">
             <button
               onClick={handlePrevLevel}
               disabled={currentLevelIdx === 0}
-              className="p-2 rounded-lg hover:bg-[#2A2D3D] disabled:opacity-20 transition-all cursor-pointer text-[#E8E6E1]"
+              className="p-2 rounded-lg hover:bg-[var(--bg-hover)] disabled:opacity-20 transition-all cursor-pointer text-[var(--text-primary)]"
             >
               <ArrowLeft size={12} />
             </button>
-            <span className="text-xs font-black tracking-widest text-center min-w-[70px] text-white">
+            <span className="text-xs font-black tracking-widest text-center min-w-[70px] text-[var(--text-primary)]">
               LVL {currentLevel.level}/{LEVELS.length}
             </span>
             <button
               onClick={handleNextLevel}
               disabled={currentLevelIdx === LEVELS.length - 1}
-              className="p-2 rounded-lg hover:bg-[#2A2D3D] disabled:opacity-20 transition-all cursor-pointer text-[#E8E6E1]"
+              className="p-2 rounded-lg hover:bg-[var(--bg-hover)] disabled:opacity-20 transition-all cursor-pointer text-[var(--text-primary)]"
             >
               <ArrowRight size={12} />
             </button>
@@ -358,15 +355,15 @@ export default function FlexDojo({ onProgressChange, savedProgress }) {
 
           <button
             onClick={() => setAudioEnabled(!audioEnabled)}
-            className="p-2.5 rounded-xl border border-[var(--border-primary)] border-slate-500/15 bg-[#341B5C]/35 text-slate-300 hover:text-white transition-all cursor-pointer"
+            className="p-2.5 rounded-xl border border-[var(--border-primary)] bg-[var(--bg-primary)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all cursor-pointer"
           >
-            {audioEnabled ? <Volume2 size={13} className="text-slate-400" /> : <VolumeX size={13} />}
+            {audioEnabled ? <Volume2 size={13} className="text-[var(--text-muted)]" /> : <VolumeX size={13} />}
           </button>
         </div>
       </div>
 
       {/* Grid check list map */}
-      <div className="lg:col-span-12 flex flex-wrap gap-2 p-2 bg-[#2C184E]/40 rounded-2xl border border-[var(--border-primary)] border-slate-500/20 z-10">
+      <div className="lg:col-span-12 flex flex-wrap gap-2 p-2 bg-[var(--bg-secondary)] rounded-2xl border border-[var(--border-primary)] z-10">
         {LEVELS.map((lvl, idx) => {
           const isCompleted = completedLevels.includes(lvl.level);
           const isActive = currentLevelIdx === idx;
@@ -374,12 +371,12 @@ export default function FlexDojo({ onProgressChange, savedProgress }) {
             <button
               key={lvl.level}
               onClick={() => handleSelectLevel(idx)}
-              className={`flex-1 min-w-[36px] py-2 rounded-xl font-mono text-xs font-black tracking-wide border border-[var(--border-primary)] transition-all cursor-pointer text-center ${
+              className={`flex-1 min-w-[36px] py-2 rounded-xl font-mono text-xs font-black tracking-wide border transition-all cursor-pointer text-center ${
                 isActive
-                  ? "bg-slate-600 text-white border-slate-400 shadow-[0_0_12px_rgba(168,85,247,0.25)]"
+                  ? "bg-[var(--accent-primary)] text-[var(--text-on-accent)] border-[var(--accent-primary)] shadow-sm"
                   : isCompleted
-                  ? "bg-slate-500/20 text-[#A78BFA] border border-[var(--border-primary)] border-slate-500/30 hover:bg-slate-500/30"
-                  : "bg-[#24133F]/35 border border-[var(--border-primary)] border-slate-500/15 text-slate-300/60 hover:text-white"
+                  ? "bg-[var(--accent-glow)] text-[var(--accent-primary)] border border-[var(--border-primary)] hover:bg-[var(--bg-hover)]"
+                  : "bg-[var(--bg-primary)] border border-[var(--border-primary)] text-[var(--text-muted)] hover:text-[var(--text-primary)]"
               }`}
             >
               {lvl.level}
@@ -391,44 +388,44 @@ export default function FlexDojo({ onProgressChange, savedProgress }) {
       {/* Left Column: Visual IDE Layout */}
       <div className="lg:col-span-6 flex flex-col space-y-6 z-10">
         {/* Level description block */}
-        <div className="bg-[#24133F]/40 p-5 rounded-2xl border border-[var(--border-primary)] border-slate-500/20 relative overflow-hidden space-y-2.5 backdrop-blur-md">
-          <div className="absolute top-0 right-0 w-24 h-24 bg-slate-500/5 rounded-full blur-2xl pointer-events-none"></div>
-          <span className="text-[9px] font-mono font-extrabold uppercase tracking-widest text-[#7CFFB2] bg-[#7CFFB2]/10 border border-[var(--border-primary)] border-[#7CFFB2]/20 px-2 py-0.5 rounded-md">
+        <div className="bg-[var(--bg-secondary)] p-5 rounded-2xl border border-[var(--border-primary)] relative overflow-hidden space-y-2.5 shadow-sm">
+          <div className="absolute top-0 right-0 w-24 h-24 bg-[var(--accent-glow)] rounded-full blur-2xl pointer-events-none"></div>
+          <span className="text-[9px] font-mono font-extrabold uppercase tracking-widest text-[var(--accent-primary)] bg-[var(--accent-glow)] border border-[var(--border-primary)] px-2 py-0.5 rounded-md">
             Quadrant Objective
           </span>
-          <h3 className="font-display font-black text-white text-base">
+          <h3 className="font-display font-black text-[var(--text-primary)] text-base">
             {currentLevel.title}
           </h3>
-          <p className="text-xs leading-relaxed text-slate-300/50">
+          <p className="text-xs leading-relaxed text-[var(--text-secondary)]">
             {currentLevel.instructions}
           </p>
         </div>
 
         {/* IDE mockup editor workspace */}
-        <div className="bg-[#24133F]/45 rounded-2xl border border-[var(--border-primary)] border-slate-500/20 overflow-hidden flex flex-col relative shadow-lg backdrop-blur-md">
+        <div className="bg-[var(--bg-secondary)] rounded-2xl border border-[var(--border-primary)] overflow-hidden flex flex-col relative shadow-md">
           
           {/* File explorer navigation header */}
-          <div className="bg-[#150B25] border-b border-slate-500/10 flex items-center justify-between px-4 py-2.5">
+          <div className="bg-[var(--bg-primary)] border-b border-[var(--border-primary)] flex items-center justify-between px-4 py-2.5">
             <div className="flex items-center space-x-1">
               <span className="w-2.5 h-2.5 rounded-full bg-rose-500/80"></span>
               <span className="w-2.5 h-2.5 rounded-full bg-amber-500/80"></span>
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/80"></span>
             </div>
-            <div className="text-[10px] font-mono font-extrabold tracking-widest uppercase text-slate-300 flex items-center gap-1.5">
-              <FileCode size={12} className="text-slate-400" />
+            <div className="text-[10px] font-mono font-extrabold tracking-widest uppercase text-[var(--text-primary)] flex items-center gap-1.5">
+              <FileCode size={12} className="text-[var(--text-muted)]" />
               <span>sandbox-dojo.css</span>
             </div>
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setShowHint(!showHint)}
-                className={`p-1 rounded text-slate-300 hover:text-white transition-all cursor-pointer ${showHint ? "text-[#FFB86B]" : ""}`}
+                className={`p-1 rounded text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all cursor-pointer ${showHint ? "text-[#FFB86B]" : ""}`}
                 title="Hint Overlay"
               >
                 <HelpCircle size={14} />
               </button>
               <button
                 onClick={handleResetLevel}
-                className="p-1 rounded text-slate-300 hover:text-white transition-all cursor-pointer"
+                className="p-1 rounded text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all cursor-pointer"
                 title="Reset Workspace"
               >
                 <RefreshCw size={14} />
@@ -439,22 +436,22 @@ export default function FlexDojo({ onProgressChange, savedProgress }) {
           {/* IDE layout wrapper - File Tree + Code Editor */}
           <div className="flex min-h-[220px]">
             {/* Sidebar File explorer pane */}
-            <div className="w-32 bg-[#0B0415]/70 border-r border-slate-500/10 p-3 hidden sm:flex flex-col space-y-4 select-none font-mono">
+            <div className="w-32 bg-[var(--bg-primary)] border-r border-[var(--border-primary)] p-3 hidden sm:flex flex-col space-y-4 select-none font-mono">
               <div className="space-y-1">
-                <span className="text-[9px] font-extrabold text-slate-400/50 uppercase tracking-wider flex items-center gap-1">
+                <span className="text-[9px] font-extrabold text-[var(--text-muted)]/50 uppercase tracking-wider flex items-center gap-1">
                   <FolderOpen size={10} />
                   <span>WORKSPACE</span>
                 </span>
                 <div className="space-y-1 pl-1">
-                  <div className="text-[10px] text-white bg-[#341B5C]/50 px-2 py-1 rounded-md flex items-center gap-1.5 cursor-pointer font-bold border border-[var(--border-primary)] border-slate-500/15">
-                    <FileCode size={10} className="text-slate-400" />
+                  <div className="text-[10px] text-[var(--text-primary)] bg-[var(--bg-hover)] px-2 py-1 rounded-md flex items-center gap-1.5 cursor-pointer font-bold border border-[var(--border-primary)]">
+                    <FileCode size={10} className="text-[var(--text-muted)]" />
                     <span className="truncate">dojo.css</span>
                   </div>
-                  <div className="text-[10px] text-slate-300/40 px-2 py-1 flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer">
+                  <div className="text-[10px] text-[var(--text-secondary)]/40 px-2 py-1 flex items-center gap-1.5 hover:text-[var(--text-primary)] transition-colors cursor-pointer">
                     <FileCode size={10} />
                     <span className="truncate">index.html</span>
                   </div>
-                  <div className="text-[10px] text-slate-300/40 px-2 py-1 flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer">
+                  <div className="text-[10px] text-[var(--text-secondary)]/40 px-2 py-1 flex items-center gap-1.5 hover:text-[var(--text-primary)] transition-colors cursor-pointer">
                     <FileCode size={10} />
                     <span className="truncate">vars.json</span>
                   </div>
@@ -463,9 +460,9 @@ export default function FlexDojo({ onProgressChange, savedProgress }) {
             </div>
 
             {/* Code inputs workspace */}
-            <div className="flex-1 flex font-mono text-xs p-4 relative bg-[#120721]/95">
+            <div className="flex-1 flex font-mono text-xs p-4 relative bg-[var(--bg-primary)]">
               {/* Line numbers column */}
-              <div className="text-slate-400/40 select-none text-right pr-3.5 border-r border-slate-500/10 flex flex-col space-y-1">
+              <div className="text-[var(--text-muted)]/40 select-none text-right pr-3.5 border-r border-[var(--border-primary)] flex flex-col space-y-1">
                 <span>1</span>
                 <span>2</span>
                 <span>3</span>
@@ -479,9 +476,9 @@ export default function FlexDojo({ onProgressChange, savedProgress }) {
                 <div className="text-[#6B7080] select-none">
                   #dojo-container &#123;
                 </div>
-                <div className="text-slate-400/70 pl-4 font-bold select-none flex items-center gap-2">
+                <div className="text-[var(--text-muted)] pl-4 font-bold select-none flex items-center gap-2">
                   display: flex;
-                  <span className="text-[9px] font-mono font-normal text-slate-400 bg-[#341B5C]/35 border border-[var(--border-primary)] border-slate-500/10 px-1.5 rounded-md uppercase">system default</span>
+                  <span className="text-[9px] font-mono font-normal text-[var(--text-muted)] bg-[var(--bg-secondary)] border border-[var(--border-primary)] px-1.5 rounded-md uppercase">system default</span>
                 </div>
                 <textarea
                   ref={editorRef}
@@ -491,8 +488,8 @@ export default function FlexDojo({ onProgressChange, savedProgress }) {
                     setIsSuccess(false);
                   }}
                   spellCheck="false"
-                  className="w-full bg-transparent text-white outline-none border-none resize-none pl-4 h-24 focus:ring-0 leading-relaxed font-mono"
-                  style={{ caretColor: "var(--text-accent)" }}
+                  className="w-full bg-transparent text-[var(--text-primary)] outline-none border-none resize-none pl-4 h-24 focus:ring-0 leading-relaxed font-mono"
+                  style={{ caretColor: "var(--accent-primary)" }}
                 />
                 <div className="text-[#6B7080] select-none">
                   &#125;
@@ -502,8 +499,8 @@ export default function FlexDojo({ onProgressChange, savedProgress }) {
           </div>
 
           {/* Code suggestions clickable tags pills */}
-          <div className="bg-[#150B25] p-3 border-t border-slate-500/10 flex flex-wrap gap-1.5 items-center z-10">
-            <span className="text-[9px] font-mono font-bold uppercase tracking-wider text-slate-400 mr-1.5">
+          <div className="bg-[var(--bg-primary)] p-3 border-t border-[var(--border-primary)] flex flex-wrap gap-1.5 items-center z-10">
+            <span className="text-[9px] font-mono font-bold uppercase tracking-wider text-[var(--text-muted)] mr-1.5">
               Suggestions:
             </span>
             {[
@@ -518,7 +515,7 @@ export default function FlexDojo({ onProgressChange, savedProgress }) {
               <button
                 key={s}
                 onClick={() => handleInsertSuggestion(s + "\n")}
-                className="px-2 py-1 rounded-lg border border-[var(--border-primary)] border-slate-500/20 bg-[#341B5C]/35 hover:bg-[var(--bg-card)]/40 hover:border-slate-500/35 text-slate-300 text-[10px] font-mono tracking-tight transition-all cursor-pointer"
+                className="px-2 py-1 rounded-lg border border-[var(--border-primary)] bg-[var(--bg-secondary)] hover:bg-[var(--bg-hover)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] text-[10px] font-mono tracking-tight transition-all cursor-pointer"
               >
                 {s.replace(";", "")}
               </button>
@@ -526,33 +523,33 @@ export default function FlexDojo({ onProgressChange, savedProgress }) {
           </div>
 
           {/* Interactive Compiler terminal logger pane */}
-          <div className="bg-[#0B0415]/95 p-3 border-t border-slate-500/15 font-mono text-[9px] flex flex-col space-y-1.5 select-none relative min-h-[90px]">
-            <div className="flex items-center justify-between text-slate-400/60 border-b border-slate-500/10 pb-1 mb-1">
+          <div className="bg-[var(--bg-card)] p-3 border-t border-[var(--border-primary)] font-mono text-[9px] flex flex-col space-y-1.5 select-none relative min-h-[90px]">
+            <div className="flex items-center justify-between text-[var(--text-muted)]/60 border-b border-[var(--border-primary)] pb-1 mb-1">
               <span className="flex items-center gap-1">
                 <TerminalIcon size={10} />
                 <span>DIAGNOSTIC CONSOLE LOGS</span>
               </span>
-              <span className="animate-pulse flex items-center gap-1 text-[#7CFFB2]">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#7CFFB2]"></span>
+              <span className="flex items-center gap-1 text-[var(--accent-primary)]">
+                <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent-primary)] animate-pulse"></span>
                 <span>ONLINE</span>
               </span>
             </div>
             {terminalLogs.map((log, idx) => (
               <div key={idx} className="truncate">
                 {log.type === "success" && (
-                  <span className="text-[#7CFFB2]">{log.text}</span>
+                  <span className="text-emerald-500">{log.text}</span>
                 )}
                 {log.type === "system" && (
-                  <span className="text-zinc-400">{log.text}</span>
+                  <span className="text-[var(--text-muted)]">{log.text}</span>
                 )}
                 {log.type === "warn" && (
-                  <span className="text-[#FFB86B]">{log.text}</span>
+                  <span className="text-amber-500">{log.text}</span>
                 )}
                 {log.type === "info" && (
-                  <span className="text-slate-200">{log.text}</span>
+                  <span className="text-[var(--text-secondary)]">{log.text}</span>
                 )}
                 {log.type === "input" && (
-                  <span className="text-[#E8E6E1]">{log.text}</span>
+                  <span className="text-[var(--text-primary)]">{log.text}</span>
                 )}
               </div>
             ))}
@@ -565,24 +562,24 @@ export default function FlexDojo({ onProgressChange, savedProgress }) {
                 initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 15 }}
-                className="absolute bottom-0 left-0 right-0 p-4 bg-[#1A0C2F] border-t border-slate-500/20 text-xs space-y-2 z-20 shadow-xl"
+                className="absolute bottom-0 left-0 right-0 p-4 bg-[var(--bg-card)] border-t border-[var(--border-primary)] text-xs space-y-2 z-20 shadow-xl"
               >
                 <div className="flex items-center justify-between">
-                  <span className="font-extrabold uppercase text-[#FFB86B] flex items-center gap-1">
-                    <Sparkles size={12} className="text-[#FFB86B]" />
+                  <span className="font-extrabold uppercase text-amber-500 flex items-center gap-1">
+                    <Sparkles size={12} className="text-amber-500" />
                     <span>Dojo Master Hint</span>
                   </span>
                   <button
                     onClick={() => setShowHint(false)}
-                    className="text-[10px] text-[#6B7080] hover:text-white uppercase font-bold"
+                    className="text-[10px] text-[var(--text-muted)] hover:text-[var(--text-primary)] uppercase font-bold"
                   >
                     Hide
                   </button>
                 </div>
-                <p className="text-[#E8E6E1] leading-relaxed">
+                <p className="text-[var(--text-primary)] leading-relaxed">
                   Apply this alignment code into the workspace CSS:
                 </p>
-                <code className="block font-mono text-[10px] select-all bg-[#0B0415]/90 p-2.5 rounded-lg border border-[var(--border-primary)] border-slate-500/20 text-[#7CFFB2] font-black">
+                <code className="block font-mono text-[10px] select-all bg-[var(--bg-primary)] p-2.5 rounded-lg border border-[var(--border-primary)] text-[var(--accent-primary)] font-black">
                   {currentLevel.hint}
                 </code>
               </motion.div>
@@ -595,16 +592,16 @@ export default function FlexDojo({ onProgressChange, savedProgress }) {
             initial={{ opacity: 0, scale: 0.96 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.96 }}
-            className="bg-[#7CFFB2]/5 border border-[var(--border-primary)] border-[#7CFFB2]/20 p-5 rounded-2xl flex items-center justify-between gap-4 shadow-[0_0_20px_rgba(124,255,178,0.06)] relative overflow-hidden"
+            className="bg-[var(--accent-glow)] border border-[var(--accent-primary)]/20 p-5 rounded-2xl flex items-center justify-between gap-4 shadow-sm relative overflow-hidden"
           >
-            <div className="absolute inset-0 bg-[#7CFFB2]/2 animate-pulse pointer-events-none"></div>
+            <div className="absolute inset-0 bg-[var(--accent-glow)] animate-pulse pointer-events-none"></div>
             <div className="flex items-center gap-3 relative z-10">
-              <div className="w-8 h-8 rounded-full bg-[#7CFFB2]/10 border border-[var(--border-primary)] border-[#7CFFB2]/20 flex items-center justify-center text-[#7CFFB2]">
+              <div className="w-8 h-8 rounded-full bg-[var(--accent-glow)] border border-[var(--accent-primary)]/20 flex items-center justify-center text-[var(--accent-primary)]">
                 <CheckCircle2 size={16} />
               </div>
               <div>
-                <span className="text-[10px] font-mono font-bold text-[#7CFFB2] uppercase tracking-wider block">sandbox alignment check</span>
-                <span className="text-xs font-bold text-white">
+                <span className="text-[10px] font-mono font-bold text-[var(--accent-primary)] uppercase tracking-wider block">sandbox alignment check</span>
+                <span className="text-xs font-bold text-[var(--text-primary)]">
                   Coordinates matched target within 3px!
                 </span>
               </div>
@@ -613,12 +610,12 @@ export default function FlexDojo({ onProgressChange, savedProgress }) {
             {currentLevelIdx < LEVELS.length - 1 ? (
               <button
                 onClick={handleNextLevel}
-                className="px-5 py-2.5 bg-[#7CFFB2] text-[#12141C] rounded-xl font-bold text-xs hover:scale-[1.02] shadow-[0_0_15px_rgba(124,255,178,0.25)] transition-all cursor-pointer relative z-10"
+                className="px-5 py-2.5 bg-[var(--accent-primary)] text-[var(--text-on-accent)] rounded-xl font-bold text-xs hover:scale-[1.02] shadow-md transition-all cursor-pointer relative z-10"
               >
                 Next Quad
               </button>
             ) : (
-              <div className="px-4 py-2 border border-[var(--border-primary)] border-[#7CFFB2]/30 bg-[#7CFFB2]/10 rounded-xl text-[10px] font-mono font-black text-[#7CFFB2] uppercase tracking-widest relative z-10">
+              <div className="px-4 py-2 border border-[var(--border-primary)] border-[var(--accent-primary)]/30 bg-[var(--accent-glow)] rounded-xl text-[10px] font-mono font-black text-[var(--accent-primary)] uppercase tracking-widest relative z-10">
                 🏆 Master Dojo Complete!
               </div>
             )}
@@ -631,19 +628,19 @@ export default function FlexDojo({ onProgressChange, savedProgress }) {
         
         {/* Sandbox details */}
         <div className="flex justify-between items-center text-xs">
-          <span className="text-[#6B7080] uppercase tracking-widest font-mono text-[9px]">
+          <span className="text-[var(--text-muted)] uppercase tracking-widest font-mono text-[9px]">
             Visual Grid Sandbox
           </span>
           <div className="flex items-center gap-1.5 font-mono text-[10px]">
-            <span className="text-slate-300/60 uppercase">TARGET OVERLAP:</span>
-            <span className={`font-bold ${isSuccess ? "text-[#7CFFB2]" : "text-amber-400"}`}>
+            <span className="text-[var(--text-muted)]/60 uppercase">TARGET OVERLAP:</span>
+            <span className={`font-bold ${isSuccess ? "text-emerald-500 animate-pulse" : "text-amber-400"}`}>
               {matchPercentage}%
             </span>
           </div>
         </div>
 
         {/* Visual Arena Workspace */}
-        <div className="flex-grow min-h-[300px] md:min-h-[380px] bg-[#120721]/95 border border-[var(--border-primary)] border-slate-500/20 rounded-2xl relative overflow-hidden flex flex-col items-stretch">
+        <div className="flex-grow min-h-[300px] md:min-h-[380px] bg-[var(--bg-primary)] border border-[var(--border-primary)] rounded-2xl relative overflow-hidden flex flex-col items-stretch">
           
           {/* Target Container */}
           <div 
@@ -657,7 +654,7 @@ export default function FlexDojo({ onProgressChange, savedProgress }) {
             {currentLevel.items.map((item, i) => (
               <div 
                 key={item.id} 
-                className="dojo-target w-12 h-12 border-2 border-dashed border-slate-400 rounded-xl flex items-center justify-center text-slate-400 text-lg font-bold"
+                className="dojo-target w-12 h-12 border-2 border-dashed border-[var(--text-muted)]/40 rounded-xl flex items-center justify-center text-[var(--text-muted)] text-lg font-bold"
               >
                 {item.emoji}
               </div>
@@ -673,7 +670,7 @@ export default function FlexDojo({ onProgressChange, savedProgress }) {
             {currentLevel.items.map((item, i) => (
               <div 
                 key={item.id} 
-                className="dojo-item w-12 h-12 bg-slate-600 border border-[var(--border-primary)] border-slate-400 text-white rounded-xl flex items-center justify-center text-lg font-black shadow-lg animate-float"
+                className="dojo-item w-12 h-12 bg-[var(--bg-secondary)] border border-[var(--border-primary)] text-[var(--text-primary)] rounded-xl flex items-center justify-center text-lg font-black shadow-lg animate-float"
                 style={{ animationDelay: `${i * 0.2}s` }}
               >
                 {item.emoji}
@@ -683,12 +680,12 @@ export default function FlexDojo({ onProgressChange, savedProgress }) {
         </div>
 
         {/* Snapping progress bar */}
-        <div className="bg-[#1C0F32]/50 border border-[var(--border-primary)] border-slate-500/20 rounded-xl p-3 flex items-center gap-3">
-          <span className="text-[9px] font-mono text-slate-300 uppercase tracking-wider shrink-0">SNAPPING MATCH:</span>
-          <div className="flex-1 h-2 bg-slate-950/40 border border-[var(--border-primary)] border-slate-950 rounded-full overflow-hidden">
+        <div className="bg-[var(--bg-secondary)] border border-[var(--border-primary)] rounded-xl p-3 flex items-center gap-3">
+          <span className="text-[9px] font-mono text-[var(--text-muted)] uppercase tracking-wider shrink-0">SNAPPING MATCH:</span>
+          <div className="flex-1 h-2 bg-[var(--bg-primary)] border border-[var(--border-primary)] rounded-full overflow-hidden">
             <div 
               className={`h-full transition-all duration-300 ${
-                isSuccess ? "bg-[#7CFFB2] shadow-[0_0_10px_rgba(124,255,178,0.5)]" : "bg-slate-500"
+                isSuccess ? "bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]" : "bg-slate-500"
               }`}
               style={{ width: `${matchPercentage}%` }}
             ></div>

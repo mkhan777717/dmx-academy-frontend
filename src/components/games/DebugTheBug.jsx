@@ -455,25 +455,23 @@ export default function DebugTheBug({ onProgressChange, savedProgress, onBack })
 
   if (phase === "lobby") {
     return (
-      <div className="min-h-[70vh] w-full bg-[#0a0714] border border-[var(--border-primary)] border-slate-500/20 rounded-3xl overflow-hidden font-mono text-[#E8E6E1] flex flex-col items-center justify-center p-8 md:p-12 text-center relative select-none">
-        <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.4)_100%)] z-20" />
-        <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(18,10,36,0)_97%,rgba(18,10,36,0.3)_98%)] bg-[size:100%_4px] opacity-35 z-20" />
+      <div className="min-h-[70vh] w-full bg-[var(--bg-card)] border border-[var(--border-primary)] rounded-3xl overflow-hidden font-mono text-[var(--text-primary)] flex flex-col items-center justify-center p-8 md:p-12 text-center relative select-none">
         
         {loading ? (
           <div className="flex flex-col items-center gap-3 relative z-30">
             <RefreshCw size={24} className="animate-spin text-slate-400" />
-            <p className="text-xs text-slate-300/60 font-mono">Syncing debugger levels from database...</p>
+            <p className="text-xs text-[var(--text-muted)] font-mono">Syncing debugger levels from database...</p>
           </div>
         ) : !selectedTrack ? (
           <>
             <div className="space-y-3 relative z-30">
-              <span className="text-[10px] font-bold tracking-widest text-[#7CFFB2] border border-[var(--border-primary)] border-[#7CFFB2]/20 bg-[#7CFFB2]/5 px-3 py-1 rounded-full uppercase">
+              <span className="text-[10px] font-bold tracking-widest text-[var(--accent-primary)] border border-[var(--border-primary)] bg-[var(--accent-glow)] px-3 py-1 rounded-full uppercase">
                 Mode: Debug the Bug
               </span>
-              <h2 className="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-slate-400 via-[var(--text-secondary)] to-cyan-400 uppercase tracking-tight">
+              <h2 className="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[var(--text-primary)] via-[var(--text-secondary)] to-[var(--accent-primary)] uppercase tracking-tight">
                 Bug Hunter IDE
               </h2>
-              <p className="text-xs text-slate-300/50 max-w-md mx-auto">
+              <p className="text-xs text-[var(--text-secondary)] max-w-md mx-auto">
                 Repair syntax, logical and runtime errors directly in an interactive code compiler. Select your track to launch!
               </p>
             </div>
@@ -485,12 +483,12 @@ export default function DebugTheBug({ onProgressChange, savedProgress, onBack })
                   <button
                     key={track}
                     onClick={() => setSelectedTrack(track)}
-                    className="relative p-5 rounded-2xl border border-[var(--border-primary)] border-slate-500/25 bg-gradient-to-br from-[#1a0e30]/40 to-[#0e071e]/70 text-center hover:scale-[1.03] transition-all cursor-pointer hover:border-slate-400 group overflow-hidden shadow-lg"
+                    className="relative p-5 rounded-2xl border border-[var(--border-primary)] bg-[var(--bg-secondary)] text-center hover:scale-[1.03] transition-all cursor-pointer hover:border-[var(--accent-primary)] group overflow-hidden shadow-lg"
                   >
-                    <div className="absolute top-0 right-0 w-24 h-24 bg-slate-500/5 rounded-full blur-2xl group-hover:bg-slate-500/10 transition-all" />
-                    <span className="text-xs font-bold text-slate-400/60 uppercase">Track</span>
-                    <h4 className="text-lg font-black text-white group-hover:text-[#7CFFB2] transition-colors">{track}</h4>
-                    <div className="flex items-center justify-center gap-1 mt-3 text-[10px] text-slate-300/40">
+                    <div className="absolute top-0 right-0 w-24 h-24 bg-[var(--accent-glow)] rounded-full blur-2xl group-hover:opacity-80 transition-all" />
+                    <span className="text-xs font-bold text-[var(--text-muted)] uppercase">Track</span>
+                    <h4 className="text-lg font-black text-[var(--text-primary)] group-hover:text-[var(--accent-primary)] transition-colors">{track}</h4>
+                    <div className="flex items-center justify-center gap-1 mt-3 text-[10px] text-[var(--text-muted)]">
                       <span>{totalLvs} Level{totalLvs > 1 ? 's' : ''}</span>
                     </div>
                   </button>
@@ -501,7 +499,7 @@ export default function DebugTheBug({ onProgressChange, savedProgress, onBack })
             {onBack && (
               <button
                 onClick={onBack}
-                className="flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-white transition-colors cursor-pointer mt-8 relative z-30"
+                className="flex items-center gap-2 text-xs font-bold text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors cursor-pointer mt-8 relative z-30"
               >
                 <ArrowLeft size={14} /> Back to Hub Lobby
               </button>
@@ -510,13 +508,13 @@ export default function DebugTheBug({ onProgressChange, savedProgress, onBack })
         ) : (
           <>
             <div className="space-y-3 relative z-30">
-              <span className="text-[10px] font-bold tracking-widest text-[#7CFFB2] border border-[var(--border-primary)] border-[#7CFFB2]/20 bg-[#7CFFB2]/5 px-3 py-1 rounded-full uppercase">
+              <span className="text-[10px] font-bold tracking-widest text-[var(--accent-primary)] border border-[var(--border-primary)] bg-[var(--accent-glow)] px-3 py-1 rounded-full uppercase">
                 Track: {selectedTrack}
               </span>
-              <h2 className="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-slate-400 via-[var(--text-secondary)] to-cyan-400 uppercase tracking-tight">
+              <h2 className="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[var(--text-primary)] via-[var(--text-secondary)] to-[var(--accent-primary)] uppercase tracking-tight">
                 Select Level
               </h2>
-              <p className="text-xs text-slate-300/50 max-w-md mx-auto">
+              <p className="text-xs text-[var(--text-secondary)] max-w-md mx-auto">
                 Solve files sequentially. Correct errors to compile successfully and unlock the next level!
               </p>
             </div>
@@ -530,19 +528,19 @@ export default function DebugTheBug({ onProgressChange, savedProgress, onBack })
                     key={lvl}
                     disabled={!isUnlocked}
                     onClick={() => handleLoadLevel(selectedTrack, lvl)}
-                    className={`relative p-5 rounded-2xl border border-[var(--border-primary)] flex flex-col items-center justify-center transition-all ${
+                    className={`relative p-5 rounded-2xl border flex flex-col items-center justify-center transition-all ${
                       isUnlocked
-                        ? "bg-slate-950/20 border-slate-500/30 hover:border-[#7CFFB2] hover:scale-105 cursor-pointer text-white"
-                        : "bg-[#180f2d]/40 border-slate-950/20 text-slate-500/20 cursor-not-allowed"
+                        ? "bg-[var(--bg-secondary)] border-[var(--border-primary)] hover:border-[var(--accent-primary)] hover:scale-105 cursor-pointer text-[var(--text-primary)]"
+                        : "bg-[var(--bg-primary)] opacity-40 border-[var(--border-primary)] text-[var(--text-muted)] cursor-not-allowed"
                     }`}
                   >
                     <span className="text-xs font-bold uppercase tracking-wider mb-2">Lvl {lvl}</span>
                     {isCompleted ? (
-                      <span className="text-[9px] font-bold text-[#7CFFB2] bg-[#7CFFB2]/10 border border-[var(--border-primary)] border-[#7CFFB2]/20 px-2 py-0.5 rounded uppercase">Cleared</span>
+                      <span className="text-[9px] font-bold text-[var(--accent-primary)] bg-[var(--accent-glow)] border border-[var(--border-primary)] px-2 py-0.5 rounded uppercase">Cleared</span>
                     ) : isUnlocked ? (
-                      <span className="text-[9px] font-bold text-cyan-400 bg-cyan-500/10 border border-[var(--border-primary)] border-cyan-500/20 px-2 py-0.5 rounded uppercase">Play</span>
+                      <span className="text-[9px] font-bold text-[var(--text-primary)] bg-[var(--bg-hover)] border border-[var(--border-primary)] px-2 py-0.5 rounded uppercase">Play</span>
                     ) : (
-                      <span className="text-[9px] font-bold text-slate-500/10 uppercase">Locked</span>
+                      <span className="text-[9px] font-bold text-[var(--text-muted)] uppercase">Locked</span>
                     )}
                   </button>
                 );
@@ -551,7 +549,7 @@ export default function DebugTheBug({ onProgressChange, savedProgress, onBack })
 
             <button
               onClick={() => setSelectedTrack(null)}
-              className="flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-white transition-colors cursor-pointer mt-8 relative z-30"
+              className="flex items-center gap-2 text-xs font-bold text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors cursor-pointer mt-8 relative z-30"
             >
               <ArrowLeft size={14} /> Back to Tracks Selection
             </button>
@@ -563,15 +561,14 @@ export default function DebugTheBug({ onProgressChange, savedProgress, onBack })
 
   if (!activeQuestion) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[50vh] space-y-4 text-center p-8 bg-[#0a0714] border border-[var(--border-primary)] border-slate-500/20 rounded-3xl relative select-none">
-        <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.4)_100%)] z-20" />
-        <h2 className="text-lg font-black text-white relative z-30">No Question Loaded</h2>
-        <p className="text-xs text-slate-300/40 max-w-xs leading-relaxed relative z-30">
+      <div className="flex flex-col items-center justify-center min-h-[50vh] space-y-4 text-center p-8 bg-[var(--bg-card)] border border-[var(--border-primary)] rounded-3xl relative select-none">
+        <h2 className="text-lg font-black text-[var(--text-primary)] relative z-30">No Question Loaded</h2>
+        <p className="text-xs text-[var(--text-secondary)] max-w-xs leading-relaxed relative z-30">
           Select another track or level.
         </p>
         <button
           onClick={() => setPhase("lobby")}
-          className="relative z-30 px-5 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-500 border border-[var(--border-primary)] border-violet-400 hover:scale-102 transition-all cursor-pointer font-bold text-xs"
+          className="relative z-30 px-5 py-2.5 rounded-xl bg-[var(--accent-primary)] text-[var(--text-on-accent)] border border-[var(--border-primary)] hover:scale-102 transition-all cursor-pointer font-bold text-xs"
         >
           Back to Lobby
         </button>
@@ -580,40 +577,40 @@ export default function DebugTheBug({ onProgressChange, savedProgress, onBack })
   }
 
   return (
-    <div className="text-[#E8E6E1] bg-[#160D2A]/60 backdrop-blur-md p-1 md:p-4 rounded-3xl border border-[var(--border-primary)] border-slate-500/15 space-y-6 select-none shadow-2xl relative overflow-hidden">
+    <div className="text-[var(--text-primary)] bg-[var(--bg-card)] p-1 md:p-4 rounded-3xl border border-[var(--border-primary)] space-y-6 select-none shadow-2xl relative overflow-hidden">
       
       {/* Game Bar - Header */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-2xl bg-[#22123C]/50 border border-[var(--border-primary)] border-slate-500/20 shadow-lg">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-primary)] shadow-md">
         <div className="flex items-center space-x-3">
           <button
             onClick={() => setPhase("lobby")}
-            className="p-2 rounded-xl bg-slate-950/40 hover:bg-[var(--bg-card)]/40 border border-[var(--border-primary)] border-slate-500/25 transition-colors cursor-pointer text-slate-300 hover:text-white"
+            className="p-2 rounded-xl bg-[var(--bg-primary)] hover:bg-[var(--bg-hover)] border border-[var(--border-primary)] transition-colors cursor-pointer text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
           >
             <ArrowLeft size={14} />
           </button>
           <div>
-            <h2 className="text-md font-black font-display text-white tracking-tight flex items-center gap-2 uppercase font-mono">
+            <h2 className="text-md font-black font-display text-[var(--text-primary)] tracking-tight flex items-center gap-2 uppercase font-mono">
               Debug the Bug
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded-md font-extrabold bg-[#7CFFB2]/10 text-[#7CFFB2] border border-[var(--border-primary)] border-[#7CFFB2]/20">
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded-md font-extrabold bg-[var(--accent-glow)] text-[var(--accent-primary)] border border-[var(--border-primary)]">
                 v2.1
               </span>
             </h2>
-            <p className="text-[10px] text-slate-300/50 font-sans">Solve code errors and compile successfully inside our sandbox IDE</p>
+            <p className="text-[10px] text-[var(--text-muted)] font-sans">Solve code errors and compile successfully inside our sandbox IDE</p>
           </div>
         </div>
 
         {/* Lives, Streak, Audio controls */}
         <div className="flex flex-wrap items-center gap-4">
           {/* Health indicator */}
-          <div className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-slate-950/30 border border-[var(--border-primary)] border-slate-500/20">
-            <span className="text-[10px] font-mono font-bold text-slate-300/60 mr-1 uppercase">Health:</span>
+          <div className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-primary)]">
+            <span className="text-[10px] font-mono font-bold text-[var(--text-muted)] mr-1 uppercase">Health:</span>
             {Array.from({ length: 3 }).map((_, i) => (
               <Heart 
                 key={i} 
                 size={14} 
                 className={`${
                   i < lives 
-                    ? "text-rose-500 fill-rose-500 shadow-[0_0_10px_rgba(244,63,94,0.5)]" 
+                    ? "text-rose-500 fill-rose-500" 
                     : "text-slate-900 fill-transparent"
                 } transition-all duration-300`} 
               />
@@ -621,10 +618,10 @@ export default function DebugTheBug({ onProgressChange, savedProgress, onBack })
           </div>
 
           {/* Streak indicator */}
-          <div className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-slate-950/30 border border-[var(--border-primary)] border-slate-500/20">
+          <div className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-primary)]">
             <Flame size={14} className="text-amber-500 fill-amber-500/10" />
-            <span className="text-[10px] font-mono font-bold text-slate-300/60 uppercase">Streak:</span>
-            <span className="text-xs font-black text-amber-400">{streak}</span>
+            <span className="text-[10px] font-mono font-bold text-[var(--text-muted)]/60 uppercase">Streak:</span>
+            <span className="text-xs font-black text-amber-500">{streak}</span>
           </div>
 
           {/* Volume toggle */}
@@ -633,7 +630,7 @@ export default function DebugTheBug({ onProgressChange, savedProgress, onBack })
               setAudioEnabled(!audioEnabled);
               playRetroSound("click");
             }}
-            className="p-2 rounded-xl bg-slate-950/40 hover:bg-[var(--bg-card)]/40 border border-[var(--border-primary)] border-slate-500/25 transition-colors cursor-pointer text-slate-300/70 hover:text-white"
+            className="p-2 rounded-xl bg-[var(--bg-primary)] hover:bg-[var(--bg-hover)] border border-[var(--border-primary)] transition-colors cursor-pointer text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
           >
             {audioEnabled ? <Volume2 size={14} /> : <VolumeX size={14} />}
           </button>
@@ -653,15 +650,15 @@ export default function DebugTheBug({ onProgressChange, savedProgress, onBack })
                 playRetroSound("click");
                 handleLoadLevel(selectedTrack, lvl);
               }}
-              className={`flex items-center space-x-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all border border-[var(--border-primary)] shrink-0 cursor-pointer ${
+              className={`flex items-center space-x-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all border shrink-0 cursor-pointer ${
                 isLvlActive
-                  ? "bg-slate-600 text-white border-slate-400 shadow-[0_0_12px_rgba(168,85,247,0.3)]"
+                  ? "bg-[var(--accent-primary)] text-[var(--text-on-accent)] border-[var(--accent-primary)] shadow-sm"
                   : isLvlCompleted
-                  ? "bg-[#251347]/30 text-slate-300 border border-[var(--border-primary)] border-slate-900/30 hover:bg-slate-950/40"
-                  : "bg-[#1d0b38]/20 text-slate-400/50 border border-[var(--border-primary)] border-slate-950/40 hover:text-slate-300"
+                  ? "bg-[var(--accent-glow)] text-[var(--accent-primary)] border border-[var(--border-primary)] hover:bg-[var(--bg-hover)]"
+                  : "bg-[var(--bg-primary)] border border-[var(--border-primary)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
               }`}
             >
-              {isLvlCompleted ? <CheckCircle2 size={12} className="text-[#7CFFB2] fill-[#7CFFB2]/10" /> : null}
+              {isLvlCompleted ? <CheckCircle2 size={12} className="text-[var(--accent-primary)]" /> : null}
               <span>Level {lvl}</span>
             </button>
           );
@@ -673,38 +670,38 @@ export default function DebugTheBug({ onProgressChange, savedProgress, onBack })
         
         {/* Left pane: Instructions, Target details, Hints */}
         <div className="lg:col-span-2 space-y-6 flex flex-col justify-start">
-          <div className="bg-[#24133F]/35 hover:bg-[#2C184E]/45 border border-[var(--border-primary)] border-slate-500/20 rounded-3xl p-5 md:p-6 space-y-5 shadow-2xl relative overflow-hidden">
+          <div className="bg-[var(--bg-secondary)] border border-[var(--border-primary)] rounded-3xl p-5 md:p-6 space-y-5 shadow-md relative overflow-hidden">
             
             {/* Level Title banner */}
-            <div className="flex items-center justify-between border-b border-slate-500/10 pb-4">
+            <div className="flex items-center justify-between border-b border-[var(--border-primary)] pb-4">
               <div>
-                <span className="text-[9px] font-mono font-bold uppercase tracking-wider text-slate-300/50">
+                <span className="text-[9px] font-mono font-bold uppercase tracking-wider text-[var(--text-muted)]">
                   Level {currentLevel} • File {currentQuestionIdx + 1} of {levelQuestions.length}
                 </span>
-                <h3 className="text-md font-bold font-mono text-white tracking-tight">{activeQuestion.title}</h3>
+                <h3 className="text-md font-bold font-mono text-[var(--text-primary)] tracking-tight">{activeQuestion.title}</h3>
               </div>
-              <span className="text-[9px] font-bold font-mono uppercase px-2 py-0.5 rounded border border-[var(--border-primary)] border-slate-500/30 bg-slate-950/30 text-slate-300">
+              <span className="text-[9px] font-bold font-mono uppercase px-2 py-0.5 rounded border border-[var(--border-primary)] bg-[var(--bg-primary)] text-[var(--text-secondary)]">
                 {activeQuestion.language}
               </span>
             </div>
 
             {/* Instruction description */}
             <div className="space-y-3">
-              <div className="flex items-start space-x-2 text-xs text-slate-200/70 leading-relaxed">
-                <BookOpen size={15} className="text-slate-400 shrink-0 mt-0.5" />
+              <div className="flex items-start space-x-2 text-xs text-[var(--text-secondary)] leading-relaxed">
+                <BookOpen size={15} className="text-[var(--text-muted)] shrink-0 mt-0.5" />
                 <p>{activeQuestion.instructions}</p>
               </div>
             </div>
 
             {/* Hint Box (Dynamic Reveal) */}
-            <div className="border-t border-slate-500/10 pt-4 mt-auto">
+            <div className="border-t border-[var(--border-primary)] pt-4 mt-auto">
               {showHint ? (
                 <motion.div 
                   initial={{ opacity: 0, y: 5 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="p-3.5 rounded-2xl border border-[var(--border-primary)] border-slate-500/15 bg-slate-950/20 text-[11px] text-slate-300/70 leading-relaxed relative font-mono"
+                  className="p-3.5 rounded-2xl border border-[var(--border-primary)] bg-[var(--bg-primary)] text-[11px] text-[var(--text-secondary)] leading-relaxed relative font-mono"
                 >
-                  <div className="font-bold flex items-center gap-1.5 uppercase font-mono mb-1 tracking-wider text-slate-400 text-[9px]">
+                  <div className="font-bold flex items-center gap-1.5 uppercase font-mono mb-1 tracking-wider text-[var(--text-muted)] text-[9px]">
                     <Sparkles size={11} /> Hint Decrypted
                   </div>
                   <p>{activeQuestion.hint}</p>
@@ -715,7 +712,7 @@ export default function DebugTheBug({ onProgressChange, savedProgress, onBack })
                     playRetroSound("click");
                     setShowHint(true);
                   }}
-                  className="w-full py-2.5 rounded-xl border border-[var(--border-primary)] border-slate-500/30 hover:border-slate-400 bg-slate-950/20 hover:bg-[var(--bg-card)]/30 text-xs font-mono font-bold text-slate-300 transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-sm"
+                  className="w-full py-2.5 rounded-xl border border-[var(--border-primary)] hover:border-[var(--accent-primary)] bg-[var(--bg-primary)] hover:bg-[var(--bg-hover)] text-xs font-mono font-bold text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-sm"
                 >
                   <HelpCircle size={13} />
                   <span>Decrypt Compiler Hint</span>
@@ -729,16 +726,16 @@ export default function DebugTheBug({ onProgressChange, savedProgress, onBack })
             <motion.div 
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              className="p-6 rounded-3xl border border-[var(--border-primary)] border-rose-500/30 bg-rose-950/25 flex flex-col items-center justify-center text-center space-y-4 shadow-xl"
+              className="p-6 rounded-3xl border border-rose-500/30 bg-rose-500/10 flex flex-col items-center justify-center text-center space-y-4 shadow-md"
             >
-              <AlertTriangle size={28} className="text-rose-400 animate-pulse" />
+              <AlertTriangle size={28} className="text-rose-500 animate-pulse" />
               <div>
-                <h4 className="text-xs font-black uppercase text-rose-300 font-mono">Sandbox Defeated</h4>
-                <p className="text-[11px] text-rose-300/60 leading-normal mt-1 max-w-[200px]">The compilation workspace has crashed due to health exhaustion.</p>
+                <h4 className="text-xs font-black uppercase text-rose-500 font-mono">Sandbox Defeated</h4>
+                <p className="text-[11px] text-rose-500/70 leading-normal mt-1 max-w-[200px]">The compilation workspace has crashed due to health exhaustion.</p>
               </div>
               <button
                 onClick={reviveSystem}
-                className="px-4 py-2 bg-rose-600 hover:bg-rose-500 border border-[var(--border-primary)] border-rose-400 text-white rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-1 font-mono"
+                className="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-1 font-mono"
               >
                 <RotateCcw size={12} /> Reboot Compiler
               </button>
@@ -748,14 +745,14 @@ export default function DebugTheBug({ onProgressChange, savedProgress, onBack })
 
         {/* Right pane: Code Editor terminal workspace */}
         <div className="lg:col-span-3">
-          <div className="flex flex-col rounded-3xl border border-[var(--border-primary)] border-slate-500/20 bg-[#0c0516] shadow-2xl overflow-hidden min-h-[440px]">
+          <div className="flex flex-col rounded-3xl border border-[var(--border-primary)] bg-[var(--bg-secondary)] shadow-md overflow-hidden min-h-[440px]">
             
             {/* Tab header bar */}
-            <div className="bg-[#190a2a]/60 px-4 py-3 border-b border-slate-500/10 flex items-center justify-between">
+            <div className="bg-[var(--bg-primary)] px-4 py-3 border-b border-[var(--border-primary)] flex items-center justify-between">
               <div className="flex items-center space-x-2">
-                <FolderOpen size={13} className="text-slate-400" />
-                <span className="text-[10px] text-slate-300/60 font-semibold font-mono">WORKSPACE:</span>
-                <span className="text-[10px] px-2 py-0.5 bg-slate-950/50 text-slate-300 font-bold border border-[var(--border-primary)] border-slate-900/40 rounded-md font-mono flex items-center gap-1">
+                <FolderOpen size={13} className="text-[var(--text-muted)]" />
+                <span className="text-[10px] text-[var(--text-muted)] font-semibold font-mono">WORKSPACE:</span>
+                <span className="text-[10px] px-2 py-0.5 bg-[var(--bg-secondary)] text-[var(--text-primary)] font-bold border border-[var(--border-primary)] rounded-md font-mono flex items-center gap-1">
                   <FileCode size={11} />
                   {activeQuestion.file}
                 </span>
@@ -769,7 +766,7 @@ export default function DebugTheBug({ onProgressChange, savedProgress, onBack })
             <div className="flex-grow flex relative font-mono text-sm leading-6">
               
               {/* Line numbers column */}
-              <div className="w-10 shrink-0 text-right pr-3 select-none text-[10px] text-slate-400/20 border-r border-slate-500/5 py-4 bg-[#0a0412] font-mono leading-6">
+              <div className="w-10 shrink-0 text-right pr-3 select-none text-[10px] text-[var(--text-muted)]/40 border-r border-[var(--border-primary)]/50 py-4 bg-[var(--bg-primary)] font-mono leading-6">
                 {lineNumbers.map((num) => (
                   <div key={num}>{num}</div>
                 ))}
@@ -795,18 +792,18 @@ export default function DebugTheBug({ onProgressChange, savedProgress, onBack })
                 }}
                 onKeyDown={handleKeyDown}
                 disabled={isDead || isSuccess}
-                className="flex-grow p-4 bg-transparent text-[#E8E6E1] font-mono outline-none border-none resize-none leading-6 scrollbar-thin whitespace-pre focus:ring-0 select-text"
+                className="flex-grow p-4 bg-transparent text-[var(--text-primary)] font-mono outline-none border-none resize-none leading-6 scrollbar-thin whitespace-pre focus:ring-0 select-text"
                 spellCheck="false"
                 style={{
                   minHeight: "220px",
-                  caretColor: "#D8B4FE"
+                  caretColor: "var(--accent-primary)"
                 }}
               />
             </div>
 
             {/* Simulated compiler logs screen */}
-            <div className="bg-slate-950/20 border-t border-slate-500/10 p-4 font-mono text-[11px] space-y-2 h-[120px] overflow-y-auto scrollbar-thin flex flex-col justify-start">
-              <div className="flex items-center space-x-1.5 text-slate-300/40 border-b border-slate-500/10 pb-1.5 mb-1.5 uppercase font-bold text-[9px] tracking-wide">
+            <div className="bg-[var(--bg-primary)] border-t border-[var(--border-primary)] p-4 font-mono text-[11px] space-y-2 h-[120px] overflow-y-auto scrollbar-thin flex flex-col justify-start">
+              <div className="flex items-center space-x-1.5 text-[var(--text-muted)]/40 border-b border-[var(--border-primary)] pb-1.5 mb-1.5 uppercase font-bold text-[9px] tracking-wide">
                 <TerminalIcon size={12} />
                 <span>Compiler Diagnostic Logs</span>
               </div>
@@ -815,12 +812,12 @@ export default function DebugTheBug({ onProgressChange, savedProgress, onBack })
                   key={idx} 
                   className={`leading-relaxed ${
                     log.type === "system" 
-                      ? "text-slate-300/40" 
+                      ? "text-[var(--text-muted)]/40" 
                       : log.type === "success" 
-                      ? "text-[#7CFFB2] font-bold" 
+                      ? "text-emerald-500 font-bold" 
                       : log.type === "error" 
-                      ? "text-rose-400 underline font-bold" 
-                      : "text-slate-200"
+                      ? "text-red-500 underline font-bold" 
+                      : "text-[var(--text-secondary)]"
                   }`}
                 >
                   {log.text}
@@ -829,12 +826,12 @@ export default function DebugTheBug({ onProgressChange, savedProgress, onBack })
             </div>
 
             {/* Action Bar controls */}
-            <div className="bg-slate-950/30 border-t border-slate-500/10 px-4 py-3 flex items-center justify-between">
+            <div className="bg-[var(--bg-primary)] border-t border-[var(--border-primary)] px-4 py-3 flex items-center justify-between">
               <div className="flex gap-2">
                 <button
                   onClick={resetWorkspace}
                   disabled={isDead || isSuccess || isRunning}
-                  className="px-3.5 py-2 rounded-xl text-xs border border-[var(--border-primary)] border-slate-500/20 hover:bg-slate-950/40 disabled:opacity-40 disabled:cursor-not-allowed transition-all font-semibold cursor-pointer text-slate-300 hover:text-white flex items-center gap-1.5 font-mono"
+                  className="px-3.5 py-2 rounded-xl text-xs border border-[var(--border-primary)] hover:bg-[var(--bg-hover)] disabled:opacity-40 disabled:cursor-not-allowed transition-all font-semibold cursor-pointer text-[var(--text-secondary)] hover:text-[var(--text-primary)] flex items-center gap-1.5 font-mono"
                 >
                   <RefreshCw size={12} />
                   <span>Reset Commit</span>
@@ -852,7 +849,7 @@ export default function DebugTheBug({ onProgressChange, savedProgress, onBack })
                             playRetroSound("click");
                             handleNextQuestion();
                           }}
-                          className="px-4 py-2 rounded-xl text-xs text-white bg-slate-600 hover:bg-slate-500 border border-[var(--border-primary)] border-slate-400 hover:scale-102 hover:shadow-[0_0_12px_rgba(168,85,247,0.3)] transition-all cursor-pointer font-bold flex items-center gap-1.5 font-mono"
+                          className="px-4 py-2 rounded-xl text-xs text-[var(--text-on-accent)] bg-[var(--accent-primary)] hover:opacity-95 hover:scale-102 transition-all cursor-pointer font-bold flex items-center gap-1.5 font-mono shadow-md"
                         >
                           <span>Next File / Question</span>
                           <ArrowRight size={13} />
@@ -870,7 +867,7 @@ export default function DebugTheBug({ onProgressChange, savedProgress, onBack })
                             playRetroSound("click");
                             handleLoadLevel(selectedTrack, nextLvl);
                           }}
-                          className="px-4 py-2 rounded-xl text-xs text-white bg-slate-600 hover:bg-slate-500 border border-[var(--border-primary)] border-slate-400 hover:scale-102 hover:shadow-[0_0_12px_rgba(168,85,247,0.3)] transition-all cursor-pointer font-bold flex items-center gap-1.5 font-mono"
+                          className="px-4 py-2 rounded-xl text-xs text-[var(--text-on-accent)] bg-[var(--accent-primary)] hover:opacity-95 hover:scale-102 transition-all cursor-pointer font-bold flex items-center gap-1.5 font-mono shadow-md"
                         >
                           <span>Proceed to Level {nextLvl}</span>
                           <ArrowRight size={13} />
@@ -878,7 +875,7 @@ export default function DebugTheBug({ onProgressChange, savedProgress, onBack })
                       );
                     }
                     return (
-                      <div className="px-4 py-2 rounded-xl text-xs text-[#7CFFB2] bg-[#7CFFB2]/5 border border-[var(--border-primary)] border-[#7CFFB2]/20 font-bold flex items-center gap-1.5 font-mono">
+                      <div className="px-4 py-2 rounded-xl text-xs text-[var(--accent-primary)] bg-[var(--accent-glow)] border border-[var(--border-primary)] font-bold flex items-center gap-1.5 font-mono">
                         <ShieldCheck size={13} />
                         <span>Code Master Confirmed!</span>
                       </div>
@@ -888,12 +885,12 @@ export default function DebugTheBug({ onProgressChange, savedProgress, onBack })
                   <button
                     onClick={runCodeTests}
                     disabled={isDead || isRunning}
-                    className="px-5 py-2 rounded-xl text-xs font-bold text-white bg-slate-600 hover:bg-slate-500 border border-[var(--border-primary)] border-slate-400 hover:scale-102 hover:shadow-[0_0_12px_rgba(168,85,247,0.3)] transition-all cursor-pointer flex items-center gap-1.5 font-mono"
+                    className="px-5 py-2 rounded-xl text-xs font-bold text-[var(--text-on-accent)] bg-[var(--accent-primary)] hover:opacity-95 hover:scale-102 transition-all cursor-pointer flex items-center gap-1.5 font-mono shadow-md"
                   >
                     {isRunning ? (
                       <RefreshCw size={13} className="animate-spin" />
                     ) : (
-                      <Play size={13} className="fill-white text-white" />
+                      <Play size={13} className="fill-[var(--text-on-accent)] text-[var(--text-on-accent)]" />
                     )}
                     <span>Run Test Cases</span>
                   </button>

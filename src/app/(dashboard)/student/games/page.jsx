@@ -324,7 +324,7 @@ export default function GamesHubPage() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setSelectedGameInfo(null)}
-              className="absolute inset-0 bg-black/65 backdrop-blur-sm"
+              className="absolute inset-0 bg-black/60 backdrop-blur-md"
             />
 
             {/* Modal Body */}
@@ -332,66 +332,87 @@ export default function GamesHubPage() {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="relative w-full max-w-lg overflow-hidden rounded-3xl border border-purple-500/30 bg-[#1D0E36] p-6 text-[#E8E6E1] shadow-[0_0_50px_rgba(168,85,247,0.25)] z-10"
+              transition={{ type: "spring", stiffness: 320, damping: 26 }}
+              className="relative w-full max-w-lg overflow-hidden rounded-3xl border p-6 shadow-2xl z-10"
+              style={{ 
+                backgroundColor: "var(--bg-card)", 
+                borderColor: "var(--border-primary)",
+                color: "var(--text-primary)"
+              }}
             >
-              {/* Decorative side line */}
-              <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-gradient-to-b from-purple-500 to-indigo-500" />
+              {/* Decorative accent side line */}
+              <div className="absolute left-0 top-0 bottom-0 w-1" style={{ background: "var(--accent-gradient)" }} />
+
+              {/* Ambient glow */}
+              <div className="absolute top-0 right-0 w-40 h-40 rounded-full blur-[80px] pointer-events-none opacity-20" style={{ background: "var(--accent-glow)" }} />
 
               {/* Close Button */}
               <button
                 onClick={() => setSelectedGameInfo(null)}
-                className="absolute right-4 top-4 p-1.5 rounded-xl border border-purple-500/20 bg-purple-950/25 text-[#D8B4FE] hover:text-white hover:border-purple-500/40 transition-all cursor-pointer"
+                className="absolute right-4 top-4 p-1.5 rounded-xl border transition-all cursor-pointer hover:scale-105"
+                style={{ 
+                  borderColor: "var(--border-primary)", 
+                  backgroundColor: "var(--bg-secondary)",
+                  color: "var(--text-secondary)"
+                }}
               >
                 <X size={16} />
               </button>
 
-              <div className="space-y-6 pl-2">
+              <div className="space-y-5 pl-3">
                 {/* Header */}
-                <div className="space-y-1">
+                <div className="space-y-1.5">
                   <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-purple-300">
+                    <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>
                       {selectedGameInfo.track}
                     </span>
-                    <span className="text-[10px] font-mono">•</span>
+                    <span className="text-[10px]" style={{ color: "var(--text-muted)" }}>•</span>
                     <span className={`text-[9px] font-extrabold uppercase px-2 py-0.5 rounded-md border ${
-                      selectedGameInfo.difficulty === "Beginner" ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-400" :
-                      selectedGameInfo.difficulty === "Intermediate" ? "border-amber-500/30 bg-amber-500/10 text-amber-400" :
-                      "border-rose-500/30 bg-rose-500/10 text-rose-400"
+                      selectedGameInfo.difficulty === "Beginner" ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-500" :
+                      selectedGameInfo.difficulty === "Intermediate" ? "border-amber-500/30 bg-amber-500/10 text-amber-500" :
+                      "border-rose-500/30 bg-rose-500/10 text-rose-500"
                     }`}>
                       {selectedGameInfo.difficulty}
                     </span>
                   </div>
-                  <h3 className="text-2xl font-black font-display text-white tracking-tight uppercase flex items-center gap-2">
-                    <Gamepad2 size={22} className="text-purple-400 animate-pulse" />
+                  <h3 className="text-xl font-black tracking-tight flex items-center gap-2" style={{ color: "var(--text-primary)" }}>
+                    <Gamepad2 size={20} style={{ color: "var(--accent-primary)" }} />
                     {selectedGameInfo.title}
                   </h3>
                 </div>
 
                 {/* Objective */}
-                <div className="space-y-2 bg-purple-950/20 border border-purple-500/10 rounded-2xl p-4">
-                  <h4 className="text-xs font-mono font-extrabold uppercase text-purple-300 flex items-center gap-1.5">
-                    <Target size={14} className="text-purple-400" />
+                <div className="space-y-2 rounded-2xl p-4 border" style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)" }}>
+                  <h4 className="text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5" style={{ color: "var(--accent-primary)" }}>
+                    <Target size={12} style={{ color: "var(--accent-primary)" }} />
                     Objective
                   </h4>
-                  <p className="text-xs text-purple-100/70 leading-relaxed font-sans">
+                  <p className="text-xs leading-relaxed" style={{ color: "var(--text-secondary)" }}>
                     {gameInstructions[selectedGameInfo.slug]?.objective || selectedGameInfo.description}
                   </p>
                 </div>
 
                 {/* How to Play */}
                 <div className="space-y-3">
-                  <h4 className="text-xs font-mono font-extrabold uppercase text-purple-300 flex items-center gap-1.5">
-                    <HelpCircle size={14} className="text-purple-400" />
+                  <h4 className="text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5" style={{ color: "var(--text-muted)" }}>
+                    <HelpCircle size={12} style={{ color: "var(--text-muted)" }} />
                     How to Play
                   </h4>
-                  <ul className="space-y-2.5">
+                  <ul className="space-y-2">
                     {(gameInstructions[selectedGameInfo.slug]?.steps || [
                       "Start the game arena.",
                       "Read instructions and solve challenges.",
                       "Submit solutions to unlock next levels."
                     ]).map((step, idx) => (
-                      <li key={idx} className="flex gap-2.5 items-start text-xs font-sans text-purple-200/80">
-                        <span className="flex-shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-purple-500/20 text-purple-300 text-[10px] font-mono font-bold mt-0.5">
+                      <li key={idx} className="flex gap-2.5 items-start text-xs" style={{ color: "var(--text-secondary)" }}>
+                        <span 
+                          className="flex-shrink-0 flex items-center justify-center w-5 h-5 rounded-full text-[10px] font-bold mt-0.5 border"
+                          style={{ 
+                            backgroundColor: "var(--accent-glow)", 
+                            borderColor: "var(--border-primary)",
+                            color: "var(--accent-primary)"
+                          }}
+                        >
                           {idx + 1}
                         </span>
                         <span className="leading-relaxed">{step}</span>
@@ -402,22 +423,23 @@ export default function GamesHubPage() {
 
                 {/* Pro Tip */}
                 {gameInstructions[selectedGameInfo.slug]?.proTip && (
-                  <div className="space-y-1.5 bg-[#7CFFB2]/5 border border-[#7CFFB2]/10 rounded-2xl p-4">
-                    <h4 className="text-[10px] font-mono font-extrabold uppercase text-[#7CFFB2] flex items-center gap-1.5">
-                      <Zap size={12} className="fill-[#7CFFB2]/10" />
+                  <div className="space-y-1.5 rounded-2xl p-4 border" style={{ backgroundColor: "var(--accent-glow)", borderColor: "var(--border-primary)" }}>
+                    <h4 className="text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5" style={{ color: "var(--accent-primary)" }}>
+                      <Zap size={12} style={{ color: "var(--accent-primary)" }} />
                       Pro Tip
                     </h4>
-                    <p className="text-xs text-emerald-100/70 leading-relaxed font-sans">
+                    <p className="text-xs leading-relaxed" style={{ color: "var(--text-secondary)" }}>
                       {gameInstructions[selectedGameInfo.slug].proTip}
                     </p>
                   </div>
                 )}
 
                 {/* Got it button */}
-                <div className="pt-2">
+                <div className="pt-1">
                   <button
                     onClick={() => setSelectedGameInfo(null)}
-                    className="w-full py-3 rounded-2xl font-bold text-xs text-white bg-purple-600 hover:bg-purple-500 border border-purple-400 hover:shadow-[0_0_15px_rgba(168,85,247,0.35)] transition-all cursor-pointer flex items-center justify-center gap-1.5"
+                    className="w-full py-3 rounded-2xl font-bold text-xs transition-all cursor-pointer flex items-center justify-center gap-1.5 hover:opacity-90 hover:-translate-y-0.5 shadow-lg"
+                    style={{ background: "var(--accent-gradient)", color: "var(--text-on-accent)" }}
                   >
                     <span>Got it, Let's Play!</span>
                   </button>

@@ -2,94 +2,45 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import {
-  ArrowLeft, Trophy, RotateCcw, Play, Clock, Zap, Star, AlertCircle, Volume2, VolumeX, Grid, RefreshCw
+  ArrowLeft, Trophy, RotateCcw, Play, Clock, Zap, Star,
+  Volume2, VolumeX, RefreshCw, CheckCircle2, Layers
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/context/AuthContext";
 import { getApiBase, buildAuthHeaders } from "@/utils/api";
 
-// Web Audio API Retro Chimes
+// ─── Web Audio Synth Sounds ───────────────────────────────────────────────────
 const playSynthSound = (type, soundEnabled) => {
   if (!soundEnabled || typeof window === "undefined") return;
   try {
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    if (audioCtx.state === "suspended") {
-      audioCtx.resume();
-    }
+    if (audioCtx.state === "suspended") audioCtx.resume();
     const now = audioCtx.currentTime;
 
-    if (type === "match") {
-      // Ascending two notes
+    const makeOsc = (oscType, freqs, gainVal, duration) => {
       const osc = audioCtx.createOscillator();
       const gain = audioCtx.createGain();
-      osc.type = "sine";
-      osc.frequency.setValueAtTime(587.33, now); // D5
-      osc.frequency.setValueAtTime(880.00, now + 0.08); // A5
-      gain.gain.setValueAtTime(0.08, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+      osc.type = oscType;
+      freqs.forEach(([freq, time]) => osc.frequency.setValueAtTime(freq, now + time));
+      gain.gain.setValueAtTime(gainVal, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
       osc.connect(gain);
       gain.connect(audioCtx.destination);
       osc.start(now);
-      osc.stop(now + 0.4);
-    } else if (type === "mismatch") {
-      // Descending buzz
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.type = "triangle";
-      osc.frequency.setValueAtTime(330, now);
-      osc.frequency.setValueAtTime(220, now + 0.08);
-      gain.gain.setValueAtTime(0.08, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      osc.start(now);
-      osc.stop(now + 0.3);
-    } else if (type === "flip") {
-      // Quick woody click
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.type = "sine";
-      osc.frequency.setValueAtTime(700, now);
-      osc.frequency.exponentialRampToValueAtTime(350, now + 0.05);
-      gain.gain.setValueAtTime(0.04, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      osc.start(now);
-      osc.stop(now + 0.06);
-    } else if (type === "click") {
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.type = "sine";
-      osc.frequency.setValueAtTime(500, now);
-      osc.frequency.exponentialRampToValueAtTime(250, now + 0.05);
-      gain.gain.setValueAtTime(0.04, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      osc.start(now);
-      osc.stop(now + 0.06);
-    } else if (type === "complete") {
-      // Fans out a major arpeggio
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.type = "sine";
-      osc.frequency.setValueAtTime(523.25, now); // C5
-      osc.frequency.setValueAtTime(659.25, now + 0.1); // E5
-      osc.frequency.setValueAtTime(783.99, now + 0.2); // G5
-      osc.frequency.setValueAtTime(1046.50, now + 0.3); // C6
-      gain.gain.setValueAtTime(0.1, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.7);
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      osc.start(now);
-      osc.stop(now + 0.75);
-    }
+      osc.stop(now + duration + 0.05);
+    };
+
+    if (type === "match")    makeOsc("sine",     [[587.33, 0], [880, 0.08]], 0.08, 0.35);
+    if (type === "mismatch") makeOsc("triangle", [[330, 0], [220, 0.08]],   0.08, 0.25);
+    if (type === "flip")     makeOsc("sine",     [[700, 0], [350, 0.05]],   0.04, 0.05);
+    if (type === "click")    makeOsc("sine",     [[500, 0], [250, 0.05]],   0.04, 0.05);
+    if (type === "complete") makeOsc("sine",     [[523.25, 0], [659.25, 0.1], [783.99, 0.2], [1046.5, 0.3]], 0.1, 0.7);
   } catch (e) {
     console.error("Audio error:", e);
   }
 };
 
+// ─── Main Component ───────────────────────────────────────────────────────────
 export default function CodeMatch({ onProgressChange, savedProgress, onBack }) {
   const { token, user } = useAuth();
   const API_BASE = getApiBase();
@@ -97,12 +48,10 @@ export default function CodeMatch({ onProgressChange, savedProgress, onBack }) {
   const [selectedTrack, setSelectedTrack] = useState(null);
   const [cards, setCards] = useState([]);
   const [selectedIndices, setSelectedIndices] = useState([]);
-  const [phase, setPhase] = useState("lobby"); // lobby, playing, checking, finished
+  const [phase, setPhase] = useState("lobby"); // lobby | playing | checking | finished
   const [soundEnabled, setSoundEnabled] = useState(true);
-
   const [currentLevel, setCurrentLevel] = useState(1);
 
-  // Stats
   const [score, setScore] = useState(0);
   const [streak, setStreak] = useState(0);
   const [bestStreak, setBestStreak] = useState(0);
@@ -115,19 +64,16 @@ export default function CodeMatch({ onProgressChange, savedProgress, onBack }) {
   const timerRef = useRef(null);
   const tracks = ["JavaScript", "React.js", "Node.js", "MongoDB"];
 
+  // ─── Fetch question pool ──────────────────────────────────────────────────
   useEffect(() => {
     const fetchPool = async () => {
-      if (!token || !user) return;
+      if (!token || !user) { setLoading(false); return; }
       try {
         const headers = buildAuthHeaders(token, user);
         const res = await fetch(`${API_BASE}/api/arcade/questions?type=match`, { headers });
         const json = await res.json();
         if (json.success && Array.isArray(json.data)) {
-          const normalized = json.data.map((p, idx) => ({
-            ...p,
-            level: p.level || Math.floor(idx / 6) + 1
-          }));
-          setMatchPool(normalized);
+          setMatchPool(json.data.map((p, idx) => ({ ...p, level: p.level || Math.floor(idx / 6) + 1 })));
         }
       } catch (err) {
         console.error(err);
@@ -144,395 +90,358 @@ export default function CodeMatch({ onProgressChange, savedProgress, onBack }) {
     return lvls.length > 0 ? lvls : [1];
   };
 
-  // localStorage tracking for non-repeating matches
   const loadMatchPairs = (track, levelNum) => {
     const levelPairs = matchPool.filter(p => p.track === track && p.level === levelNum);
     if (levelPairs.length === 0) return [];
-
-    // Memory matching grids require exactly 6 pairs (12 cards).
-    // If a custom level has fewer than 6, we pad it with other pairs from the same track.
     if (levelPairs.length < 6) {
       const others = matchPool.filter(p => p.track === track && p.level !== levelNum);
-      const padded = [...levelPairs, ...others].slice(0, 6);
-      return padded;
+      return [...levelPairs, ...others].slice(0, 6);
     }
-
-    const shuffled = [...levelPairs].sort(() => 0.5 - Math.random());
-    return shuffled.slice(0, 6);
+    return [...levelPairs].sort(() => 0.5 - Math.random()).slice(0, 6);
   };
-
 
   const handleStartGame = (track, levelNum) => {
     playSynthSound("click", soundEnabled);
-    const selectedPairs = loadMatchPairs(track, levelNum);
-    if (selectedPairs.length < 6) {
-      alert(`No concept pairs found for Level ${levelNum} in ${track}.`);
-      return;
-    }
+    const pairs = loadMatchPairs(track, levelNum);
+    if (pairs.length < 6) { alert(`No concept pairs found for Level ${levelNum} in ${track}.`); return; }
 
-    // Generate 12 cards
     const cardList = [];
-    selectedPairs.forEach((pair) => {
-      cardList.push({
-        id: `term_${pair.id}`,
-        pairId: pair.id,
-        type: "term",
-        content: pair.term,
-        isFlipped: false,
-        isMatched: false
-      });
-      cardList.push({
-        id: `def_${pair.id}`,
-        pairId: pair.id,
-        type: "definition",
-        content: pair.definition,
-        isFlipped: false,
-        isMatched: false
-      });
+    pairs.forEach(pair => {
+      cardList.push({ id: `term_${pair.id}`, pairId: pair.id, type: "term",       content: pair.term,       isFlipped: false, isMatched: false });
+      cardList.push({ id: `def_${pair.id}`,  pairId: pair.id, type: "definition", content: pair.definition, isFlipped: false, isMatched: false });
     });
-
-    // Shuffle cards
-    const shuffledCards = cardList.sort(() => 0.5 - Math.random());
 
     setSelectedTrack(track);
     setCurrentLevel(levelNum);
-    setCards(shuffledCards);
+    setCards(cardList.sort(() => 0.5 - Math.random()));
     setSelectedIndices([]);
-    setScore(0);
-    setStreak(0);
-    setBestStreak(0);
-    setElapsedTime(0);
-    setMoves(0);
+    setScore(0); setStreak(0); setBestStreak(0); setElapsedTime(0); setMoves(0);
     setPhase("playing");
   };
 
-  // Timer Effect
+  // ─── Timer ────────────────────────────────────────────────────────────────
   useEffect(() => {
     if (phase !== "playing" && phase !== "checking") return;
-
-    timerRef.current = setInterval(() => {
-      setElapsedTime((prev) => prev + 1);
-    }, 1000);
-
+    timerRef.current = setInterval(() => setElapsedTime(t => t + 1), 1000);
     return () => clearInterval(timerRef.current);
   }, [phase]);
 
+  // ─── Card click handler ───────────────────────────────────────────────────
   const handleCardClick = (idx) => {
-    // Prevent clicking during checking phase, or clicking already flipped/matched cards
     if (phase !== "playing" || cards[idx].isFlipped || cards[idx].isMatched || selectedIndices.includes(idx)) return;
-
     playSynthSound("flip", soundEnabled);
 
-    // Flip card
-    const updatedCards = [...cards];
-    updatedCards[idx].isFlipped = true;
-    setCards(updatedCards);
+    const updated = [...cards];
+    updated[idx].isFlipped = true;
+    setCards(updated);
 
-    const nextSelected = [...selectedIndices, idx];
-    setSelectedIndices(nextSelected);
+    const next = [...selectedIndices, idx];
+    setSelectedIndices(next);
 
-    if (nextSelected.length === 2) {
+    if (next.length === 2) {
       setPhase("checking");
-      setMoves((m) => m + 1);
-      setTimeout(() => {
-        checkMatch(nextSelected);
-      }, 700);
+      setMoves(m => m + 1);
+      setTimeout(() => checkMatch(next), 700);
     }
   };
 
   const checkMatch = (indices) => {
-    const [firstIdx, secondIdx] = indices;
-    const card1 = cards[firstIdx];
-    const card2 = cards[secondIdx];
-    const isCorrect = card1.pairId === card2.pairId && card1.type !== card2.type;
+    const [a, b] = indices;
+    const c1 = cards[a], c2 = cards[b];
+    const correct = c1.pairId === c2.pairId && c1.type !== c2.type;
+    const updated = [...cards];
 
-    const updatedCards = [...cards];
-
-    if (isCorrect) {
+    if (correct) {
       playSynthSound("match", soundEnabled);
-      updatedCards[firstIdx].isMatched = true;
-      updatedCards[secondIdx].isMatched = true;
+      updated[a].isMatched = true;
+      updated[b].isMatched = true;
 
       const newStreak = streak + 1;
       setStreak(newStreak);
       if (newStreak > bestStreak) setBestStreak(newStreak);
 
-      // Scoring: 150 points for correct match + streak bonus. Fewer moves and faster times net higher score at complete.
       const gained = 150 + (newStreak - 1) * 30;
-      setScore((s) => s + gained);
+      setScore(s => s + gained);
 
-      // Check if all are matched
-      const allMatched = updatedCards.every((c) => c.isMatched);
-      if (allMatched) {
+      if (updated.every(c => c.isMatched)) {
         clearInterval(timerRef.current);
         playSynthSound("complete", soundEnabled);
-        
-        // Speed bonus: max +500 points scaling down over time
-        const speedBonus = Math.max(0, 500 - elapsedTime * 5);
-        // Moves bonus: max +300 points scaling down if they took many moves
-        const movesBonus = Math.max(0, 300 - (moves - 6) * 20);
-        const finalScore = score + gained + Math.round(speedBonus + movesBonus);
-        setScore(finalScore);
+        const finalScore = score + gained + Math.max(0, 500 - elapsedTime * 5) + Math.max(0, 300 - (moves - 6) * 20);
+        setScore(Math.round(finalScore));
 
-        // Persist progress to local storage
         const existingLevels = savedProgress?.completedLevels || [];
         const levelKey = `match_${selectedTrack.toLowerCase()}_level_${currentLevel}`;
-        const updatedLevels = [...new Set([...existingLevels, levelKey])];
         onProgressChange({
-          completedLevels: updatedLevels,
-          highScore: Math.max(savedProgress?.highScore || 0, finalScore),
+          completedLevels: [...new Set([...existingLevels, levelKey])],
+          highScore: Math.max(savedProgress?.highScore || 0, Math.round(finalScore)),
           lastTimeSeconds: elapsedTime,
           completedAll: true
         });
-
         setPhase("finished");
       } else {
         setPhase("playing");
       }
     } else {
       playSynthSound("mismatch", soundEnabled);
-      updatedCards[firstIdx].isFlipped = false;
-      updatedCards[secondIdx].isFlipped = false;
+      updated[a].isFlipped = false;
+      updated[b].isFlipped = false;
       setStreak(0);
       setPhase("playing");
     }
 
-    setCards(updatedCards);
+    setCards(updated);
     setSelectedIndices([]);
   };
 
-  const getFormatTime = (sec) => {
-    const mins = Math.floor(sec / 60);
-    const secs = sec % 60;
-    return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
-  };
+  const fmt = (sec) => `${Math.floor(sec / 60)}:${(sec % 60).toString().padStart(2, "0")}`;
 
+  // ─── Render ───────────────────────────────────────────────────────────────
   return (
-    <div className="relative min-h-[70vh] w-full bg-[#0a0714] border border-[var(--border-primary)] border-slate-500/20 rounded-3xl overflow-hidden font-mono text-[#E8E6E1]">
-      {/* CSS 3D Card Flip Styles */}
+    <div
+      className="relative min-h-[70vh] w-full rounded-3xl overflow-hidden"
+      style={{ backgroundColor: "var(--bg-card)", border: "1px solid var(--border-primary)", color: "var(--text-primary)" }}
+    >
+      {/* 3D card flip CSS */}
       <style dangerouslySetInnerHTML={{ __html: `
-        .arcade-card-container {
-          perspective: 1000px;
-        }
-        .arcade-card-inner {
-          position: relative;
-          width: 100%;
-          height: 100%;
-          transition: transform 0.4s;
-          transform-style: preserve-3d;
-        }
-        .arcade-card-flipped .arcade-card-inner {
-          transform: rotateY(180deg);
-        }
-        .arcade-card-front, .arcade-card-back {
-          position: absolute;
-          width: 100%;
-          height: 100%;
-          backface-visibility: hidden;
-          border-radius: 1rem;
-        }
-        .arcade-card-back {
-          transform: rotateY(180deg);
-        }
-      ` }} />
+        .cm-card { perspective: 1000px; }
+        .cm-inner { position:relative; width:100%; height:100%; transition: transform 0.42s cubic-bezier(.4,0,.2,1); transform-style:preserve-3d; }
+        .cm-flipped .cm-inner { transform: rotateY(180deg); }
+        .cm-front, .cm-back { position:absolute; inset:0; backface-visibility:hidden; border-radius:14px; }
+        .cm-back { transform: rotateY(180deg); }
+      `}} />
 
-      {/* Retro Arcade Scanline overlay effect */}
-      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.4)_100%)] z-20" />
-      <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(18,10,36,0)_97%,rgba(18,10,36,0.3)_98%)] bg-[size:100%_4px] opacity-35 z-20" />
+      {/* Ambient glow blobs */}
+      <div className="absolute top-[-15%] left-[-10%] w-[45%] h-[45%] rounded-full blur-[120px] pointer-events-none opacity-30" style={{ background: "var(--accent-glow)" }} />
+      <div className="absolute bottom-[-15%] right-[-10%] w-[40%] h-[40%] rounded-full blur-[100px] pointer-events-none opacity-20" style={{ background: "var(--accent-glow)" }} />
 
-      {/* sound toggle */}
+      {/* Sound toggle */}
       <div className="absolute top-4 right-4 z-30">
         <button
-          onClick={() => setSoundEnabled(!soundEnabled)}
-          className="p-2 rounded-xl border border-[var(--border-primary)] border-slate-500/20 bg-slate-950/20 hover:bg-slate-950/40 text-slate-300 hover:text-white transition-all cursor-pointer shadow-sm"
+          onClick={() => setSoundEnabled(v => !v)}
+          className="p-2 rounded-xl border transition-all cursor-pointer hover:scale-105"
+          style={{ borderColor: "var(--border-primary)", backgroundColor: "var(--bg-secondary)", color: "var(--text-secondary)" }}
         >
-          {soundEnabled ? <Volume2 size={16} /> : <VolumeX size={16} />}
+          {soundEnabled ? <Volume2 size={15} /> : <VolumeX size={15} />}
         </button>
       </div>
 
       <AnimatePresence mode="wait">
-        {/* LOBBY PHASE */}
+
+        {/* ═══════════════════════════════════════════════════════════════════
+            LOBBY
+        ═══════════════════════════════════════════════════════════════════ */}
         {phase === "lobby" && (
           <motion.div
             key="lobby"
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            className="flex flex-col items-center justify-center p-8 md:p-12 text-center h-[70vh] space-y-8"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.3 }}
+            className="flex flex-col items-center justify-center p-8 md:p-14 text-center min-h-[70vh] space-y-8 relative z-10"
           >
             {loading ? (
-              <div className="flex flex-col items-center gap-3">
-                <RefreshCw size={24} className="animate-spin text-slate-400" />
-                <p className="text-xs text-slate-300/60 font-mono">Syncing match pairs from database...</p>
+              /* Loading state */
+              <div className="flex flex-col items-center gap-4">
+                <div className="w-12 h-12 rounded-2xl border flex items-center justify-center" style={{ borderColor: "var(--border-primary)", backgroundColor: "var(--bg-secondary)" }}>
+                  <RefreshCw size={20} className="animate-spin" style={{ color: "var(--accent-primary)" }} />
+                </div>
+                <p className="text-sm" style={{ color: "var(--text-muted)" }}>Loading match pairs…</p>
               </div>
+
             ) : !selectedTrack ? (
+              /* Track selection */
               <>
                 <div className="space-y-3">
-                  <span className="text-[10px] font-bold tracking-widest text-[#7CFFB2] border border-[var(--border-primary)] border-[#7CFFB2]/20 bg-[#7CFFB2]/5 px-3 py-1 rounded-full uppercase">
-                    Mode: Code Match
-                  </span>
-                  <h2 className="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-slate-400 via-[var(--text-secondary)] to-cyan-400 uppercase tracking-tight">
+                  {/* Badge */}
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border" style={{ color: "var(--accent-primary)", borderColor: "var(--border-primary)", backgroundColor: "var(--accent-glow)" }}>
+                    <Layers size={10} />
+                    Code Match
+                  </div>
+                  <h2 className="text-3xl md:text-4xl font-bold tracking-tight" style={{ color: "var(--text-primary)" }}>
                     Concepts Match
                   </h2>
-                  <p className="text-xs text-slate-300/50 max-w-md mx-auto">
-                    Select a track to launch your level progress. Match 6 code terms with their definitions under the grid context!
+                  <p className="text-sm max-w-sm mx-auto leading-relaxed" style={{ color: "var(--text-secondary)" }}>
+                    Flip cards and match coding terms with their definitions. Fewer moves = higher score.
                   </p>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-lg">
-                  {tracks.map((track) => {
-                    const totalLvs = getLevelsForTrack(track).length;
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full max-w-md">
+                  {tracks.map(track => {
+                    const lvCount = getLevelsForTrack(track).length;
                     return (
-                      <button
+                      <motion.button
                         key={track}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
                         onClick={() => setSelectedTrack(track)}
-                        className="relative p-5 rounded-2xl border border-[var(--border-primary)] border-slate-500/25 bg-gradient-to-br from-[#1a0e30]/40 to-[#0e071e]/70 text-left hover:scale-[1.03] transition-all cursor-pointer hover:border-slate-400 group overflow-hidden shadow-lg"
+                        className="relative p-5 rounded-2xl border text-left cursor-pointer group overflow-hidden transition-colors"
+                        style={{ borderColor: "var(--border-primary)", backgroundColor: "var(--bg-secondary)" }}
+                        onMouseEnter={e => e.currentTarget.style.borderColor = "var(--accent-primary)"}
+                        onMouseLeave={e => e.currentTarget.style.borderColor = "var(--border-primary)"}
                       >
-                        <div className="absolute top-0 right-0 w-24 h-24 bg-slate-500/5 rounded-full blur-2xl group-hover:bg-slate-500/10 transition-all" />
-                        <span className="text-xs font-bold text-slate-400/60 uppercase">Track</span>
-                        <h4 className="text-lg font-black text-white group-hover:text-[#7CFFB2] transition-colors">{track}</h4>
-                        <div className="flex items-center gap-1 mt-3 text-[10px] text-slate-300/40">
-                          <span>{totalLvs} Level{totalLvs > 1 ? 's' : ''} available</span>
-                        </div>
-                      </button>
+                        <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-all" style={{ background: "var(--accent-glow)" }} />
+                        <p className="text-[10px] font-semibold uppercase tracking-wider mb-1" style={{ color: "var(--text-muted)" }}>Track</p>
+                        <h4 className="text-base font-bold" style={{ color: "var(--text-primary)" }}>{track}</h4>
+                        <p className="text-[11px] mt-2" style={{ color: "var(--text-muted)" }}>{lvCount} level{lvCount !== 1 ? "s" : ""} available</p>
+                      </motion.button>
                     );
                   })}
                 </div>
 
-                <button
-                  onClick={onBack}
-                  className="flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-white transition-colors cursor-pointer mt-4"
-                >
-                  <ArrowLeft size={14} /> Back to Hub Lobby
+                <button onClick={onBack} className="flex items-center gap-1.5 text-xs font-medium transition-colors cursor-pointer" style={{ color: "var(--text-muted)" }}
+                  onMouseEnter={e => e.currentTarget.style.color = "var(--text-primary)"}
+                  onMouseLeave={e => e.currentTarget.style.color = "var(--text-muted)"}>
+                  <ArrowLeft size={13} /> Back to Hub
                 </button>
               </>
+
             ) : (
+              /* Level selection */
               <>
                 <div className="space-y-3">
-                  <span className="text-[10px] font-bold tracking-widest text-[#7CFFB2] border border-[var(--border-primary)] border-[#7CFFB2]/20 bg-[#7CFFB2]/5 px-3 py-1 rounded-full uppercase">
-                    Track: {selectedTrack}
-                  </span>
-                  <h2 className="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-slate-400 via-[var(--text-secondary)] to-cyan-400 uppercase tracking-tight">
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border" style={{ color: "var(--accent-primary)", borderColor: "var(--border-primary)", backgroundColor: "var(--accent-glow)" }}>
+                    {selectedTrack}
+                  </div>
+                  <h2 className="text-3xl md:text-4xl font-bold tracking-tight" style={{ color: "var(--text-primary)" }}>
                     Select Level
                   </h2>
-                  <p className="text-xs text-slate-300/50 max-w-md mx-auto">
-                    Complete levels sequentially. Match all pairs to unlock the next level.
+                  <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
+                    Complete levels in order to unlock the next.
                   </p>
                 </div>
 
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 w-full max-w-lg">
-                  {getLevelsForTrack(selectedTrack).map((lvl) => {
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 w-full max-w-md">
+                  {getLevelsForTrack(selectedTrack).map(lvl => {
                     const isUnlocked = lvl === 1 || (savedProgress?.completedLevels || []).includes(`match_${selectedTrack.toLowerCase()}_level_${lvl - 1}`);
                     const isCompleted = (savedProgress?.completedLevels || []).includes(`match_${selectedTrack.toLowerCase()}_level_${lvl}`);
                     return (
-                      <button
+                      <motion.button
                         key={lvl}
                         disabled={!isUnlocked}
                         onClick={() => handleStartGame(selectedTrack, lvl)}
-                        className={`relative p-5 rounded-2xl border border-[var(--border-primary)] flex flex-col items-center justify-center transition-all ${
-                          isUnlocked
-                            ? "bg-slate-950/20 border-slate-500/30 hover:border-[#7CFFB2] hover:scale-105 cursor-pointer text-white"
-                            : "bg-[#180f2d]/40 border-slate-950/20 text-slate-500/20 cursor-not-allowed"
-                        }`}
+                        whileHover={isUnlocked ? { scale: 1.05 } : {}}
+                        whileTap={isUnlocked ? { scale: 0.97 } : {}}
+                        className="p-4 rounded-2xl border flex flex-col items-center justify-center gap-1 transition-colors"
+                        style={{
+                          borderColor: isCompleted ? "var(--accent-primary)" : "var(--border-primary)",
+                          backgroundColor: isCompleted ? "var(--accent-glow)" : "var(--bg-secondary)",
+                          opacity: isUnlocked ? 1 : 0.4,
+                          cursor: isUnlocked ? "pointer" : "not-allowed"
+                        }}
                       >
-                        <span className="text-xs font-bold uppercase tracking-wider mb-2">Lvl {lvl}</span>
-                        {isCompleted ? (
-                          <span className="text-[9px] font-bold text-[#7CFFB2] bg-[#7CFFB2]/10 border border-[var(--border-primary)] border-[#7CFFB2]/20 px-2 py-0.5 rounded uppercase">Cleared</span>
-                        ) : isUnlocked ? (
-                          <span className="text-[9px] font-bold text-cyan-400 bg-cyan-500/10 border border-[var(--border-primary)] border-cyan-500/20 px-2 py-0.5 rounded uppercase">Play</span>
-                        ) : (
-                          <span className="text-[9px] font-bold text-slate-500/10 uppercase">Locked</span>
-                        )}
-                      </button>
+                        <span className="text-[10px] font-medium" style={{ color: "var(--text-muted)" }}>Level</span>
+                        <span className="text-xl font-black" style={{ color: isCompleted ? "var(--accent-primary)" : "var(--text-primary)" }}>{lvl}</span>
+                        {isCompleted
+                          ? <CheckCircle2 size={13} style={{ color: "var(--accent-primary)" }} />
+                          : <span className="text-[9px] font-medium" style={{ color: "var(--text-muted)" }}>{isUnlocked ? "Play" : "Locked"}</span>
+                        }
+                      </motion.button>
                     );
                   })}
                 </div>
 
-                <button
-                  onClick={() => setSelectedTrack(null)}
-                  className="flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-white transition-colors cursor-pointer mt-4"
-                >
-                  <ArrowLeft size={14} /> Back to Tracks Selection
+                <button onClick={() => setSelectedTrack(null)} className="flex items-center gap-1.5 text-xs font-medium transition-colors cursor-pointer" style={{ color: "var(--text-muted)" }}
+                  onMouseEnter={e => e.currentTarget.style.color = "var(--text-primary)"}
+                  onMouseLeave={e => e.currentTarget.style.color = "var(--text-muted)"}>
+                  <ArrowLeft size={13} /> Back to Tracks
                 </button>
               </>
             )}
           </motion.div>
         )}
 
-        {/* PLAYING OR CHECKING PHASE */}
+        {/* ═══════════════════════════════════════════════════════════════════
+            GAMEPLAY
+        ═══════════════════════════════════════════════════════════════════ */}
         {(phase === "playing" || phase === "checking") && (
           <motion.div
             key="gameplay"
-            initial={{ opacity: 0, y: 15 }}
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
-            className="p-6 md:p-8 flex flex-col justify-between min-h-[70vh] relative z-10"
+            transition={{ duration: 0.25 }}
+            className="p-5 md:p-7 flex flex-col min-h-[70vh] relative z-10 gap-5"
           >
             {/* HUD */}
-            <div className="flex items-center justify-between border-b border-slate-500/15 pb-4 mb-6">
-              <div className="flex items-center space-x-3">
-                <span className="text-xs font-black uppercase text-slate-400 tracking-wider">
-                  {selectedTrack} — Level {currentLevel}
+            <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b" style={{ borderColor: "var(--border-primary)" }}>
+              {/* Left — track + level + timer */}
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>{selectedTrack}</span>
+                <span className="text-[10px] font-medium px-2.5 py-1 rounded-full border" style={{ color: "var(--text-secondary)", borderColor: "var(--border-primary)", backgroundColor: "var(--bg-secondary)" }}>
+                  Level {currentLevel}
                 </span>
-                <span className="text-[10px] font-bold text-cyan-400 border border-[var(--border-primary)] border-cyan-500/20 px-2 py-0.5 rounded bg-cyan-500/5 uppercase flex items-center gap-1">
-                  <Clock size={11} /> {getFormatTime(elapsedTime)}
+                <span className="text-[10px] font-semibold px-2.5 py-1 rounded-full border flex items-center gap-1" style={{ color: "var(--accent-primary)", borderColor: "var(--border-primary)", backgroundColor: "var(--accent-glow)" }}>
+                  <Clock size={10} /> {fmt(elapsedTime)}
                 </span>
               </div>
 
-              <div className="flex items-center space-x-6">
-                <div className="flex items-center gap-1.5 text-amber-400 font-bold text-sm">
-                  <Zap size={14} className="fill-amber-400/10" />
-                  <span>{score} pts</span>
+              {/* Right — score + moves + streak */}
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-1.5 text-sm font-bold" style={{ color: "var(--text-primary)" }}>
+                  <Zap size={13} style={{ color: "var(--accent-primary)" }} />
+                  {score} <span className="text-xs font-normal" style={{ color: "var(--text-muted)" }}>pts</span>
                 </div>
-                <div className="text-slate-300/60 text-xs">
-                  Moves: <span className="text-white font-bold">{moves}</span>
+                <div className="text-xs" style={{ color: "var(--text-muted)" }}>
+                  Moves: <strong style={{ color: "var(--text-primary)" }}>{moves}</strong>
                 </div>
-                {streak > 0 && (
-                  <div className="flex items-center gap-1 text-orange-400 font-bold text-xs">
-                    <Star size={12} className="fill-orange-400" />
-                    <span>{streak}x Match</span>
-                  </div>
-                )}
+                <AnimatePresence>
+                  {streak > 1 && (
+                    <motion.div
+                      key={streak}
+                      initial={{ scale: 0.7, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      className="flex items-center gap-1 text-xs font-bold"
+                      style={{ color: "#f97316" }}
+                    >
+                      <Star size={11} fill="#f97316" /> {streak}x
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             </div>
 
-            {/* Grid of cards */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 flex-grow content-center my-auto min-h-[40vh]">
+            {/* Card grid */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 flex-1 content-center">
               {cards.map((card, idx) => {
                 const isFlipped = card.isFlipped || card.isMatched;
                 return (
                   <div
                     key={card.id}
                     onClick={() => handleCardClick(idx)}
-                    className={`arcade-card-container h-28 md:h-36 w-full cursor-pointer transition-all duration-150 ${
-                      isFlipped ? "arcade-card-flipped" : "hover:scale-[1.02]"
-                    }`}
+                    className={`cm-card h-28 md:h-36 w-full cursor-pointer ${isFlipped ? "cm-flipped" : ""}`}
                   >
-                    <div className="arcade-card-inner w-full h-full">
-                      {/* CARD FRONT (FACE DOWN - arcade design) */}
-                      <div className="arcade-card-front flex flex-col items-center justify-center border border-[var(--border-primary)] border-slate-500/20 bg-gradient-to-br from-[#1b0a33] to-[#0a0414] hover:border-slate-500/40 text-slate-500 shadow-lg">
-                        <Grid size={24} className="animate-pulse" />
-                        <span className="text-[9px] uppercase tracking-wider text-slate-500/40 mt-2">Eduvantix ARCADE</span>
+                    <div className="cm-inner">
+                      {/* FRONT — face down */}
+                      <div
+                        className="cm-front flex flex-col items-center justify-center gap-2 transition-colors"
+                        style={{ border: "1px solid var(--border-primary)", backgroundColor: "var(--bg-secondary)" }}
+                      >
+                        <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ backgroundColor: "var(--accent-glow)", border: "1px solid var(--border-primary)" }}>
+                          <Layers size={14} style={{ color: "var(--accent-primary)", opacity: 0.7 }} />
+                        </div>
+                        <span className="text-[8px] uppercase tracking-widest font-medium" style={{ color: "var(--text-muted)", opacity: 0.5 }}>Match</span>
                       </div>
 
-                      {/* CARD BACK (FACE UP - details) */}
-                      <div className={`arcade-card-back flex items-center justify-center p-3 text-center border border-[var(--border-primary)] text-[10px] md:text-xs font-bold leading-tight ${
-                        card.isMatched
-                          ? "border-emerald-500/50 bg-emerald-950/20 text-emerald-300 shadow-[0_0_12px_rgba(16,185,129,0.1)]"
-                          : "border-slate-500 bg-[#160c2b] text-white shadow-[0_0_12px_rgba(139,92,246,0.15)]"
-                      }`}>
-                        <div className="w-full flex flex-col justify-between h-full">
-                          <span className={`text-[8px] uppercase tracking-wide self-start ${card.isMatched ? "text-emerald-400/50" : "text-slate-400/50"}`}>
+                      {/* BACK — face up */}
+                      <div
+                        className="cm-back flex items-center justify-center p-3 text-center"
+                        style={{
+                          border: card.isMatched ? "1px solid var(--accent-primary)" : "1px solid var(--border-primary)",
+                          backgroundColor: card.isMatched ? "var(--accent-glow)" : "var(--bg-primary)",
+                        }}
+                      >
+                        <div className="flex flex-col justify-between h-full w-full">
+                          <span className="text-[8px] uppercase tracking-wider font-semibold self-start" style={{ color: card.isMatched ? "var(--accent-primary)" : "var(--text-muted)", opacity: 0.7 }}>
                             {card.type}
                           </span>
-                          <span className="flex-grow flex items-center justify-center text-center leading-normal font-sans py-1">
+                          <span className="flex-1 flex items-center justify-center text-center text-[10px] md:text-xs font-medium leading-snug py-1" style={{ color: card.isMatched ? "var(--accent-primary)" : "var(--text-primary)" }}>
                             {card.content}
                           </span>
-                          {card.isMatched ? (
-                            <span className="text-[8px] text-emerald-400 uppercase font-black tracking-widest mt-1">Matched</span>
-                          ) : (
-                            <span className="h-1" />
-                          )}
+                          {card.isMatched
+                            ? <span className="text-[8px] font-bold uppercase tracking-widest" style={{ color: "var(--accent-primary)" }}>✓ Matched</span>
+                            : <span className="h-3" />
+                          }
                         </div>
                       </div>
                     </div>
@@ -541,94 +450,113 @@ export default function CodeMatch({ onProgressChange, savedProgress, onBack }) {
               })}
             </div>
 
-            {/* Bottom spacer */}
-            <div className="border-t border-slate-500/10 pt-4 mt-6 text-center text-[10px] text-slate-300/40 font-sans">
-              Match each terminology card on the left or right with its respective definition block.
+            {/* Hint bar */}
+            <div className="border-t pt-3 text-center text-[10px]" style={{ borderColor: "var(--border-primary)", color: "var(--text-muted)" }}>
+              Click a card to flip it — find the matching term & definition pair
             </div>
           </motion.div>
         )}
 
-        {/* FINISHED PHASE */}
+        {/* ═══════════════════════════════════════════════════════════════════
+            FINISHED
+        ═══════════════════════════════════════════════════════════════════ */}
         {phase === "finished" && (
           <motion.div
             key="finished"
-            initial={{ opacity: 0, scale: 0.95 }}
+            initial={{ opacity: 0, scale: 0.94 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0 }}
-            className="flex flex-col items-center justify-center p-8 text-center h-[70vh] space-y-6"
+            transition={{ type: "spring", stiffness: 280, damping: 22 }}
+            className="flex flex-col items-center justify-center p-8 text-center min-h-[70vh] space-y-6 relative z-10"
           >
-            <div className="p-4 rounded-full bg-amber-500/10 border border-[var(--border-primary)] border-amber-500/20">
-              <Trophy size={36} className="text-amber-400" />
-            </div>
+            {/* Trophy */}
+            <motion.div
+              initial={{ scale: 0, rotate: -15 }}
+              animate={{ scale: 1, rotate: 0 }}
+              transition={{ type: "spring", stiffness: 300, damping: 18, delay: 0.1 }}
+              className="w-16 h-16 rounded-2xl border flex items-center justify-center"
+              style={{ background: "rgba(234,179,8,0.08)", borderColor: "rgba(234,179,8,0.2)" }}
+            >
+              <Trophy size={32} style={{ color: "#eab308" }} />
+            </motion.div>
 
-            <div>
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                Arena Cleared
-              </span>
-              <h2 className="text-2xl md:text-3xl font-black text-white mt-1">
-                CODE MATCH COMPLETE
-              </h2>
-              <p className="text-xs text-slate-300/40 font-mono mt-1 uppercase">
-                Track: {selectedTrack} — Level {currentLevel}
-              </p>
-            </div>
+            <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="space-y-1.5">
+              <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: "var(--text-muted)" }}>Level {currentLevel} Cleared</p>
+              <h2 className="text-2xl md:text-3xl font-bold tracking-tight" style={{ color: "var(--text-primary)" }}>Code Match Complete!</h2>
+              <p className="text-sm" style={{ color: "var(--text-secondary)" }}>{selectedTrack} Track</p>
+            </motion.div>
 
-            {/* Metrics */}
-            <div className="grid grid-cols-3 gap-3 w-full max-w-md">
-              <div className="bg-slate-950/15 border border-[var(--border-primary)] border-slate-500/10 rounded-2xl p-4">
-                <div className="text-2xl font-black text-cyan-300">{score}</div>
-                <div className="text-[9px] uppercase tracking-wider text-slate-300/40 font-bold mt-1">Score</div>
-              </div>
-              <div className="bg-slate-950/15 border border-[var(--border-primary)] border-slate-500/10 rounded-2xl p-4">
-                <div className="text-2xl font-black text-[#7CFFB2]">{getFormatTime(elapsedTime)}</div>
-                <div className="text-[9px] uppercase tracking-wider text-slate-300/40 font-bold mt-1">Time</div>
-              </div>
-              <div className="bg-slate-950/15 border border-[var(--border-primary)] border-slate-500/10 rounded-2xl p-4">
-                <div className="text-2xl font-black text-orange-400">{moves}</div>
-                <div className="text-[9px] uppercase tracking-wider text-slate-300/40 font-bold mt-1">Moves</div>
-              </div>
-            </div>
+            {/* Stat cards */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.25 }}
+              className="grid grid-cols-3 gap-3 w-full max-w-sm"
+            >
+              {[
+                { label: "Score", value: score, color: "var(--accent-primary)" },
+                { label: "Time",  value: fmt(elapsedTime), color: "var(--text-primary)" },
+                { label: "Moves", value: moves, color: "#f97316" },
+              ].map(({ label, value, color }) => (
+                <div key={label} className="rounded-2xl p-4 border" style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)" }}>
+                  <div className="text-2xl font-black" style={{ color }}>{value}</div>
+                  <div className="text-[9px] uppercase tracking-wider font-semibold mt-1" style={{ color: "var(--text-muted)" }}>{label}</div>
+                </div>
+              ))}
+            </motion.div>
 
-            {/* Actions */}
-            <div className="flex flex-wrap items-center justify-center gap-3 pt-4">
+            {/* Action buttons */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="flex flex-wrap items-center justify-center gap-3"
+            >
               {(() => {
                 const nextLvl = currentLevel + 1;
-                const trackLevels = getLevelsForTrack(selectedTrack);
-                const hasNextLvl = trackLevels.includes(nextLvl);
-                if (hasNextLvl) {
+                if (getLevelsForTrack(selectedTrack).includes(nextLvl)) {
                   return (
                     <button
                       onClick={() => handleStartGame(selectedTrack, nextLvl)}
-                      className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs transition-all cursor-pointer flex items-center gap-2 hover:shadow-[0_0_12px_rgba(16,185,129,0.3)] font-mono"
+                      className="px-5 py-2.5 rounded-xl font-bold text-xs flex items-center gap-2 transition-all hover:opacity-90 hover:-translate-y-0.5 shadow-md cursor-pointer"
+                      style={{ background: "var(--accent-gradient)", color: "var(--text-on-accent)" }}
                     >
-                      <Play size={13} /> Proceed to Level {nextLvl}
+                      <Play size={13} /> Level {nextLvl}
                     </button>
                   );
                 }
                 return null;
               })()}
+
               <button
                 onClick={() => handleStartGame(selectedTrack, currentLevel)}
-                className="px-5 py-2.5 rounded-xl border border-[var(--border-primary)] border-slate-500/25 bg-[#1b0d35]/30 text-slate-300 hover:text-white hover:border-slate-400 text-xs font-bold transition-all cursor-pointer flex items-center gap-2 font-mono"
+                className="px-5 py-2.5 rounded-xl border text-xs font-semibold flex items-center gap-2 transition-all hover:scale-[1.02] cursor-pointer"
+                style={{ borderColor: "var(--border-primary)", backgroundColor: "var(--bg-secondary)", color: "var(--text-secondary)" }}
               >
-                <RotateCcw size={13} /> Replay Level {currentLevel}
+                <RotateCcw size={13} /> Replay
               </button>
+
               <button
                 onClick={() => setPhase("lobby")}
-                className="px-5 py-2.5 rounded-xl bg-slate-600 hover:bg-slate-500 text-white font-black text-xs transition-all cursor-pointer flex items-center gap-2 hover:shadow-[0_0_12px_rgba(168,85,247,0.3)] font-mono"
+                className="px-5 py-2.5 rounded-xl border text-xs font-semibold flex items-center gap-2 transition-all hover:scale-[1.02] cursor-pointer"
+                style={{ borderColor: "var(--border-primary)", backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }}
               >
-                <Play size={13} /> Levels Selection
+                All Levels
               </button>
-            </div>
+            </motion.div>
 
             <button
               onClick={onBack}
-              className="text-xs font-bold text-slate-500 hover:text-white transition-colors cursor-pointer mt-2"
+              className="text-xs font-medium transition-colors cursor-pointer"
+              style={{ color: "var(--text-muted)" }}
+              onMouseEnter={e => e.currentTarget.style.color = "var(--text-primary)"}
+              onMouseLeave={e => e.currentTarget.style.color = "var(--text-muted)"}
             >
               Exit to Arcade Lobby
             </button>
           </motion.div>
         )}
+
       </AnimatePresence>
     </div>
   );

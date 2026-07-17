@@ -309,25 +309,23 @@ export default function CodeFillIn({ onProgressChange, savedProgress, onBack }) 
   if (phase === "lobby") {
     const langs = ["Python", "JavaScript", "SQL"];
     return (
-      <div className="min-h-[70vh] w-full bg-[#0a0714] border border-[var(--border-primary)] border-slate-500/20 rounded-3xl overflow-hidden font-mono text-[#E8E6E1] flex flex-col items-center justify-center p-8 md:p-12 text-center relative select-none">
-        <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.4)_100%)] z-20" />
-        <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(18,10,36,0)_97%,rgba(18,10,36,0.3)_98%)] bg-[size:100%_4px] opacity-35 z-20" />
+      <div className="min-h-[70vh] w-full bg-[var(--bg-card)] border border-[var(--border-primary)] rounded-3xl overflow-hidden font-mono text-[var(--text-primary)] flex flex-col items-center justify-center p-8 md:p-12 text-center relative select-none">
         
         {loading ? (
           <div className="flex flex-col items-center gap-3 relative z-30">
             <RefreshCw size={24} className="animate-spin text-slate-400" />
-            <p className="text-xs text-slate-300/60 font-mono">Syncing fill-in questions from database...</p>
+            <p className="text-xs text-[var(--text-muted)] font-mono">Syncing fill-in questions from database...</p>
           </div>
         ) : !selectedLang ? (
           <>
             <div className="space-y-3 relative z-30">
-              <span className="text-[10px] font-bold tracking-widest text-[#7CFFB2] border border-[var(--border-primary)] border-[#7CFFB2]/20 bg-[#7CFFB2]/5 px-3 py-1 rounded-full uppercase">
+              <span className="text-[10px] font-bold tracking-widest text-[var(--accent-primary)] border border-[var(--border-primary)] bg-[var(--accent-glow)] px-3 py-1 rounded-full uppercase">
                 Mode: Code Fill-In
               </span>
-              <h2 className="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-slate-400 via-[var(--text-secondary)] to-cyan-400 uppercase tracking-tight">
+              <h2 className="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[var(--text-primary)] via-[var(--text-secondary)] to-[var(--accent-primary)] uppercase tracking-tight">
                 Syntax Core
               </h2>
-              <p className="text-xs text-slate-300/50 max-w-md mx-auto">
+              <p className="text-xs text-[var(--text-secondary)] max-w-md mx-auto">
                 Fill in missing keywords, parameters, and tokens in real-world scripts. Select your language to launch!
               </p>
             </div>
@@ -339,12 +337,12 @@ export default function CodeFillIn({ onProgressChange, savedProgress, onBack }) 
                   <button
                     key={lang}
                     onClick={() => setSelectedLang(lang)}
-                    className="relative p-5 rounded-2xl border border-[var(--border-primary)] border-slate-500/25 bg-gradient-to-br from-[#1a0e30]/40 to-[#0e071e]/70 text-center hover:scale-[1.03] transition-all cursor-pointer hover:border-slate-400 group overflow-hidden shadow-lg"
+                    className="relative p-5 rounded-2xl border border-[var(--border-primary)] bg-[var(--bg-secondary)] text-center hover:scale-[1.03] transition-all cursor-pointer hover:border-[var(--accent-primary)] group overflow-hidden shadow-lg"
                   >
-                    <div className="absolute top-0 right-0 w-24 h-24 bg-slate-500/5 rounded-full blur-2xl group-hover:bg-slate-500/10 transition-all" />
-                    <span className="text-xs font-bold text-slate-400/60 uppercase">Language</span>
-                    <h4 className="text-lg font-black text-white group-hover:text-[#7CFFB2] transition-colors">{lang}</h4>
-                    <div className="flex items-center justify-center gap-1 mt-3 text-[10px] text-slate-300/40">
+                    <div className="absolute top-0 right-0 w-24 h-24 bg-[var(--accent-glow)] rounded-full blur-2xl group-hover:opacity-80 transition-all" />
+                    <span className="text-xs font-bold text-[var(--text-muted)] uppercase">Language</span>
+                    <h4 className="text-lg font-black text-[var(--text-primary)] group-hover:text-[var(--accent-primary)] transition-colors">{lang}</h4>
+                    <div className="flex items-center justify-center gap-1 mt-3 text-[10px] text-[var(--text-muted)]">
                       <span>{totalLvs} Level{totalLvs > 1 ? 's' : ''}</span>
                     </div>
                   </button>
@@ -354,7 +352,7 @@ export default function CodeFillIn({ onProgressChange, savedProgress, onBack }) 
 
             <button
               onClick={onBack}
-              className="flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-white transition-colors cursor-pointer mt-8 relative z-30"
+              className="flex items-center gap-2 text-xs font-bold text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors cursor-pointer mt-8 relative z-30"
             >
               <ArrowLeft size={14} /> Back to Hub Lobby
             </button>
@@ -362,13 +360,13 @@ export default function CodeFillIn({ onProgressChange, savedProgress, onBack }) 
         ) : (
           <>
             <div className="space-y-3 relative z-30">
-              <span className="text-[10px] font-bold tracking-widest text-[#7CFFB2] border border-[var(--border-primary)] border-[#7CFFB2]/20 bg-[#7CFFB2]/5 px-3 py-1 rounded-full uppercase">
+              <span className="text-[10px] font-bold tracking-widest text-[var(--accent-primary)] border border-[var(--border-primary)] bg-[var(--accent-glow)] px-3 py-1 rounded-full uppercase">
                 Language: {selectedLang}
               </span>
-              <h2 className="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-slate-400 via-[var(--text-secondary)] to-cyan-400 uppercase tracking-tight">
+              <h2 className="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[var(--text-primary)] via-[var(--text-secondary)] to-[var(--accent-primary)] uppercase tracking-tight">
                 Select Level
               </h2>
-              <p className="text-xs text-slate-300/50 max-w-md mx-auto">
+              <p className="text-xs text-[var(--text-secondary)] max-w-md mx-auto">
                 Complete levels sequentially. Clear one level to unlock the next!
               </p>
             </div>
@@ -382,19 +380,19 @@ export default function CodeFillIn({ onProgressChange, savedProgress, onBack }) 
                     key={lvl}
                     disabled={!isUnlocked}
                     onClick={() => handleStartGame(selectedLang, lvl)}
-                    className={`relative p-5 rounded-2xl border border-[var(--border-primary)] flex flex-col items-center justify-center transition-all ${
+                    className={`relative p-5 rounded-2xl border flex flex-col items-center justify-center transition-all ${
                       isUnlocked
-                        ? "bg-slate-950/20 border-slate-500/30 hover:border-[#7CFFB2] hover:scale-105 cursor-pointer text-white"
-                        : "bg-[#180f2d]/40 border-slate-950/20 text-slate-500/20 cursor-not-allowed"
+                        ? "bg-[var(--bg-secondary)] border-[var(--border-primary)] hover:border-[var(--accent-primary)] hover:scale-105 cursor-pointer text-[var(--text-primary)]"
+                        : "bg-[var(--bg-primary)] opacity-40 border-[var(--border-primary)] text-[var(--text-muted)] cursor-not-allowed"
                     }`}
                   >
                     <span className="text-xs font-bold uppercase tracking-wider mb-2">Lvl {lvl}</span>
                     {isCompleted ? (
-                      <span className="text-[9px] font-bold text-[#7CFFB2] bg-[#7CFFB2]/10 border border-[var(--border-primary)] border-[#7CFFB2]/20 px-2 py-0.5 rounded uppercase">Cleared</span>
+                      <span className="text-[9px] font-bold text-[var(--accent-primary)] bg-[var(--accent-glow)] border border-[var(--border-primary)] px-2 py-0.5 rounded uppercase">Cleared</span>
                     ) : isUnlocked ? (
-                      <span className="text-[9px] font-bold text-cyan-400 bg-cyan-500/10 border border-[var(--border-primary)] border-cyan-500/20 px-2 py-0.5 rounded uppercase">Play</span>
+                      <span className="text-[9px] font-bold text-[var(--text-primary)] bg-[var(--bg-hover)] border border-[var(--border-primary)] px-2 py-0.5 rounded uppercase">Play</span>
                     ) : (
-                      <span className="text-[9px] font-bold text-slate-500/10 uppercase">Locked</span>
+                      <span className="text-[9px] font-bold text-[var(--text-muted)] uppercase">Locked</span>
                     )}
                   </button>
                 );
@@ -403,7 +401,7 @@ export default function CodeFillIn({ onProgressChange, savedProgress, onBack }) 
 
             <button
               onClick={() => setSelectedLang(null)}
-              className="flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-white transition-colors cursor-pointer mt-8 relative z-30"
+              className="flex items-center gap-2 text-xs font-bold text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors cursor-pointer mt-8 relative z-30"
             >
               <ArrowLeft size={14} /> Back to Languages
             </button>
@@ -416,19 +414,18 @@ export default function CodeFillIn({ onProgressChange, savedProgress, onBack }) 
   // ── No questions fallback ───────────────────────────────────────────────────
   if (total === 0) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[50vh] space-y-4 text-center p-8 bg-[#0a0714] border border-[var(--border-primary)] border-slate-500/20 rounded-3xl relative select-none">
-        <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.4)_100%)] z-20" />
-        <div className="p-4 rounded-2xl bg-violet-500/10 border border-[var(--border-primary)] border-violet-500/20 relative z-30">
-          <Target size={32} className="text-violet-400" />
+      <div className="flex flex-col items-center justify-center min-h-[50vh] space-y-4 text-center p-8 bg-[var(--bg-card)] border border-[var(--border-primary)] rounded-3xl relative select-none">
+        <div className="p-4 rounded-2xl bg-[var(--accent-glow)] border border-[var(--border-primary)] relative z-30 text-[var(--accent-primary)]">
+          <Target size={32} />
         </div>
-        <h2 className="text-lg font-black text-white relative z-30">No Questions Available</h2>
-        <p className="text-xs text-slate-300/40 max-w-xs leading-relaxed relative z-30">
+        <h2 className="text-lg font-black text-[var(--text-primary)] relative z-30">No Questions Available</h2>
+        <p className="text-xs text-[var(--text-secondary)] max-w-xs leading-relaxed relative z-30">
           This level has no questions yet. An admin or mentor can add Code Fill-In questions
-          via <strong className="text-violet-300">Admin → Arcade Questions</strong>.
+          via <strong className="text-[var(--accent-primary)]">Admin → Arcade Questions</strong>.
         </p>
         <button
           onClick={() => setPhase("lobby")}
-          className="relative z-30 px-5 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-500 border border-[var(--border-primary)] border-violet-400 hover:scale-102 hover:shadow-[0_0_12px_rgba(168,85,247,0.3)] transition-all cursor-pointer font-bold text-xs"
+          className="relative z-30 px-5 py-2.5 rounded-xl bg-[var(--accent-primary)] text-[var(--text-on-accent)] border border-[var(--border-primary)] hover:scale-102 transition-all cursor-pointer font-bold text-xs"
         >
           Back to Level Selection
         </button>
@@ -441,52 +438,51 @@ export default function CodeFillIn({ onProgressChange, savedProgress, onBack }) 
     const correct = results.filter(r => r.correct).length;
     const accuracy = Math.round((correct / total) * 100);
     return (
-      <div className="min-h-[70vh] bg-gradient-to-br from-[#090B14] via-[#0C1021] to-[#070A12] text-white p-4 md:p-8 flex items-center justify-center select-none border border-[var(--border-primary)] border-slate-500/20 rounded-3xl relative overflow-hidden">
-        <div className="fixed top-[-10%] left-[-10%] w-[55%] h-[55%] rounded-full bg-violet-500/6 blur-[140px] pointer-events-none" />
+      <div className="min-h-[70vh] bg-[var(--bg-card)] text-[var(--text-primary)] p-4 md:p-8 flex items-center justify-center select-none border border-[var(--border-primary)] rounded-3xl relative overflow-hidden">
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="max-w-lg w-full bg-gradient-to-br from-violet-900/30 to-cyan-900/30 border border-[var(--border-primary)] border-violet-500/20 rounded-3xl p-8 text-center space-y-6 relative z-10 animate-fade-in"
+          className="max-w-lg w-full bg-[var(--bg-secondary)] border border-[var(--border-primary)] rounded-3xl p-8 text-center space-y-6 relative z-10 animate-fade-in shadow-md"
         >
           <div className="flex justify-center">
-            <div className="p-4 rounded-full bg-amber-500/15 border border-[var(--border-primary)] border-amber-500/25">
-              <Trophy size={36} className="text-amber-300" />
+            <div className="p-4 rounded-full bg-amber-500/10 border border-[var(--border-primary)] text-amber-500">
+              <Trophy size={36} className="text-amber-500" />
             </div>
           </div>
           <div>
-            <h2 className="text-2xl font-black">Level Complete!</h2>
-            <p className="text-xs text-slate-300/40 font-mono mt-1 uppercase">
+            <h2 className="text-2xl font-black text-[var(--text-primary)]">Level Complete!</h2>
+            <p className="text-xs text-[var(--text-muted)] font-mono mt-1 uppercase">
               Language: {selectedLang} — Level {currentLevel}
             </p>
-            <p className="text-xs text-white/30 font-mono mt-1 font-bold">{correct}/{total} questions fully solved</p>
+            <p className="text-xs text-[var(--text-muted)] font-mono mt-1 font-bold">{correct}/{total} questions fully solved</p>
           </div>
           <div className="grid grid-cols-3 gap-3">
-            <div className="bg-white/5 border border-[var(--border-primary)] border-white/6 rounded-2xl p-4">
-              <div className="text-2xl font-black text-cyan-300">{score}</div>
-              <div className="text-[9px] uppercase tracking-wider text-white/30 font-bold mt-1">Score</div>
+            <div className="bg-[var(--bg-primary)] border border-[var(--border-primary)] rounded-2xl p-4">
+              <div className="text-2xl font-black text-[var(--text-primary)] font-mono">{score}</div>
+              <div className="text-[9px] uppercase tracking-wider text-[var(--text-muted)] font-bold mt-1">Score</div>
             </div>
-            <div className="bg-white/5 border border-[var(--border-primary)] border-white/6 rounded-2xl p-4">
-              <div className="text-2xl font-black text-emerald-300">{accuracy}%</div>
-              <div className="text-[9px] uppercase tracking-wider text-white/30 font-bold mt-1">Accuracy</div>
+            <div className="bg-[var(--bg-primary)] border border-[var(--border-primary)] rounded-2xl p-4">
+              <div className="text-2xl font-black text-emerald-500 font-mono">{accuracy}%</div>
+              <div className="text-[9px] uppercase tracking-wider text-[var(--text-muted)] font-bold mt-1">Accuracy</div>
             </div>
-            <div className="bg-white/5 border border-[var(--border-primary)] border-white/6 rounded-2xl p-4">
-              <div className="text-2xl font-black text-violet-300">{Math.max(0, ...results.map((_, i) => {
+            <div className="bg-[var(--bg-primary)] border border-[var(--border-primary)] rounded-2xl p-4">
+              <div className="text-2xl font-black text-violet-500 font-mono">{Math.max(0, ...results.map((_, i) => {
                 let s = 0; for (let j = i; j >= 0 && results[j].correct; j--) s++; return s;
               }))}</div>
-              <div className="text-[9px] uppercase tracking-wider text-white/30 font-bold mt-1">Best Streak</div>
+              <div className="text-[9px] uppercase tracking-wider text-[var(--text-muted)] font-bold mt-1">Best Streak</div>
             </div>
           </div>
 
           <div className="space-y-1.5 max-h-44 overflow-y-auto text-left">
             {questions.map((qq, i) => (
-              <div key={qq.id} className={`flex items-center justify-between px-3 py-2 rounded-xl border border-[var(--border-primary)] text-xs ${
-                results[i]?.correct ? "bg-emerald-500/8 border-emerald-500/15" : "bg-rose-500/8 border-rose-500/15"
+              <div key={qq.id} className={`flex items-center justify-between px-3 py-2 rounded-xl border text-xs ${
+                results[i]?.correct ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-bold" : "bg-rose-500/10 border-rose-500/20 text-rose-600 dark:text-rose-400"
               }`}>
-                <span className="font-mono text-white/50">{qq.title}</span>
-                <span className="text-white/30 font-mono text-[10px]">{qq.blanks?.length || 1} blank{(qq.blanks?.length || 1) > 1 ? "s" : ""}</span>
+                <span className="font-mono text-[var(--text-secondary)]">{qq.title}</span>
+                <span className="text-[var(--text-muted)]/70 font-mono text-[10px]">{qq.blanks?.length || 1} blank{(qq.blanks?.length || 1) > 1 ? "s" : ""}</span>
                 {results[i]?.correct
-                  ? <CheckCircle2 size={13} className="text-emerald-400" />
-                  : <XCircle size={13} className="text-rose-400" />}
+                  ? <CheckCircle2 size={13} className="text-emerald-500" />
+                  : <XCircle size={13} className="text-rose-500" />}
               </div>
             ))}
           </div>
@@ -500,7 +496,7 @@ export default function CodeFillIn({ onProgressChange, savedProgress, onBack }) 
                 return (
                   <button
                     onClick={() => handleStartGame(selectedLang, nextLvl)}
-                    className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs transition-all cursor-pointer flex items-center gap-2 hover:shadow-[0_0_12px_rgba(16,185,129,0.3)] font-mono"
+                    className="px-5 py-2.5 rounded-xl bg-[var(--accent-primary)] text-[var(--text-on-accent)] font-black text-xs transition-all cursor-pointer flex items-center gap-2 shadow-sm font-mono"
                   >
                     <ArrowRight size={13} /> Proceed to Level {nextLvl}
                   </button>
@@ -510,13 +506,13 @@ export default function CodeFillIn({ onProgressChange, savedProgress, onBack }) 
             })()}
             <button
               onClick={() => handleStartGame(selectedLang, currentLevel)}
-              className="px-5 py-2.5 rounded-xl border border-[var(--border-primary)] border-white/10 bg-white/5 text-white hover:bg-white/10 hover:border-white/20 text-xs font-bold transition-all cursor-pointer flex items-center gap-2 font-mono"
+              className="px-5 py-2.5 rounded-xl border border-[var(--border-primary)] bg-[var(--bg-primary)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] text-xs font-bold transition-all cursor-pointer flex items-center gap-2 font-mono"
             >
               <RotateCcw size={13} /> Replay Level {currentLevel}
             </button>
             <button
               onClick={() => setPhase("lobby")}
-              className="px-5 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-black text-xs transition-all cursor-pointer flex items-center gap-2 hover:shadow-[0_0_12px_rgba(139,92,246,0.3)] font-mono"
+              className="px-5 py-2.5 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-primary)] text-[var(--text-primary)] hover:bg-[var(--bg-hover)] font-black text-xs transition-all cursor-pointer flex items-center gap-2 font-mono shadow-sm"
             >
               <Play size={13} /> Levels Selection
             </button>
@@ -531,31 +527,28 @@ export default function CodeFillIn({ onProgressChange, savedProgress, onBack }) 
   const totalBlanks = q.blanks.length;
 
   return (
-    <div className="min-h-[70vh] bg-gradient-to-br from-[#090B14] via-[#0C1021] to-[#070A12] text-white p-4 md:p-8 select-none border border-[var(--border-primary)] border-slate-500/20 rounded-3xl relative overflow-hidden">
-      <div className="fixed top-[-10%] left-[-10%] w-[55%] h-[55%] rounded-full bg-violet-500/6 blur-[140px] pointer-events-none" />
-      <div className="fixed bottom-[-10%] right-[-10%] w-[55%] h-[55%] rounded-full bg-cyan-500/6 blur-[140px] pointer-events-none" />
-
+    <div className="min-h-[70vh] bg-[var(--bg-card)] text-[var(--text-primary)] p-4 md:p-8 select-none border border-[var(--border-primary)] rounded-3xl relative overflow-hidden">
       <div className="max-w-2xl mx-auto space-y-6 relative z-10">
 
         {/* ── Nav ────────────────────────────────────────────────────── */}
-        <div className="flex items-center justify-between border-b border-white/5 pb-4">
+        <div className="flex items-center justify-between border-b border-[var(--border-primary)] pb-4">
           <button
             onClick={() => setPhase("lobby")}
-            className="flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[var(--border-primary)] border-violet-500/20 bg-violet-950/20 text-violet-300 hover:text-white hover:border-violet-400/40 transition-all text-xs font-bold font-mono cursor-pointer"
+            className="flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[var(--border-primary)] bg-[var(--bg-secondary)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-hover)] transition-all text-xs font-bold font-mono cursor-pointer"
           >
             <ArrowLeft size={13} />
             Lobby Selection
           </button>
 
           <div className="flex items-center gap-4 text-xs font-mono">
-            <div className="flex items-center gap-1.5 text-amber-300">
+            <div className="flex items-center gap-1.5 text-amber-500">
               <Zap size={13} />
               <span className="font-black">{score}</span>
-              <span className="text-white/30">pts</span>
+              <span className="text-[var(--text-muted)]">pts</span>
             </div>
             {streak >= 2 && (
-              <div className="flex items-center gap-1 text-orange-400 font-black">
-                <Star size={12} className="fill-orange-400" />
+              <div className="flex items-center gap-1 text-orange-500 font-black">
+                <Star size={12} className="fill-orange-500" />
                 {streak}x streak
               </div>
             )}
@@ -564,19 +557,19 @@ export default function CodeFillIn({ onProgressChange, savedProgress, onBack }) 
 
         {/* ── Header ─────────────────────────────────────────────────── */}
         <div className="flex items-center gap-3">
-          <div className="p-2 rounded-xl bg-violet-500/10 border border-[var(--border-primary)] border-violet-500/20">
-            <BookOpen size={20} className="text-violet-400" />
+          <div className="p-2 rounded-xl bg-[var(--accent-glow)] border border-[var(--border-primary)] text-[var(--accent-primary)]">
+            <BookOpen size={20} className="text-[var(--accent-primary)]" />
           </div>
           <div>
-            <h1 className="text-2xl font-black">Code Fill-In</h1>
-            <p className="text-xs text-white/35 font-mono">Language: {selectedLang} — Level {currentLevel} • Question {qIdx + 1} of {total}</p>
+            <h1 className="text-2xl font-black text-[var(--text-primary)]">Code Fill-In</h1>
+            <p className="text-xs text-[var(--text-muted)] font-mono">Language: {selectedLang} — Level {currentLevel} • Question {qIdx + 1} of {total}</p>
           </div>
         </div>
 
         {/* ── Progress Bar ───────────────────────────────────────────── */}
-        <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
+        <div className="h-1.5 bg-[var(--bg-secondary)] rounded-full overflow-hidden">
           <motion.div
-            className="h-full bg-gradient-to-r from-violet-500 to-cyan-500"
+            className="h-full bg-[var(--accent-primary)]"
             animate={{ width: `${(qIdx / total) * 100}%` }}
             transition={{ duration: 0.4 }}
           />
@@ -595,27 +588,27 @@ export default function CodeFillIn({ onProgressChange, savedProgress, onBack }) 
             {/* Meta row */}
             <div className="flex items-center justify-between flex-wrap gap-2">
               <div className="flex items-center gap-2">
-                <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full border border-[var(--border-primary)] font-mono ${langColor[q.lang] || "text-white/50 bg-white/5 border-white/10"}`}>
+                <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full border font-mono ${langColor[q.lang] || "text-[var(--text-secondary)]/50 bg-[var(--bg-primary)] border-[var(--border-primary)]"}`}>
                   {q.lang}
                 </span>
-                <span className="text-xs text-white/40 font-mono">{q.title}</span>
+                <span className="text-xs text-[var(--text-muted)] font-mono">{q.title}</span>
               </div>
               <div className="flex items-center gap-3">
                 {/* Blank progress pills */}
                 {totalBlanks > 1 && (
                   <div className="flex items-center gap-1.5">
                     {q.blanks.map((b, bi) => (
-                      <div key={bi} className={`w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-black border border-[var(--border-primary)] transition-all ${
+                      <div key={bi} className={`w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-black border transition-all ${
                         answers[b.placeholder] && (phase !== "wrong" || bi < blankIdx)
-                          ? "bg-emerald-500/20 border-emerald-500/40 text-emerald-300"
+                          ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-500"
                           : bi === blankIdx
-                          ? "bg-violet-500/30 border-violet-400/60 text-violet-200"
-                          : "bg-white/5 border-white/10 text-white/30"
+                          ? "bg-[var(--accent-glow)] border-[var(--accent-primary)] text-[var(--accent-primary)]"
+                          : "bg-[var(--bg-primary)] border-[var(--border-primary)] text-[var(--text-muted)]"
                       }`}>{bi + 1}</div>
                     ))}
                   </div>
                 )}
-                <div className="flex items-center gap-1 text-xs font-mono text-white/30">
+                <div className="flex items-center gap-1 text-xs font-mono text-[var(--text-muted)]">
                   <Clock size={11} />
                   <span>{elapsed}s</span>
                 </div>
@@ -625,23 +618,23 @@ export default function CodeFillIn({ onProgressChange, savedProgress, onBack }) 
             {/* Active blank label */}
             {totalBlanks > 1 && (
               <div className="flex items-center gap-2">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-violet-400 font-mono">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--accent-primary)] font-mono">
                   Filling blank {blankIdx + 1} of {totalBlanks}
                 </span>
                 {phase === "all_correct" && (
-                  <span className="text-[10px] font-bold text-emerald-400">— All blanks filled! 🎉</span>
+                  <span className="text-[10px] font-bold text-emerald-500">— All blanks filled! 🎉</span>
                 )}
               </div>
             )}
 
             {/* Code display */}
-            <div className="bg-[#0D1117]/80 border border-[var(--border-primary)] border-white/8 rounded-2xl p-5 overflow-x-auto">
+            <div className="bg-[var(--bg-primary)] border border-[var(--border-primary)] rounded-2xl p-5 overflow-x-auto">
               <div className="flex items-center gap-1.5 mb-3">
                 <span className="w-2 h-2 rounded-full bg-rose-500/60" />
                 <span className="w-2 h-2 rounded-full bg-amber-500/60" />
                 <span className="w-2 h-2 rounded-full bg-emerald-500/60" />
               </div>
-              <pre className="font-mono text-sm leading-7 whitespace-pre-wrap">
+              <pre className="font-mono text-sm leading-7 whitespace-pre-wrap text-[var(--text-primary)]">
                 {renderMultiBlankCode(q.code, q.blanks, answers, phase)}
               </pre>
             </div>
@@ -669,19 +662,19 @@ export default function CodeFillIn({ onProgressChange, savedProgress, onBack }) 
                       disabled={phase !== "playing"}
                       whileHover={phase === "playing" ? { scale: 1.02 } : {}}
                       whileTap={phase === "playing" ? { scale: 0.98 } : {}}
-                      className={`px-4 py-3.5 rounded-xl border border-[var(--border-primary)] font-mono font-bold text-sm transition-all cursor-pointer text-left ${
+                      className={`px-4 py-3.5 rounded-xl border font-mono font-bold text-sm transition-all cursor-pointer text-left ${
                         isCorrect
-                          ? "bg-emerald-500/15 border-emerald-500/40 text-emerald-300 shadow-[0_0_16px_rgba(52,211,153,0.2)]"
+                          ? "bg-emerald-500/10 border-emerald-500/40 text-emerald-600 dark:text-emerald-400 font-bold"
                           : isWrong
-                          ? "bg-rose-500/15 border-rose-500/40 text-rose-300"
+                          ? "bg-rose-500/10 border-rose-500/40 text-rose-600 dark:text-rose-400 font-bold"
                           : phase !== "playing"
-                          ? "bg-white/2 border-white/6 text-white/25 cursor-not-allowed"
-                          : "bg-white/4 border-white/10 text-white/70 hover:text-white hover:border-violet-500/30 hover:bg-violet-500/8"
+                          ? "opacity-40 cursor-not-allowed text-[var(--text-muted)]"
+                          : "bg-[var(--bg-secondary)] border-[var(--border-primary)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--accent-primary)] hover:bg-[var(--bg-hover)]"
                       }`}
                     >
                       <span className="flex items-center gap-2">
-                        {isCorrect && <CheckCircle2 size={14} className="shrink-0" />}
-                        {isWrong && <XCircle size={14} className="shrink-0" />}
+                        {isCorrect && <CheckCircle2 size={14} className="shrink-0 text-emerald-500" />}
+                        {isWrong && <XCircle size={14} className="shrink-0 text-rose-500" />}
                         {opt}
                       </span>
                     </motion.button>
@@ -697,30 +690,30 @@ export default function CodeFillIn({ onProgressChange, savedProgress, onBack }) 
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0 }}
-                  className={`rounded-2xl border border-[var(--border-primary)] p-4 flex items-start gap-3 ${
+                  className={`rounded-2xl border p-4 flex items-start gap-3 ${
                     phase === "all_correct"
-                      ? "bg-emerald-500/8 border-emerald-500/20"
-                      : "bg-rose-500/8 border-rose-500/20"
+                      ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-600 dark:text-emerald-400"
+                      : "bg-rose-500/10 border-rose-500/20 text-rose-600 dark:text-rose-400"
                   }`}
                 >
                   {phase === "all_correct"
-                    ? <CheckCircle2 size={18} className="text-emerald-400 shrink-0 mt-0.5" />
-                    : <XCircle size={18} className="text-rose-400 shrink-0 mt-0.5" />
+                    ? <CheckCircle2 size={18} className="text-emerald-500 shrink-0 mt-0.5" />
+                    : <XCircle size={18} className="text-rose-500 shrink-0 mt-0.5" />
                   }
                   <div className="space-y-1 flex-1">
-                    <p className={`text-sm font-bold ${phase === "all_correct" ? "text-emerald-300" : "text-rose-300"}`}>
+                    <p className={`text-sm font-bold ${phase === "all_correct" ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400"}`}>
                       {phase === "all_correct"
                         ? totalBlanks > 1 ? "All blanks correct! 🎉" : "Correct!"
                         : `Wrong — the answer for blank ${blankIdx + 1} is "${currentBlank?.answer}"`
                       }
                     </p>
-                    <p className="text-xs text-white/50 leading-relaxed">{q.hint}</p>
+                    <p className="text-xs text-[var(--text-muted)] leading-relaxed">{q.hint}</p>
                   </div>
                   {/* Retry button on wrong */}
                   {phase === "wrong" && (
                     <button
                       onClick={handleRetry}
-                      className="shrink-0 px-3 py-1.5 rounded-lg bg-rose-500/15 border border-[var(--border-primary)] border-rose-500/30 text-rose-300 text-xs font-bold cursor-pointer hover:bg-rose-500/25 transition-all flex items-center gap-1"
+                      className="shrink-0 px-3 py-1.5 rounded-lg bg-rose-500/15 border border-rose-500/20 text-rose-600 dark:text-rose-400 text-xs font-bold cursor-pointer hover:bg-rose-500/25 transition-all flex items-center gap-1 font-mono"
                     >
                       <RotateCcw size={11} /> Try Again
                     </button>
@@ -733,7 +726,7 @@ export default function CodeFillIn({ onProgressChange, savedProgress, onBack }) 
             {phase === "playing" && (
               <button
                 onClick={() => setShowHint(h => !h)}
-                className="flex items-center gap-1.5 text-xs text-white/30 hover:text-amber-400 transition-colors cursor-pointer font-mono"
+                className="flex items-center gap-1.5 text-xs text-[var(--text-muted)] hover:text-amber-500 transition-colors cursor-pointer font-mono"
               >
                 <Lightbulb size={13} />
                 {showHint ? "Hide hint" : "Show hint (−10 pts)"}
@@ -748,9 +741,9 @@ export default function CodeFillIn({ onProgressChange, savedProgress, onBack }) 
                   exit={{ opacity: 0, height: 0 }}
                   className="overflow-hidden"
                 >
-                  <div className="bg-amber-500/8 border border-[var(--border-primary)] border-amber-500/20 rounded-xl p-3 flex items-start gap-2">
-                    <Lightbulb size={14} className="text-amber-400 shrink-0 mt-0.5" />
-                    <p className="text-xs text-amber-200/70 leading-relaxed">{q.hint}</p>
+                  <div className="bg-amber-500/5 border border-amber-500/20 rounded-xl p-3 flex items-start gap-2">
+                    <Lightbulb size={14} className="text-amber-500 shrink-0 mt-0.5" />
+                    <p className="text-xs text-amber-600 dark:text-amber-400 leading-relaxed">{q.hint}</p>
                   </div>
                 </motion.div>
               )}
@@ -762,7 +755,7 @@ export default function CodeFillIn({ onProgressChange, savedProgress, onBack }) 
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 onClick={next}
-                className="w-full py-3.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-black text-sm transition-all hover:shadow-[0_0_16px_rgba(139,92,246,0.4)] cursor-pointer flex items-center justify-center gap-2"
+                className="w-full py-3.5 rounded-xl bg-[var(--accent-primary)] text-[var(--text-on-accent)] font-black text-sm transition-all hover:opacity-95 shadow-md cursor-pointer flex items-center justify-center gap-2 font-mono"
               >
                 {qIdx + 1 >= total ? (
                   <><Trophy size={15} /> View Results</>
