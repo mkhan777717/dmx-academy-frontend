@@ -183,6 +183,11 @@ export default function DashboardLayout({ children }) {
   const isPracticeWorkspace = pathname.startsWith("/practice/");
   if (isPracticeWorkspace) return <>{children}</>;
 
+  // Hide sidebar + header for contest workspace — the contest page handles its own
+  // fullscreen mode and anti-cheat layout internally.
+  const isContestWorkspace = /^\/contest\/[^/]+/.test(pathname);
+  if (isContestWorkspace) return <>{children}</>;
+
   const isPublicRoute = !dashboardUser && (pathname.startsWith('/practice') || pathname.startsWith('/contest') || pathname.startsWith('/courses') || pathname.startsWith('/live-classes'));
 
   if (isPublicRoute) {
