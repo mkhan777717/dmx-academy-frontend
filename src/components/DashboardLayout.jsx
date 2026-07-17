@@ -114,7 +114,8 @@ export default function DashboardLayout({ children }) {
       } else if (hasSession) {
         const name = user?.username || "Eduvantix User";
         const email = user?.email || "user@synapse.com";
-        const avatar = name.slice(0, 2).toUpperCase();
+        const avatarUrl = user?.avatarUrl || null;
+        const initials = name.slice(0, 2).toUpperCase();
 
         let displayRole = "User";
         if (isStudentSession) displayRole = roleName;
@@ -123,7 +124,7 @@ export default function DashboardLayout({ children }) {
         else if (isInstAdmin) displayRole = "Institute Admin";
         else if (isBatchMgr) displayRole = "Batch Manager";
 
-        setDashboardUser({ name, email, role: displayRole, avatar });
+        setDashboardUser({ name, email, role: displayRole, initials, avatarUrl });
       }
       setCheckingAuth(false);
     }
@@ -236,9 +237,9 @@ export default function DashboardLayout({ children }) {
         className="hidden md:flex flex-col h-full border-r transition-all duration-300 relative z-30"
         style={{ width: isSidebarCollapsed ? "60px" : "195px", backgroundColor: "var(--bg-sidebar)", borderColor: "var(--border-primary)" }}
       >
-        <div className="flex items-center justify-between px-4 h-14 border-b" style={{ borderColor: "var(--border-primary)" }}>
-          <Link href="/" className="flex items-center gap-3 px-2 py-4 mb-2">
-            <div className={`flex items-center overflow-hidden transition-all ${isSidebarCollapsed ? "w-8" : "w-32"}`}>
+        <div className={`flex items-center h-14 border-b ${isSidebarCollapsed ? "justify-center px-0" : "justify-between px-4"}`} style={{ borderColor: "var(--border-primary)" }}>
+          <Link href="/" className={`flex items-center gap-3 py-4 mb-2 ${isSidebarCollapsed ? "px-0" : "px-2"}`}>
+            <div className={`flex items-center overflow-hidden transition-all ${isSidebarCollapsed ? "w-6" : "w-32"}`}>
               <img
                 src={isDark ? "/logo-white-text.webp" : "/logo-black-text.webp"}
                 alt="Eduvantix Logo"
@@ -372,9 +373,15 @@ export default function DashboardLayout({ children }) {
                   onMouseEnter={e => e.currentTarget.style.backgroundColor = "var(--bg-hover)"}
                   onMouseLeave={e => e.currentTarget.style.backgroundColor = "transparent"}
                 >
-                  <div className="w-7 h-7 rounded-lg flex items-center justify-center text-[11px] font-bold text-[var(--text-on-accent)]" style={{ background: "var(--accent-gradient)" }}>
-                    {dashboardUser.avatar}
-                  </div>
+                  {dashboardUser.avatarUrl ? (
+                    <div className="w-7 h-7 rounded-full overflow-hidden border border-[var(--border-primary)] shadow-sm shrink-0">
+                      <img src={dashboardUser.avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
+                    </div>
+                  ) : (
+                    <div className="w-7 h-7 rounded-lg flex items-center justify-center text-[11px] font-bold text-[var(--text-on-accent)] shrink-0" style={{ background: "var(--accent-gradient)" }}>
+                      {dashboardUser.initials}
+                    </div>
+                  )}
                   <div className="hidden sm:block text-left">
                     <div className="text-[11px] font-semibold" style={{ color: "var(--text-primary)" }}>{dashboardUser.name}</div>
                     <div className="text-[9px]" style={{ color: "var(--text-muted)" }}>{dashboardUser.role}</div>
@@ -389,9 +396,15 @@ export default function DashboardLayout({ children }) {
 
                       <div className="p-4 border-b" style={{ borderColor: "var(--border-primary)" }}>
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-xl flex items-center justify-center font-bold text-[var(--text-on-accent)]" style={{ background: "var(--accent-gradient)" }}>
-                            {dashboardUser.avatar}
-                          </div>
+                          {dashboardUser.avatarUrl ? (
+                            <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-[var(--border-primary)] shadow-md shrink-0">
+                              <img src={dashboardUser.avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
+                            </div>
+                          ) : (
+                            <div className="w-10 h-10 rounded-xl flex items-center justify-center font-bold text-[var(--text-on-accent)] shrink-0" style={{ background: "var(--accent-gradient)" }}>
+                              {dashboardUser.initials}
+                            </div>
+                          )}
                           <div>
                             <div className="text-sm font-bold" style={{ color: "var(--text-primary)" }}>{dashboardUser.name}</div>
                             <div className="text-[10px]" style={{ color: "var(--text-muted)" }}>{dashboardUser.role}</div>

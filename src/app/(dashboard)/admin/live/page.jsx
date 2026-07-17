@@ -1212,7 +1212,9 @@ export default function AdminLivePage() {
   const fetchPastSessions = async () => {
     try {
       setLoadingPast(true);
-      const res = await fetch(`${API_BASE}/api/livekit/sessions`);
+      const res = await fetch(`${API_BASE}/api/livekit/sessions`, {
+        headers: authToken ? { Authorization: `Bearer ${authToken}` } : {},
+      });
       const data = await res.json();
       if (data.success && data.sessions) {
         // Filter only ended/past sessions
@@ -1250,10 +1252,10 @@ export default function AdminLivePage() {
   };
 
   useEffect(() => {
-    if (!session) {
+    if (!session && authToken) {
       fetchPastSessions();
     }
-  }, [session]);
+  }, [session, authToken]);
 
   // Auto-poll recently ended sessions to fetch compilation status in real-time
   useEffect(() => {
@@ -1272,19 +1274,20 @@ export default function AdminLivePage() {
 
   // Check for existing live session on mount — works for any admin/mentor (no hostId restriction)
   useEffect(() => {
+    if (!authToken) return;
     async function checkActive() {
       setCheckingSession(true);
       try {
-        const res = await fetch(`${API_BASE}/api/livekit/session/active`);
+        const res = await fetch(`${API_BASE}/api/livekit/session/active`, {
+          headers: { Authorization: `Bearer ${authToken}` },
+        });
         const data = await res.json();
         if (data.success && data.session) {
           // Any active session — reconnect regardless of who started it
           setSession(data.session);
           setActiveSession(data.session);
           // fetchToken needs authToken — will be called once token is ready
-          if (authToken) {
-            fetchToken(data.session.roomName);
-          }
+          fetchToken(data.session.roomName);
         }
       } catch (e) {
         console.error("Failed to check active session:", e);
@@ -1293,7 +1296,7 @@ export default function AdminLivePage() {
       }
     }
     checkActive();
-  }, []); // Run once on mount — no user dependency needed
+  }, [authToken]);
 
   // If authToken becomes available after session was already found, fetch the token
   useEffect(() => {

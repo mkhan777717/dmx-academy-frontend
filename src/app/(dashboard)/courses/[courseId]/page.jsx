@@ -14,6 +14,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { 
   HtmlCssSandbox, FlexboxLab, JsDomDebugger, PracticePlayground 
 } from "@/components/courses/WebDevWidgets";
+import useThemeStore from "@/store/useThemeStore";
 
 // Import React/Next/Node widgets
 import { 
@@ -40,6 +41,7 @@ export default function DynamicCoursePage() {
   const [completedLessons, setCompletedLessons] = useState([]);
   const [flatLessons, setFlatLessons] = useState([]);
   const contentRef = useRef(null);
+  const { isDark } = useThemeStore();
 
   // Fetch course details dynamically
   useEffect(() => {
@@ -630,11 +632,15 @@ export default function DynamicCoursePage() {
       >
         {/* Sidebar Header */}
         <div className="flex h-16 items-center justify-between px-5" style={{ borderBottom: "1px solid var(--border-primary)" }}>
-          <a href="/" className="flex items-center space-x-2 text-lg font-bold font-display" style={{ color: "var(--text-primary)" }}>
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg text-[var(--text-on-accent)] shadow-md" style={{ background: "var(--accent-gradient)" }}>
-              <Sparkles size={16} />
+          <a href="/" className="flex items-center gap-3 text-lg font-bold font-display" style={{ color: "var(--text-primary)" }}>
+            <div className={`flex items-center overflow-hidden transition-all w-32`}>
+              <img
+                src={isDark ? "/logo-white-text.webp" : "/logo-black-text.webp"}
+                alt="Eduvantix Logo"
+                className="h-6 object-contain object-left shrink-0 max-w-none"
+                style={{ display: "block" }}
+              />
             </div>
-            <span>Eduvantix</span>
           </a>
           <button 
             onClick={() => setIsSidebarOpen(false)}

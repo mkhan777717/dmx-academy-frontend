@@ -820,14 +820,13 @@ const formatTime = (seconds) => {
                   <span className="truncate">{showFeedbackAfterEach ? "Feedback Each Question" : "Feedback At End"}</span>
                 </span>
                 <span
-                  className={`relative grid h-8 w-[74px] shrink-0 grid-cols-2 items-center rounded-full p-1 text-[10px] font-bold uppercase tracking-wide transition-all duration-300 ${showFeedbackAfterEach ? "bg-[var(--text-primary)] text-[var(--bg-primary)] shadow-inner" : "bg-[var(--bg-secondary)] text-[var(--text-muted)]"
-                    }`}
+                  className={`relative grid h-8 w-[74px] shrink-0 grid-cols-2 items-center rounded-full p-1 text-[10px] font-bold uppercase tracking-wide transition-all duration-300 ${showFeedbackAfterEach ? "bg-[var(--text-primary)] shadow-inner" : "bg-[var(--bg-secondary)]"}`}
                 >
-                  <span className={`relative z-10 text-center transition-colors duration-300 ${!showFeedbackAfterEach ? "text-[var(--text-primary)]" : ""}`}>End</span>
-                  <span className={`relative z-10 text-center transition-colors duration-300 ${showFeedbackAfterEach ? "text-[var(--bg-primary)]" : ""}`}>Each</span>
+                  <span className={`relative z-10 text-center transition-colors duration-300 ${!showFeedbackAfterEach ? "text-[var(--text-primary)]" : "text-[var(--bg-primary)]"}`}>End</span>
+                  <span className={`relative z-10 text-center transition-colors duration-300 ${showFeedbackAfterEach ? "text-[var(--text-primary)]" : "text-[var(--text-muted)]"}`}>Each</span>
                   <span
-                    className={`absolute left-1 top-1 h-6 w-[33px] rounded-full bg-white shadow-lg ring-1 ring-black/5 transition-transform duration-300 ease-out ${showFeedbackAfterEach ? "translate-x-[33px]" : "translate-x-0"
-                      }`}
+                    className={`absolute left-1 top-1 h-6 w-[33px] rounded-full shadow-lg ring-1 ring-black/5 transition-transform duration-300 ease-out ${showFeedbackAfterEach ? "translate-x-[33px]" : "translate-x-0"}`}
+                    style={{ backgroundColor: "var(--bg-primary)" }}
                   />
                 </span>
               </button>
