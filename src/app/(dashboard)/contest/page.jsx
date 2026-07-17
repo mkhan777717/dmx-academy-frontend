@@ -90,6 +90,43 @@ export default function ContestLobby() {
   const [pastContestResults, setPastContestResults] = useState(null);
   const [isStudentLoggedIn, setIsStudentLoggedIn] = useState(false);
 
+  const isGlobalStudent = user && user.instituteId === null;
+  const [timeLeftStr, setTimeLeftStr] = useState("24h 00m 00s");
+
+  // Dynamic 1-day running timer loop for global students
+  useEffect(() => {
+    if (!isGlobalStudent || !user) return;
+
+    const storageKey = `eduvantix_global_lock_expiry_${user.id}`;
+    let expiry = localStorage.getItem(storageKey);
+    if (!expiry) {
+      expiry = String(Date.now() + 24 * 60 * 60 * 1000);
+      localStorage.setItem(storageKey, expiry);
+    }
+
+    const target = parseInt(expiry, 10);
+
+    const interval = setInterval(() => {
+      const remaining = target - Date.now();
+      if (remaining <= 0) {
+        // Reset timer to start another 24-hour loop (1 day running)
+        const nextExpiry = String(Date.now() + 24 * 60 * 60 * 1000);
+        localStorage.setItem(storageKey, nextExpiry);
+        return;
+      }
+
+      const hrs = Math.floor(remaining / 3600000);
+      const mins = Math.floor((remaining % 3600000) / 60000);
+      const secs = Math.floor((remaining % 60000) / 1000);
+
+      setTimeLeftStr(
+        `${String(hrs).padStart(2, '0')}h ${String(mins).padStart(2, '0')}m ${String(secs).padStart(2, '0')}s`
+      );
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [user, isGlobalStudent]);
+
   // Leaderboard states
   const [leaderboard, setLeaderboard] = useState([]);
   const [leaderboardLoading, setLeaderboardLoading] = useState(true);
@@ -385,8 +422,73 @@ export default function ContestLobby() {
             </p>
           </motion.section>
 
-          {/* Lobby controls bar */}
-          <div className="flex flex-col lg:flex-row gap-4 justify-between items-center p-4 rounded-3xl border border-[var(--border-primary)] backdrop-blur-md"
+          <div className="relative min-h-[400px]">
+            {isGlobalStudent && (
+              <div className="absolute inset-0 z-30 flex items-center justify-center bg-slate-950/40 backdrop-blur-md border border-slate-500/10 rounded-3xl select-none min-h-[450px]">
+                <div 
+                  className="w-full max-w-[360px] rounded-[32px] p-8 flex flex-col items-center text-center relative border backdrop-blur-2xl shadow-2xl transition-all duration-300"
+                  style={{
+                    background: "linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%)",
+                    borderColor: "rgba(255, 255, 255, 0.12)",
+                    boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.1)"
+                  }}
+                >
+                  {/* Realistic SVG Lock */}
+                  <div className="mb-6 relative flex items-center justify-center w-24 h-24 rounded-full bg-white/5 border border-white/10 shadow-inner">
+                    <svg width="56" height="56" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" className="drop-shadow-lg">
+                      <defs>
+                        <linearGradient id="shackleGrad" x1="16" y1="6" x2="32" y2="24" gradientUnits="userSpaceOnUse">
+                          <stop offset="0%" stopColor="#ffffff" />
+                          <stop offset="40%" stopColor="#b8b9be" />
+                          <stop offset="70%" stopColor="#8a8b90" />
+                          <stop offset="100%" stopColor="#b8b9be" />
+                        </linearGradient>
+                        <linearGradient id="bodyGrad" x1="10" y1="18" x2="38" y2="40" gradientUnits="userSpaceOnUse">
+                          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.95" />
+                          <stop offset="25%" stopColor="#f3f4f6" stopOpacity="0.9" />
+                          <stop offset="60%" stopColor="#d1d5db" stopOpacity="0.85" />
+                          <stop offset="100%" stopColor="#9ca3af" stopOpacity="0.8" />
+                        </linearGradient>
+                        <linearGradient id="innerHighlight" x1="12" y1="20" x2="12" y2="38" gradientUnits="userSpaceOnUse">
+                          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.4" />
+                          <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
+                        </linearGradient>
+                        <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+                          <feDropShadow dx="0" dy="4" stdDeviation="4" floodColor="#000000" floodOpacity="0.15" />
+                        </filter>
+                      </defs>
+                      <path d="M20 22V15C20 8.37 25.37 3 32 3C38.63 3 44 8.37 44 15V22" stroke="url(#shackleGrad)" strokeWidth="4.5" strokeLinecap="round" />
+                      <rect x="12" y="20" width="40" height="34" rx="10" fill="url(#bodyGrad)" filter="url(#shadow)" stroke="#ffffff" strokeOpacity="0.4" strokeWidth="1.5" />
+                      <rect x="13.5" y="21.5" width="37" height="31" rx="8.5" fill="none" stroke="url(#innerHighlight)" strokeWidth="1.5" />
+                      <circle cx="32" cy="34" r="3.5" fill="#4b5563" />
+                      <path d="M30.5 36.5L33.5 36.5L35 44L29 44L30.5 36.5Z" fill="#4b5563" />
+                    </svg>
+                  </div>
+
+                  <h3 className="text-xl font-extrabold text-white tracking-tight mb-2">Page Locked</h3>
+                  <p className="text-xs text-slate-300 leading-relaxed max-w-[240px] mb-8">
+                    You don't have access to view this page. Enroll in an institute to unlock.
+                  </p>
+
+                  {/* Locked Pill with timer */}
+                  <div 
+                    className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold text-xs shadow-md border"
+                    style={{
+                      background: "#ffffff",
+                      color: "#0f172a",
+                      borderColor: "rgba(255, 255, 255, 0.2)"
+                    }}
+                  >
+                    <Lock size={12} className="text-slate-800" />
+                    <span>Locked: {timeLeftStr}</span>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <div className={isGlobalStudent ? "opacity-30 pointer-events-none blur-[1.5px]" : ""}>
+              {/* Lobby controls bar */}
+              <div className="flex flex-col lg:flex-row gap-4 justify-between items-center p-4 rounded-3xl border border-[var(--border-primary)] backdrop-blur-md"
             style={{
               backgroundColor: "var(--glass-bg)",
               borderColor: "var(--border-primary)"
@@ -719,6 +821,8 @@ export default function ContestLobby() {
                 )}
               </motion.div>
             )}
+          </div>
+            </div>
           </div>
 
         </div>

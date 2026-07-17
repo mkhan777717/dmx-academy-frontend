@@ -6,7 +6,7 @@ import Footer from "@/components/Footer";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Search, BookOpen, Clock, Code, Sparkles, ShieldAlert,
-  Terminal, CheckCircle2, ChevronRight, Zap, RefreshCw
+  Terminal, CheckCircle2, ChevronRight, Zap, RefreshCw, Lock
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 
@@ -50,6 +50,43 @@ export default function PracticeCatalogPage() {
   const [completedProblems, setCompletedProblems] = useState([]);
   const [allProblems, setAllProblems] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const isGlobalStudent = user && user.instituteId === null;
+  const [timeLeftStr, setTimeLeftStr] = useState("24h 00m 00s");
+
+  // Dynamic 1-day running timer loop for global students
+  useEffect(() => {
+    if (!isGlobalStudent || !user) return;
+
+    const storageKey = `eduvantix_global_lock_expiry_${user.id}`;
+    let expiry = localStorage.getItem(storageKey);
+    if (!expiry) {
+      expiry = String(Date.now() + 24 * 60 * 60 * 1000);
+      localStorage.setItem(storageKey, expiry);
+    }
+
+    const target = parseInt(expiry, 10);
+
+    const interval = setInterval(() => {
+      const remaining = target - Date.now();
+      if (remaining <= 0) {
+        // Reset timer to start another 24-hour loop (1 day running)
+        const nextExpiry = String(Date.now() + 24 * 60 * 60 * 1000);
+        localStorage.setItem(storageKey, nextExpiry);
+        return;
+      }
+
+      const hrs = Math.floor(remaining / 3600000);
+      const mins = Math.floor((remaining % 3600000) / 60000);
+      const secs = Math.floor((remaining % 60000) / 1000);
+
+      setTimeLeftStr(
+        `${String(hrs).padStart(2, '0')}h ${String(mins).padStart(2, '0')}m ${String(secs).padStart(2, '0')}s`
+      );
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [user, isGlobalStudent]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -178,218 +215,263 @@ export default function PracticeCatalogPage() {
             </p>
           </motion.section>
 
-          {/* Filtering bar */}
-          <div className="flex flex-col lg:flex-row gap-4 justify-between items-center bg-white/5 p-4 rounded-3xl border border-[var(--border-primary)] backdrop-blur-md"
-            style={{
-              backgroundColor: "var(--glass-bg)",
-              borderColor: "var(--border-primary)"
-            }}
-          >
-            <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto">
-              {/* Category tabs */}
-              <div className="flex flex-wrap gap-1 items-center p-1 rounded-full border" style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)" }}>
-                {categories.map(cat => (
-                  <button
-                    key={cat}
-                    onClick={() => setSelectedCategory(cat)}
-                    className="relative px-3.5 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer"
+          <div className="relative min-h-[400px]">
+            {isGlobalStudent && (
+              <div className="absolute inset-0 z-30 flex items-center justify-center bg-slate-950/40 backdrop-blur-md border border-slate-500/10 rounded-3xl select-none min-h-[450px]">
+                <div 
+                  className="w-full max-w-[360px] rounded-[32px] p-8 flex flex-col items-center text-center relative border backdrop-blur-2xl shadow-2xl transition-all duration-300"
+                  style={{
+                    background: "linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%)",
+                    borderColor: "rgba(255, 255, 255, 0.12)",
+                    boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.1)"
+                  }}
+                >
+                  {/* Realistic SVG Lock */}
+                  <div className="mb-6 relative flex items-center justify-center w-24 h-24 rounded-full bg-white/5 border border-white/10 shadow-inner">
+                    <svg width="56" height="56" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" className="drop-shadow-lg">
+                      <defs>
+                        <linearGradient id="shackleGrad" x1="16" y1="6" x2="32" y2="24" gradientUnits="userSpaceOnUse">
+                          <stop offset="0%" stopColor="#ffffff" />
+                          <stop offset="40%" stopColor="#b8b9be" />
+                          <stop offset="70%" stopColor="#8a8b90" />
+                          <stop offset="100%" stopColor="#b8b9be" />
+                        </linearGradient>
+                        <linearGradient id="bodyGrad" x1="10" y1="18" x2="38" y2="40" gradientUnits="userSpaceOnUse">
+                          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.95" />
+                          <stop offset="25%" stopColor="#f3f4f6" stopOpacity="0.9" />
+                          <stop offset="60%" stopColor="#d1d5db" stopOpacity="0.85" />
+                          <stop offset="100%" stopColor="#9ca3af" stopOpacity="0.8" />
+                        </linearGradient>
+                        <linearGradient id="innerHighlight" x1="12" y1="20" x2="12" y2="38" gradientUnits="userSpaceOnUse">
+                          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.4" />
+                          <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
+                        </linearGradient>
+                        <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+                          <feDropShadow dx="0" dy="4" stdDeviation="4" floodColor="#000000" floodOpacity="0.15" />
+                        </filter>
+                      </defs>
+                      <path d="M20 22V15C20 8.37 25.37 3 32 3C38.63 3 44 8.37 44 15V22" stroke="url(#shackleGrad)" strokeWidth="4.5" strokeLinecap="round" />
+                      <rect x="12" y="20" width="40" height="34" rx="10" fill="url(#bodyGrad)" filter="url(#shadow)" stroke="#ffffff" strokeOpacity="0.4" strokeWidth="1.5" />
+                      <rect x="13.5" y="21.5" width="37" height="31" rx="8.5" fill="none" stroke="url(#innerHighlight)" strokeWidth="1.5" />
+                      <circle cx="32" cy="34" r="3.5" fill="#4b5563" />
+                      <path d="M30.5 36.5L33.5 36.5L35 44L29 44L30.5 36.5Z" fill="#4b5563" />
+                    </svg>
+                  </div>
+
+                  <h3 className="text-xl font-extrabold text-white tracking-tight mb-2">Page Locked</h3>
+                  <p className="text-xs text-slate-300 leading-relaxed max-w-[240px] mb-8">
+                    You don't have access to view this page. Enroll in an institute to unlock.
+                  </p>
+
+                  {/* Locked Pill with timer */}
+                  <div 
+                    className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold text-xs shadow-md border"
                     style={{
-                      color: selectedCategory === cat ? "#ffffff" : "var(--text-secondary)"
+                      background: "#ffffff",
+                      color: "#0f172a",
+                      borderColor: "rgba(255, 255, 255, 0.2)"
                     }}
                   >
-                    {selectedCategory === cat && (
-                      <motion.div
-                        layoutId="activeCategory"
-                        className="absolute inset-0 rounded-full shadow-sm"
-                        style={{ background: "var(--accent-gradient)" }}
-                        transition={{ type: "spring", stiffness: 350, damping: 28 }}
-                      />
-                    )}
-                    <span className="relative z-10">{cat.replace("All Categories", "All Topics")}</span>
-                  </button>
-                ))}
+                    <Lock size={12} className="text-slate-800" />
+                    <span>Locked: {timeLeftStr}</span>
+                  </div>
+                </div>
               </div>
+            )}
 
-              {/* Difficulty Select */}
-              <div className="flex flex-wrap gap-1 items-center p-1 rounded-full border" style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)" }}>
-                {difficulties.map(diff => (
-                  <button
-                    key={diff}
-                    onClick={() => setSelectedDifficulty(diff)}
-                    className="relative px-3.5 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer"
-                    style={{
-                      color: selectedDifficulty === diff ? "#ffffff" : "var(--text-secondary)"
-                    }}
-                  >
-                    {selectedDifficulty === diff && (
-                      <motion.div
-                        layoutId="activeDifficulty"
-                        className="absolute inset-0 rounded-full shadow-sm"
-                        style={{ background: "var(--accent-gradient)" }}
-                        transition={{ type: "spring", stiffness: 350, damping: 28 }}
-                      />
-                    )}
-                    <span className="relative z-10">{diff.replace("All Difficulties", "All Levels")}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Search inputs */}
-            <div className="relative w-full lg:w-80">
-              <Search size={16} className="absolute left-4 top-3" style={{ color: "var(--text-muted)" }} />
-              <input
-                type="text"
-                placeholder="Search practice exercises..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full rounded-full py-2.5 pl-11 pr-4 text-xs outline-none border border-[var(--border-primary)] transition-all"
+            <div className={isGlobalStudent ? "opacity-30 pointer-events-none blur-[1.5px]" : ""}>
+              {/* Filtering bar */}
+              <div className="flex flex-col lg:flex-row gap-4 justify-between items-center bg-white/5 p-4 rounded-3xl border border-[var(--border-primary)] backdrop-blur-md"
                 style={{
-                  backgroundColor: "var(--bg-input)",
-                  borderColor: "var(--border-primary)",
-                  color: "var(--text-primary)"
+                  backgroundColor: "var(--glass-bg)",
+                  borderColor: "var(--border-primary)"
                 }}
-              />
+              >
+                <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto">
+                  {/* Category tabs */}
+                  <div className="flex flex-wrap gap-1 items-center p-1 rounded-full border" style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)" }}>
+                    {categories.map(cat => (
+                      <button
+                        key={cat}
+                        onClick={() => setSelectedCategory(cat)}
+                        className="relative px-3.5 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer"
+                        style={{
+                          color: selectedCategory === cat ? "#ffffff" : "var(--text-secondary)"
+                        }}
+                      >
+                        {selectedCategory === cat && (
+                          <motion.div
+                            layoutId="activeCategory"
+                            className="absolute inset-0 rounded-full shadow-sm"
+                            style={{ background: "var(--accent-gradient)" }}
+                            transition={{ type: "spring", stiffness: 350, damping: 28 }}
+                          />
+                        )}
+                        <span className="relative z-10">{cat.replace("All Categories", "All Topics")}</span>
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Difficulty Select */}
+                  <div className="flex flex-wrap gap-1 items-center p-1 rounded-full border" style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)" }}>
+                    {difficulties.map(diff => (
+                      <button
+                        key={diff}
+                        onClick={() => setSelectedDifficulty(diff)}
+                        className="relative px-3.5 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer"
+                        style={{
+                          color: selectedDifficulty === diff ? "#ffffff" : "var(--text-secondary)"
+                        }}
+                      >
+                        {selectedDifficulty === diff && (
+                          <motion.div
+                            layoutId="activeDifficulty"
+                            className="absolute inset-0 rounded-full shadow-sm"
+                            style={{ background: "var(--accent-gradient)" }}
+                            transition={{ type: "spring", stiffness: 350, damping: 28 }}
+                          />
+                        )}
+                        <span className="relative z-10">{diff.replace("All Difficulties", "All Levels")}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Search inputs */}
+                <div className="relative w-full lg:w-80">
+                  <Search size={16} className="absolute left-4 top-3" style={{ color: "var(--text-muted)" }} />
+                  <input
+                    type="text"
+                    placeholder="Search practice exercises..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full rounded-full py-2.5 pl-11 pr-4 text-xs outline-none border border-[var(--border-primary)] transition-all"
+                    style={{
+                      backgroundColor: "var(--bg-input)",
+                      borderColor: "var(--border-primary)",
+                      color: "var(--text-primary)"
+                    }}
+                  />
+                </div>
+              </div>
+
+              {loading ? (
+                <div className="flex flex-col items-center justify-center py-24 space-y-4">
+                  <RefreshCw size={28} className="animate-spin" style={{ color: "var(--text-accent)" }} />
+                  <p className="text-sm font-semibold" style={{ color: "var(--text-secondary)" }}>Loading practice exercises...</p>
+                </div>
+              ) : (
+                /* Cards Grid */
+                <motion.div 
+                  layout
+                  className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8"
+                >
+                  <AnimatePresence mode="popLayout">
+                    {filteredProblems.map((prob, idx) => {
+                      const isHovered = hoveredProblemId === prob.id;
+                      const isCompleted = completedProblems.includes(prob.id);
+                      
+                      return (
+                        <motion.div
+                          key={prob.id}
+                          layout
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -20 }}
+                          transition={{ duration: 0.4, delay: idx * 0.03 }}
+                          onMouseEnter={() => setHoveredProblemId(prob.id)}
+                          onMouseLeave={() => setHoveredProblemId(null)}
+                          onClick={() => {
+                            window.location.href = `/practice/${prob.id}`;
+                          }}
+                          className="group relative flex flex-col justify-between rounded-3xl p-6 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer border"
+                          style={{
+                            backgroundColor: "var(--bg-card)",
+                            borderColor: isHovered ? "var(--border-accent)" : "var(--border-card)"
+                          }}
+                        >
+                          {/* Hover highlights */}
+                          <div 
+                            className="absolute inset-0 z-0 opacity-5 group-hover:opacity-10 transition-opacity duration-500"
+                            style={{
+                              background: "var(--accent-gradient)"
+                            }}
+                          />
+
+                          <div className="relative z-10 space-y-4">
+                            {/* Top status */}
+                            <div className="flex items-center justify-between">
+                              <span className="text-[9px] font-bold uppercase tracking-widest px-2.5 py-1 rounded bg-[var(--bg-hover)]" style={{ color: "var(--text-secondary)" }}>
+                                {prob.category}
+                              </span>
+                              <div className="flex items-center gap-2">
+                                {isCompleted && (
+                                  <span className="text-[10px] font-semibold text-emerald-400 flex items-center gap-1">
+                                    <CheckCircle2 size={12} />
+                                    <span>Solved</span>
+                                  </span>
+                                )}
+                                <span className={`text-[9px] font-black uppercase tracking-wider ${
+                                  prob.difficulty === "Easy" ? "text-emerald-500" :
+                                  prob.difficulty === "Medium" ? "text-amber-500" : "text-rose-500"
+                                }`}>
+                                  {prob.difficulty}
+                                </span>
+                              </div>
+                            </div>
+
+                            {/* Title & Desc */}
+                            <div className="space-y-2">
+                              <h2 className="text-xl font-bold tracking-tight text-[var(--text-primary)] group-hover:underline">
+                                {prob.title}
+                              </h2>
+                              <p className="text-xs leading-relaxed text-[var(--text-muted)] line-clamp-2">
+                                {prob.desc}
+                              </p>
+                            </div>
+                          </div>
+
+                          {/* Footer details */}
+                          <div className="relative z-10 flex items-center justify-between pt-6 border-t mt-6" style={{ borderColor: "var(--border-primary)" }}>
+                            <div className="flex items-center gap-4 text-[10px] text-[var(--text-muted)]">
+                              <span className="flex items-center gap-1">
+                                <Clock size={12} />
+                                <span>{prob.time}</span>
+                              </span>
+                              <span className="flex items-center gap-1">
+                                <Code size={12} />
+                                <span>{prob.testcases?.length || 0} assertion{prob.testcases?.length !== 1 ? 's' : ''}</span>
+                              </span>
+                            </div>
+
+                            <motion.div 
+                              className="flex items-center gap-1.5 text-xs font-bold"
+                              style={{ color: "var(--text-primary)" }}
+                              animate={{ x: isHovered ? 4 : 0 }}
+                              transition={{ type: "spring", stiffness: 400, damping: 20 }}
+                            >
+                              <span>Start Practice</span>
+                              <ChevronRight size={14} />
+                            </motion.div>
+                          </div>
+
+                        </motion.div>
+                      );
+                    })}
+                  </AnimatePresence>
+
+                  {/* Empty view */}
+                  {filteredProblems.length === 0 && (
+                    <div className="col-span-full py-16 text-center space-y-4">
+                      <Terminal size={48} className="mx-auto text-[var(--text-muted)] animate-bounce" />
+                      <p className="text-base font-bold" style={{ color: "var(--text-primary)" }}>No practice exercises match filters.</p>
+                      <p className="text-xs" style={{ color: "var(--text-secondary)" }}>Try modifying filters or search query terms.</p>
+                    </div>
+                  )}
+                </motion.div>
+              )}
             </div>
           </div>
-
-          {loading ? (
-            <div className="flex flex-col items-center justify-center py-24 space-y-4">
-              <RefreshCw size={28} className="animate-spin" style={{ color: "var(--text-accent)" }} />
-              <p className="text-sm font-semibold" style={{ color: "var(--text-secondary)" }}>Loading practice exercises...</p>
-            </div>
-          ) : (
-            /* Cards Grid */
-            <motion.div 
-              layout
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8"
-            >
-              <AnimatePresence mode="popLayout">
-                {filteredProblems.map((prob, idx) => {
-                  const isHovered = hoveredProblemId === prob.id;
-                  const isCompleted = completedProblems.includes(prob.id);
-                  
-                  return (
-                    <motion.div
-                      key={prob.id}
-                      layout
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -20 }}
-                      transition={{ duration: 0.4, delay: idx * 0.03 }}
-                      onMouseEnter={() => setHoveredProblemId(prob.id)}
-                      onMouseLeave={() => setHoveredProblemId(null)}
-                      onClick={() => {
-                        window.location.href = `/practice/${prob.id}`;
-                      }}
-                      className="group relative flex flex-col justify-between rounded-3xl p-6 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer border"
-                      style={{
-                        backgroundColor: "var(--bg-card)",
-                        borderColor: isHovered ? "var(--border-accent)" : "var(--border-card)"
-                      }}
-                    >
-                      {/* Hover highlights */}
-                      <div 
-                        className="absolute inset-0 z-0 opacity-5 group-hover:opacity-10 transition-opacity duration-500"
-                        style={{
-                          background: "var(--accent-gradient)"
-                        }}
-                      />
-
-                      <div className="relative z-10 space-y-4">
-                        {/* Top status */}
-                        <div className="flex justify-between items-center">
-                          <div className="flex items-center space-x-2">
-                            <div className="p-2 rounded-xl bg-slate-500/5 border border-[var(--border-primary)] border-slate-500/10">
-                              {getIcon(prob.category)}
-                            </div>
-                            <span className="text-[10px] font-extrabold uppercase tracking-wider text-[var(--text-secondary)]">
-                              {prob.category}
-                            </span>
-                          </div>
-
-                          <div className="flex items-center space-x-2">
-                            {isCompleted && (
-                              <span className="inline-flex items-center space-x-1 text-xs text-emerald-500 font-semibold px-2 py-0.5 rounded-full bg-emerald-500/10 border border-[var(--border-primary)] border-emerald-500/20">
-                                <CheckCircle2 size={12} />
-                                <span>Solved</span>
-                              </span>
-                            )}
-                            <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md border border-[var(--border-primary)] ${
-                              prob.difficulty === "Easy" ? "text-emerald-500 bg-emerald-500/10 border-emerald-500/20" :
-                              prob.difficulty === "Medium" ? "text-amber-500 bg-amber-500/10 border-amber-500/20" :
-                              "text-rose-500 bg-rose-500/10 border-rose-500/20"
-                            }`}>
-                              {prob.difficulty}
-                            </span>
-                          </div>
-                        </div>
-
-                        {/* Header details */}
-                        <div className="space-y-2">
-                          <h3 className="text-xl font-bold font-display" style={{ color: "var(--text-primary)" }}>
-                            {prob.title}
-                          </h3>
-                          <p className="text-xs leading-relaxed" style={{ color: "var(--text-secondary)" }}>
-                            {prob.desc}
-                          </p>
-                        </div>
-
-                        {/* Pill tags */}
-                        <div className="flex flex-wrap gap-1.5 pt-1">
-                          {prob.tags.map(tag => (
-                            <span 
-                              key={tag}
-                              className="text-[9px] font-bold px-2.5 py-1 rounded-full border border-[var(--border-primary)] uppercase tracking-wider"
-                              style={{
-                                color: "var(--text-secondary)",
-                                borderColor: "var(--border-primary)",
-                                backgroundColor: "var(--bg-hover)"
-                              }}
-                            >
-                              {tag}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* Bottom Details */}
-                      <div className="relative z-10 flex items-center justify-between pt-4 mt-6 border-t" style={{ borderColor: "var(--border-primary)" }}>
-                        <div className="flex items-center space-x-3 text-xs text-[var(--text-secondary)]">
-                          <span className="flex items-center space-x-1">
-                            <Clock size={12} />
-                            <span>{prob.time} Est.</span>
-                          </span>
-                          <span className="flex items-center space-x-1">
-                            <Terminal size={12} />
-                            <span>{prob.testcases ? prob.testcases.length : 0} Test Cases</span>
-                          </span>
-                        </div>
-
-                        <motion.div
-                          animate={{ x: isHovered ? 4 : 0 }}
-                          className="inline-flex items-center space-x-1 text-xs font-bold text-[var(--text-accent)]"
-                        >
-                          <span>Start Practice</span>
-                          <ChevronRight size={14} />
-                        </motion.div>
-                      </div>
-
-                    </motion.div>
-                  );
-                })}
-              </AnimatePresence>
-
-              {/* Empty view */}
-              {filteredProblems.length === 0 && (
-                <div className="col-span-full py-16 text-center space-y-4">
-                  <Terminal size={48} className="mx-auto text-[var(--text-muted)] animate-bounce" />
-                  <p className="text-base font-bold" style={{ color: "var(--text-primary)" }}>No practice exercises match filters.</p>
-                  <p className="text-xs" style={{ color: "var(--text-secondary)" }}>Try modifying filters or search query terms.</p>
-                </div>
-              )}
-            </motion.div>
-          )}
 
         </div>
       </main>
