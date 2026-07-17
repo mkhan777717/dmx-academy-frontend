@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { ArrowLeft, AlertCircle } from "lucide-react";
+import { ArrowLeft, AlertCircle, AlertTriangle } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { gamesRegistry } from "@/lib/games/registry";
 
 export default function GamePageWrapper() {
@@ -11,6 +12,7 @@ export default function GamePageWrapper() {
   const slug = params.slug;
 
   const [savedProgress, setSavedProgress] = useState(null);
+  const [showExitConfirm, setShowExitConfirm] = useState(false);
 
   // Find game definition from registry
   const game = gamesRegistry.find(g => g.slug === slug);
@@ -35,6 +37,14 @@ export default function GamePageWrapper() {
       localStorage.setItem(`game_progress_${slug}`, JSON.stringify(newProgress));
       setSavedProgress(newProgress);
     }
+  };
+
+  const handleExitRequest = () => {
+    setShowExitConfirm(true);
+  };
+
+  const handleConfirmExit = () => {
+    router.push("/student/games");
   };
 
   if (!game) {
@@ -80,7 +90,7 @@ export default function GamePageWrapper() {
       <div className="max-w-7xl mx-auto space-y-6 relative z-10">
         {/* Back to Hub Nav */}
         <button
-          onClick={() => router.push("/student/games")}
+          onClick={handleExitRequest}
           className="flex items-center space-x-2 px-4 py-2 rounded-full border border-[var(--border-primary)] border-slate-500/20 bg-slate-950/25 text-[#D8B4FE] hover:text-white hover:border-slate-500/40 hover:bg-slate-950/40 hover:scale-102 transition-all cursor-pointer text-xs font-bold font-mono shadow-sm w-fit"
         >
           <ArrowLeft size={14} className="mr-0.5" />
@@ -91,9 +101,61 @@ export default function GamePageWrapper() {
         <GameComponent 
           onProgressChange={handleProgressChange} 
           savedProgress={savedProgress}
-          onBack={() => router.push("/student/games")}
+          onBack={handleExitRequest}
         />
       </div>
+
+      {/* Exit Confirmation Modal */}
+      <AnimatePresence>
+        {showExitConfirm && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0, y: 10 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 10 }}
+              transition={{ type: "spring", stiffness: 320, damping: 26 }}
+              className="w-full max-w-sm rounded-2xl p-6 border shadow-2xl text-center space-y-5"
+              style={{ backgroundColor: "#1A1025", borderColor: "rgba(139,92,246,0.25)" }}
+            >
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto"
+                style={{ background: "rgba(251,191,36,0.1)", border: "1px solid rgba(251,191,36,0.25)" }}>
+                <AlertTriangle size={22} className="text-amber-400" />
+              </div>
+              <div className="space-y-1.5">
+                <h3 className="text-base font-black text-white">Exit Game?</h3>
+                <p className="text-xs leading-relaxed text-[#A0A8C0]">
+                  Your current game progress will be lost. Are you sure you want to leave?
+                </p>
+              </div>
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => setShowExitConfirm(false)}
+                  className="flex-1 py-2.5 rounded-xl border text-xs font-semibold transition-all cursor-pointer text-[#A0A8C0] hover:text-white"
+                  style={{ borderColor: "rgba(139,92,246,0.25)", backgroundColor: "transparent" }}
+                  onMouseEnter={e => e.currentTarget.style.backgroundColor = "rgba(139,92,246,0.08)"}
+                  onMouseLeave={e => e.currentTarget.style.backgroundColor = "transparent"}
+                >
+                  Keep Playing
+                </button>
+                <button
+                  type="button"
+                  onClick={handleConfirmExit}
+                  className="flex-1 py-2.5 rounded-xl text-white text-xs font-bold transition-all cursor-pointer shadow-lg"
+                  style={{ background: "linear-gradient(135deg, #7c3aed, #a855f7)", boxShadow: "0 4px 20px rgba(124,58,237,0.35)" }}
+                >
+                  Exit Anyway
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

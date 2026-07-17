@@ -453,7 +453,7 @@ export default function DashboardLayout({ children }) {
         )}
 
         <main className={`flex-1 overflow-y-auto ${isLiveStudioMode ? 'bg-[var(--bg-primary)]' : ''}`}>
-          <div className={isLiveStudioMode ? "h-full p-2 md:p-4" : "max-w-7xl mx-auto p-6 md:p-8"}>
+          <div className={isLiveStudioMode || pathname.startsWith('/courses') ? "h-full" : "max-w-7xl mx-auto p-6 md:p-8"}>
             {children}
           </div>
         </main>

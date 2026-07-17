@@ -1,14 +1,14 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   ArrowLeft, Play, Send, BookOpen, Terminal, 
   CheckCircle2, ChevronRight, Mic, MicOff, RefreshCw,
   FileText, MessageCircle, ClipboardCheck, Palette, Trash2, CheckCircle, XCircle,
-  Volume2, Bug
+  Volume2, Bug, AlertTriangle
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { wrapCodeForBackend } from "@/utils/codeWrapper";
@@ -16,8 +16,10 @@ import { getProblemTabs } from "@/utils/problemTabsData";
 
 export default function PracticeWorkspace() {
   const params = useParams();
+  const router = useRouter();
   const problemId = params.problemId;
   const { user, token, API_BASE } = useAuth();
+  const [showExitConfirm, setShowExitConfirm] = useState(false);
   
   const [problem, setProblem] = useState(null);
   const [dbProblem, setDbProblem] = useState(null);
@@ -1005,10 +1007,13 @@ export default function PracticeWorkspace() {
       {/* Workspace Navigation Header */}
       <header className="flex h-14 items-center justify-between px-6 border-b shrink-0 z-30" style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)" }}>
         <div className="flex items-center space-x-4">
-          <Link href="/practice" className="flex items-center space-x-2 text-xs font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">
+          <button
+            onClick={() => setShowExitConfirm(true)}
+            className="flex items-center space-x-2 text-xs font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors cursor-pointer"
+          >
             <ArrowLeft size={16} />
             <span>Practice Explorer</span>
-          </Link>
+          </button>
           <span className="h-4 w-px bg-slate-500/20" />
           <h2 className="text-sm font-bold tracking-tight text-[var(--text-primary)] truncate max-w-[200px] sm:max-w-none">
             {problem.title}
@@ -1676,6 +1681,54 @@ export default function PracticeWorkspace() {
           animation: wavebar 0.8s ease-in-out infinite;
         }
       `}</style>
+
+      {/* Exit Confirmation Modal */}
+      <AnimatePresence>
+        {showExitConfirm && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.92, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.92, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 300, damping: 25 }}
+              className="w-full max-w-sm rounded-2xl p-6 border shadow-2xl text-center space-y-5"
+              style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}
+            >
+              <div className="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mx-auto">
+                <AlertTriangle size={22} className="text-amber-400" />
+              </div>
+              <div className="space-y-1.5">
+                <h3 className="text-base font-black" style={{ color: "var(--text-primary)" }}>Exit Problem?</h3>
+                <p className="text-xs leading-relaxed" style={{ color: "var(--text-muted)" }}>
+                  Your current code will be lost. Are you sure you want to leave this problem?
+                </p>
+              </div>
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => setShowExitConfirm(false)}
+                  className="flex-1 py-2.5 rounded-xl border text-xs font-semibold transition-all cursor-pointer hover:bg-[var(--bg-hover)]"
+                  style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}
+                >
+                  Keep Solving
+                </button>
+                <button
+                  type="button"
+                  onClick={() => router.push("/practice")}
+                  className="flex-1 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold transition-all cursor-pointer shadow-lg shadow-amber-500/20"
+                >
+                  Exit Anyway
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
