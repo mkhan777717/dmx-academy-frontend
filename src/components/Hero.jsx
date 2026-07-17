@@ -80,7 +80,7 @@ export default function Hero() {
     <section
       ref={containerRef}
       onMouseMove={handleMouseMove}
-      className="relative w-full overflow-hidden cursor-none-zone"
+      className="relative w-full overflow-hidden"
       style={{
         minHeight: "85svh",
         background: dark ? "#000000" : "#ffffff",
