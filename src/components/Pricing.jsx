@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { getApiBase } from "@/utils/api";
 
 const plans = [
   {
@@ -100,7 +101,7 @@ function Price({ monthly, annually, isAnnual }) {
 }
 
 /* ─── Plan Card ──────────────────────────── */
-function PlanCard({ plan, isAnnual, index, isSelected, onClick }) {
+function PlanCard({ plan, isAnnual, index, isSelected, onClick, onEnrollProClick }) {
   return (
     <motion.div
       onClick={onClick}
@@ -162,8 +163,16 @@ function PlanCard({ plan, isAnnual, index, isSelected, onClick }) {
       </div>
 
       {/* CTA */}
-      <a
-        href={plan.ctaHref}
+      <button
+        onClick={(e) => {
+          if (plan.id === "pro") {
+            e.preventDefault();
+            e.stopPropagation();
+            onEnrollProClick();
+          } else {
+            window.location.href = plan.ctaHref;
+          }
+        }}
         className="block w-full rounded-xl py-3.5 text-sm font-bold text-center mb-8 transition-all duration-200"
         style={plan.featured
           ? { backgroundColor: "var(--accent-primary)", color: "#ffffff", border: "1px solid var(--border-accent)" }
@@ -179,7 +188,7 @@ function PlanCard({ plan, isAnnual, index, isSelected, onClick }) {
         }}
       >
         {plan.ctaText}
-      </a>
+      </button>
 
       <div
         className="h-px mb-6"
@@ -228,6 +237,38 @@ function PlanCard({ plan, isAnnual, index, isSelected, onClick }) {
 export default function Pricing() {
   const [isAnnual, setIsAnnual] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState(null);
+  
+  const [proModalOpen, setProModalOpen] = useState(false);
+  const [formData, setFormData] = useState({ name: "", email: "", phone: "", description: "" });
+  const [formStatus, setFormStatus] = useState("idle");
+
+  const handleEnrollProClick = () => {
+    setFormData({ name: "", email: "", phone: "", description: "" });
+    setFormStatus("idle");
+    setProModalOpen(true);
+  };
+
+  const handleProSubmit = async (e) => {
+    e.preventDefault();
+    setFormStatus("submitting");
+    try {
+      const apiBase = getApiBase();
+      const res = await fetch(`${apiBase}/api/auth/request-pro-access`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData)
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setFormStatus("success");
+      } else {
+        setFormStatus("error");
+      }
+    } catch (err) {
+      console.error(err);
+      setFormStatus("error");
+    }
+  };
 
   return (
     <section id="pricing" className="relative py-12 overflow-hidden" style={{ backgroundColor: "var(--bg-secondary)" }}>
@@ -328,6 +369,7 @@ export default function Pricing() {
               index={i}
               isSelected={selectedPlan === plan.id}
               onClick={() => setSelectedPlan(plan.id)}
+              onEnrollProClick={handleEnrollProClick}
             />
           ))}
         </div>
@@ -344,6 +386,201 @@ export default function Pricing() {
           All plans include a 7-day free trial. No credit card required to start. Cancel anytime.
         </motion.p>
       </div>
+
+      {/* Pro Early Access Modal */}
+      <AnimatePresence>
+        {proModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setProModalOpen(false)}
+              className="absolute inset-0 bg-black/60 backdrop-blur-md"
+            />
+
+            {/* Modal Box */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.96 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.96 }}
+              className="relative w-full max-w-[95vw] md:w-[520px] md:h-[520px] md:aspect-square md:overflow-hidden rounded-none p-6 md:p-8 border-2 shadow-2xl z-10 my-auto flex flex-col justify-between"
+              style={{
+                backgroundColor: "var(--bg-card)",
+                borderImage: "var(--accent-gradient) 1",
+                color: "var(--text-primary)",
+              }}
+            >
+              {/* Close Button */}
+              <button
+                onClick={() => setProModalOpen(false)}
+                className="absolute top-5 right-5 text-sm p-1.5 rounded-none hover:bg-[var(--bg-hover)] border border-transparent hover:border-white/10 transition-all"
+                style={{ color: "var(--text-muted)" }}
+                aria-label="Close modal"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
+
+              {formStatus === "success" ? (
+                <div className="text-center py-12 space-y-6 my-auto">
+                  <div className="mx-auto w-16 h-16 rounded-none bg-emerald-500/10 flex items-center justify-center text-emerald-500 border border-emerald-500/25">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                  </div>
+                  <div className="space-y-2">
+                    <h3 className="text-2xl font-black tracking-tight uppercase">You&apos;re on the list!</h3>
+                    <p className="text-sm max-w-sm mx-auto leading-relaxed" style={{ color: "var(--text-muted)" }}>
+                      Thank you for your interest. We will notify you as soon as the Pro Pass features become available.
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => setProModalOpen(false)}
+                    className="w-full max-w-xs mx-auto rounded-none py-3 text-sm font-bold text-white transition-opacity duration-200 block"
+                    style={{ background: "var(--accent-gradient)" }}
+                  >
+                    Got it, thanks!
+                  </button>
+                </div>
+              ) : (
+                <div className="h-full flex flex-col justify-between space-y-4 md:space-y-0">
+                  <div className="space-y-1.5 text-left pr-6">
+                    <div className="flex items-center gap-2">
+                      <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-ping" />
+                      <span 
+                        className="text-[9px] font-black tracking-[0.2em] uppercase text-emerald-500" 
+                      >
+                        PRO FEATURES COMING SOON
+                      </span>
+                    </div>
+                    <h3 className="text-2xl md:text-3xl font-black tracking-tight leading-none uppercase">
+                      BE THE FIRST TO{" "}
+                      <span
+                        style={{
+                          background: "var(--accent-gradient)",
+                          WebkitBackgroundClip: "text",
+                          WebkitTextFillColor: "transparent",
+                          backgroundClip: "text",
+                        }}
+                      >
+                        USE IT.
+                      </span>
+                    </h3>
+                  </div>
+
+                  <form onSubmit={handleProSubmit} className="flex-1 flex flex-col justify-between space-y-3 mt-2">
+                    <div className="space-y-1">
+                      <label className="text-[9px] font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Name</label>
+                      <input
+                        type="text"
+                        required
+                        value={formData.name}
+                        onChange={e => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                        placeholder="Your full name"
+                        className="w-full rounded-none px-3.5 py-2.5 text-sm outline-none transition-all"
+                        style={{
+                          backgroundColor: "var(--bg-input)",
+                          border: "1px solid var(--border-primary)",
+                          color: "var(--text-primary)",
+                        }}
+                        onFocus={e => e.target.style.borderColor = "var(--accent-primary)"}
+                        onBlur={e => e.target.style.borderColor = "var(--border-primary)"}
+                      />
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="text-[9px] font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Email ID</label>
+                      <input
+                        type="email"
+                        required
+                        value={formData.email}
+                        onChange={e => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                        placeholder="you@domain.com"
+                        className="w-full rounded-none px-3.5 py-2.5 text-sm outline-none transition-all"
+                        style={{
+                          backgroundColor: "var(--bg-input)",
+                          border: "1px solid var(--border-primary)",
+                          color: "var(--text-primary)",
+                        }}
+                        onFocus={e => e.target.style.borderColor = "var(--accent-primary)"}
+                        onBlur={e => e.target.style.borderColor = "var(--border-primary)"}
+                      />
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="text-[9px] font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Mobile Number (with country code)</label>
+                      <input
+                        type="tel"
+                        required
+                        value={formData.phone}
+                        onChange={e => setFormData(prev => ({ ...prev, phone: e.target.value }))}
+                        placeholder="e.g. +91 99999 99999"
+                        className="w-full rounded-none px-3.5 py-2.5 text-sm outline-none transition-all"
+                        style={{
+                          backgroundColor: "var(--bg-input)",
+                          border: "1px solid var(--border-primary)",
+                          color: "var(--text-primary)",
+                        }}
+                        onFocus={e => e.target.style.borderColor = "var(--accent-primary)"}
+                        onBlur={e => e.target.style.borderColor = "var(--border-primary)"}
+                      />
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="text-[9px] font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>What do you want to access?</label>
+                      <textarea
+                        rows={2}
+                        value={formData.description}
+                        onChange={e => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                        placeholder="E.g., Generative AI course tracks, shader sandboxes..."
+                        className="w-full rounded-none px-3.5 py-2.5 text-sm outline-none transition-all resize-none"
+                        style={{
+                          backgroundColor: "var(--bg-input)",
+                          border: "1px solid var(--border-primary)",
+                          color: "var(--text-primary)",
+                        }}
+                        onFocus={e => e.target.style.borderColor = "var(--accent-primary)"}
+                        onBlur={e => e.target.style.borderColor = "var(--border-primary)"}
+                      />
+                    </div>
+
+                    {formStatus === "error" && (
+                      <p className="text-[10px] font-semibold text-rose-500 leading-none">
+                        Something went wrong. Please check your network or try again.
+                      </p>
+                    )}
+
+                    <button
+                      type="submit"
+                      disabled={formStatus === "submitting"}
+                      className="w-full rounded-none py-3 text-sm font-bold text-[var(--text-on-accent)] transition-all duration-200 flex items-center justify-center gap-2"
+                      style={{ background: "var(--accent-gradient)" }}
+                      onMouseEnter={e => e.currentTarget.style.opacity = "0.9"}
+                      onMouseLeave={e => e.currentTarget.style.opacity = "1"}
+                    >
+                      {formStatus === "submitting" ? (
+                        <>
+                          <svg className="animate-spin h-4 w-4 text-[var(--text-on-accent)]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                          </svg>
+                          Sending...
+                        </>
+                      ) : (
+                        "Get Early Access"
+                      )}
+                    </button>
+                  </form>
+                </div>
+              )}
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }
