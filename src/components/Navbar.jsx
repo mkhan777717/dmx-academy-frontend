@@ -244,7 +244,7 @@ export default function Navbar() {
                       boxShadow: "0px 6px 20px var(--accent-glow)"
                     }}
                   >
-                    <span>Sign In / Enroll</span>
+                    <span>Sign In</span>
                     <ArrowRight size={14} />
                   </Link>
                 </div>
@@ -366,7 +366,7 @@ export default function Navbar() {
                         style={{ background: "var(--accent-gradient)" }}
                       >
                         <User size={16} />
-                        <span>Sign In / Enroll</span>
+                        <span>Sign In</span>
                         <ArrowRight size={16} />
                       </Link>
                     </li>

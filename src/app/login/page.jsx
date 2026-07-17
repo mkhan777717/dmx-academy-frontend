@@ -105,7 +105,7 @@ function LoginForm() {
         />
       ),
       title: isRegistering ? "Create an Account" : "Welcome Back",
-      desc: isRegistering ? "Join the Eduvantix network" : "Log in to access your portal",
+      desc: isRegistering ? "Join the Eduvantix network" : "Sign in to access your portal",
       demoEmail: "user@eduvantix.com"
     };
   };
@@ -291,7 +291,7 @@ function LoginForm() {
               )}
             </AnimatePresence>
 
-            <SubmitButton loading={loading} gradient={theme.accentGradient} label={isRegistering ? `Register as Student` : `Log in`} />
+            <SubmitButton loading={loading} gradient={theme.accentGradient} label={isRegistering ? `Register as Student` : `Sign In`} />
 
             {!isForgot && (
               <div className="relative flex items-center justify-center my-4">
