@@ -619,17 +619,7 @@ export default function StudentProfile() {
                       style={{ borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
                     />
                   </div>
-                  <div>
-                    <label className="block text-[10px] font-bold uppercase tracking-widest mb-1.5 ml-1" style={{ color: "var(--text-secondary)" }}>Email Address</label>
-                    <input 
-                      type="email" 
-                      value={editForm.email} 
-                      onChange={e => setEditForm({...editForm, email: e.target.value})}
-                      required
-                      className="w-full px-4 py-3 text-sm rounded-xl border outline-none focus:ring-2 focus:ring-[var(--accent-primary)] transition-all bg-[var(--bg-card)]"
-                      style={{ borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
-                    />
-                  </div>
+
                   <div>
                     <label className="block text-[10px] font-bold uppercase tracking-widest mb-1.5 ml-1" style={{ color: "var(--text-secondary)" }}>New Password <span className="opacity-60 normal-case">(optional)</span></label>
                     <input 

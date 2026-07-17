@@ -203,17 +203,18 @@ export default function DashboardLayout({ children }) {
   let sidebarLinks = [];
 
   if (isStudentSession) {
+    const isInstituteStudent = !!dashboardUser?.instituteId;
     sidebarLinks = [
       { label: "Dashboard", href: "/student/dashboard", icon: LayoutDashboard },
       { label: "Practice Arena", href: "/practice", icon: Code },
       { label: "Contest Arena", href: "/contest", icon: Trophy },
       { label: "Course Catalog", href: "/courses", icon: BookOpen },
-      { label: "AI Viva", href: "/student/viva", icon: Brain },
+      isInstituteStudent && { label: "AI Viva", href: "/student/viva", icon: Brain },
       { label: "Live Sessions", href: "/live-classes", icon: Radio },
       { label: "Learn with Games", href: "/student/games", icon: Gamepad2 },
-      { label: "Study Materials", href: "/student/materials", icon: FileText },
+      isInstituteStudent && { label: "Study Materials", href: "/student/materials", icon: FileText },
       { label: "Resume Builder", href: "/student/resume", icon: FileCheck },
-    ];
+    ].filter(Boolean);
   } else {
     sidebarLinks = [
       {

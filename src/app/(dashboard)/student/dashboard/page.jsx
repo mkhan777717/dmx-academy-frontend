@@ -338,8 +338,9 @@ export default function StudentDashboard() {
       </div>
 
       {/* ── Dashboard Widgets: Goal & Recommended ─── */}
+      {/* 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Daily Goal Tracker */}
+        // Daily Goal Tracker
         <div className="p-6 rounded-2xl border border-[var(--border-primary)] flex flex-col justify-between" style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
           <div className="space-y-2 mb-8">
             <h2 className="text-[11px] font-bold uppercase tracking-widest" style={{ color: "var(--text-secondary)" }}>
@@ -360,7 +361,7 @@ export default function StudentDashboard() {
           </div>
         </div>
 
-        {/* Recommended Problem */}
+        // Recommended Problem
         <div className="lg:col-span-2 p-8 rounded-2xl border border-[var(--border-primary)] relative overflow-hidden" style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)" }}>
           <div className="absolute inset-0 dot-grid opacity-50 pointer-events-none" />
           
@@ -390,6 +391,7 @@ export default function StudentDashboard() {
           </div>
         </div>
       </div>
+      */}
 
 
       {/* ── Bottom Section: Contests & Submissions ─ */}
