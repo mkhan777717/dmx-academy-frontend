@@ -4,6 +4,7 @@ import Tracks from "@/components/Tracks";
 import Process from "@/components/Process";
 import Testimonials from "@/components/Testimonials";
 import Pricing from "@/components/Pricing";
+import InstituteCallout from "@/components/InstituteCallout";
 import CTA from "@/components/CTA";
 import Footer from "@/components/Footer";
 import CinematicCursor from "@/components/CinematicCursor";
@@ -26,6 +27,7 @@ export default function Home() {
         <Process />
         <Testimonials />
         <Pricing />
+        <InstituteCallout />
         <CTA />
       </main>
 

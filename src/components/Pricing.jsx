@@ -54,7 +54,7 @@ const plans = [
     priceMonthly: 99,
     priceAnnually: 79,
     ctaText: "Contact Sales",
-    ctaHref: "mailto:hello@dmxacademy.com",
+    ctaHref: "mailto:hello@datamindx.in",
     featured: false,
     features: [
       "Everything in Pro Pass",
