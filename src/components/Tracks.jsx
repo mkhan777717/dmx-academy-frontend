@@ -139,7 +139,6 @@ export default function Tracks() {
 
   const featuresList = [
     {
-      label: "ENVIRONMENT",
       title: "Interactive Coding Environment",
       desc: "Write code directly inside a fully integrated, VS Code-like browser editor with real-time live preview rendering.",
       c: "emerald",
@@ -161,7 +160,7 @@ export default function Tracks() {
               <div className="pl-4 text-blue-400">&lt;<span className="text-red-400">div</span>&gt;</div>
               <div className="pl-6 text-white/90 flex items-center">
                 <span>&lt;<span className="text-red-400">h1</span>&gt;Live Preview&lt;/<span className="text-red-400">h1</span>&gt;</span>
-                <motion.span animate={{ opacity: [0, 1, 0] }} transition={{ duration: 0.8, repeat: Infinity }} className="w-0.5 h-2.5 bg-white ml-0.5" />
+                <span style={{ animation: 'animBlink 0.8s infinite' }} className="w-0.5 h-2.5 bg-white ml-0.5" />
               </div>
               <div className="pl-4 text-blue-400">&lt;/<span className="text-red-400">div</span>&gt;</div>
               <div className="pl-2">)</div>
@@ -170,10 +169,10 @@ export default function Tracks() {
             <div className="w-[80px] md:w-[90px] rounded-lg bg-neutral-900 border border-white/5 p-1.5 flex flex-col justify-between">
               <div className="w-full h-1 bg-white/5 rounded-full" />
               <div className="flex-1 flex items-center justify-center">
-                <motion.span animate={{ scale: [0.95, 1.05, 0.95] }} transition={{ duration: 3, repeat: Infinity }} className="text-[8px] font-bold text-white text-center leading-none">Live Preview</motion.span>
+                <span style={{ animation: 'animPulseScale 3s infinite' }} className="text-[8px] font-bold text-white text-center leading-none">Live Preview</span>
               </div>
               <div className="w-full h-1 bg-emerald-500/20 rounded-full overflow-hidden">
-                <motion.div animate={{ width: ["10%", "95%", "10%"] }} transition={{ duration: 5, repeat: Infinity }} className="h-full bg-emerald-500" />
+                <div style={{ animation: 'animProgressFast 5s infinite' }} className="h-full bg-emerald-500" />
               </div>
             </div>
           </div>
@@ -181,31 +180,29 @@ export default function Tracks() {
       )
     },
     {
-      label: "PROJECTS",
       title: "Project-Based Learning",
       desc: "Build realistic clones of Spotify, Netflix, Airbnb, and more to compile a competitive developer portfolio.",
       c: "red",
       visual: (
         <div className="absolute right-6 bottom-6 md:right-10 md:bottom-10 w-[240px] md:w-[280px] h-[100px] md:h-[120px] flex items-center justify-center gap-2 md:gap-4 translate-y-4 group-hover:translate-y-1 transition-transform duration-500">
-          <motion.div animate={{ y: [0, -6, 0] }} transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }} className="w-12 h-12 rounded-lg bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center shadow-lg">
+          <div style={{ animation: 'animFloatSm 4s ease-in-out infinite' }} className="w-12 h-12 rounded-lg bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center shadow-lg">
             <span className="font-bold text-[9px] text-emerald-400">Spotify</span>
-          </motion.div>
-          <motion.div animate={{ y: [0, -10, 0] }} transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 0.5 }} className="w-16 h-16 rounded-lg bg-red-500/20 border border-red-500/40 flex items-center justify-center shadow-2xl z-10">
+          </div>
+          <div style={{ animation: 'animFloatMd 3s ease-in-out infinite 0.5s' }} className="w-16 h-16 rounded-lg bg-red-500/20 border border-red-500/40 flex items-center justify-center shadow-2xl z-10">
             <span className="font-black text-[10px] text-red-400">NETFLIX</span>
-          </motion.div>
-          <motion.div animate={{ y: [0, -6, 0] }} transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 1 }} className="w-12 h-12 rounded-lg bg-pink-500/20 border border-pink-500/40 flex items-center justify-center shadow-lg">
+          </div>
+          <div style={{ animation: 'animFloatSm 4s ease-in-out infinite 1s' }} className="w-12 h-12 rounded-lg bg-pink-500/20 border border-pink-500/40 flex items-center justify-center shadow-lg">
             <span className="font-bold text-[9px] text-pink-400">Airbnb</span>
-          </motion.div>
+          </div>
         </div>
       )
     },
     {
-      label: "PROGRESS",
       title: "Progress Tracking",
       desc: "Detailed skill radar charts and milestone dashboards map your full-stack developer growth.",
       c: "amber",
       visual: (
-        <div className="absolute right-6 bottom-6 md:right-10 md:bottom-10 w-[220px] md:w-[260px] h-[120px] p-3 rounded-xl border border-white/5 bg-black/40 flex flex-col justify-between translate-y-4 group-hover:translate-y-1 transition-transform duration-500">
+        <div className="absolute right-6 bottom-6 md:right-10 md:bottom-10 w-[220px] md:w-[260px] h-[120px] p-3 rounded-xl border border-white/5 bg-black dark:bg-black/40 flex flex-col justify-between translate-y-4 group-hover:translate-y-1 transition-transform duration-500">
           <div className="space-y-2">
             <div className="space-y-1">
               <div className="flex justify-between text-[8px] text-white/50">
@@ -234,12 +231,11 @@ export default function Tracks() {
       )
     },
     {
-      label: "COMMUNITY",
       title: "Mentorship & Community",
       desc: "Collaborate on peer code reviews and get detailed roadmap help directly from active engineering mentors.",
       c: "purple",
       visual: (
-        <div className="absolute right-6 bottom-6 md:right-10 md:bottom-10 w-[240px] md:w-[260px] p-3 rounded-xl border border-purple-500/20 bg-black/40 flex gap-2 items-start translate-y-4 group-hover:translate-y-1 transition-transform duration-500 text-left">
+        <div className="absolute right-6 bottom-6 md:right-10 md:bottom-10 w-[240px] md:w-[260px] p-3 rounded-xl border border-purple-500/20 bg-black dark:bg-black/40 flex gap-2 items-start translate-y-4 group-hover:translate-y-1 transition-transform duration-500 text-left">
           <div className="w-6 h-6 rounded-full bg-purple-500 flex items-center justify-center font-bold text-[10px] text-white shrink-0">M</div>
           <div className="flex-1 min-w-0 text-left">
             <div className="flex justify-between items-center mb-0.5">
@@ -252,16 +248,15 @@ export default function Tracks() {
       )
     },
     {
-      label: "CREDENTIALS",
       title: "Verified Certification",
       desc: "Receive secure, shareable, cryptographically signed course completion certificates.",
       c: "cyan",
       visual: (
-        <div className="absolute right-6 bottom-6 md:right-10 md:bottom-10 w-[220px] md:w-[250px] h-[100px] md:h-[120px] rounded-xl border border-cyan-500/20 bg-neutral-950/60 p-3 flex flex-col justify-between translate-y-4 group-hover:translate-y-1 transition-transform duration-500 overflow-hidden relative">
-          <motion.div animate={{ x: ["-100%", "200%"] }} transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }} className="absolute inset-y-0 w-8 bg-gradient-to-r from-transparent via-cyan-500/10 to-transparent skew-x-12" />
+        <div className="absolute left-6 bottom-6 md:left-10 md:bottom-0 w-[240px] md:w-[260px] h-[100px] md:h-[120px] rounded-xl border border-cyan-500/20 bg-black dark:bg-neutral-950/60 p-3 flex flex-col justify-between translate-y-4 group-hover:translate-y-1 transition-transform duration-500 overflow-hidden relative">
+          <div style={{ animation: 'animSweep 3s ease-in-out infinite' }} className="absolute inset-y-0 w-8 bg-gradient-to-r from-transparent via-cyan-500/10 to-transparent skew-x-12" />
           <div className="flex justify-between items-start">
             <span className="text-[8px] font-mono text-cyan-400">EDUVANTIX_VERIFIED</span>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-cyan-500"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-cyan-500"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>
           </div>
           <div className="text-left leading-none">
             <h5 className="text-[9px] font-bold text-white tracking-tight uppercase">FULL-STACK CERTIFICATE</h5>
@@ -271,12 +266,11 @@ export default function Tracks() {
       )
     },
     {
-      label: "ASSISTANCE",
       title: "AI-Powered Assistance",
       desc: "Personalized learning paths, interactive debug guides, and smart context hints as you build.",
       c: "blue",
       visual: (
-        <div className="absolute right-6 bottom-6 md:right-10 md:bottom-10 w-[240px] md:w-[260px] p-3 rounded-xl border border-blue-500/20 bg-black/40 flex flex-col gap-2 translate-y-4 group-hover:translate-y-1 transition-transform duration-500">
+        <div className="absolute right-6 bottom-6 md:right-10 md:bottom-10 w-[240px] md:w-[260px] p-3 rounded-xl border border-blue-500/20 bg-black dark:bg-black/40 flex flex-col gap-2 translate-y-4 group-hover:translate-y-1 transition-transform duration-500">
           <div className="flex items-center gap-1.5">
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
@@ -286,21 +280,23 @@ export default function Tracks() {
           </div>
           <p className="text-[9px] text-white/80 font-mono leading-tight text-left">Line 24: Missing closing tag &lt;/div&gt;</p>
           <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden">
-            <motion.div animate={{ x: ["-100%", "100%"] }} transition={{ duration: 2, repeat: Infinity, ease: "linear" }} className="w-1/2 h-full bg-blue-500" />
+            <div style={{ animation: 'animSweepLinear 2s linear infinite' }} className="w-1/2 h-full bg-blue-500" />
           </div>
         </div>
       )
     },
     {
-      label: "ADVANCEMENT",
       title: "Career Resources",
       desc: "Export project achievements instantly. Access interview simulators, resume builders, and job boards.",
       c: "yellow",
       visual: (
         <div className="absolute right-6 bottom-6 md:right-10 md:bottom-10 w-[220px] md:w-[260px] flex flex-col gap-1.5 translate-y-4 group-hover:translate-y-1 transition-transform duration-500">
-          <div className="p-2 bg-white/5 rounded-lg border border-white/5 flex justify-between items-center shadow-lg">
+          <div className="p-2 rounded-lg border flex justify-between items-center shadow-lg
+                        bg-black dark:bg-white/5 border-neutral-700/60
+                        dark:border-white/5
+          ">
             <div className="flex items-center gap-1.5 text-left">
-              <div className="w-6 h-6 rounded bg-white/10 flex items-center justify-center text-[8px] font-bold text-white">G</div>
+              <div className="w-6 h-6 rounded bg-black dark:bg-white/10 flex items-center justify-center text-[8px] font-bold text-white">G</div>
               <div>
                 <h5 className="text-[8px] font-bold text-white leading-none">Google Referral</h5>
                 <span className="text-[7px] text-white/50">SWE Internship</span>
@@ -308,9 +304,12 @@ export default function Tracks() {
             </div>
             <span className="text-[7px] font-bold text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded-full">READY</span>
           </div>
-          <div className="p-2 bg-white/5 rounded-lg border border-white/5 flex justify-between items-center shadow-lg opacity-40">
+          <div className="p-2 rounded-lg border flex justify-between items-center shadow-lg opacity-40
+                        bg-black dark:bg-white/5 border-neutral-700/60
+                        dark:border-white/5
+          ">
             <div className="flex items-center gap-1.5 text-left">
-              <div className="w-6 h-6 rounded bg-white/10 flex items-center justify-center text-[8px] font-bold text-white">M</div>
+              <div className="w-6 h-6 rounded bg-black dark:bg-white/10 flex items-center justify-center text-[8px] font-bold text-white">M</div>
               <div>
                 <h5 className="text-[8px] font-bold text-white leading-none">Meta Referral</h5>
                 <span className="text-[7px] text-white/50">Frontend Associate</span>
@@ -322,12 +321,11 @@ export default function Tracks() {
       )
     },
     {
-      label: "CURRICULUM",
       title: "Flexible Learning Paths",
       desc: "Switch roadmaps seamlessly at any point. Customize self-paced tracks for frontend, backend, or full-stack paths.",
       c: "indigo",
       visual: (
-        <div className="absolute right-6 bottom-6 md:right-10 md:bottom-10 w-[240px] md:w-[260px] h-[100px] rounded-xl border border-white/5 bg-neutral-900/40 p-3 flex flex-col justify-between translate-y-4 group-hover:translate-y-1 transition-transform duration-500 pointer-events-none">
+        <div className="absolute right-6 bottom-6 md:right-10 md:bottom-10 w-[240px] md:w-[260px] h-[100px] rounded-xl border border-white/5 bg-black dark:bg-neutral-900/40 p-3 flex flex-col justify-between translate-y-4 group-hover:translate-y-1 transition-transform duration-500 pointer-events-none">
           <div className="flex justify-between items-center text-[8px] font-mono text-white/50">
             <span>STATION MAP</span>
             <span className="text-indigo-400">ACTIVE</span>
@@ -411,15 +409,11 @@ export default function Tracks() {
           <div className="absolute top-0 right-0 w-20 h-20 bg-emerald-500/10 rounded-full blur-xl pointer-events-none" />
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <motion.div
-                animate={{ rotate: 360 }}
-                transition={{ duration: 6, repeat: Infinity, ease: "linear" }}
-                className="w-10 h-10 rounded-full border border-white/20 bg-neutral-900 flex items-center justify-center relative shadow-lg"
-              >
+              <div style={{ animation: 'spin 6s linear infinite' }} className="w-10 h-10 rounded-full border border-white/20 bg-neutral-900 flex items-center justify-center relative shadow-lg">
                 <div className="absolute inset-1 rounded-full border border-white/5" />
                 <div className="absolute inset-2 rounded-full border border-white/5" />
                 <div className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-              </motion.div>
+              </div>
               <div className="min-w-0">
                 <div className="text-xs font-bold text-white truncate">Cyber Hits 2026</div>
                 <div className="text-[10px] text-white/50 truncate">Eduvantix Records</div>
@@ -428,13 +422,7 @@ export default function Tracks() {
             {/* Animated Audio Equalizer Bars */}
             <div className="flex items-end gap-0.5 h-6">
               {[1.2, 0.8, 1.5, 0.9, 1.3].map((delay, index) => (
-                <motion.div
-                  key={index}
-                  animate={{ height: ["20%", "100%", "20%"] }}
-                  transition={{ duration: delay, repeat: Infinity, ease: "easeInOut" }}
-                  className="w-0.75 bg-emerald-500 rounded-full"
-                  style={{ width: "3px" }}
-                />
+                <div key={index} className="w-0.75 bg-emerald-500 rounded-full" style={{ width: "3px", animation: `animEqualizer ${delay}s ease-in-out infinite` }} />
               ))}
             </div>
           </div>
@@ -444,22 +432,14 @@ export default function Tracks() {
               <span>03:40</span>
             </div>
             <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden">
-              <motion.div
-                animate={{ width: ["30%", "85%", "30%"] }}
-                transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-                className="h-full bg-emerald-500 rounded-full"
-              />
+              <div style={{ animation: 'animProgressSlow 10s ease-in-out infinite' }} className="h-full bg-emerald-500 rounded-full" />
             </div>
           </div>
           <div className="flex justify-center items-center gap-4">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-white/60 hover:text-white"><polygon points="19 20 9 12 19 4 19 20" /><line x1="5" y1="19" x2="5" y2="5" /></svg>
-            <motion.div
-              animate={{ scale: [1, 1.1, 1] }}
-              transition={{ duration: 2, repeat: Infinity }}
-              className="w-7 h-7 rounded-full bg-emerald-500 flex items-center justify-center hover:scale-105 transition-transform"
-            >
+            <div style={{ animation: 'animScaleHover 2s infinite' }} className="w-7 h-7 rounded-full bg-emerald-500 flex items-center justify-center hover:scale-105 transition-transform">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" className="text-black"><polygon points="5 3 19 12 5 21 5 3" /></svg>
-            </motion.div>
+            </div>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-white/60 hover:text-white"><polygon points="5 4 15 12 5 20 5 4" /><line x1="19" y1="5" x2="19" y2="19" /></svg>
           </div>
         </div>
@@ -499,27 +479,18 @@ export default function Tracks() {
             </div>
             {/* The line route */}
             <div className="w-full h-0.5 bg-white/10 relative rounded-full mx-6 overflow-hidden">
-              <motion.div
-                animate={{ x: ["-100%", "100%"] }}
-                transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-                className="w-1/2 h-full bg-gradient-to-r from-transparent via-blue-500 to-transparent absolute"
-              />
+              <div style={{ animation: 'animSweepLinear 3s linear infinite' }} className="w-1/2 h-full bg-gradient-to-r from-transparent via-blue-500 to-transparent absolute" />
             </div>
             {/* Moving taxi SVG along the path */}
-            <motion.div
-              animate={{ x: [-55, 55, -55] }}
-              transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute text-emerald-400"
-              style={{ top: "18px" }}
-            >
+            <div style={{ animation: 'animFloatMd 6s ease-in-out infinite', top: "18px" }} className="absolute text-emerald-400">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 10l1.5-4.5h11L19 10H5z" /></svg>
-            </motion.div>
+            </div>
             <div className="w-3.5 h-3.5 rounded-full bg-emerald-500 flex items-center justify-center absolute right-6">
               <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" className="text-black"><polyline points="20 6 9 17 4 12" /></svg>
             </div>
           </div>
           <div className="flex items-center justify-between border-t border-white/10 pt-2 z-10">
-            <div className="text-[10px] text-white/60">Model S Plaid</div>
+            <div className="text-[10px] text-white/60">PRICE</div>
             <div className="text-xs font-bold text-white">$24.50</div>
           </div>
         </div>
@@ -542,11 +513,7 @@ export default function Tracks() {
           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent z-10" />
           <div className="absolute top-2 left-2 z-20 bg-red-600 text-white font-black text-[9px] px-1 py-0.5 rounded shadow-md">EDUVANTIX ORIGINALS</div>
           <div className="w-full h-[95px] rounded-lg overflow-hidden bg-gradient-to-br from-red-950 to-neutral-900 flex items-center justify-center relative">
-            <motion.div
-              animate={{ opacity: [0.3, 0.6, 0.3] }}
-              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute inset-0 bg-gradient-to-tr from-red-500/10 via-transparent to-red-500/20"
-            />
+            <div style={{ animation: 'animPulseOpacity 4s ease-in-out infinite' }} className="absolute inset-0 bg-gradient-to-tr from-red-500/10 via-transparent to-red-500/20" />
             <div className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm flex items-center justify-center transition-colors shadow-lg z-20">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" className="text-white ml-0.5"><polygon points="5 3 19 12 5 21 5 3" /></svg>
             </div>
@@ -555,11 +522,7 @@ export default function Tracks() {
             <div className="min-w-0 flex-1">
               <h5 className="text-[11px] font-bold text-white truncate">STRANGER CODES</h5>
               <div className="w-full h-1 bg-white/20 rounded-full mt-1.5 overflow-hidden max-w-[100px]">
-                <motion.div
-                  animate={{ width: ["15%", "90%", "15%"] }}
-                  transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
-                  className="h-full bg-red-600 rounded-full"
-                />
+                <div style={{ animation: 'animProgressSlow 12s linear infinite' }} className="h-full bg-red-600 rounded-full" />
               </div>
             </div>
             <span className="text-[8px] font-bold text-red-500 bg-red-500/10 px-1 py-0.2 rounded border border-red-500/20">TRENDING</span>
@@ -600,22 +563,15 @@ export default function Tracks() {
               <span className="text-[7px] text-white/40 font-mono">INPUT_QUERY</span>
               <div className="text-[9px] text-white font-sans flex items-center">
                 <span>Deploy static components</span>
-                <motion.span
-                  animate={{ opacity: [0, 1, 0] }}
-                  transition={{ duration: 0.8, repeat: Infinity }}
-                  className="w-1 h-3 bg-white/80 ml-0.5"
-                />
+                <span style={{ animation: 'animBlink 0.8s infinite' }} className="w-1 h-3 bg-white/80 ml-0.5" />
               </div>
             </div>
             <div className="flex flex-col bg-blue-500/10 rounded p-1.5 border border-blue-500/20 relative overflow-hidden">
               <span className="text-[7px] text-blue-400 font-mono">RESPONSE</span>
               <span className="text-[9px] text-blue-300 font-sans truncate">
-                <motion.span
-                  animate={{ opacity: [0.4, 1, 0.4] }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                >
+                <span style={{ animation: 'animPulseOpacity 2s infinite' }}>
                   ⚙️ Active build deploy successful...
-                </motion.span>
+                </span>
               </span>
             </div>
           </div>
@@ -651,14 +607,7 @@ export default function Tracks() {
           {/* Chart with animated svg paths */}
           <div className="h-14 flex items-end justify-between gap-1.5 px-1 relative w-full overflow-hidden">
             <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 40" fill="none" preserveAspectRatio="none">
-              <motion.path
-                animate={{ pathLength: [0.1, 1] }}
-                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                d="M0,35 Q20,25 40,30 T80,10 T100,5"
-                stroke="#f59e0b"
-                strokeWidth="2"
-                fill="none"
-              />
+              <path style={{ animation: 'animPathLength 4s ease-in-out infinite', strokeDasharray: 1, strokeDashoffset: 1 }} d="M0,35 Q20,25 40,30 T80,10 T100,5" stroke="#f59e0b" strokeWidth="2" fill="none" />
               <path d="M0,35 Q20,25 40,30 T80,10 T100,5 L100,40 L0,40 Z" fill="url(#amberGradLarge)" opacity="0.1" />
               <defs>
                 <linearGradient id="amberGradLarge" x1="0" y1="0" x2="0" y2="1">
@@ -743,263 +692,263 @@ export default function Tracks() {
 
   return (
     <>
-    <section
-      className="relative w-full py-32"
-      style={{
-        background: dark ? "#000000" : "#f8fafc",
-        color: dark ? "#ffffff" : "#020617",
-        transition: "background 0.4s ease"
-      }}
-    >
-      {/* 1. Header (Ecosystem Intro) */}
-      <div className="max-w-[1400px] mx-auto px-6 md:px-12 mb-32 text-center relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, ease }}
-        >
-          <span className="text-[11px] font-bold tracking-[0.2em] uppercase text-emerald-500 mb-6 block">
-            The Complete Ecosystem
-          </span>
-          <h2 className="text-5xl md:text-8xl font-bold tracking-tighter leading-[0.9] mb-8">
-            One Platform.<br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-500">
-              Everything Developers Need.
-            </span>
-          </h2>
-          <p className="text-lg md:text-xl opacity-50 max-w-2xl mx-auto leading-relaxed">
-            Stop buying random courses. Get a complete, unified ecosystem with AI learning, real-world projects, live coding arenas, and interview prep.
-          </p>
-        </motion.div>
-      </div>
-
-      {/* 2. Success Numbers */}
-      <div className="max-w-[1200px] mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 px-6 mb-40 relative z-10">
-        {[
-          { val: "100+", label: "Lessons" },
-          { val: "100+", label: "Projects" },
-          { val: "10+", label: "Mentors" },
-          { val: "24/7", label: "AI Tutor" },
-        ].map((stat, i) => (
+      <section
+        className="relative w-full py-32"
+        style={{
+          background: dark ? "#000000" : "#f8fafc",
+          color: dark ? "#ffffff" : "#020617",
+          transition: "background 0.4s ease"
+        }}
+      >
+        {/* 1. Header (Ecosystem Intro) */}
+        <div className="max-w-[1400px] mx-auto px-6 md:px-12 mb-32 text-center relative z-10">
           <motion.div
-            key={i}
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: i * 0.1, ease }}
-            className="text-center"
+            transition={{ duration: 0.8, ease }}
           >
-            <div className="text-5xl md:text-7xl font-bold font-sans mb-3 tracking-tighter">{stat.val}</div>
-            <div className="text-[11px] font-bold tracking-[0.2em] uppercase opacity-40">{stat.label}</div>
+            <span className="text-[11px] font-bold tracking-[0.2em] uppercase text-emerald-500 mb-6 block">
+              The Complete Ecosystem
+            </span>
+            <h2 className="text-5xl md:text-8xl font-bold tracking-tighter leading-[0.9] mb-8">
+              One Platform.<br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-500">
+                Everything Developers Need.
+              </span>
+            </h2>
+            <p className="text-lg md:text-xl opacity-50 max-w-2xl mx-auto leading-relaxed">
+              Stop buying random courses. Get a complete, unified ecosystem with AI learning, real-world projects, live coding arenas, and interview prep.
+            </p>
           </motion.div>
-        ))}
-      </div>
-
-      <TickerStrip tok={tok} />
-
-      <div className="editorial-line  mb-40" />
-
-      {/* 3. Learning Journey Timeline */}
-      <div className="max-w-[1400px] mx-auto px-6 md:px-12 mb-40 relative z-10">
-        <div className="text-center mb-20">
-          <h3 className="text-4xl md:text-6xl font-bold tracking-tighter mb-4">Choose Your Journey.</h3>
-          <p className="text-lg opacity-50 max-w-2xl mx-auto">A structured roadmap utilizing our core platform features to guarantee your success.</p>
         </div>
 
-        {/* Premium Slider Container */}
-        <div className="relative w-full max-w-5xl mx-auto rounded-[2.5rem] border overflow-hidden"
-          style={{
-            background: dark ? "rgba(255,255,255,0.02)" : "rgba(255,255,255,1)",
-            borderColor: dark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)",
-            boxShadow: dark ? "0 20px 40px rgba(0,0,0,0.4)" : "0 20px 40px rgba(0,0,0,0.05)",
-            backdropFilter: "blur(20px)"
-          }}
-        >
-          {/* Progress / Tabs */}
-          <div className="flex border-b" style={{ borderColor: dark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)" }}>
-            {studentJourneys.map((journey, idx) => (
-              <button
-                key={idx}
-                onClick={() => setActiveJourney(idx)}
-                className={`flex-1 py-5 px-2 text-center transition-all duration-300 relative ${activeJourney === idx ? 'opacity-100' : 'opacity-40 hover:opacity-70'}`}
-              >
-                <span className="text-xs font-bold tracking-widest uppercase hidden md:inline-block mr-2">Phase</span>
-                <span className="text-xs font-bold tracking-widest uppercase">{journey.step}</span>
-                {activeJourney === idx && (
-                  <motion.div
-                    layoutId="activeJourneyTab"
-                    className={`absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r ${journey.gradient}`}
-                    initial={false}
-                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                  />
-                )}
-              </button>
-            ))}
-          </div>
-
-          {/* Slide Content */}
-          <div className="relative h-[550px] md:h-[450px] flex items-center overflow-hidden">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeJourney}
-                initial={{ opacity: 0, x: 40, filter: "blur(10px)" }}
-                animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
-                exit={{ opacity: 0, x: -40, filter: "blur(10px)" }}
-                transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                className="absolute inset-0 p-8 md:p-12 flex flex-col md:flex-row items-center gap-12"
-              >
-                <div className="flex-1 flex flex-col justify-center h-full z-10 relative">
-                  <div className={`self-start px-4 py-1.5 rounded-full text-[10px] font-bold tracking-widest uppercase mb-6 ${studentJourneys[activeJourney].bg} ${studentJourneys[activeJourney].text}`}>
-                    Phase {studentJourneys[activeJourney].step}
-                  </div>
-                  <h4 className="text-3xl md:text-5xl font-bold mb-4 tracking-tight leading-tight">
-                    {studentJourneys[activeJourney].title}
-                  </h4>
-                  <p className="text-base md:text-lg opacity-60 leading-relaxed mb-8">
-                    {studentJourneys[activeJourney].desc}
-                  </p>
-
-                  <div className="flex flex-wrap gap-3 mt-auto md:mt-4">
-                    {studentJourneys[activeJourney].features.map((feature, fIdx) => (
-                      <span key={fIdx} className="px-4 py-2 rounded-xl text-sm font-medium border"
-                        style={{
-                          borderColor: dark ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.1)",
-                          background: dark ? "rgba(255,255,255,0.03)" : "rgba(0,0,0,0.02)"
-                        }}
-                      >
-                        {feature}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Visual Representation (Abstract) */}
-                <div className="hidden md:flex flex-1 justify-center items-center relative w-full h-full">
-                  {/* Cool background shapes that match the gradient */}
-                  <div className={`absolute w-72 h-72 rounded-full bg-gradient-to-br ${studentJourneys[activeJourney].gradient} opacity-20 blur-3xl animate-pulse`} style={{ animationDuration: '4s' }} />
-
-                  {/* Render some mock UI or icon based on phase */}
-                  <motion.div
-                    initial={{ scale: 0.8, rotate: -10 }}
-                    animate={{ scale: 1, rotate: 0 }}
-                    transition={{ type: "spring", stiffness: 200, damping: 20, delay: 0.1 }}
-                    className="relative z-10 w-56 h-56 rounded-3xl border border-white/10 flex items-center justify-center overflow-hidden shadow-2xl"
-                    style={{
-                      background: dark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.05)",
-                      backdropFilter: "blur(10px)"
-                    }}
-                  >
-                    <div className={`text-8xl text-transparent bg-clip-text bg-gradient-to-br ${studentJourneys[activeJourney].gradient} font-bold opacity-80`}>
-                      {studentJourneys[activeJourney].step}
-                    </div>
-                  </motion.div>
-                </div>
-              </motion.div>
-            </AnimatePresence>
-          </div>
-        </div>
-      </div>
-
-      <div className="editorial-line  mb-40" />
-
-      {/* 4. Build Real Products (Valorant-Style Flip Cards) */}
-      <div className="max-w-[1400px] mx-auto px-6 md:px-12 mb-40 relative z-10">
-
-
-        <div className="text-center mb-16">
-          <h3 className="text-4xl md:text-6xl font-bold tracking-tighter mb-4">Build Real Products.</h3>
-          <p className="text-lg opacity-50 max-w-2xl mx-auto">Don't just watch tutorials. Build the exact systems used by top tech companies.</p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {buildProducts.map((prod, i) => (
+        {/* 2. Success Numbers */}
+        <div className="max-w-[1200px] mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 px-6 mb-40 relative z-10">
+          {[
+            { val: "100+", label: "Lessons" },
+            { val: "100+", label: "Projects" },
+            { val: "10+", label: "Mentors" },
+            { val: "24/7", label: "AI Tutor" },
+          ].map((stat, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.5, delay: i * 0.1 }}
-              className="flip-card w-full h-[500px]"
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: i * 0.1, ease }}
+              className="text-center"
             >
-              <div className="flip-card-inner w-full h-full relative rounded-2xl shadow-2xl">
-
-                {/* FRONT */}
-                <div
-                  className="backface-hidden absolute inset-0 w-full h-full rounded-2xl border overflow-hidden flex flex-col justify-end p-8"
-                  style={{
-                    background: dark ? "#0f1115" : "#f8fafc",
-                    borderColor: dark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.08)",
-                    boxShadow: dark ? "inset 0 0 100px rgba(0,0,0,0.5)" : "inset 0 0 100px rgba(0,0,0,0.02)",
-                    color: dark ? "#ffffff" : "#111111"
-                  }}
-                >
-                  {/* Top-left Company Logo */}
-                  <div className="absolute top-6 left-6 z-20">
-                    {prod.logo}
-                  </div>
-
-                  {/* Glowing orb background */}
-                  <div className="absolute inset-0 flex items-center justify-center opacity-25">
-                    <div className={`w-56 h-56 rounded-full bg-gradient-to-br from-${prod.c1}-500 to-${prod.c2}-500 blur-3xl`} />
-                  </div>
-
-                  {/* Center Mockup Element */}
-                  <div className="absolute inset-0 flex items-center justify-center z-10" style={{ top: '-40px' }}>
-                    {prod.centerContent}
-                  </div>
-
-                  <div className="relative z-10 drop-shadow-lg">
-                    <h4 className="text-4xl font-black tracking-tight uppercase leading-none">{prod.title}</h4>
-                  </div>
-                </div>
-
-                {/* BACK */}
-                <div
-                  className="backface-hidden absolute inset-0 w-full h-full rounded-2xl border p-8 flex flex-col"
-                  style={{
-                    transform: "rotateY(180deg)",
-                    background: dark ? "#1a1d24" : "#ffffff",
-                    borderColor: dark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.08)",
-                    color: dark ? "#ffffff" : "#111111"
-                  }}
-                >
-                  <div className="font-bold tracking-widest uppercase mb-6 text-sm flex items-center gap-2">
-                    PROJECT <span className={`text-${prod.c1}-500`}>|</span> {prod.title}
-                  </div>
-
-                  <div className="mb-8">
-                    <div className="text-[10px] font-black tracking-widest uppercase opacity-40 mb-2 font-mono">// TECH STACK</div>
-                    <div className="font-bold tracking-wide text-xl uppercase">{prod.stack}</div>
-                  </div>
-
-                  <div className="mb-auto">
-                    <div className="text-[10px] font-black tracking-widest uppercase opacity-40 mb-3 font-mono">// BIOGRAPHY</div>
-                    <p className="opacity-70 text-sm leading-relaxed">
-                      A phantom of the codebase, the {prod.title} architecture scales in the cloud. Render latency blind, deploy across global regions, then let flawless performance take hold as competitors scramble to learn where you might ship next.
-                    </p>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4 mt-6">
-                    <div className="p-4 rounded-xl border flex flex-col items-start justify-center" style={{ borderColor: dark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.05)", background: dark ? "rgba(0,0,0,0.2)" : "rgba(0,0,0,0.02)" }}>
-                      <span className="text-[10px] font-bold uppercase tracking-wider opacity-50 mb-1">Lessons</span>
-                      <span className={`text-3xl font-black text-${prod.c1}-500`}>{prod.lessons}</span>
-                    </div>
-                    <div className="p-4 rounded-xl border flex flex-col items-start justify-center" style={{ borderColor: dark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.05)", background: dark ? "rgba(0,0,0,0.2)" : "rgba(0,0,0,0.02)" }}>
-                      <span className="text-[10px] font-bold uppercase tracking-wider opacity-50 mb-1">Projects</span>
-                      <span className={`text-3xl font-black text-${prod.c1}-500`}>{prod.projs}</span>
-                    </div>
-                  </div>
-                </div>
-
-              </div>
+              <div className="text-5xl md:text-7xl font-bold font-sans mb-3 tracking-tighter">{stat.val}</div>
+              <div className="text-[11px] font-bold tracking-[0.2em] uppercase opacity-40">{stat.label}</div>
             </motion.div>
           ))}
         </div>
-      </div>
 
-      <div className="editorial-line  mb-40" />
-    </section>
+        <TickerStrip tok={tok} />
+
+        <div className="editorial-line  mb-40" />
+
+        {/* 3. Learning Journey Timeline */}
+        <div className="max-w-[1400px] mx-auto px-6 md:px-12 mb-40 relative z-10">
+          <div className="text-center mb-20">
+            <h3 className="text-6xl md:text-7xl font-bold tracking-tighter mb-4">Choose Your Journey.</h3>
+            <p className="text-lg opacity-50 max-w-2xl mx-auto">A structured roadmap utilizing our core platform features to guarantee your success.</p>
+          </div>
+
+          {/* Premium Slider Container */}
+          <div className="relative w-full max-w-5xl mx-auto rounded-[2.5rem] border overflow-hidden"
+            style={{
+              background: dark ? "rgba(255,255,255,0.02)" : "rgba(255,255,255,1)",
+              borderColor: dark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)",
+              boxShadow: dark ? "0 20px 40px rgba(0,0,0,0.4)" : "0 20px 40px rgba(0,0,0,0.05)",
+              backdropFilter: "blur(20px)"
+            }}
+          >
+            {/* Progress / Tabs */}
+            <div className="flex border-b" style={{ borderColor: dark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)" }}>
+              {studentJourneys.map((journey, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setActiveJourney(idx)}
+                  className={`flex-1 py-5 px-2 text-center transition-all duration-300 relative ${activeJourney === idx ? 'opacity-100' : 'opacity-40 hover:opacity-70'}`}
+                >
+                  <span className="text-xs font-bold tracking-widest uppercase hidden md:inline-block mr-2">Phase</span>
+                  <span className="text-xs font-bold tracking-widest uppercase">{journey.step}</span>
+                  {activeJourney === idx && (
+                    <motion.div
+                      layoutId="activeJourneyTab"
+                      className={`absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r ${journey.gradient}`}
+                      initial={false}
+                      transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                    />
+                  )}
+                </button>
+              ))}
+            </div>
+
+            {/* Slide Content */}
+            <div className="relative h-[550px] md:h-[450px] flex items-center overflow-hidden">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeJourney}
+                  initial={{ opacity: 0, x: 40, filter: "blur(10px)" }}
+                  animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
+                  exit={{ opacity: 0, x: -40, filter: "blur(10px)" }}
+                  transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                  className="absolute inset-0 p-8 md:p-12 flex flex-col md:flex-row items-center gap-12"
+                >
+                  <div className="flex-1 flex flex-col justify-center h-full z-10 relative">
+                    <div className={`self-start px-4 py-1.5 rounded-full text-[10px] font-bold tracking-widest uppercase mb-6 ${studentJourneys[activeJourney].bg} ${studentJourneys[activeJourney].text}`}>
+                      Phase {studentJourneys[activeJourney].step}
+                    </div>
+                    <h4 className="text-3xl md:text-5xl font-bold mb-4 tracking-tight leading-tight">
+                      {studentJourneys[activeJourney].title}
+                    </h4>
+                    <p className="text-base md:text-lg opacity-60 leading-relaxed mb-8">
+                      {studentJourneys[activeJourney].desc}
+                    </p>
+
+                    <div className="flex flex-wrap gap-3 mt-auto md:mt-4">
+                      {studentJourneys[activeJourney].features.map((feature, fIdx) => (
+                        <span key={fIdx} className="px-4 py-2 rounded-xl text-sm font-medium border"
+                          style={{
+                            borderColor: dark ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.1)",
+                            background: dark ? "rgba(255,255,255,0.03)" : "rgba(0,0,0,0.02)"
+                          }}
+                        >
+                          {feature}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Visual Representation (Abstract) */}
+                  <div className="hidden md:flex flex-1 justify-center items-center relative w-full h-full">
+                    {/* Cool background shapes that match the gradient */}
+                    <div className={`absolute w-72 h-72 rounded-full bg-gradient-to-br ${studentJourneys[activeJourney].gradient} opacity-20 blur-3xl animate-pulse`} style={{ animationDuration: '4s' }} />
+
+                    {/* Render some mock UI or icon based on phase */}
+                    <motion.div
+                      initial={{ scale: 0.8, rotate: -10 }}
+                      animate={{ scale: 1, rotate: 0 }}
+                      transition={{ type: "spring", stiffness: 200, damping: 20, delay: 0.1 }}
+                      className="relative z-10 w-56 h-56 rounded-3xl border border-white/10 flex items-center justify-center overflow-hidden shadow-2xl"
+                      style={{
+                        background: dark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.05)",
+                        backdropFilter: "blur(10px)"
+                      }}
+                    >
+                      <div className={`text-8xl text-transparent bg-clip-text bg-gradient-to-br ${studentJourneys[activeJourney].gradient} font-bold opacity-80`}>
+                        {studentJourneys[activeJourney].step}
+                      </div>
+                    </motion.div>
+                  </div>
+                </motion.div>
+              </AnimatePresence>
+            </div>
+          </div >
+        </div >
+
+        <div className="editorial-line  mb-40" />
+
+        {/* 4. Build Real Products (Valorant-Style Flip Cards) */}
+        <div className="max-w-[1400px] mx-auto px-6 md:px-12 mb-40 relative z-10">
+
+
+          <div className="text-center mb-16">
+            <h3 className="text-6xl md:text-7xl font-bold tracking-tighter mb-4">Build Real Products.</h3>
+            <p className="text-lg opacity-50 max-w-2xl mx-auto">Don't just watch tutorials. Build the exact systems used by top tech companies.</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {buildProducts.map((prod, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ duration: 0.5, delay: i * 0.1 }}
+                className="flip-card w-full h-[500px]"
+              >
+                <div className="flip-card-inner w-full h-full relative rounded-2xl shadow-2xl">
+
+                  {/* FRONT */}
+                  <div
+                    className="backface-hidden absolute inset-0 w-full h-full rounded-2xl border overflow-hidden flex flex-col justify-end p-8"
+                    style={{
+                      background: dark ? "#0f1115" : "#f8fafc",
+                      borderColor: dark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.08)",
+                      boxShadow: dark ? "inset 0 0 100px rgba(0,0,0,0.5)" : "inset 0 0 100px rgba(0,0,0,0.02)",
+                      color: dark ? "#ffffff" : "#111111"
+                    }}
+                  >
+                    {/* Top-left Company Logo */}
+                    <div className="absolute top-6 left-6 z-20">
+                      {prod.logo}
+                    </div>
+
+                    {/* Glowing orb background */}
+                    <div className="absolute inset-0 flex items-center justify-center opacity-25">
+                      <div className={`w-56 h-56 rounded-full bg-gradient-to-br from-${prod.c1}-500 to-${prod.c2}-500 blur-3xl`} />
+                    </div>
+
+                    {/* Center Mockup Element */}
+                    <div className="absolute inset-0 flex items-center justify-center z-10" style={{ top: '-40px' }}>
+                      {prod.centerContent}
+                    </div>
+
+                    <div className="relative z-10">
+                      <h4 className="text-4xl font-black tracking-tight uppercase leading-none">{prod.title}</h4>
+                    </div>
+                  </div>
+
+                  {/* BACK */}
+                  <div
+                    className="backface-hidden absolute inset-0 w-full h-full rounded-2xl border p-8 flex flex-col"
+                    style={{
+                      transform: "rotateY(180deg)",
+                      background: dark ? "#1a1d24" : "#ffffff",
+                      borderColor: dark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.08)",
+                      color: dark ? "#ffffff" : "#111111"
+                    }}
+                  >
+                    <div className="font-bold tracking-widest uppercase mb-6 text-sm flex items-center gap-2">
+                      PROJECT <span className={`text-${prod.c1}-500`}>|</span> {prod.title}
+                    </div>
+
+                    <div className="mb-8">
+                      <div className="text-[10px] font-black tracking-widest uppercase opacity-40 mb-2 font-mono">// TECH STACK</div>
+                      <div className="font-bold tracking-wide text-xl uppercase">{prod.stack}</div>
+                    </div>
+
+                    <div className="mb-auto">
+                      <div className="text-[10px] font-black tracking-widest uppercase opacity-40 mb-3 font-mono">// BIOGRAPHY</div>
+                      <p className="opacity-70 text-sm leading-relaxed">
+                        A phantom of the codebase, the {prod.title} architecture scales in the cloud. Render latency blind, deploy across global regions, then let flawless performance take hold as competitors scramble to learn where you might ship next.
+                      </p>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4 mt-6">
+                      <div className="p-4 rounded-xl border flex flex-col items-start justify-center" style={{ borderColor: dark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.05)", background: dark ? "rgba(0,0,0,0.2)" : "rgba(0,0,0,0.02)" }}>
+                        <span className="text-[10px] font-bold uppercase tracking-wider opacity-50 mb-1">Lessons</span>
+                        <span className={`text-3xl font-black text-${prod.c1}-500`}>{prod.lessons}</span>
+                      </div>
+                      <div className="p-4 rounded-xl border flex flex-col items-start justify-center" style={{ borderColor: dark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.05)", background: dark ? "rgba(0,0,0,0.2)" : "rgba(0,0,0,0.02)" }}>
+                        <span className="text-[10px] font-bold uppercase tracking-wider opacity-50 mb-1">Projects</span>
+                        <span className={`text-3xl font-black text-${prod.c1}-500`}>{prod.projs}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+
+        <div className="editorial-line" />
+      </section >
 
       {/* 5. Platform Features — Scroll-Linked Horizontal Carousel */}
 
@@ -1015,15 +964,15 @@ export default function Tracks() {
         }}
       >
         <div
-          className="sticky top-0 h-screen w-full flex flex-col justify-center overflow-hidden z-20"
+          className="sticky top-16 h-screen w-full flex flex-col justify-center overflow-hidden z-20"
           style={{
             background: dark ? "#000000" : "#f8fafc",
           }}
         >
           {/* Heading */}
-          <div className="px-12 w-full mb-8 relative z-10">
-            <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-emerald-500 mb-2 block">// ECOSYSTEM ADVANTAGES</span>
+          <div className="px-12 w-full mb-8 relative z-10 text-center">
             <h3 className="text-6xl md:text-7xl font-bold tracking-tighter">Platform Features.</h3>
+            <p className="text-lg opacity-50 max-w-2xl mx-auto">Perfect for modern developers aiming higher.</p>
           </div>
 
           {/* Horizontal sliding track */}
@@ -1031,7 +980,7 @@ export default function Tracks() {
             <motion.div
               ref={carouselRef}
               style={{ x }}
-              className="flex gap-6 pl-12 pr-32 w-max"
+              className="flex gap-6 pl-12 pr-32 w-max py-10"
             >
               {featuresList.map((feat, index) => (
                 <div
@@ -1043,7 +992,6 @@ export default function Tracks() {
                   }}
                 >
                   <div>
-                    <span className={`text-[10px] font-bold tracking-[0.2em] uppercase mb-3 block text-${feat.c}-500`}>// {feat.label}</span>
                     <h4 className="text-[1.35rem] font-bold mb-3 tracking-tight leading-snug">{feat.title}</h4>
                     <p className="text-sm leading-relaxed max-w-[260px]" style={{ opacity: 0.55 }}>{feat.desc}</p>
                   </div>
@@ -1052,31 +1000,19 @@ export default function Tracks() {
               ))}
             </motion.div>
           </div>
-
-          {/* Progress bar */}
-          <div className="px-12 mt-8 relative z-10">
-            <div className="flex items-center gap-4">
-              <div className="flex-1 h-0.5 rounded-full overflow-hidden" style={{ background: dark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.08)" }}>
-                <motion.div
-                  style={{ scaleX: scrollYProgress, transformOrigin: "left" }}
-                  className="h-full bg-emerald-500 rounded-full"
-                />
-              </div>
-            </div>
-          </div>
         </div>
       </section>
 
       {/* Mobile: horizontally swipeable cards */}
-      <section
+      < section
         className="block md:hidden mb-32 relative z-10 py-8"
         style={{
           background: dark ? "#000000" : "#f8fafc",
           color: dark ? "#ffffff" : "#020617",
-        }}
+        }
+        }
       >
         <div className="px-5 sm:px-6 mb-8">
-          <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-emerald-500 mb-2 block">// ECOSYSTEM ADVANTAGES</span>
           <h3 className="text-3xl sm:text-4xl font-bold tracking-tighter">Platform Features.</h3>
         </div>
         <div
@@ -1118,28 +1054,29 @@ export default function Tracks() {
             />
           ))}
         </div>
+      </section >
+      <div className=" mb-40" />
+
+
+      <section
+        className="relative w-full pb-32"
+        style={{
+          background: dark ? "#000000" : "#f8fafc",
+          color: dark ? "#ffffff" : "#020617",
+          transition: "background 0.4s ease"
+        }}
+      >
+
+        {/* 6. Companies Students Can Reach */}
+        <div className="max-w-[1400px] mx-auto px-6 md:px-12 text-center pb-32">
+          <h3 className="text-6xl md:text-7xl font-bold tracking-tighter mb-4">
+            Built to prepare you for<br />
+            <span className="text-emerald-500">world-class engineering teams.</span>
+          </h3>
+          {/* Infinite scroll company ticker */}
+          <InfiniteCompanyTicker companies={companies} dark={dark} />
+        </div>
       </section>
-
-    <section
-      className="relative w-full pb-32"
-      style={{
-        background: dark ? "#000000" : "#f8fafc",
-        color: dark ? "#ffffff" : "#020617",
-        transition: "background 0.4s ease"
-      }}
-    >
-      <div className="editorial-line  mb-40" />
-
-      {/* 6. Companies Students Can Reach */}
-      <div className="max-w-[1400px] mx-auto px-6 md:px-12 text-center pb-32">
-        <h3 className="text-3xl md:text-5xl font-bold tracking-tighter mb-4">
-          Built to prepare you for<br />
-          <span className="text-emerald-500">world-class engineering teams.</span>
-        </h3>
-        {/* Infinite scroll company ticker */}
-        <InfiniteCompanyTicker companies={companies} dark={dark} />
-      </div>
-    </section>
     </>
   );
 }

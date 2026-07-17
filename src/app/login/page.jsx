@@ -235,7 +235,7 @@ function LoginForm() {
             <button type="button" onClick={() => { setIsForgot(false); setForgotSuccess(false); setErrorMsg(""); }} className="w-full py-3 rounded-xl font-bold text-xs text-white" style={{ background: theme.accentGradient }}>Back to Sign In</button>
           </div>
 
-        /* Forgot form */
+          /* Forgot form */
         ) : isForgot ? (
           <form onSubmit={handleSubmit} className="space-y-4">
             <InputField label="Email Address" type="email" value={email} onChange={setEmail} icon={<Mail size={14} />} placeholder="name@example.com" required />
@@ -243,7 +243,7 @@ function LoginForm() {
             <div className="text-center"><button type="button" onClick={() => { setIsForgot(false); setErrorMsg(""); }} className="text-xs font-bold" style={{ color: "var(--accent-primary)" }}>Back to Sign In</button></div>
           </form>
 
-        /* Main form */
+          /* Main form */
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
             <AnimatePresence mode="popLayout">
@@ -295,7 +295,7 @@ function LoginForm() {
             </AnimatePresence>
 
             <SubmitButton loading={loading} gradient={theme.accentGradient} label={isRegistering ? `Register as ${theme.label}` : `Sign In as ${theme.label}`} />
-            
+
             {!isForgot && (
               <div className="relative flex items-center justify-center my-4">
                 <div className="absolute inset-0 flex items-center">
@@ -371,74 +371,67 @@ export default function LoginPage() {
       <div className="absolute inset-0 dot-grid pointer-events-none" />
 
       {/* LEFT — editorial branding */}
-      <div className="hidden lg:flex flex-col justify-between w-[44%] min-h-screen p-16 relative"
-        style={{ backgroundColor: "var(--bg-secondary)", borderRight: "1px solid var(--border-primary)" }}>
+      <div className="hidden lg:flex flex-col justify-between w-[44%] min-h-screen p-12 relative"
+
+        style={{ backgroundColor: "white", borderRight: "1px solid var(--border-primary)" }}>
         {/* Logo */}
-        <div className="flex items-center gap-3">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg text-[var(--text-on-accent)]" style={{ background: "var(--accent-gradient)" }}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-            </svg>
-          </div>
-          <span className="text-sm font-bold tracking-tight" style={{ color: "var(--text-primary)" }}>Eduvantix</span>
+        <div
+          className="flex items-center gap-3 cursor-pointer"
+          onClick={() => window.location.href = "/"}
+          tabIndex={0}
+          role="button"
+          aria-label="Go to homepage"
+          onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') window.location.href = "/"; }}
+        >
+          {/* Responsive logo: black in light mode, white in dark mode */}
+          <img
+            src="/logo-black-text.webp"
+            alt="Eduvantix Logo"
+            className="h-10 w-auto block"
+
+
+            style={{
+              position: "fixed",
+              width: "auto",
+            }}
+          />
         </div>
 
-        {/* Center editorial */}
-        <div className="space-y-8">
-          <div className="space-y-3">
-            <div className="flex items-center gap-3">
-              <div className="h-px w-8" style={{ background: "var(--accent-primary)" }} />
-              <span className="text-[10px] font-bold tracking-[0.2em] uppercase" style={{ color: "var(--text-muted)" }}>Learner Portal</span>
-            </div>
-            <h2 className="text-[clamp(2.5rem,4vw,4rem)] font-black leading-[0.92] tracking-[-0.04em]" style={{ color: "var(--text-primary)" }}>
-              Build.<br />
-              <em className="font-serif-display" style={{ background: "var(--accent-gradient)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", fontStyle: "italic" }}>Ship.</em><br />
-              Repeat.
-            </h2>
-          </div>
 
-          {/* Metrics */}
-          <div className="grid grid-cols-2 gap-3">
-            {[{ n: "12k+", l: "Learners" }, { n: "4.9★", l: "Avg Rating" }, { n: "300+", l: "Projects Built" }, { n: "4", l: "Deep Tracks" }].map(m => (
-              <div key={m.l} className="p-4 rounded-xl" style={{ border: "1px solid var(--border-card)", backgroundColor: "var(--bg-card)" }}>
-                <div className="text-xl font-black" style={{ color: "var(--text-primary)" }}>{m.n}</div>
-                <div className="text-[10px] mt-0.5" style={{ color: "var(--text-muted)" }}>{m.l}</div>
-              </div>
-            ))}
-          </div>
+        <video
+          src="/guy-coding.mp4"
+          autoPlay
+          loop
+          muted
+          playsInline
 
-          {/* Activity chart */}
-          <div className="rounded-xl p-5 overflow-hidden" style={{ border: "1px solid var(--border-card)", backgroundColor: "var(--bg-card)" }}>
-            <svg viewBox="0 0 380 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full">
-              {[40,65,30,80,55,90,45,70,85,60,75,95].map((h, i) => (
-                <rect key={i} x={i * 31 + 4} y={90 - h * 0.85} width="20" height={h * 0.85} rx="3" fill="var(--accent-primary)" fillOpacity={0.12 + (i / 12) * 0.5} />
-              ))}
-              <polyline points="14,55 45,32 76,65 107,16 138,42 169,8 200,52 231,28 262,12 293,36 324,22 355,2"
-                fill="none" stroke="var(--accent-primary)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-              <text x="4" y="98" fontSize="7.5" fill="var(--text-muted)">Student Activity — Last 12 Months</text>
-            </svg>
-          </div>
-        </div>
 
-        {/* Bottom testimonial */}
-        <blockquote className="space-y-2">
-          <p className="text-sm leading-relaxed" style={{ color: "var(--text-secondary)" }}>
-            &ldquo;From zero shaders to shipping a custom WebGL renderer in 6 weeks.&rdquo;
-          </p>
-          <div className="flex items-center gap-2">
-            <div className="h-6 w-6 rounded-full bg-zinc-500 flex items-center justify-center text-[9px] font-bold text-white">MV</div>
-            <span className="text-[11px]" style={{ color: "var(--text-muted)" }}>Marcus V. — Senior Dev at Vercel</span>
-          </div>
-        </blockquote>
+          style={{
+            position: "fixed",
+            left: 0,
+            bottom: 0,
+            width: "40vw",
+            // minWidth: 400,
+            // maxWidth: 650,
+            height: "auto",
+            zIndex: 10,
+            borderBottomLeftRadius: 24,
+            borderBottomRightRadius: 24,
+            background: "#fff",
+            pointerEvents: "none",
+          }}
+        />
+
+
       </div>
 
       {/* RIGHT — form panel */}
-      <div className="flex-1 flex flex-col items-center justify-center min-h-screen px-6 py-16 lg:px-16 relative z-10">
+      <div className="flex-1 flex flex-col items-center justify-center min-h-screen px-6 py-12 lg:px-12 relative z-10">
         {/* Mobile logo */}
         <div className="lg:hidden flex items-center gap-2 mb-10">
           <div className="flex h-7 w-7 items-center justify-center rounded-lg text-[var(--text-on-accent)]" style={{ background: "var(--accent-gradient)" }}>
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
             </svg>
           </div>
           <span className="text-sm font-bold" style={{ color: "var(--text-primary)" }}>Eduvantix</span>
@@ -455,25 +448,14 @@ export default function LoginPage() {
         <div className="mt-8 pt-6 w-full max-w-sm text-center flex flex-col items-center gap-3" style={{ borderTop: "1px solid var(--border-primary)" }}>
           <p className="text-[11px] font-medium tracking-wide uppercase" style={{ color: "var(--text-muted)" }}>Are you an educational institution?</p>
           <a href="/institutes" className="flex items-center gap-2 justify-center w-full px-4 py-2.5 rounded-xl font-semibold text-sm transition-all"
-             style={{ border: "1px solid var(--border-primary)", color: "var(--text-primary)", backgroundColor: "var(--bg-card)" }}
-             onMouseEnter={e => { e.currentTarget.style.borderColor = "var(--border-accent)"; }}
-             onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--border-primary)"; }}
+            style={{ border: "1px solid var(--border-primary)", color: "var(--text-primary)", backgroundColor: "var(--bg-card)" }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = "var(--border-accent)"; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--border-primary)"; }}
           >
             <GraduationCap size={16} style={{ color: "var(--accent-primary)" }} />
             Explore Eduvantix for Campus
           </a>
         </div>
-
-        <a href="/" className="mt-8 text-xs flex items-center gap-2 transition-colors"
-          style={{ color: "var(--text-muted)" }}
-          onMouseEnter={e => e.currentTarget.style.color = "var(--text-secondary)"}
-          onMouseLeave={e => e.currentTarget.style.color = "var(--text-muted)"}
-        >
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M19 12H5M12 5l-7 7 7 7"/>
-          </svg>
-          Back to Eduvantix
-        </a>
       </div>
     </div>
   );
