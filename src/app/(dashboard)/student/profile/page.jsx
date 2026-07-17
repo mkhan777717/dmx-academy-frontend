@@ -2,8 +2,9 @@
 
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
-import { Activity, Award, Zap, User } from "lucide-react";
+import { Activity, Award, Zap, User, X, Save, RefreshCw, CheckCircle2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { AnimatePresence, motion } from "framer-motion";
 
 function timeAgo(dateStr) {
   const diff = Date.now() - new Date(dateStr).getTime();
@@ -180,6 +181,94 @@ export default function StudentProfile() {
   const [recentSubs, setRecentSubs] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // Profile Edit State
+  const [isEditing, setIsEditing] = useState(false);
+  const [editForm, setEditForm] = useState({
+    username: "",
+    fullName: "",
+    email: "",
+    password: "",
+    avatarUrl: ""
+  });
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState("");
+  const [saveSuccess, setSaveSuccess] = useState("");
+
+  const AVATARS = [
+    { id: "1", url: "/images/avatar%201.png", label: "Avatar 1" },
+    { id: "2", url: "/images/avatar%202.png", label: "Avatar 2" },
+    { id: "3", url: "/images/avatar%203.png", label: "Avatar 3" },
+    { id: "4", url: "/images/avatar%204.png", label: "Avatar 4" },
+    { id: "5", url: "/images/avatar%205.png", label: "Avatar 5" },
+    { id: "6", url: "/images/avatar%206.png", label: "Avatar 6" }
+  ];
+  const DEFAULT_AVATAR = AVATARS[0].url;
+
+  useEffect(() => {
+    if (user && !isEditing) {
+      setEditForm({
+        username: user.username || "",
+        fullName: user.fullName || "",
+        email: user.email || "",
+        password: "",
+        avatarUrl: user.avatarUrl || DEFAULT_AVATAR
+      });
+    }
+  }, [user, isEditing]);
+
+  const handleEditSubmit = async (e) => {
+    e.preventDefault();
+    setSaving(true);
+    setSaveError("");
+    setSaveSuccess("");
+
+    try {
+      const headers = {
+        "Content-Type": "application/json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {})
+      };
+
+      const payload = {
+        username: editForm.username,
+        fullName: editForm.fullName,
+        email: editForm.email,
+        avatarUrl: editForm.avatarUrl
+      };
+      
+      if (editForm.password.trim()) {
+        payload.password = editForm.password;
+      }
+
+      const res = await fetch(`${API_BASE}/api/auth/profile`, {
+        method: "PATCH",
+        headers,
+        body: JSON.stringify(payload)
+      });
+      
+      const data = await res.json();
+      
+      if (data.success) {
+        setSaveSuccess("Profile updated successfully!");
+        setTimeout(() => {
+          setIsEditing(false);
+          window.location.reload();
+        }, 1500);
+      } else {
+        const msg = data.message || "";
+        if (msg.length > 150 || msg.toLowerCase().includes("unknown argument") || msg.toLowerCase().includes("prisma")) {
+          setSaveError("Profile update failed. The database schema may need updating — please contact support.");
+        } else {
+          setSaveError(msg || "Failed to update profile.");
+        }
+      }
+    } catch (err) {
+      console.error(err);
+      setSaveError("An error occurred. Please try again.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
   useEffect(() => {
     if (!user) return;
 
@@ -216,7 +305,7 @@ export default function StudentProfile() {
     fetchData();
   }, [user, token, API_BASE]);
 
-  if (loading || !stats) {
+  if (loading) {
     return (
       <div className="flex h-[60vh] items-center justify-center space-x-3 text-[var(--text-muted)]">
         <Activity size={20} className="animate-spin" />
@@ -225,7 +314,12 @@ export default function StudentProfile() {
     );
   }
 
-  const { totalProblems, solvedProblems, languages, heatmap, streaks } = stats;
+  // Use safe defaults if stats failed to load
+  const totalProblems = stats?.totalProblems || { easy: 0, medium: 0, hard: 0 };
+  const solvedProblems = stats?.solvedProblems || { easy: 0, medium: 0, hard: 0 };
+  const languages = stats?.languages || [];
+  const heatmap = stats?.heatmap || {};
+  const streaks = stats?.streaks || { current: 0, max: 0, totalActiveDays: 0 };
   
   const easyPct = totalProblems.easy ? (solvedProblems.easy / totalProblems.easy) * 100 : 0;
   const mediumPct = totalProblems.medium ? (solvedProblems.medium / totalProblems.medium) * 100 : 0;
@@ -236,7 +330,7 @@ export default function StudentProfile() {
   return (
     <div className="max-w-6xl mx-auto space-y-8 animate-in fade-in duration-500">
       
-      {/* ── Page Header ───────────────────────────── */}
+      {/* Page Header */}
       <section className="flex flex-col gap-2 border-b pb-6 shrink-0" style={{ borderColor: "var(--border-primary)" }}>
         <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border border-[var(--border-primary)] mb-3 w-fit"
           style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)", backgroundColor: "var(--bg-secondary)" }}>
@@ -256,16 +350,25 @@ export default function StudentProfile() {
           {/* Main User Card */}
           <div className="p-8 rounded-2xl border" style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
             <div className="flex items-center gap-5 mb-8">
-              <div className="w-20 h-20 rounded-xl bg-zinc-500 text-white font-serif-display font-black text-4xl flex items-center justify-center shadow-lg transform -rotate-3">
-                {user?.username?.[0]?.toUpperCase() || "S"}
-              </div>
+              {user?.avatarUrl ? (
+                <div className="w-20 h-20 rounded-full overflow-hidden shadow-xl transform -rotate-3 border-4 border-[var(--border-primary)]">
+                  <img src={user.avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
+                </div>
+              ) : (
+                <div className="w-20 h-20 rounded-full overflow-hidden shadow-xl transform -rotate-3 border-4 border-[var(--border-primary)]">
+                  <img src={DEFAULT_AVATAR} alt="Avatar" className="w-full h-full object-cover" />
+                </div>
+              )}
               <div>
-                <h1 className="text-2xl font-black tracking-tight" style={{ color: "var(--text-primary)" }}>{user?.username}</h1>
-                <p className="text-[11px] font-bold uppercase tracking-widest mt-1" style={{ color: "var(--text-muted)" }}>Rank: ~10,000</p>
+                <h2 className="text-2xl font-black tracking-tight" style={{ color: "var(--text-primary)" }}>{user?.fullName || user?.username}</h2>
+                <p className="text-[11px] font-bold tracking-widest mt-1" style={{ color: "var(--text-muted)" }}>@{user?.username}</p>
               </div>
             </div>
             <div className="pt-6 border-t" style={{ borderColor: "var(--border-primary)" }}>
-              <button className="w-full py-3 rounded-xl font-bold text-xs bg-[var(--text-primary)] text-[var(--bg-primary)] hover:-translate-y-0.5 transition-transform">
+              <button 
+                onClick={() => setIsEditing(true)}
+                className="w-full py-3 rounded-xl font-bold text-xs bg-[var(--text-primary)] text-[var(--bg-primary)] hover:-translate-y-0.5 transition-transform"
+              >
                 Edit Profile
               </button>
             </div>
@@ -386,7 +489,7 @@ export default function StudentProfile() {
             {recentSubs.length > 0 ? (
               <div className="grid grid-cols-1 gap-3">
                 {recentSubs.map((sub, idx) => (
-                  <div key={idx} className="flex flex-col sm:flex-row justify-between sm:items-center p-4 rounded-xl border border-[var(--border-primary)] premium-card hover:bg-[var(--bg-hover)] transition-colors cursor-pointer group" style={{ borderColor: "var(--border-primary)" }} onClick={() => router.push(`/practice/${sub.problem?.slug || sub.problemId}`)}>
+                  <div key={idx} className="flex flex-col sm:flex-row justify-between sm:items-center p-4 rounded-xl border border-[var(--border-primary)] hover:bg-[var(--bg-hover)] transition-colors cursor-pointer group" style={{ borderColor: "var(--border-primary)" }} onClick={() => router.push(`/practice/${sub.problem?.slug || sub.problemId}`)}>
                     <div className="space-y-1">
                       <p className="text-sm font-bold group-hover:underline" style={{ color: "var(--text-primary)" }}>
                         {sub.problem?.title || `Problem #${sub.problemId}`}
@@ -414,6 +517,148 @@ export default function StudentProfile() {
           </div>
         </div>
       </div>
+
+      {/* Edit Profile Modal */}
+      <AnimatePresence>
+        {isEditing && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="relative w-full max-w-md max-h-[90vh] overflow-y-auto p-6 rounded-2xl shadow-2xl border"
+              style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}
+            >
+              <button 
+                onClick={() => setIsEditing(false)}
+                className="absolute top-4 right-4 p-2 rounded-full hover:bg-[var(--bg-hover)] transition-colors"
+              >
+                <X size={18} style={{ color: "var(--text-secondary)" }} />
+              </button>
+
+              <h2 className="text-2xl font-serif mb-1" style={{ color: "var(--text-primary)" }}>Edit Profile</h2>
+              <p className="text-xs mb-6" style={{ color: "var(--text-muted)" }}>Update your personal details and avatar.</p>
+
+              {saveError && (
+                <div className="mb-4 p-3 rounded-lg bg-rose-500/10 text-rose-500 text-xs font-semibold border border-rose-500/20">
+                  {saveError}
+                </div>
+              )}
+              {saveSuccess && (
+                <div className="mb-4 p-3 rounded-lg bg-emerald-500/10 text-emerald-500 text-xs font-semibold border border-emerald-500/20 flex items-center gap-2">
+                  <CheckCircle2 size={16} />
+                  {saveSuccess}
+                </div>
+              )}
+
+              <form onSubmit={handleEditSubmit} className="space-y-4">
+                
+                {/* Avatar Picker */}
+                <div className="py-2 space-y-4">
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-center" style={{ color: "var(--text-muted)" }}>Pick your character</p>
+                  
+                  {/* Selected avatar preview */}
+                  <div className="flex justify-center">
+                    <div className="w-24 h-24 rounded-full overflow-hidden border-[3px] shadow-xl" style={{ borderColor: "var(--accent-primary)" }}>
+                      <img
+                        src={editForm.avatarUrl || DEFAULT_AVATAR}
+                        alt="Selected Avatar"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Avatar grid */}
+                  <div className="grid grid-cols-3 gap-4 max-w-[280px] mx-auto">
+                    {AVATARS.map((av) => {
+                      const isSelected = editForm.avatarUrl === av.url;
+                      return (
+                        <button
+                          key={av.id}
+                          type="button"
+                          onClick={() => setEditForm({ ...editForm, avatarUrl: av.url })}
+                          className="relative flex flex-col items-center transition-all duration-200"
+                          title={av.label}
+                        >
+                          <div
+                            className="w-16 h-16 rounded-full overflow-hidden transition-transform"
+                            style={{
+                              border: `3px solid ${isSelected ? "var(--accent-primary)" : "transparent"}`,
+                              boxShadow: isSelected ? "0 4px 12px rgba(0,0,0,0.3)" : "0 2px 8px rgba(0,0,0,0.15)",
+                              transform: isSelected ? "scale(1.1)" : "scale(1)"
+                            }}
+                          >
+                            <img src={av.url} alt={av.label} className="w-full h-full object-cover" />
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  <div>
+                    <label className="block text-[10px] font-bold uppercase tracking-widest mb-1.5 ml-1" style={{ color: "var(--text-secondary)" }}>Username</label>
+                    <input 
+                      type="text" 
+                      value={editForm.username} 
+                      onChange={e => setEditForm({...editForm, username: e.target.value})}
+                      required
+                      className="w-full px-4 py-3 text-sm rounded-xl border outline-none focus:ring-2 focus:ring-[var(--accent-primary)] transition-all bg-[var(--bg-card)]"
+                      style={{ borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-bold uppercase tracking-widest mb-1.5 ml-1" style={{ color: "var(--text-secondary)" }}>Full Name</label>
+                    <input 
+                      type="text" 
+                      value={editForm.fullName} 
+                      onChange={e => setEditForm({...editForm, fullName: e.target.value})}
+                      placeholder="e.g. John Doe"
+                      className="w-full px-4 py-3 text-sm rounded-xl border outline-none focus:ring-2 focus:ring-[var(--accent-primary)] transition-all bg-[var(--bg-card)]"
+                      style={{ borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-bold uppercase tracking-widest mb-1.5 ml-1" style={{ color: "var(--text-secondary)" }}>Email Address</label>
+                    <input 
+                      type="email" 
+                      value={editForm.email} 
+                      onChange={e => setEditForm({...editForm, email: e.target.value})}
+                      required
+                      className="w-full px-4 py-3 text-sm rounded-xl border outline-none focus:ring-2 focus:ring-[var(--accent-primary)] transition-all bg-[var(--bg-card)]"
+                      style={{ borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-bold uppercase tracking-widest mb-1.5 ml-1" style={{ color: "var(--text-secondary)" }}>New Password <span className="opacity-60 normal-case">(optional)</span></label>
+                    <input 
+                      type="password" 
+                      value={editForm.password} 
+                      onChange={e => setEditForm({...editForm, password: e.target.value})}
+                      placeholder="Leave blank to keep current"
+                      className="w-full px-4 py-3 text-sm rounded-xl border outline-none focus:ring-2 focus:ring-[var(--accent-primary)] transition-all bg-[var(--bg-card)]"
+                      style={{ borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
+                    />
+                  </div>
+                </div>
+
+                <div className="pt-4 mt-2 border-t" style={{ borderColor: "var(--border-primary)" }}>
+                  <button 
+                    type="submit"
+                    disabled={saving}
+                    className="w-full py-3.5 rounded-xl text-xs font-bold shadow-lg transition-transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    style={{ backgroundColor: "var(--accent-primary)", color: "var(--text-on-accent)" }}
+                  >
+                    {saving ? <RefreshCw size={16} className="animate-spin" /> : <Save size={16} />}
+                    {saving ? "Saving Changes..." : "Save Profile"}
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
