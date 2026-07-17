@@ -8,6 +8,7 @@ import useReducedMotion from "@/customHooks/useReducedMotion";
 import TiltCard from "./TitleCard";
 import { motion, AnimatePresence } from 'framer-motion'
 import { EASE_OUT_EXPO } from "@/utils/constants";
+import useThemeStore from "@/store/useThemeStore";
 
 // ─── Feature Stack Card (Scroll-Stack Animation) ─────────────────────
 const FEATURES_LIST = [
@@ -76,6 +77,7 @@ const FEATURES_LIST = [
 
 // ─── Interactive Admin Portal Mockup ──────────────────────────────────
 function AdminPortalMockup() {
+    const { isDark } = useThemeStore();
     const [activeTab, setActiveTab] = useState(0); // 0 = People, 1 = Batches
     const [typedText, setTypedText] = useState("");
     const reduced = useReducedMotion();
@@ -144,17 +146,11 @@ function AdminPortalMockup() {
             <div className="space-y-3">
               {/* Logo */}
               <div className="flex items-center gap-1.5 px-1">
-                <motion.div
-                  className="w-5 h-5 rounded-lg flex items-center justify-center text-[var(--text-on-accent)]"
-                  style={{ background: "var(--accent-gradient)" }}
-                  animate={reduced ? {} : { rotate: [0, 0, 360] }}
-                  transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                >
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-                  </svg>
-                </motion.div>
-                <span className="text-[9px] font-black tracking-tight" style={{ color: "var(--text-primary)" }}>Eduvantix</span>
+                <img
+                  src={isDark ? "/logo-white-text.webp" : "/logo-black-text.webp"}
+                  alt="Eduvantix Logo"
+                  className="h-3.5 w-auto object-contain"
+                />
               </div>
   
               {/* Sidebar Items */}
@@ -454,9 +450,24 @@ function AdminPortalMockup() {
 
 // ─── Interactive AI Viva Mockup ───────────────────────────────────────
 function AIVivaMockup() {
+    const { isDark } = useThemeStore();
     const [activeView, setActiveView] = useState(0);
     const [timerSeconds, setTimerSeconds] = useState(101);
     const reduced = useReducedMotion();
+
+    const theme = {
+      isDark,
+      bg: isDark ? "rgb(10,15,25)" : "var(--bg-primary)",
+      border: isDark ? "rgba(16,185,129,0.15)" : "var(--border-primary)",
+      cardBg: isDark ? "rgba(255,255,255,0.04)" : "var(--bg-card)",
+      cardBorder: isDark ? "rgba(255,255,255,0.06)" : "var(--border-primary)",
+      textPrimary: isDark ? "#ffffff" : "var(--text-primary)",
+      textSecondary: isDark ? "rgba(148,163,184,0.7)" : "var(--text-secondary)",
+      textMuted: isDark ? "rgba(148,163,184,0.5)" : "var(--text-muted)",
+      logoSrc: isDark ? "/logo-white-text.webp" : "/logo-black-text.webp",
+      topBarBg: isDark ? "linear-gradient(180deg, rgba(255,255,255,0.03) 0%, transparent 100%)" : "var(--bg-card)",
+      topBarBorder: isDark ? "rgba(255,255,255,0.06)" : "var(--border-primary)",
+    };
   
     useEffect(() => {
       if (reduced) return;
@@ -474,7 +485,7 @@ function AIVivaMockup() {
   
     return (
       <TiltCard>
-        <div className="relative w-full aspect-[16/10] rounded-2xl overflow-hidden border shadow-2xl text-left font-sans select-none" style={{ backgroundColor: "rgb(10,15,25)", borderColor: "rgba(16,185,129,0.15)" }}>
+        <div className="relative w-full aspect-[16/10] rounded-2xl overflow-hidden border shadow-2xl text-left font-sans select-none" style={{ backgroundColor: theme.bg, borderColor: theme.border }}>
   
           {/* Animated background orbs */}
           {!reduced && (
@@ -501,32 +512,29 @@ function AIVivaMockup() {
           )}
   
           {/* Top bar */}
-          <div className="relative z-10 h-10 flex items-center justify-between px-4" style={{ borderBottom: "1px solid rgba(255,255,255,0.06)", background: "linear-gradient(180deg, rgba(255,255,255,0.03) 0%, transparent 100%)" }}>
+          <div className="relative z-10 h-10 flex items-center justify-between px-4" style={{ borderBottom: `1px solid ${theme.topBarBorder}`, background: theme.topBarBg }}>
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-1.5">
-                <motion.div
-                  className="w-5 h-5 rounded-lg flex items-center justify-center"
-                  style={{ background: "linear-gradient(135deg, #10b981, #0ea5e9)" }}
-                  animate={reduced ? {} : { rotate: [0, 360] }}
-                  transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-                >
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                </motion.div>
-                <span className="text-[10px] font-black text-white tracking-tight">Eduvantix</span>
+                <img
+                  src={theme.logoSrc}
+                  alt="Eduvantix Logo"
+                  className="h-3.5 w-auto object-contain"
+                />
               </div>
               <div className="w-px h-4 bg-white/10" />
               <motion.span
-                className="text-[8px] text-slate-400 font-medium"
+                className="text-[8px] font-medium"
+                style={{ color: theme.textSecondary }}
                 key={activeView}
                 initial={{ opacity: 0, x: -6 }}
                 animate={{ opacity: 1, x: 0 }}
               >
-                {activeView === 0 ? "Admin" : "Student"} / <span className="text-white font-bold">{activeView === 0 ? "AI Viva" : "Live Session"}</span>
+                {activeView === 0 ? "Admin" : "Student"} / <span className="font-bold" style={{ color: theme.textPrimary }}>{activeView === 0 ? "AI Viva" : "Live Session"}</span>
               </motion.span>
             </div>
             <div className="flex items-center gap-3">
               {/* View switcher */}
-              <div className="flex items-center gap-1 p-[3px] rounded-full" style={{ backgroundColor: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)" }}>
+              <div className="flex items-center gap-1 p-[3px] rounded-full" style={{ backgroundColor: theme.cardBg, border: `1px solid ${theme.cardBorder}` }}>
                 {["Mentor View", "Student View"].map((label, i) => (
                   <motion.div
                     key={label}
@@ -534,7 +542,7 @@ function AIVivaMockup() {
                     className="px-2.5 py-[3px] rounded-full cursor-pointer text-[6px] font-bold tracking-wide"
                     style={{
                       background: activeView === i ? "linear-gradient(135deg, rgba(16,185,129,0.25), rgba(14,165,233,0.15))" : "transparent",
-                      color: activeView === i ? "#34d399" : "rgba(148,163,184,0.5)",
+                      color: activeView === i ? "#34d399" : theme.textMuted,
                       border: activeView === i ? "1px solid rgba(16,185,129,0.2)" : "1px solid transparent",
                     }}
                     whileHover={{ scale: 1.05 }}
@@ -548,8 +556,8 @@ function AIVivaMockup() {
                   {activeView === 0 ? "DM" : "AM"}
                 </div>
                 <div>
-                  <div className="text-[7px] font-bold text-white leading-none">{activeView === 0 ? "DMX School" : "Arjun M."}</div>
-                  <div className="text-[5px] text-slate-500">{activeView === 0 ? "Institute Admin" : "Scholar"}</div>
+                  <div className="text-[7px] font-bold leading-none" style={{ color: theme.textPrimary }}>{activeView === 0 ? "DMX School" : "Arjun M."}</div>
+                  <div className="text-[5px]" style={{ color: theme.textMuted }}>{activeView === 0 ? "Institute Admin" : "Scholar"}</div>
                 </div>
               </div>
             </div>
@@ -581,8 +589,8 @@ function AIVivaMockup() {
                       >
                         <Brain size={9} /> AI Viva
                       </motion.div>
-                      <h4 className="text-[15px] font-black text-white leading-tight tracking-tight">Viva Management</h4>
-                      <p className="text-[7px] text-slate-400 mt-0.5">Manage question banks & schedule AI-powered assessments</p>
+                      <h4 className="text-[15px] font-black leading-tight tracking-tight" style={{ color: theme.textPrimary }}>Viva Management</h4>
+                      <p className="text-[7px] mt-0.5" style={{ color: theme.textSecondary }}>Manage question banks & schedule AI-powered assessments</p>
                     </div>
                     <motion.button
                       className="flex items-center gap-1.5 text-white font-bold text-[7px] px-3 py-1.5 rounded-xl shadow-lg"
@@ -605,7 +613,7 @@ function AIVivaMockup() {
                       <motion.div
                         key={s.label}
                         className="relative p-3 rounded-xl overflow-hidden"
-                        style={{ backgroundColor: s.glow, border: "1px solid rgba(255,255,255,0.06)" }}
+                        style={{ backgroundColor: s.glow, border: `1px solid ${theme.cardBorder}` }}
                         initial={{ opacity: 0, y: 20, scale: 0.85 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         transition={{ delay: 0.15 + idx * 0.08, duration: 0.5, ease: EASE_OUT_EXPO }}
@@ -616,8 +624,8 @@ function AIVivaMockup() {
                             <s.icon size={13} className="text-white" />
                           </div>
                           <div>
-                            <div className="text-[16px] font-black text-white leading-none">{s.val}</div>
-                            <div className="text-[5px] font-bold text-slate-400 uppercase tracking-wider mt-0.5">{s.label}</div>
+                            <div className="text-[16px] font-black leading-none" style={{ color: theme.textPrimary }}>{s.val}</div>
+                            <div className="text-[5px] font-bold uppercase tracking-wider mt-0.5" style={{ color: theme.textSecondary }}>{s.label}</div>
                           </div>
                         </div>
                       </motion.div>
@@ -627,14 +635,14 @@ function AIVivaMockup() {
                   {/* Tabs + Folders */}
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <div className="flex items-center p-[2px] rounded-xl" style={{ backgroundColor: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)" }}>
+                      <div className="flex items-center p-[2px] rounded-xl" style={{ backgroundColor: theme.cardBg, border: `1px solid ${theme.cardBorder}` }}>
                         <div className="text-[7px] font-bold text-white px-3 py-[4px] rounded-[10px]" style={{ background: "linear-gradient(135deg, #10b981, #059669)" }}>Question Bank</div>
-                        <div className="text-[7px] text-slate-500 px-3 py-[4px] cursor-pointer">Schedule Viva</div>
+                        <div className="text-[7px] px-3 py-[4px] cursor-pointer" style={{ color: theme.textMuted }}>Schedule Viva</div>
                       </div>
                     </div>
                     <div className="flex gap-1.5">
                       <span className="text-[6px] font-bold px-2 py-[3px] rounded-full" style={{ color: "#34d399", background: "rgba(16,185,129,0.1)", border: "1px solid rgba(16,185,129,0.2)" }}>Your Institute</span>
-                      <span className="text-[6px] text-slate-500 px-2 py-[3px] cursor-pointer">Global Bank</span>
+                      <span className="text-[6px] px-2 py-[3px] cursor-pointer" style={{ color: theme.textMuted }}>Global Bank</span>
                     </div>
                   </div>
   
@@ -655,8 +663,8 @@ function AIVivaMockup() {
                         whileHover={{ y: -3, scale: 1.03 }}
                       >
                         <span className="text-[14px] mb-1">{f.emoji}</span>
-                        <div className="text-[9px] font-bold text-white">{f.name}</div>
-                        <div className="text-[6px] text-slate-400 font-medium">{f.count} questions</div>
+                        <div className="text-[9px] font-bold" style={{ color: theme.textPrimary }}>{f.name}</div>
+                        <div className="text-[6px] font-medium" style={{ color: theme.textSecondary }}>{f.count} questions</div>
                       </motion.div>
                     ))}
                   </div>
@@ -676,8 +684,8 @@ function AIVivaMockup() {
                   {/* Header */}
                   <div className="flex items-center justify-between">
                     <div>
-                      <div className="text-[6px] font-bold text-slate-500 uppercase tracking-widest">JS Closures Viva</div>
-                      <h4 className="text-[13px] font-black text-white leading-none">Question 1 of 3</h4>
+                      <div className="text-[6px] font-bold uppercase tracking-widest" style={{ color: theme.textMuted }}>JS Closures Viva</div>
+                      <h4 className="text-[13px] font-black leading-none" style={{ color: theme.textPrimary }}>Question 1 of 3</h4>
                     </div>
                     <motion.div
                       className="text-[7px] font-bold px-2.5 py-1 rounded-lg cursor-pointer"
@@ -689,7 +697,7 @@ function AIVivaMockup() {
                   </div>
   
                   {/* Progress */}
-                  <div className="w-full h-[4px] rounded-full overflow-hidden" style={{ backgroundColor: "rgba(255,255,255,0.05)" }}>
+                  <div className="w-full h-[4px] rounded-full overflow-hidden" style={{ backgroundColor: theme.isDark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.05)" }}>
                     <motion.div
                       className="h-full rounded-full"
                       style={{ background: "linear-gradient(90deg, #10b981, #06b6d4, #3b82f6)" }}
@@ -702,7 +710,7 @@ function AIVivaMockup() {
                   {/* Phase + Timer */}
                   <motion.div
                     className="flex items-center justify-between rounded-xl px-4 py-2.5"
-                    style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02))", border: "1px solid rgba(255,255,255,0.06)" }}
+                    style={{ backgroundColor: theme.cardBg, border: `1px solid ${theme.cardBorder}` }}
                     initial={{ opacity: 0, x: -15 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.15 }}
@@ -717,16 +725,16 @@ function AIVivaMockup() {
                         <Mic size={12} className="text-rose-400" />
                       </motion.div>
                       <div>
-                        <div className="text-[9px] font-bold text-white">Answering Phase</div>
-                        <div className="text-[5px] text-slate-500">Speak clearly into your mic</div>
+                        <div className="text-[9px] font-bold" style={{ color: theme.textPrimary }}>Answering Phase</div>
+                        <div className="text-[5px]" style={{ color: theme.textSecondary }}>Speak clearly into your mic</div>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg" style={{ backgroundColor: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)" }}>
+                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg" style={{ backgroundColor: theme.cardBg, border: `1px solid ${theme.cardBorder}` }}>
                       <Clock size={10} className="text-slate-400" />
                       <motion.span
                         className="text-[14px] font-black font-mono tracking-wider"
                         key={timerSeconds}
-                        style={{ color: timerSeconds < 30 ? "#f43f5e" : "#ffffff" }}
+                        style={{ color: timerSeconds < 30 ? "#f43f5e" : theme.textPrimary }}
                         initial={{ scale: 1.3 }}
                         animate={{ scale: 1 }}
                         transition={{ duration: 0.2 }}
@@ -739,16 +747,16 @@ function AIVivaMockup() {
                   {/* Question */}
                   <motion.div
                     className="rounded-xl px-4 py-3"
-                    style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}
+                    style={{ backgroundColor: theme.cardBg, border: `1px solid ${theme.cardBorder}` }}
                     initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.25 }}
                   >
                     <div className="flex items-start gap-2.5">
-                      <div className="w-6 h-6 rounded-lg flex items-center justify-center shrink-0" style={{ backgroundColor: "rgba(255,255,255,0.04)" }}>
+                      <div className="w-6 h-6 rounded-lg flex items-center justify-center shrink-0" style={{ backgroundColor: theme.isDark ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.04)" }}>
                         <MessageSquare size={11} className="text-slate-400" />
                       </div>
-                      <p className="text-[9px] text-slate-200 font-medium leading-relaxed">Explain the concept of closures in JavaScript. How do they work with lexical scoping?</p>
+                      <p className="text-[9px] font-medium leading-relaxed" style={{ color: theme.textPrimary }}>Explain the concept of closures in JavaScript. How do they work with lexical scoping?</p>
                     </div>
                   </motion.div>
   
@@ -786,8 +794,8 @@ function AIVivaMockup() {
                         <Mic size={13} className="text-white" />
                       </motion.div>
                       <div>
-                        <div className="text-[8px] text-white font-bold">Microphone is on</div>
-                        <div className="text-[5px] text-slate-500">Speak your answer now</div>
+                        <div className="text-[8px] font-bold" style={{ color: theme.textPrimary }}>Microphone is on</div>
+                        <div className="text-[5px]" style={{ color: theme.textSecondary }}>Speak your answer now</div>
                       </div>
                     </div>
   
@@ -811,7 +819,7 @@ function AIVivaMockup() {
                         />
                       ))}
                     </div>
-                    <span className="text-[6px] text-slate-500 italic">Listening...</span>
+                    <span className="text-[6px] italic" style={{ color: theme.textMuted }}>Listening...</span>
                   </motion.div>
   
                   {/* Footer */}
@@ -840,9 +848,24 @@ function AIVivaMockup() {
   }
   // ─── Interactive Live Session Mockup ──────────────────────────────────────
   function LiveSessionMockup() {
+    const { isDark } = useThemeStore();
     const [timerSeconds, setTimerSeconds] = useState(0);
     const [chatMessages, setChatMessages] = useState([]);
     const reduced = useReducedMotion();
+
+    const theme = {
+      isDark,
+      bg: isDark ? "rgb(12,14,20)" : "var(--bg-primary)",
+      border: isDark ? "rgba(255,255,255,0.08)" : "var(--border-primary)",
+      cardBg: isDark ? "rgba(255,255,255,0.03)" : "var(--bg-card)",
+      cardBorder: isDark ? "rgba(255,255,255,0.06)" : "var(--border-primary)",
+      textPrimary: isDark ? "#ffffff" : "var(--text-primary)",
+      textSecondary: isDark ? "rgba(148,163,184,0.7)" : "var(--text-secondary)",
+      textMuted: isDark ? "rgba(148,163,184,0.5)" : "var(--text-muted)",
+      logoSrc: isDark ? "/logo-white-text.webp" : "/logo-black-text.webp",
+      topBarBg: isDark ? "rgba(255,255,255,0.02)" : "var(--bg-card)",
+      topBarBorder: isDark ? "rgba(255,255,255,0.06)" : "var(--border-primary)",
+    };
   
     // Live timer
     useEffect(() => {
@@ -881,7 +904,7 @@ function AIVivaMockup() {
   
     return (
       <TiltCard>
-        <div className="relative w-full aspect-[16/10] rounded-2xl overflow-hidden border shadow-2xl text-left font-sans select-none flex flex-col" style={{ backgroundColor: "rgb(12,14,20)", borderColor: "rgba(255,255,255,0.08)" }}>
+        <div className="relative w-full aspect-[16/10] rounded-2xl overflow-hidden border shadow-2xl text-left font-sans select-none flex flex-col" style={{ backgroundColor: theme.bg, borderColor: theme.border }}>
           
           {/* Animated Background Mesh */}
           {!reduced && (
@@ -902,25 +925,26 @@ function AIVivaMockup() {
           )}
   
           {/* Header */}
-          <div className="relative z-10 h-10 flex items-center justify-between px-4 border-b" style={{ borderColor: "rgba(255,255,255,0.06)", backgroundColor: "rgba(255,255,255,0.02)" }}>
+          <div className="relative z-10 h-10 flex items-center justify-between px-4 border-b" style={{ borderColor: theme.topBarBorder, backgroundColor: theme.topBarBg }}>
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-1.5">
-                <div className="w-5 h-5 rounded-md flex items-center justify-center" style={{ background: "linear-gradient(135deg, #10b981, #059669)" }}>
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                </div>
-                <span className="text-[10px] font-black text-white tracking-tight">Eduvantix</span>
+                <img
+                  src={theme.logoSrc}
+                  alt="Eduvantix Logo"
+                  className="h-3.5 w-auto object-contain"
+                />
               </div>
               <div className="w-px h-3 bg-white/10" />
-              <span className="text-[8px] text-slate-400 font-medium">
-                Admin / <span className="text-white font-bold">Live Session</span>
+              <span className="text-[8px] font-medium" style={{ color: theme.textSecondary }}>
+                Admin / <span className="font-bold" style={{ color: theme.textPrimary }}>Live Session</span>
               </span>
             </div>
             
             <div className="flex items-center gap-2">
               <div className="flex items-center gap-1.5 pl-2">
                 <div className="text-right">
-                  <div className="text-[7px] font-bold text-white leading-none">DMX School of Tech</div>
-                  <div className="text-[5px] text-slate-500">Institute Admin</div>
+                  <div className="text-[7px] font-bold leading-none" style={{ color: theme.textPrimary }}>DMX School of Tech</div>
+                  <div className="text-[5px]" style={{ color: theme.textMuted }}>Institute Admin</div>
                 </div>
                 <div className="w-5 h-5 rounded-full font-bold text-[6px] flex items-center justify-center text-white" style={{ background: "linear-gradient(135deg, #10b981, #0ea5e9)" }}>
                   DM
@@ -949,12 +973,12 @@ function AIVivaMockup() {
                     <div className="w-1.5 h-1.5 rounded-full bg-rose-500" />
                     <span className="text-[7px] font-black text-rose-400 tracking-wider">LIVE</span>
                   </motion.div>
-                  <h2 className="text-[13px] font-black text-white tracking-tight">GenAI and LLMs Masterclass</h2>
+                  <h2 className="text-[13px] font-black tracking-tight" style={{ color: theme.textPrimary }}>GenAI and LLMs Masterclass</h2>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-md" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
+                  <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-md" style={{ backgroundColor: theme.cardBg, border: `1px solid ${theme.cardBorder}` }}>
                     <Clock size={9} className="text-slate-400" />
-                    <span className="text-[8px] font-mono font-bold text-slate-200">{fmt(timerSeconds)}</span>
+                    <span className="text-[8px] font-mono font-bold" style={{ color: theme.textPrimary }}>{fmt(timerSeconds)}</span>
                   </div>
                   <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-md" style={{ background: "rgba(16,185,129,0.1)", border: "1px solid rgba(16,185,129,0.2)" }}>
                     <Users size={9} className="text-emerald-400" />
@@ -1028,12 +1052,12 @@ function AIVivaMockup() {
                   </div>
   
                   {/* Controls Bar */}
-                  <div className="h-10 rounded-xl flex items-center justify-between px-3" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
+                  <div className="h-10 rounded-xl flex items-center justify-between px-3" style={{ backgroundColor: theme.cardBg, border: `1px solid ${theme.cardBorder}` }}>
                     <div className="flex items-center gap-1.5">
-                      <button className="w-7 h-7 rounded-lg flex items-center justify-center bg-white/10 hover:bg-white/20 text-white transition-colors border border-white/10">
+                      <button className="w-7 h-7 rounded-lg flex items-center justify-center transition-colors" style={{ backgroundColor: theme.cardBg, border: `1px solid ${theme.cardBorder}`, color: theme.textPrimary }}>
                         <Mic size={11} />
                       </button>
-                      <button className="w-7 h-7 rounded-lg flex items-center justify-center bg-white/10 hover:bg-white/20 text-white transition-colors border border-white/10">
+                      <button className="w-7 h-7 rounded-lg flex items-center justify-center transition-colors" style={{ backgroundColor: theme.cardBg, border: `1px solid ${theme.cardBorder}`, color: theme.textPrimary }}>
                         <Video size={11} />
                       </button>
                       <button className="h-7 px-3 rounded-lg flex items-center gap-1.5 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/30 transition-colors">
@@ -1048,10 +1072,10 @@ function AIVivaMockup() {
                 </div>
   
                 {/* Right: Live Chat */}
-                <div className="w-36 rounded-xl flex flex-col" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)" }}>
-                  <div className="flex items-center gap-3 px-3 py-2 border-b border-white/5">
-                    <div className="text-[7px] font-bold text-white border-b-2 border-emerald-500 pb-0.5">CHAT (24)</div>
-                    <div className="text-[7px] font-bold text-slate-500 pb-0.5">Q&A</div>
+                <div className="w-36 rounded-xl flex flex-col" style={{ backgroundColor: theme.cardBg, border: `1px solid ${theme.cardBorder}` }}>
+                  <div className="flex items-center gap-3 px-3 py-2 border-b" style={{ borderColor: theme.cardBorder }}>
+                    <div className="text-[7px] font-bold border-b-2 border-emerald-500 pb-0.5" style={{ color: theme.textPrimary }}>CHAT (24)</div>
+                    <div className="text-[7px] font-bold pb-0.5" style={{ color: theme.textMuted }}>Q&A</div>
                   </div>
                   
                   <div className="flex-1 p-2 flex flex-col justify-end gap-2 overflow-hidden">
@@ -1064,18 +1088,18 @@ function AIVivaMockup() {
                           className="text-[7px] leading-relaxed break-words"
                           layout
                         >
-                          <span className={`font-bold ${msg?.color || 'text-white'}`}>{msg?.u || 'User'}: </span>
-                          <span className="text-slate-300">{msg?.text || ''}</span>
+                          <span className={`font-bold ${msg?.color || (theme.isDark ? 'text-white' : 'text-slate-800')}`}>{msg?.u || 'User'}: </span>
+                          <span style={{ color: theme.textSecondary }}>{msg?.text || ''}</span>
                         </motion.div>
                       ))}
                     </AnimatePresence>
                     {chatMessages.length === 0 && (
-                      <div className="text-[7px] text-slate-500 text-center italic w-full">Waiting for messages...</div>
+                      <div className="text-[7px] text-center italic w-full" style={{ color: theme.textMuted }}>Waiting for messages...</div>
                     )}
                   </div>
   
-                  <div className="p-2 border-t border-white/5">
-                    <div className="w-full bg-white/5 rounded px-2 py-1.5 text-[6px] text-slate-500 flex items-center justify-between border border-white/5 cursor-text">
+                  <div className="p-2 border-t" style={{ borderColor: theme.cardBorder }}>
+                    <div className="w-full rounded px-2 py-1.5 text-[6px] flex items-center justify-between cursor-text" style={{ backgroundColor: theme.cardBg, borderColor: theme.cardBorder, color: theme.textMuted }}>
                       <span>Type a message...</span>
                       <Send size={7} className="text-emerald-500" />
                     </div>
@@ -1091,8 +1115,24 @@ function AIVivaMockup() {
   
   // ─── Interactive Coding Contest Mockup ──────────────────────────────────────
   function CodingContestMockup() {
+    const { isDark } = useThemeStore();
     const reduced = useReducedMotion();
     const [charCount, setCharCount] = useState(0);
+
+    const theme = {
+      isDark,
+      bg: isDark ? "rgb(5,5,5)" : "var(--bg-primary)",
+      border: isDark ? "rgba(255,255,255,0.08)" : "var(--border-primary)",
+      cardBg: isDark ? "rgba(255,255,255,0.03)" : "var(--bg-card)",
+      cardBorder: isDark ? "rgba(255,255,255,0.06)" : "var(--border-primary)",
+      textPrimary: isDark ? "#ffffff" : "var(--text-primary)",
+      textSecondary: isDark ? "rgba(148,163,184,0.7)" : "var(--text-secondary)",
+      textMuted: isDark ? "rgba(148,163,184,0.5)" : "var(--text-muted)",
+      topBarBg: isDark ? "#101014" : "var(--bg-card)",
+      panelBg: isDark ? "#0a0a0d" : "var(--bg-card)",
+      editorBg: isDark ? "#050505" : "var(--bg-card)",
+      codeColor: isDark ? "#d4d4d4" : "var(--text-primary)",
+    };
     
     const coloredTokens = [
       { t: "// JavaScript Starter Code", c: "text-[#6a9955]" },
@@ -1215,17 +1255,17 @@ function AIVivaMockup() {
   
     return (
       <TiltCard>
-        <div className="relative w-full aspect-[16/10] rounded-2xl overflow-hidden shadow-2xl text-left font-sans select-none flex flex-col bg-[#050505]">
+        <div className="relative w-full aspect-[16/10] rounded-2xl overflow-hidden shadow-2xl text-left font-sans select-none flex flex-col border" style={{ backgroundColor: theme.bg, borderColor: theme.border }}>
           
           {/* Header */}
-          <div className="relative z-10 h-10 flex items-center justify-between px-3 border-b border-white/5 bg-[#101014]">
+          <div className="relative z-10 h-10 flex items-center justify-between px-3 border-b" style={{ borderColor: theme.cardBorder, backgroundColor: theme.topBarBg }}>
             <div className="flex items-center gap-3">
-              <div className="flex items-center gap-1.5 text-[8px] text-slate-400">
+              <div className="flex items-center gap-1.5 text-[8px]" style={{ color: theme.textSecondary }}>
                 <ChevronLeft size={10} />
-                <span className="font-medium hover:text-white cursor-pointer transition-colors">Practice Explorer</span>
+                <span className="font-medium cursor-pointer transition-colors hover:opacity-80">Practice Explorer</span>
               </div>
               <div className="w-px h-3 bg-white/10" />
-              <span className="text-[9px] text-white font-bold tracking-wide">FizzBuzz Challenge</span>
+              <span className="text-[9px] font-bold tracking-wide" style={{ color: theme.textPrimary }}>FizzBuzz Challenge</span>
             </div>
             
             <button className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-[7px] font-bold text-slate-300 transition-colors border border-white/10 bg-white/5 hover:bg-white/10">
@@ -1237,9 +1277,9 @@ function AIVivaMockup() {
           <div className="flex-1 flex overflow-hidden">
             
             {/* Left Panel: Problem Statement */}
-            <div className="w-[45%] flex flex-col border-r border-white/5 bg-[#0a0a0d]">
+            <div className="w-[45%] flex flex-col border-r" style={{ borderColor: theme.cardBorder, backgroundColor: theme.panelBg }}>
               {/* Tabs */}
-              <div className="flex px-1 border-b border-white/5 bg-[#101014]">
+              <div className="flex px-1 border-b" style={{ borderColor: theme.cardBorder, backgroundColor: theme.topBarBg }}>
                 {[
                   { name: "Description", icon: FileText, active: true },
                   { name: "Followup", icon: MessageSquare },
@@ -1247,7 +1287,7 @@ function AIVivaMockup() {
                   { name: "Solution", icon: CheckCircle2 },
                   { name: "Evaluation", icon: CheckSquare },
                 ].map((tab, i) => (
-                  <div key={i} className={`flex items-center gap-1.5 px-3 py-2.5 text-[8px] font-medium border-b-2 ${tab.active ? "border-emerald-500 text-emerald-400" : "border-transparent text-slate-500"} cursor-pointer`}>
+                  <div key={i} className={`flex items-center gap-1.5 px-3 py-2.5 text-[8px] font-medium border-b-2 ${tab.active ? "border-emerald-500 text-emerald-400" : "border-transparent"} cursor-pointer`} style={!tab.active ? { color: theme.textMuted } : {}}>
                     <tab.icon size={10} className={tab.active ? "text-emerald-400" : ""} /> {tab.name}
                   </div>
                 ))}
@@ -1255,16 +1295,16 @@ function AIVivaMockup() {
               
               {/* Content */}
               <div className="flex-1 p-5 overflow-y-auto">
-                <p className="text-[10px] text-slate-300 leading-relaxed mb-6">
-                  Write a program that prints numbers from <code className="px-1.5 py-0.5 bg-white/10 rounded font-mono text-slate-200">1</code> to <code className="px-1.5 py-0.5 bg-white/10 rounded font-mono text-slate-200">N</code>. For multiples of 3 print <code className="px-1.5 py-0.5 bg-white/10 rounded font-mono text-slate-200">Fizz</code>, multiples of 5 print <code className="px-1.5 py-0.5 bg-white/10 rounded font-mono text-slate-200">Buzz</code>, and multiples of both print <code className="px-1.5 py-0.5 bg-white/10 rounded font-mono text-slate-200">FizzBuzz</code>.
+                <p className="text-[10px] leading-relaxed mb-6" style={{ color: theme.textSecondary }}>
+                  Write a program that prints numbers from <code className="px-1.5 py-0.5 bg-white/10 rounded font-mono text-slate-200" style={{ color: theme.textPrimary }}>1</code> to <code className="px-1.5 py-0.5 bg-white/10 rounded font-mono text-slate-200" style={{ color: theme.textPrimary }}>N</code>. For multiples of 3 print <code className="px-1.5 py-0.5 bg-white/10 rounded font-mono text-slate-200" style={{ color: theme.textPrimary }}>Fizz</code>, multiples of 5 print <code className="px-1.5 py-0.5 bg-white/10 rounded font-mono text-slate-200" style={{ color: theme.textPrimary }}>Buzz</code>, and multiples of both print <code className="px-1.5 py-0.5 bg-white/10 rounded font-mono text-slate-200" style={{ color: theme.textPrimary }}>FizzBuzz</code>.
                 </p>
                 
-                <h3 className="text-[13px] font-bold text-white mb-3">Example</h3>
-                <p className="text-[9px] text-slate-400 mb-3">For <code className="px-1.5 py-0.5 bg-white/10 rounded font-mono text-slate-200">N = 5</code>, output:</p>
+                <h3 className="text-[13px] font-bold mb-3" style={{ color: theme.textPrimary }}>Example</h3>
+                <p className="text-[9px] mb-3" style={{ color: theme.textSecondary }}>For <code className="px-1.5 py-0.5 bg-white/10 rounded font-mono text-slate-200" style={{ color: theme.textPrimary }}>N = 5</code>, output:</p>
                 
-                <div className="rounded border border-white/10 overflow-hidden bg-[#151518]">
-                  <div className="px-4 py-2 border-b border-white/5 text-[8px] text-slate-400 font-mono tracking-wider">Code Block</div>
-                  <div className="px-4 py-3 text-[10px] font-mono text-slate-300 leading-relaxed">
+                <div className="rounded border overflow-hidden" style={{ borderColor: theme.cardBorder, backgroundColor: theme.cardBg }}>
+                  <div className="px-4 py-2 border-b text-[8px] font-mono tracking-wider" style={{ borderColor: theme.cardBorder, color: theme.textMuted }}>Code Block</div>
+                  <div className="px-4 py-3 text-[10px] font-mono leading-relaxed" style={{ color: theme.textSecondary }}>
                     1<br/>
                     2<br/>
                     Fizz<br/>
@@ -1276,14 +1316,12 @@ function AIVivaMockup() {
             </div>
   
             {/* Right Panel: Code Editor */}
-            <div className="flex-1 flex flex-col bg-[#050505]">
+            <div className="flex-1 flex flex-col" style={{ backgroundColor: theme.editorBg }}>
               {/* Editor Top Bar */}
-              <div className="h-10 flex items-center justify-between px-4 border-b border-white/5 bg-[#101014]">
-                <div className="flex items-center gap-2">
-                  <span className="text-[8px] text-slate-500 font-bold tracking-wider">LANGUAGE:</span>
-                  <div className="flex items-center gap-1.5 text-[9px] text-slate-300 font-medium bg-black px-2.5 py-1.5 rounded cursor-pointer border border-white/10">
-                    JavaScript <ChevronDown size={10} />
-                  </div>
+              <div className="h-10 px-4 flex items-center justify-between border-b" style={{ borderColor: theme.cardBorder }}>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[7px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-[3px] rounded">JS</span>
+                  <span className="text-[8px] font-mono" style={{ color: theme.textSecondary }}>solution.js</span>
                 </div>
                 <button className="flex items-center gap-1.5 text-[8px] font-bold text-rose-400 px-2.5 py-1.5 rounded border border-rose-500/20 bg-rose-500/10 hover:bg-rose-500/20 transition-colors">
                   <RefreshCw size={10} /> RESET CODE
@@ -1291,22 +1329,22 @@ function AIVivaMockup() {
               </div>
   
               {/* AI Assistant Banner */}
-              <div className="px-4 py-3 border-b border-white/5 bg-[#0a0a0d] flex items-center gap-3">
+              <div className="px-4 py-3 border-b flex items-center gap-3" style={{ borderColor: theme.cardBorder, backgroundColor: theme.panelBg }}>
                 <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center border border-emerald-500/30">
                   <Mic size={14} className="text-emerald-400" />
                 </div>
                 <div>
-                  <div className="text-[9px] font-bold text-white tracking-wider">VOICE DEVELOPER ASSISTANT</div>
-                  <div className="text-[8px] text-slate-400 mt-0.5">Ready to explain security & algorithms.</div>
+                  <div className="text-[9px] font-bold tracking-wider" style={{ color: theme.textPrimary }}>VOICE DEVELOPER ASSISTANT</div>
+                  <div className="text-[8px] mt-0.5" style={{ color: theme.textSecondary }}>Ready to explain security & algorithms.</div>
                 </div>
               </div>
   
               {/* Editor Area */}
               <div className="flex-1 flex overflow-hidden">
-                <div className="w-10 py-4 flex flex-col items-end pr-3 text-[10px] font-mono text-[#858585] select-none bg-[#050505]">
+                <div className="w-10 py-4 flex flex-col items-end pr-3 text-[10px] font-mono select-none" style={{ color: "#858585", backgroundColor: theme.editorBg }}>
                   {Array.from({ length: 11 }).map((_, i) => <div key={i} className="leading-relaxed">{i + 1}</div>)}
                 </div>
-                <div className="flex-1 py-4 text-[10px] font-mono text-[#d4d4d4] whitespace-pre-wrap leading-relaxed relative">
+                <div className="flex-1 py-4 text-[10px] font-mono whitespace-pre-wrap leading-relaxed relative" style={{ color: theme.codeColor }}>
                   {renderTokens()}
                   {charCount < totalChars && (
                      <span className="inline-block w-1.5 h-3.5 bg-white animate-pulse align-middle ml-0.5" />
@@ -1315,22 +1353,22 @@ function AIVivaMockup() {
               </div>
   
               {/* Bottom Output / Debug Bar */}
-              <div className="h-12 border-t border-white/10 bg-[#101014] flex items-center px-4 gap-4">
+              <div className="h-12 border-t flex items-center px-4 gap-4" style={{ borderColor: theme.cardBorder, backgroundColor: theme.topBarBg }}>
                 <div className="flex items-center gap-2 flex-1">
-                  <button className="flex items-center gap-1.5 text-[8px] font-bold text-slate-300 hover:text-white transition-colors bg-white/5 px-3 py-1.5 rounded border border-white/10">
+                  <button className="flex items-center gap-1.5 text-[8px] font-bold transition-colors px-3 py-1.5 rounded border" style={{ backgroundColor: theme.cardBg, borderColor: theme.cardBorder, color: theme.textSecondary }}>
                     <Terminal size={10} /> Testcase
                   </button>
-                  <button className="flex items-center gap-1.5 text-[8px] font-bold text-slate-400 hover:text-white transition-colors px-3 py-1.5">
+                  <button className="flex items-center gap-1.5 text-[8px] font-bold transition-colors px-3 py-1.5" style={{ color: theme.textMuted }}>
                     <CheckCircle2 size={10} /> Test Result
                   </button>
-                  <button className="flex items-center gap-1.5 text-[8px] font-bold text-slate-400 hover:text-white transition-colors px-3 py-1.5">
+                  <button className="flex items-center gap-1.5 text-[8px] font-bold transition-colors px-3 py-1.5" style={{ color: theme.textMuted }}>
                     <Monitor size={10} /> Debug Console
                   </button>
                 </div>
                 
                 <div className="flex items-center gap-3">
-                  <div className="text-[8px] font-bold text-slate-500 tracking-wider">TEST CASE 1 (SAMPLE)</div>
-                  <div className="px-4 py-1.5 rounded bg-black border border-white/10 text-[9px] text-white font-mono">
+                  <div className="text-[8px] font-bold tracking-wider" style={{ color: theme.textMuted }}>TEST CASE 1 (SAMPLE)</div>
+                  <div className="px-4 py-1.5 rounded border text-[9px] font-mono" style={{ backgroundColor: theme.editorBg, borderColor: theme.cardBorder, color: theme.textPrimary }}>
                     15
                   </div>
                 </div>
