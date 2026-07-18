@@ -782,7 +782,7 @@ const formatTime = (seconds) => {
               <Brain size={12} className="text-violet-500" />
               AI Viva
             </div>
-            <h1 className="text-4xl font-serif tracking-tight" style={{ color: "var(--text-primary)" }}>AI Viva System</h1>
+            <h1 className="text-4xl font-black font-display tracking-tight text-gradient">AI Viva System</h1>
             <p className="text-sm max-w-xl" style={{ color: "var(--text-secondary)" }}>
               Test your theoretical knowledge in a spoken viva session. Read each question, then answer verbally — your speech is transcribed live, AI-corrected for technical accuracy, and evaluated intelligently.
             </p>

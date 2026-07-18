@@ -12,7 +12,7 @@ export default function MyListsPage() {
           <BookOpen size={12} className="text-violet-500" />
           Lists
         </div>
-        <h1 className="text-4xl font-serif tracking-tight" style={{ color: "var(--text-primary)" }}>My Lists</h1>
+        <h1 className="text-4xl font-black font-display tracking-tight text-gradient">My Lists</h1>
         <p className="text-sm max-w-xl" style={{ color: "var(--text-secondary)" }}>
           Create and organize collections of problems, materials, and notes.
         </p>

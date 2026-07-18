@@ -695,6 +695,10 @@ export default function PracticeWorkspace() {
   // Submit flow
   const submitCode = async () => {
     if (!problem) return;
+
+    const confirmSubmit = window.confirm("Are you sure you want to submit your code?");
+    if (!confirmSubmit) return;
+
     setIsSubmitting(true);
     setActiveConsoleTab("result");
     setTestResults([]);

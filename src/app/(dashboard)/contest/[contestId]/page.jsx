@@ -1561,6 +1561,10 @@ export default function ContestWorkspace() {
   // Submit flow — runs tests inline to avoid stale React state closure bug
   const submitCode = async () => {
     if (!activeQuestion) return;
+
+    const confirmSubmit = window.confirm("Are you sure you want to submit your code?");
+    if (!confirmSubmit) return;
+
     setIsSubmitting(true);
     setActiveConsoleTab("result");
     setTestResults([]);

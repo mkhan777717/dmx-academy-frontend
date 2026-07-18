@@ -123,7 +123,7 @@ export default function VivaResultPage() {
           <Brain size={12} className="text-violet-500" />
           AI Viva Result
         </div>
-        <h1 className="text-4xl font-serif tracking-tight" style={{ color: "var(--text-primary)" }}>Assessment Feedback</h1>
+        <h1 className="text-4xl font-black font-display tracking-tight text-gradient">Assessment Feedback</h1>
         <p className="text-sm max-w-xl" style={{ color: "var(--text-secondary)" }}>
           Review your verbal responses, technical correctness evaluation, and conceptual suggestions from the AI evaluator.
         </p>

@@ -24,7 +24,7 @@ export default function NotebookPage() {
             <span>New Note</span>
           </button>
         </div>
-        <h1 className="text-4xl font-serif tracking-tight" style={{ color: "var(--text-primary)" }}>My Notebook</h1>
+        <h1 className="text-4xl font-black font-display tracking-tight text-gradient">My Notebook</h1>
         <p className="text-sm max-w-xl" style={{ color: "var(--text-secondary)" }}>
           Store your important algorithms, ideas, and notes.
         </p>

@@ -85,7 +85,7 @@ export default function StudentMaterialsPage() {
           <FileText size={12} className="text-violet-500" />
           Class Notes Center
         </div>
-        <h1 className="text-4xl font-serif tracking-tight" style={{ color: "var(--text-primary)" }}>Study Materials</h1>
+        <h1 className="text-4xl font-black font-display tracking-tight text-gradient">Study Materials</h1>
         <p className="text-sm max-w-xl" style={{ color: "var(--text-secondary)" }}>
           Access class notes and documents taught in your batches.
         </p>

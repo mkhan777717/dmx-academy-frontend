@@ -337,7 +337,7 @@ export default function StudentProfile() {
           <User size={12} className="text-violet-500" />
           Scholar Profile
         </div>
-        <h1 className="text-4xl font-serif tracking-tight" style={{ color: "var(--text-primary)" }}>Student Profile</h1>
+        <h1 className="text-4xl font-black font-display tracking-tight text-gradient">Student Profile</h1>
         <p className="text-sm max-w-xl" style={{ color: "var(--text-secondary)" }}>
           Manage your account and view your learning statistics.
         </p>

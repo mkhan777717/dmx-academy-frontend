@@ -187,7 +187,7 @@ export default function ResumeBuilderPage() {
         </div>
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
           <div>
-            <h1 className="text-4xl font-serif tracking-tight" style={{ color: "var(--text-primary)" }}>Resume Builder</h1>
+            <h1 className="text-4xl font-black font-display tracking-tight text-gradient">Resume Builder</h1>
             <p className="text-sm max-w-xl mt-1" style={{ color: "var(--text-secondary)" }}>
               Create an ATS-friendly resume to showcase your skills and experience.
             </p>
