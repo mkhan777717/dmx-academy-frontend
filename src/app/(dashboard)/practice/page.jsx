@@ -183,7 +183,7 @@ export default function PracticeCatalogPage() {
   return (
     <div className="relative flex min-h-screen flex-col overflow-hidden animate-fade-in" style={{ backgroundColor: "var(--bg-primary)" }}>
       {/* Background ambient lighting */}
-      <div className="absolute top-0 left-0 right-0 h-[450px] pointer-events-none z-0" style={{ background: "linear-gradient(180deg, rgba(16,185,129,0.04) 0%, transparent 100%)" }} />
+      <div className="absolute top-0 left-0 right-0 h-[450px] pointer-events-none z-0" style={{ background: "linear-gradient(180deg, rgba(99,102,241,0.04) 0%, transparent 100%)" }} />
       
       {!user && <Navbar />}
 
@@ -209,7 +209,7 @@ export default function PracticeCatalogPage() {
               <Zap size={12} className="text-violet-500 animate-pulse" />
               <span>Interactive Practice Sandbox</span>
             </div>
-            <h1 className="text-4xl font-serif tracking-tight" style={{ color: "var(--text-primary)" }}>
+            <h1 className="text-4xl font-black font-display tracking-tight text-gradient">
               Interactive Code Zone
             </h1>
             <p className="text-sm max-w-xl leading-relaxed" style={{ color: "var(--text-secondary)" }}>

@@ -88,7 +88,7 @@ export default function VivaHistoryPage() {
             <Brain size={12} className="text-violet-500" />
             AI Viva
           </div>
-          <h1 className="text-4xl font-serif tracking-tight" style={{ color: "var(--text-primary)" }}>
+          <h1 className="text-4xl font-black font-display tracking-tight text-gradient">
             Session History
           </h1>
           <p className="text-sm max-w-xl" style={{ color: "var(--text-secondary)" }}>

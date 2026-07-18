@@ -695,6 +695,10 @@ export default function PracticeWorkspace() {
   // Submit flow
   const submitCode = async () => {
     if (!problem) return;
+
+    const confirmSubmit = window.confirm("Are you sure you want to submit your code?");
+    if (!confirmSubmit) return;
+
     setIsSubmitting(true);
     setActiveConsoleTab("result");
     setTestResults([]);
@@ -899,6 +903,33 @@ export default function PracticeWorkspace() {
   const renderText = (markdownText) => {
     if (!markdownText) return null;
 
+    const isRawCode = (text) => {
+      if (!text) return false;
+      if (text.includes("```")) return false;
+      const codeKeywords = ["def ", "while", "for ", "if ", "else", "return", "function", "const ", "let ", "var ", "import ", "include", "class ", "public ", "static ", "void "];
+      const codeSymbols = ["=", "==", "+", "-", "*", "/", "%", "!", "<", ">", "&", "|", "^", "~", "?", ":", ";", "{", "}", "(", ")", "[", "]"];
+      
+      const lines = text.split("\n").filter(l => l.trim().length > 0);
+      if (lines.length === 0) return false;
+      
+      let codeLikeLines = 0;
+      lines.forEach(line => {
+        const hasKeyword = codeKeywords.some(kw => line.includes(kw));
+        const hasSymbol = codeSymbols.some(sym => line.includes(sym));
+        const isIndented = line.startsWith(" ") || line.startsWith("\t");
+        if (hasKeyword || hasSymbol || isIndented) {
+          codeLikeLines++;
+        }
+      });
+      
+      return (codeLikeLines / lines.length) >= 0.6;
+    };
+
+    let processedText = markdownText;
+    if (!markdownText.includes("```") && isRawCode(markdownText)) {
+      processedText = "```\n" + markdownText + "\n```";
+    }
+
     const processInline = (str) => {
       const backtickParts = str.split(/`([^`]+)`/g);
       return backtickParts.flatMap((part, i) => {
@@ -920,7 +951,7 @@ export default function PracticeWorkspace() {
       });
     };
 
-    const lines = markdownText.split("\n");
+    const lines = processedText.split("\n");
     const blocks = [];
     let currentCodeBlock = null;
 
@@ -984,11 +1015,11 @@ export default function PracticeWorkspace() {
       }
       if (block.type === "code") {
         return (
-          <div key={idx} className="my-4 rounded-xl border border-[var(--border-primary)] border-[var(--border-primary)]/80 overflow-hidden shadow-2xl">
-            <div className="flex justify-between items-center px-4 py-1.5 border-b border-[var(--border-primary)]/80 bg-[#161b27] text-[10px] text-slate-400 font-mono font-semibold">
-              <span>Code Block</span>
+          <div key={idx} className="my-4 rounded-xl border border-[var(--border-primary)] overflow-hidden shadow-sm">
+            <div className="flex justify-between items-center px-4 py-2 border-b border-[var(--border-primary)] bg-[var(--bg-hover)] text-[10px] text-[var(--text-secondary)] font-mono font-bold uppercase tracking-wider">
+              <span>{block.lang ? block.lang.toUpperCase() : "Code"}</span>
             </div>
-            <pre className="p-4 overflow-x-auto text-xs font-mono text-slate-200 bg-[#0d1117] leading-relaxed whitespace-pre">
+            <pre className="p-4 overflow-x-auto text-xs font-mono text-[var(--text-primary)] bg-[var(--bg-code)] leading-relaxed whitespace-pre">
               <code>{block.content}</code>
             </pre>
           </div>
@@ -1024,12 +1055,10 @@ export default function PracticeWorkspace() {
           <button
             onClick={() => setVoiceEnabled(!voiceEnabled)}
             className={`flex items-center space-x-1 px-3 py-1.5 rounded-full text-xs font-bold transition-all border border-[var(--border-primary)] cursor-pointer ${voiceEnabled
-                ? "bg-zinc-500/10 text-zinc-500 border-zinc-500/20"
-                : "bg-slate-500/5 text-[var(--text-muted)] border-transparent"
+              ? "bg-zinc-500/10 text-zinc-500 border-zinc-500/20"
+              : "bg-slate-500/5 text-[var(--text-muted)] border-transparent"
               }`}
           >
-            {voiceEnabled ? <Mic size={12} /> : <MicOff size={12} />}
-            <span>Voice Voice</span>
           </button>
 
           <button
@@ -1083,8 +1112,8 @@ export default function PracticeWorkspace() {
                 key={tab.id}
                 onClick={() => setActiveLeftTab(tab.id)}
                 className={`flex items-center space-x-1 px-4 py-2 text-xs font-semibold cursor-pointer border-b-2 transition-all whitespace-nowrap ${activeLeftTab === tab.id
-                    ? "border-zinc-500 text-zinc-500"
-                    : "border-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+                  ? "border-zinc-500 text-zinc-500"
+                  : "border-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
                   }`}
               >
                 {tab.icon}
@@ -1200,10 +1229,10 @@ export default function PracticeWorkspace() {
                 onClick={isSpeaking ? stopSpeaking : () => askVoiceAssistant()}
                 disabled={isListening || assistantTyping}
                 className={`relative h-8 w-8 rounded-full flex items-center justify-center text-white shadow-sm transition-all border border-[var(--border-primary)] border-transparent outline-none focus:outline-none ${isSpeaking
-                    ? "bg-rose-600 hover:bg-rose-700 cursor-pointer"
-                    : isListening
-                      ? "bg-red-500"
-                      : "bg-[var(--accent-primary)] hover:bg-zinc-700 cursor-pointer"
+                  ? "bg-rose-600 hover:bg-rose-700 cursor-pointer"
+                  : isListening
+                    ? "bg-red-500"
+                    : "bg-[var(--accent-primary)] hover:bg-zinc-700 cursor-pointer"
                   }`}
                 title={isSpeaking ? "Stop speaking" : "Start query"}
               >
@@ -1307,8 +1336,8 @@ export default function PracticeWorkspace() {
                     key={ctab.id}
                     onClick={() => setActiveConsoleTab(ctab.id)}
                     className={`flex items-center space-x-1 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${activeConsoleTab === ctab.id
-                        ? "bg-slate-500/10 text-zinc-500 border border-[var(--border-primary)] border-slate-500/10"
-                        : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+                      ? "bg-slate-500/10 text-zinc-500 border border-[var(--border-primary)] border-slate-500/10"
+                      : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
                       }`}
                   >
                     {ctab.icon}
@@ -1373,8 +1402,8 @@ export default function PracticeWorkspace() {
                         <div className="flex justify-between items-center">
                           <span className="font-bold uppercase tracking-wider text-[10px]" style={{ color: "var(--text-secondary)" }}>{res.name}</span>
                           <span className={`font-extrabold text-[10px] px-2 py-0.5 rounded border border-[var(--border-primary)] uppercase ${res.passed
-                              ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400"
-                              : "bg-rose-500/10 border-rose-500/30 text-rose-400"
+                            ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400"
+                            : "bg-rose-500/10 border-rose-500/30 text-rose-400"
                             }`}>
                             {res.passed ? "Passed" : "Failed"}
                           </span>
@@ -1466,8 +1495,8 @@ export default function PracticeWorkspace() {
                         {/* Meta information */}
                         <div className="flex items-center gap-2">
                           <span className={`font-extrabold text-[10px] px-2 py-0.5 rounded border border-[var(--border-primary)] uppercase ${debugResult.status === "SUCCESS"
-                              ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400"
-                              : "bg-rose-500/10 border-rose-500/30 text-rose-400"
+                            ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400"
+                            : "bg-rose-500/10 border-rose-500/30 text-rose-400"
                             }`}>
                             {debugResult.status}
                           </span>
@@ -1527,8 +1556,8 @@ export default function PracticeWorkspace() {
               <div className="flex items-center justify-between border-b pb-4" style={{ borderColor: "var(--border-primary)" }}>
                 <div className="flex items-center space-x-3">
                   <div className={`h-12 w-12 rounded-xl flex items-center justify-center text-white shadow-md ${submissionReport.verdict === "ACCEPTED"
-                      ? "bg-emerald-500 shadow-emerald-500/25"
-                      : "bg-rose-500 shadow-rose-500/25"
+                    ? "bg-emerald-500 shadow-emerald-500/25"
+                    : "bg-rose-500 shadow-rose-500/25"
                     }`}>
                     {submissionReport.verdict === "ACCEPTED" ? <CheckCircle2 size={24} /> : <XCircle size={24} />}
                   </div>
@@ -1583,8 +1612,8 @@ export default function PracticeWorkspace() {
                             </span>
 
                             <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded border border-[var(--border-primary)] uppercase font-mono ${passed
-                                ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400"
-                                : "bg-rose-500/10 border-rose-500/30 text-rose-400"
+                              ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400"
+                              : "bg-rose-500/10 border-rose-500/30 text-rose-400"
                               }`}>
                               {passed ? "Passed" : res.verdict ? res.verdict.replace(/_/g, " ") : "Failed"}
                             </span>

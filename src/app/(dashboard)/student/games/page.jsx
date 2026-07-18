@@ -155,7 +155,7 @@ export default function GamesHubPage() {
           </button>
         </div>
         
-        <h1 className="text-4xl font-serif tracking-tight" style={{ color: "var(--text-primary)" }}>Synapse Arcade</h1>
+        <h1 className="text-4xl font-black font-display tracking-tight text-gradient">Synapse Arcade</h1>
         <p className="text-sm max-w-xl" style={{ color: "var(--text-secondary)" }}>
           Level up your engineering skills through interactive, edge-to-edge game arenas. Solve layout puzzles, repair code bases, and hack endpoints in real-time.
         </p>
