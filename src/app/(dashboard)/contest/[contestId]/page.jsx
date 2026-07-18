@@ -164,7 +164,7 @@ function getAuthHeaders() {
       if (u && u.id && !String(u.id).startsWith("demo-") && !String(u.id).startsWith("local-")) {
         bypassUserId = String(u.id);
       }
-    } catch (e) {}
+    } catch (e) { }
   }
 
   return {
@@ -390,8 +390,8 @@ export default function ContestWorkspace() {
                 outputFormat: dbProb.outputFormat,
                 constraints: dbProb.constraints,
                 explanation: dbProb.explanation,
-                testcases: (dbProb.testCases || []).filter(tc => tc.isSample).length > 0 
-                  ? (dbProb.testCases || []).filter(tc => tc.isSample) 
+                testcases: (dbProb.testCases || []).filter(tc => tc.isSample).length > 0
+                  ? (dbProb.testCases || []).filter(tc => tc.isSample)
                   : (dbProb.testCases && dbProb.testCases.length > 0 ? [dbProb.testCases[0]] : []),
                 editorTemplates: {
                   javascript: dbProb.templateJS || `// Solve: ${dbProb.title}\nfunction solution() {\n    // Write your code here\n}`,
@@ -579,7 +579,7 @@ export default function ContestWorkspace() {
     // ── Block DevTools + Copy-Paste + AI shortcuts (Mac Option key etc.) ──
     const handleGlobalKeyDown = (e) => {
       const ctrl = e.ctrlKey || e.metaKey; // Cmd on Mac, Ctrl on Windows
-      const alt  = e.altKey;               // Option key on Mac
+      const alt = e.altKey;               // Option key on Mac
       const shift = e.shiftKey;
       const key = e.key;
 
@@ -881,8 +881,8 @@ export default function ContestWorkspace() {
 
   useEffect(() => {
     if (activeQuestion) {
-      const initialInput = activeQuestion.testcases && activeQuestion.testcases[0] 
-        ? activeQuestion.testcases[0].input 
+      const initialInput = activeQuestion.testcases && activeQuestion.testcases[0]
+        ? activeQuestion.testcases[0].input
         : "";
       setCustomInput(initialInput);
       setDebugResult(null);
@@ -2399,10 +2399,9 @@ export default function ContestWorkspace() {
             className="flex flex-1 overflow-hidden relative"
           >
             {(isResizing || isConsoleResizing) && (
-              <div 
-                className={`fixed inset-0 z-50 bg-transparent select-none pointer-events-auto ${
-                  isResizing ? "cursor-col-resize" : "cursor-row-resize"
-                }`} 
+              <div
+                className={`fixed inset-0 z-50 bg-transparent select-none pointer-events-auto ${isResizing ? "cursor-col-resize" : "cursor-row-resize"
+                  }`}
               />
             )}
             {/* Left Column Problem Description */}
@@ -2514,25 +2513,12 @@ export default function ContestWorkspace() {
                     onChange={(e) => setSelectedLanguage(e.target.value)}
                     className="bg-slate-500/5 border border-[var(--border-primary)] rounded px-2.5 py-1 text-xs font-bold outline-none cursor-pointer text-[var(--text-primary)]"
                   >
-                    {activeQuestion && activeQuestion.editorTemplates.markdown && <option value="markdown">Markdown</option>}
                     {activeQuestion && activeQuestion.editorTemplates.javascript && <option value="javascript">JavaScript</option>}
                     {activeQuestion && activeQuestion.editorTemplates.python && <option value="python">Python</option>}
                     {activeQuestion && activeQuestion.editorTemplates.go && <option value="go">Go</option>}
-                    {activeQuestion && activeQuestion.editorTemplates.cpp && <option value="cpp">C++</option>}
                     {activeQuestion && activeQuestion.editorTemplates.java && <option value="java">Java</option>}
-                    {activeQuestion && activeQuestion.editorTemplates.typescript && <option value="typescript">TypeScript</option>}
+                    {activeQuestion && activeQuestion.editorTemplates.cpp && <option value="cpp">C++</option>}
                     {activeQuestion && activeQuestion.editorTemplates.c && <option value="c">C</option>}
-                    {activeQuestion && activeQuestion.editorTemplates.csharp && <option value="csharp">C#</option>}
-                    {activeQuestion && activeQuestion.editorTemplates.kotlin && <option value="kotlin">Kotlin</option>}
-                    {activeQuestion && activeQuestion.editorTemplates.swift && <option value="swift">Swift</option>}
-                    {activeQuestion && activeQuestion.editorTemplates.rust && <option value="rust">Rust</option>}
-                    {activeQuestion && activeQuestion.editorTemplates.ruby && <option value="ruby">Ruby</option>}
-                    {activeQuestion && activeQuestion.editorTemplates.php && <option value="php">PHP</option>}
-                    {activeQuestion && activeQuestion.editorTemplates.dart && <option value="dart">Dart</option>}
-                    {activeQuestion && activeQuestion.editorTemplates.scala && <option value="scala">Scala</option>}
-                    {activeQuestion && activeQuestion.editorTemplates.elixir && <option value="elixir">Elixir</option>}
-                    {activeQuestion && activeQuestion.editorTemplates.erlang && <option value="erlang">Erlang</option>}
-                    {activeQuestion && activeQuestion.editorTemplates.racket && <option value="racket">Racket</option>}
                   </select>
 
                   <button
@@ -2668,16 +2654,16 @@ export default function ContestWorkspace() {
               </div>
 
               {/* Run controls panel */}
-              <div 
-                className="flex flex-col border-t relative" 
-                style={{ 
-                  borderColor: "var(--border-primary)", 
+              <div
+                className="flex flex-col border-t relative"
+                style={{
+                  borderColor: "var(--border-primary)",
                   backgroundColor: "var(--bg-secondary)",
                   height: `${consoleHeight}px`
                 }}
               >
                 {/* Drag Handle */}
-                <div 
+                <div
                   onMouseDown={startConsoleResizing}
                   className="absolute top-0 left-0 right-0 h-1.5 cursor-row-resize hover:bg-zinc-500/50 transition-colors z-30"
                   style={{ transform: "translateY(-50%)" }}
@@ -2887,11 +2873,10 @@ export default function ContestWorkspace() {
                           <div className="space-y-3 font-mono text-[11px]">
                             {/* Meta information */}
                             <div className="flex items-center gap-2">
-                              <span className={`font-extrabold text-[10px] px-2 py-0.5 rounded border border-[var(--border-primary)] uppercase ${
-                                debugResult.status === "SUCCESS" 
-                                  ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400" 
-                                  : "bg-rose-500/10 border-rose-500/30 text-rose-400"
-                              }`}>
+                              <span className={`font-extrabold text-[10px] px-2 py-0.5 rounded border border-[var(--border-primary)] uppercase ${debugResult.status === "SUCCESS"
+                                ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400"
+                                : "bg-rose-500/10 border-rose-500/30 text-rose-400"
+                                }`}>
                                 {debugResult.status}
                               </span>
                               <span className="text-slate-400 text-[10px]">
@@ -3038,7 +3023,7 @@ export default function ContestWorkspace() {
       <AnimatePresence>
         {submissionVerdict && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4" onClick={() => setSubmissionVerdict(null)}>
-            <motion.div 
+            <motion.div
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
@@ -3048,11 +3033,10 @@ export default function ContestWorkspace() {
             >
               <div className="flex items-center justify-between border-b pb-4" style={{ borderColor: "var(--border-primary)" }}>
                 <div className="flex items-center space-x-3">
-                  <div className={`h-12 w-12 rounded-xl flex items-center justify-center text-white shadow-md ${
-                    submissionVerdict.passed 
-                      ? "bg-emerald-500 shadow-emerald-500/25" 
-                      : "bg-rose-500 shadow-rose-500/25"
-                  }`}>
+                  <div className={`h-12 w-12 rounded-xl flex items-center justify-center text-white shadow-md ${submissionVerdict.passed
+                    ? "bg-emerald-500 shadow-emerald-500/25"
+                    : "bg-rose-500 shadow-rose-500/25"
+                    }`}>
                     {submissionVerdict.passed ? <CheckCircle2 size={24} /> : <XCircle size={24} />}
                   </div>
                   <div>
@@ -3064,7 +3048,7 @@ export default function ContestWorkspace() {
                     </p>
                   </div>
                 </div>
-                
+
                 <div className="text-right">
                   <div className="text-sm font-black text-[var(--text-primary)] font-mono">
                     {submissionVerdict.passedTestCases} / {submissionVerdict.totalTestCases} Passed
@@ -3092,24 +3076,23 @@ export default function ContestWorkspace() {
                       const isSample = res.isSample;
                       const passed = res.verdict === "ACCEPTED" || res.status === "SUCCESS";
                       return (
-                        <div 
+                        <div
                           key={index}
                           className="border border-[var(--border-primary)] rounded-2xl p-4 transition-all"
-                          style={{ 
-                            backgroundColor: "var(--bg-primary)", 
-                            borderColor: passed ? "rgba(16, 185, 129, 0.15)" : "rgba(239, 68, 68, 0.15)" 
+                          style={{
+                            backgroundColor: "var(--bg-primary)",
+                            borderColor: passed ? "rgba(16, 185, 129, 0.15)" : "rgba(239, 68, 68, 0.15)"
                           }}
                         >
                           <div className="flex items-center justify-between">
                             <span className="text-[11px] font-bold text-[var(--text-primary)] font-mono">
                               Test Case #{res.index} {isSample ? <span className="text-zinc-400 text-[10px] ml-1 font-sans">(Sample)</span> : <span className="text-[var(--text-muted)] text-[10px] ml-1 font-sans">(Hidden)</span>}
                             </span>
-                            
-                            <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded border border-[var(--border-primary)] uppercase font-mono ${
-                              passed 
-                                ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400" 
-                                : "bg-rose-500/10 border-rose-500/30 text-rose-400"
-                            }`}>
+
+                            <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded border border-[var(--border-primary)] uppercase font-mono ${passed
+                              ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400"
+                              : "bg-rose-500/10 border-rose-500/30 text-rose-400"
+                              }`}>
                               {passed ? "Passed" : res.verdict ? res.verdict.replace(/_/g, " ") : "Failed"}
                             </span>
                           </div>
@@ -3390,9 +3373,9 @@ function MockAssessmentSurvey({ onSubmit, onSkip }) {
       school: status === "Student" ? school : null,
       interviews: (status === "Employed" || status === "Unemployed")
         ? interviews.filter(item => item.company || item.stages.length > 0).map(item => ({
-            company: item.company,
-            stages: item.stages
-          }))
+          company: item.company,
+          stages: item.stages
+        }))
         : null
     };
     onSubmit(data);
@@ -3443,11 +3426,10 @@ function MockAssessmentSurvey({ onSubmit, onSkip }) {
                   key={opt}
                   type="button"
                   onClick={() => setStatus(opt)}
-                  className={`px-5 py-2.5 rounded-full text-xs font-bold border border-[var(--border-primary)] transition-all cursor-pointer select-none active:scale-[0.98] ${
-                    isSelected
-                      ? "bg-[var(--bg-hover)] text-white border-[var(--border-primary)]"
-                      : "bg-transparent text-[var(--text-secondary)] border-[var(--border-primary)] hover:bg-slate-500/5"
-                  }`}
+                  className={`px-5 py-2.5 rounded-full text-xs font-bold border border-[var(--border-primary)] transition-all cursor-pointer select-none active:scale-[0.98] ${isSelected
+                    ? "bg-[var(--bg-hover)] text-white border-[var(--border-primary)]"
+                    : "bg-transparent text-[var(--text-secondary)] border-[var(--border-primary)] hover:bg-slate-500/5"
+                    }`}
                 >
                   {opt}
                 </button>
@@ -3556,11 +3538,10 @@ function MockAssessmentSurvey({ onSubmit, onSkip }) {
                           key={stage}
                           type="button"
                           onClick={() => handleToggleStage(item.id, stage)}
-                          className={`px-2.5 py-1.5 rounded-lg text-[10px] font-bold border border-[var(--border-primary)] transition-all cursor-pointer active:scale-[0.98] ${
-                            isStageSelected
-                              ? "bg-[var(--bg-hover)] text-white border-[var(--border-primary)]"
-                              : "bg-transparent text-[var(--text-secondary)] border-[var(--border-primary)] hover:bg-slate-500/5"
-                          }`}
+                          className={`px-2.5 py-1.5 rounded-lg text-[10px] font-bold border border-[var(--border-primary)] transition-all cursor-pointer active:scale-[0.98] ${isStageSelected
+                            ? "bg-[var(--bg-hover)] text-white border-[var(--border-primary)]"
+                            : "bg-transparent text-[var(--text-secondary)] border-[var(--border-primary)] hover:bg-slate-500/5"
+                            }`}
                         >
                           {stage}
                         </button>

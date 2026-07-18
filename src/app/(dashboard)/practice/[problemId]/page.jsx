@@ -4,8 +4,8 @@ import React, { useState, useEffect, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { 
-  ArrowLeft, Play, Send, BookOpen, Terminal, 
+import {
+  ArrowLeft, Play, Send, BookOpen, Terminal,
   CheckCircle2, ChevronRight, Mic, MicOff, RefreshCw,
   FileText, MessageCircle, ClipboardCheck, Palette, Trash2, CheckCircle, XCircle,
   Volume2, Bug, AlertTriangle
@@ -20,7 +20,7 @@ export default function PracticeWorkspace() {
   const problemId = params.problemId;
   const { user, token, API_BASE } = useAuth();
   const [showExitConfirm, setShowExitConfirm] = useState(false);
-  
+
   const [problem, setProblem] = useState(null);
   const [dbProblem, setDbProblem] = useState(null);
   const [loadingProblem, setLoadingProblem] = useState(true);
@@ -29,7 +29,7 @@ export default function PracticeWorkspace() {
     async function loadProblemData() {
       if (!problemId) return;
       setLoadingProblem(true);
-      
+
       try {
         const res = await fetch(`${API_BASE}/api/problems/${problemId}`, {
           signal: AbortSignal.timeout(30000)
@@ -177,13 +177,13 @@ export default function PracticeWorkspace() {
   useEffect(() => {
     if (problem) {
       const defaultLang = problem.defaultLanguage || "javascript";
-      
+
       // Initialize code editor with templates
       const codes = {};
       Object.keys(problem.editorTemplates).forEach(lang => {
         codes[lang] = problem.editorTemplates[lang];
       });
-      
+
       const testInputs = problem.testcases.map(t => t.input);
 
       setTimeout(() => {
@@ -269,12 +269,12 @@ export default function PracticeWorkspace() {
       const end = e.target.selectionEnd;
       const code = editorCodes[selectedLanguage] || "";
       const updatedCode = code.substring(0, start) + "  " + code.substring(end);
-      
+
       setEditorCodes(prev => ({
         ...prev,
         [selectedLanguage]: updatedCode
       }));
-      
+
       // Reset cursor position
       setTimeout(() => {
         if (editorRef.current) {
@@ -309,7 +309,7 @@ export default function PracticeWorkspace() {
     const containerRect = containerRef.current.getBoundingClientRect();
     const relativeX = e.clientX - containerRect.left;
     const percentage = (relativeX / containerRect.width) * 100;
-    
+
     // Bound columns
     if (percentage > 20 && percentage < 80) {
       setLeftWidth(percentage);
@@ -386,24 +386,24 @@ export default function PracticeWorkspace() {
     if (activeLeftTab === "excalidraw" && canvasRef.current) {
       const canvas = canvasRef.current;
       const ctx = canvas.getContext("2d");
-      
+
       const updateCanvasSize = () => {
         if (!canvasRef.current) return;
         const rect = canvas.parentElement.getBoundingClientRect();
         canvas.width = rect.width;
         canvas.height = 400; // Match CSS height of h-[400px]
-        
+
         ctx.lineCap = "round";
         ctx.lineJoin = "round";
         ctx.strokeStyle = drawColor;
         ctx.lineWidth = lineWidth;
-        
+
         drawCanvasBackground(canvas, ctx);
         restoreDrawing();
       };
 
       updateCanvasSize();
-      
+
       window.addEventListener("resize", updateCanvasSize);
       return () => {
         window.removeEventListener("resize", updateCanvasSize);
@@ -417,14 +417,14 @@ export default function PracticeWorkspace() {
     const rect = canvas.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
-    
+
     setIsDrawing(true);
     const ctx = canvas.getContext("2d");
     ctx.beginPath();
     ctx.strokeStyle = drawColor;
     ctx.lineWidth = lineWidth;
     ctx.moveTo(x, y);
-    
+
     drawingPaths.current.push({
       color: drawColor,
       width: lineWidth,
@@ -438,11 +438,11 @@ export default function PracticeWorkspace() {
     const rect = canvas.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
-    
+
     const ctx = canvas.getContext("2d");
     ctx.lineTo(x, y);
     ctx.stroke();
-    
+
     const currentPath = drawingPaths.current[drawingPaths.current.length - 1];
     if (currentPath) {
       currentPath.points.push({ x, y });
@@ -476,20 +476,20 @@ export default function PracticeWorkspace() {
       stopSpeaking();
       return;
     }
-    
+
     const query = customQuery || "How do I optimize the code for performance?";
-    
+
     setIsListening(true);
     setVoiceWaveform(true);
-    
+
     // Simulate recording transcription
     setTimeout(() => {
       setIsListening(false);
-      
+
       const newMessages = [...assistantMessages, { role: "user", text: query }];
       setAssistantMessages(newMessages);
       setAssistantTyping(true);
-      
+
       // AI reasoning responses based on queries
       let responseText = "To improve performance, focus on caching. A brute force approach checks every pair, which takes O(N²) time. Storing items in a Hash Map records their values and indexes, allowing O(N) lookups in one pass.";
       if (query.toLowerCase().includes("auth")) {
@@ -510,7 +510,7 @@ export default function PracticeWorkspace() {
         if (voiceEnabled && typeof window !== "undefined" && window.speechSynthesis) {
           window.speechSynthesis.cancel(); // Stop active speaking
           const utterance = new SpeechSynthesisUtterance(responseText);
-          
+
           setIsSpeaking(true);
           utterance.onend = () => {
             setIsSpeaking(false);
@@ -553,7 +553,7 @@ export default function PracticeWorkspace() {
       setTimeout(() => {
         const results = [];
         const originalConsoleLog = console.log;
-        
+
         problem.testcases.forEach((tc, index) => {
           let passed = false;
           let output = "";
@@ -698,7 +698,7 @@ export default function PracticeWorkspace() {
     setIsSubmitting(true);
     setActiveConsoleTab("result");
     setTestResults([]);
-    
+
     const code = editorCodes[selectedLanguage] || "";
     const langUpper = selectedLanguage.toUpperCase();
     const mappedLang = ["JAVASCRIPT", "PYTHON", "GO", "CPP", "JAVA"].includes(langUpper) ? langUpper : "CPP";
@@ -1021,19 +1021,18 @@ export default function PracticeWorkspace() {
         </div>
 
         <div className="flex items-center space-x-3">
-          <button 
+          <button
             onClick={() => setVoiceEnabled(!voiceEnabled)}
-            className={`flex items-center space-x-1 px-3 py-1.5 rounded-full text-xs font-bold transition-all border border-[var(--border-primary)] cursor-pointer ${
-              voiceEnabled 
-                ? "bg-zinc-500/10 text-zinc-500 border-zinc-500/20" 
+            className={`flex items-center space-x-1 px-3 py-1.5 rounded-full text-xs font-bold transition-all border border-[var(--border-primary)] cursor-pointer ${voiceEnabled
+                ? "bg-zinc-500/10 text-zinc-500 border-zinc-500/20"
                 : "bg-slate-500/5 text-[var(--text-muted)] border-transparent"
-            }`}
+              }`}
           >
             {voiceEnabled ? <Mic size={12} /> : <MicOff size={12} />}
             <span>Voice Voice</span>
           </button>
-          
-          <button 
+
+          <button
             onClick={runCode}
             disabled={isRunning}
             className="flex items-center space-x-1 px-4 py-1.5 rounded-full text-xs font-bold bg-slate-500/10 text-[var(--text-primary)] hover:bg-slate-500/20 border border-[var(--border-primary)] transition-all cursor-pointer disabled:opacity-50"
@@ -1042,7 +1041,7 @@ export default function PracticeWorkspace() {
             <span>Run Code</span>
           </button>
 
-          <button 
+          <button
             onClick={submitCode}
             disabled={isSubmitting}
             className="flex items-center space-x-1 px-4 py-1.5 rounded-full text-xs font-bold text-[var(--text-on-accent)] hover:shadow-md transition-all cursor-pointer disabled:opacity-50"
@@ -1055,19 +1054,18 @@ export default function PracticeWorkspace() {
       </header>
 
       {/* Main Workspace split panel layout */}
-      <div 
+      <div
         ref={containerRef}
         className="flex flex-1 overflow-hidden relative"
       >
         {(isResizing || isConsoleResizing) && (
-          <div 
-            className={`fixed inset-0 z-50 bg-transparent select-none pointer-events-auto ${
-              isResizing ? "cursor-col-resize" : "cursor-row-resize"
-            }`} 
+          <div
+            className={`fixed inset-0 z-50 bg-transparent select-none pointer-events-auto ${isResizing ? "cursor-col-resize" : "cursor-row-resize"
+              }`}
           />
         )}
         {/* Left Column Description Panel */}
-        <div 
+        <div
           className="flex flex-col h-full overflow-hidden shrink-0"
           style={{ width: `${leftWidth}%` }}
         >
@@ -1084,11 +1082,10 @@ export default function PracticeWorkspace() {
               <button
                 key={tab.id}
                 onClick={() => setActiveLeftTab(tab.id)}
-                className={`flex items-center space-x-1 px-4 py-2 text-xs font-semibold cursor-pointer border-b-2 transition-all whitespace-nowrap ${
-                  activeLeftTab === tab.id 
-                    ? "border-zinc-500 text-zinc-500" 
+                className={`flex items-center space-x-1 px-4 py-2 text-xs font-semibold cursor-pointer border-b-2 transition-all whitespace-nowrap ${activeLeftTab === tab.id
+                    ? "border-zinc-500 text-zinc-500"
                     : "border-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
-                }`}
+                  }`}
               >
                 {tab.icon}
                 <span>{tab.label}</span>
@@ -1098,7 +1095,7 @@ export default function PracticeWorkspace() {
 
           {/* Left panel scrollable body */}
           <div className="flex-1 overflow-y-auto p-6 space-y-4" style={{ backgroundColor: "var(--bg-card)" }}>
-            
+
             {/* Whiteboard sketchpad */}
             <div className={activeLeftTab === "excalidraw" ? "block space-y-4 h-full" : "hidden"}>
               <div className="flex items-center justify-between p-3 rounded-2xl border" style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}>
@@ -1108,9 +1105,8 @@ export default function PracticeWorkspace() {
                       <button
                         key={col}
                         onClick={() => setDrawColor(col)}
-                        className={`h-5 w-5 rounded-full border border-[var(--border-primary)] cursor-pointer transition-transform ${
-                          drawColor === col ? "scale-110 border-zinc-500 shadow-sm" : "border-slate-500/20"
-                        }`}
+                        className={`h-5 w-5 rounded-full border border-[var(--border-primary)] cursor-pointer transition-transform ${drawColor === col ? "scale-110 border-zinc-500 shadow-sm" : "border-slate-500/20"
+                          }`}
                         style={{ backgroundColor: col }}
                       />
                     ))}
@@ -1118,18 +1114,18 @@ export default function PracticeWorkspace() {
                   <span className="h-4 w-px bg-slate-500/20" />
                   <div className="flex items-center space-x-1.5">
                     <span className="text-[10px] text-[var(--text-secondary)] font-bold">Size:</span>
-                    <input 
-                      type="range" 
-                      min="1" 
-                      max="10" 
-                      value={lineWidth} 
+                    <input
+                      type="range"
+                      min="1"
+                      max="10"
+                      value={lineWidth}
                       onChange={(e) => setLineWidth(parseInt(e.target.value))}
                       className="w-16 h-1 bg-slate-200 rounded-lg appearance-none cursor-pointer"
                     />
                   </div>
                 </div>
 
-                <button 
+                <button
                   onClick={clearCanvas}
                   className="flex items-center space-x-1 px-2.5 py-1.5 rounded-lg text-xs font-bold text-rose-500 hover:bg-rose-500/5 transition-colors cursor-pointer"
                 >
@@ -1156,7 +1152,7 @@ export default function PracticeWorkspace() {
         </div>
 
         {/* Resizing divider bar */}
-        <div 
+        <div
           onMouseDown={startResizing}
           className="w-1.5 hover:w-2 bg-slate-200 dark:bg-[var(--bg-hover)] hover:bg-zinc-500 cursor-col-resize select-none h-full transition-all duration-150 shrink-0 z-20 relative"
         >
@@ -1174,25 +1170,12 @@ export default function PracticeWorkspace() {
                 onChange={(e) => setSelectedLanguage(e.target.value)}
                 className="bg-slate-500/5 border border-[var(--border-primary)] rounded px-2.5 py-1 text-xs font-bold outline-none cursor-pointer text-[var(--text-primary)]"
               >
-                {problem.editorTemplates.markdown && <option value="markdown">Markdown</option>}
                 {problem.editorTemplates.javascript && <option value="javascript">JavaScript</option>}
                 {problem.editorTemplates.python && <option value="python">Python</option>}
                 {problem.editorTemplates.go && <option value="go">Go</option>}
-                {problem.editorTemplates.cpp && <option value="cpp">C++</option>}
                 {problem.editorTemplates.java && <option value="java">Java</option>}
-                {problem.editorTemplates.typescript && <option value="typescript">TypeScript</option>}
+                {problem.editorTemplates.cpp && <option value="cpp">C++</option>}
                 {problem.editorTemplates.c && <option value="c">C</option>}
-                {problem.editorTemplates.csharp && <option value="csharp">C#</option>}
-                {problem.editorTemplates.kotlin && <option value="kotlin">Kotlin</option>}
-                {problem.editorTemplates.swift && <option value="swift">Swift</option>}
-                {problem.editorTemplates.rust && <option value="rust">Rust</option>}
-                {problem.editorTemplates.ruby && <option value="ruby">Ruby</option>}
-                {problem.editorTemplates.php && <option value="php">PHP</option>}
-                {problem.editorTemplates.dart && <option value="dart">Dart</option>}
-                {problem.editorTemplates.scala && <option value="scala">Scala</option>}
-                {problem.editorTemplates.elixir && <option value="elixir">Elixir</option>}
-                {problem.editorTemplates.erlang && <option value="erlang">Erlang</option>}
-                {problem.editorTemplates.racket && <option value="racket">Racket</option>}
               </select>
 
               <button
@@ -1216,13 +1199,12 @@ export default function PracticeWorkspace() {
               <button
                 onClick={isSpeaking ? stopSpeaking : () => askVoiceAssistant()}
                 disabled={isListening || assistantTyping}
-                className={`relative h-8 w-8 rounded-full flex items-center justify-center text-white shadow-sm transition-all border border-[var(--border-primary)] border-transparent outline-none focus:outline-none ${
-                  isSpeaking 
-                    ? "bg-rose-600 hover:bg-rose-700 cursor-pointer" 
-                    : isListening 
-                      ? "bg-red-500" 
+                className={`relative h-8 w-8 rounded-full flex items-center justify-center text-white shadow-sm transition-all border border-[var(--border-primary)] border-transparent outline-none focus:outline-none ${isSpeaking
+                    ? "bg-rose-600 hover:bg-rose-700 cursor-pointer"
+                    : isListening
+                      ? "bg-red-500"
                       : "bg-[var(--accent-primary)] hover:bg-zinc-700 cursor-pointer"
-                }`}
+                  }`}
                 title={isSpeaking ? "Stop speaking" : "Start query"}
               >
                 {isSpeaking ? (
@@ -1247,18 +1229,18 @@ export default function PracticeWorkspace() {
               {voiceWaveform && (
                 <div className="flex space-x-0.5 items-end h-4 px-3">
                   {[1, 2, 3, 4, 5].map(bar => (
-                    <span 
-                      key={bar} 
+                    <span
+                      key={bar}
                       className="w-0.5 bg-zinc-500 rounded-full animate-waveform-bar"
-                      style={{ 
+                      style={{
                         animationDelay: `${bar * 0.15}s`,
                         height: "100%"
-                      }} 
+                      }}
                     />
                   ))}
                 </div>
               )}
-              
+
               <button
                 onClick={() => askVoiceAssistant()}
                 disabled={isListening || assistantTyping}
@@ -1272,7 +1254,7 @@ export default function PracticeWorkspace() {
           {/* Editor Workspace */}
           <div className="flex-1 flex overflow-hidden font-mono text-sm relative" style={{ backgroundColor: "var(--bg-code)" }}>
             {/* Line numbers column */}
-            <div 
+            <div
               ref={lineNumbersRef}
               className="w-12 select-none text-right pr-3 pt-4 border-r overflow-hidden leading-6"
               style={{ borderColor: "var(--border-primary)", color: "var(--text-muted)", fontSize: "12px" }}
@@ -1299,16 +1281,16 @@ export default function PracticeWorkspace() {
           </div>
 
           {/* Collapsible Test Console footer */}
-          <div 
-            className="flex flex-col border-t relative" 
-            style={{ 
-              borderColor: "var(--border-primary)", 
+          <div
+            className="flex flex-col border-t relative"
+            style={{
+              borderColor: "var(--border-primary)",
               backgroundColor: "var(--bg-secondary)",
               height: `${consoleHeight}px`
             }}
           >
             {/* Drag Handle */}
-            <div 
+            <div
               onMouseDown={startConsoleResizing}
               className="absolute top-0 left-0 right-0 h-1.5 cursor-row-resize hover:bg-zinc-500/50 transition-colors z-30"
               style={{ transform: "translateY(-50%)" }}
@@ -1324,11 +1306,10 @@ export default function PracticeWorkspace() {
                   <button
                     key={ctab.id}
                     onClick={() => setActiveConsoleTab(ctab.id)}
-                    className={`flex items-center space-x-1 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                      activeConsoleTab === ctab.id 
-                        ? "bg-slate-500/10 text-zinc-500 border border-[var(--border-primary)] border-slate-500/10" 
+                    className={`flex items-center space-x-1 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${activeConsoleTab === ctab.id
+                        ? "bg-slate-500/10 text-zinc-500 border border-[var(--border-primary)] border-slate-500/10"
                         : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
-                    }`}
+                      }`}
                   >
                     {ctab.icon}
                     <span>{ctab.label}</span>
@@ -1391,11 +1372,10 @@ export default function PracticeWorkspace() {
                       <div key={idx} className="border-b pb-3 space-y-2 last:border-b-0 last:pb-0" style={{ borderColor: "var(--border-primary)" }}>
                         <div className="flex justify-between items-center">
                           <span className="font-bold uppercase tracking-wider text-[10px]" style={{ color: "var(--text-secondary)" }}>{res.name}</span>
-                          <span className={`font-extrabold text-[10px] px-2 py-0.5 rounded border border-[var(--border-primary)] uppercase ${
-                            res.passed 
-                              ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400" 
+                          <span className={`font-extrabold text-[10px] px-2 py-0.5 rounded border border-[var(--border-primary)] uppercase ${res.passed
+                              ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400"
                               : "bg-rose-500/10 border-rose-500/30 text-rose-400"
-                          }`}>
+                            }`}>
                             {res.passed ? "Passed" : "Failed"}
                           </span>
                         </div>
@@ -1485,11 +1465,10 @@ export default function PracticeWorkspace() {
                       <div className="space-y-3 font-mono text-[11px]">
                         {/* Meta information */}
                         <div className="flex items-center gap-2">
-                          <span className={`font-extrabold text-[10px] px-2 py-0.5 rounded border border-[var(--border-primary)] uppercase ${
-                            debugResult.status === "SUCCESS" 
-                              ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400" 
+                          <span className={`font-extrabold text-[10px] px-2 py-0.5 rounded border border-[var(--border-primary)] uppercase ${debugResult.status === "SUCCESS"
+                              ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400"
                               : "bg-rose-500/10 border-rose-500/30 text-rose-400"
-                          }`}>
+                            }`}>
                             {debugResult.status}
                           </span>
                           <span className="text-slate-400 text-[10px]">
@@ -1538,7 +1517,7 @@ export default function PracticeWorkspace() {
       <AnimatePresence>
         {submissionReport && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4">
-            <motion.div 
+            <motion.div
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
@@ -1547,11 +1526,10 @@ export default function PracticeWorkspace() {
             >
               <div className="flex items-center justify-between border-b pb-4" style={{ borderColor: "var(--border-primary)" }}>
                 <div className="flex items-center space-x-3">
-                  <div className={`h-12 w-12 rounded-xl flex items-center justify-center text-white shadow-md ${
-                    submissionReport.verdict === "ACCEPTED" 
-                      ? "bg-emerald-500 shadow-emerald-500/25" 
+                  <div className={`h-12 w-12 rounded-xl flex items-center justify-center text-white shadow-md ${submissionReport.verdict === "ACCEPTED"
+                      ? "bg-emerald-500 shadow-emerald-500/25"
                       : "bg-rose-500 shadow-rose-500/25"
-                  }`}>
+                    }`}>
                     {submissionReport.verdict === "ACCEPTED" ? <CheckCircle2 size={24} /> : <XCircle size={24} />}
                   </div>
                   <div>
@@ -1563,7 +1541,7 @@ export default function PracticeWorkspace() {
                     </p>
                   </div>
                 </div>
-                
+
                 <div className="text-right">
                   <div className="text-sm font-black text-[var(--text-primary)] font-mono">
                     {submissionReport.passedTestCases} / {submissionReport.totalTestCases} Passed
@@ -1591,24 +1569,23 @@ export default function PracticeWorkspace() {
                       const isSample = res.isSample;
                       const passed = res.verdict === "ACCEPTED" || res.status === "SUCCESS";
                       return (
-                        <div 
+                        <div
                           key={index}
                           className="border border-[var(--border-primary)] rounded-2xl p-4 transition-all"
-                          style={{ 
-                            backgroundColor: "var(--bg-primary)", 
-                            borderColor: passed ? "rgba(16, 185, 129, 0.15)" : "rgba(239, 68, 68, 0.15)" 
+                          style={{
+                            backgroundColor: "var(--bg-primary)",
+                            borderColor: passed ? "rgba(16, 185, 129, 0.15)" : "rgba(239, 68, 68, 0.15)"
                           }}
                         >
                           <div className="flex items-center justify-between">
                             <span className="text-[11px] font-bold text-[var(--text-primary)] font-mono">
                               Test Case #{res.index} {isSample ? <span className="text-zinc-400 text-[10px] ml-1 font-sans">(Sample)</span> : <span className="text-[var(--text-muted)] text-[10px] ml-1 font-sans">(Hidden)</span>}
                             </span>
-                            
-                            <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded border border-[var(--border-primary)] uppercase font-mono ${
-                              passed 
-                                ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400" 
+
+                            <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded border border-[var(--border-primary)] uppercase font-mono ${passed
+                                ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400"
                                 : "bg-rose-500/10 border-rose-500/30 text-rose-400"
-                            }`}>
+                              }`}>
                               {passed ? "Passed" : res.verdict ? res.verdict.replace(/_/g, " ") : "Failed"}
                             </span>
                           </div>
