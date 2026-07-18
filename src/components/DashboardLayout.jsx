@@ -231,7 +231,6 @@ export default function DashboardLayout({ children }) {
       (isSuperAdmin || isInstAdmin || isBatchMgr || isMentor) && { label: "Problems", href: "/admin/problems", icon: Code },
       (isSuperAdmin || isInstAdmin || isBatchMgr || isMentor) && { label: "Go Live", href: "/admin/live", icon: Radio },
       (isSuperAdmin || isInstAdmin || isBatchMgr || isMentor) && { label: "Arcade Questions", href: "/admin/arcade", icon: Gamepad2 },
-      isSuperAdmin && { label: "Course Catalog", href: "/courses", icon: BookOpen }
     ].filter(Boolean);
   }
 
@@ -356,21 +355,7 @@ export default function DashboardLayout({ children }) {
 
       <div className="flex-1 flex flex-col h-full overflow-hidden">
         {!isLiveStudioMode && (
-          <header
-            className="flex items-center justify-between px-6 h-14 border-b flex-shrink-0"
-          style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)" }}
-        >
-          <div className="flex items-center gap-4">
-            <button onClick={() => setIsMobileMenuOpen(true)} className="p-2 rounded-lg md:hidden" style={{ color: "var(--text-secondary)" }}>
-              <Menu size={16} />
-            </button>
-            <div className="hidden sm:flex items-center gap-2 text-xs" style={{ color: "var(--text-muted)" }}>
-              <span>{isStudentSession ? "Student" : isAdminSession ? "Admin" : "Mentor"}</span>
-              <span>/</span>
-              <span style={{ color: "var(--text-primary)", fontWeight: 600 }}>{pageTitle}</span>
-            </div>
-          </div>
-
+          <header className="flex justify-end px-6 h-14 border-b flex-shrink-0" style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)" }}>
           <div className="flex items-center gap-3">
 
             {dashboardUser && (
