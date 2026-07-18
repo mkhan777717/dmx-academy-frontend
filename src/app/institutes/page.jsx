@@ -21,6 +21,7 @@ import FeatureScrollStack from "@/components/FeatureScrollStack";
 import useReducedMotion from "@/customHooks/useReducedMotion";
 import TiltCard from "@/components/TitleCard";
 import { EASE_OUT_EXPO, SPRING_CONFIG, SPRING_SNAPPY } from "@/utils/constants";
+import ParticleCursor from "@/components/ParticleCursor";
 
 // ─── Lenis Smooth Scroll ──────────────────────────────────────────────
 function useLenis() {
@@ -584,7 +585,7 @@ export default function InstitutesPage() {
     <PageReveal>
       <div className="relative flex min-h-screen flex-col overflow-hidden" style={{ backgroundColor: "var(--bg-primary)" }}>
         <ScrollProgress />
-        <CursorGlow />
+        <ParticleCursor />
         <NoiseOverlay />
         <Navbar />
 

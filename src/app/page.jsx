@@ -7,7 +7,7 @@ import Pricing from "@/components/Pricing";
 import InstituteCallout from "@/components/InstituteCallout";
 import CTA from "@/components/CTA";
 import Footer from "@/components/Footer";
-import CinematicCursor from "@/components/CinematicCursor";
+import ParticleCursor from "@/components/ParticleCursor";
 import ScrollProgress from "@/components/ScrollProgress";
 
 export default function Home() {
@@ -15,7 +15,7 @@ export default function Home() {
     <div className="relative flex min-h-screen flex-col" style={{ backgroundColor: "var(--bg-primary)" }}>
       {/* Global chrome */}
       <ScrollProgress />
-      <CinematicCursor />
+      <ParticleCursor />
 
       {/* Navigation */}
       <Navbar />

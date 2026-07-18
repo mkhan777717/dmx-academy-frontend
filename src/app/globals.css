@@ -28,12 +28,19 @@
     --text-muted: #475569;
     --text-accent: #059669;
     --text-accent2: #047857;
+    --text-accent: #059669;
+    --text-accent2: #047857;
 
     --border-primary: #e2e8f0;
+    --border-accent: #059669;
     --border-accent: #059669;
     --border-card: #e2e8f0;
     --border-subtle: #f1f5f9;
 
+    --accent-primary: #059669;
+    --accent-secondary: #047857;
+    --accent-gradient: linear-gradient(135deg, #059669 0%, #047857 100%);
+    --accent-glow: rgba(5, 150, 105, 0.15);
     --accent-primary: #059669;
     --accent-secondary: #047857;
     --accent-gradient: linear-gradient(135deg, #059669 0%, #047857 100%);
@@ -75,8 +82,11 @@
     --text-muted: #64748b;
     --text-accent: #10b981;
     --text-accent2: #34d399;
+    --text-accent: #10b981;
+    --text-accent2: #34d399;
 
     --border-primary: #222222;
+    --border-accent: #10b981;
     --border-accent: #10b981;
     --border-card: #222222;
     --border-subtle: #111111;
@@ -402,6 +412,18 @@ html.theme-dark .live-chat-sidebar-fullscreen {
 
 .underline-draw:hover::after {
   width: 100%;
+}
+
+.animate-premium-shimmer {
+  animation: premiumShimmerEffect 4s linear infinite;
+}
+@keyframes premiumShimmerEffect {
+  0% {
+    left: -85%;
+  }
+  100% {
+    left: 100%;
+  }
 }
 
 /* =============================================

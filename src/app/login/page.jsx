@@ -534,31 +534,21 @@ export default function LoginPage() {
           </p>
           <a
             href="/institutes"
-            className="relative inline-flex items-center justify-center w-full px-6 py-3 text-base font-extrabold rounded-[1.15rem] shadow-lg group transition-all duration-300"
+            className="w-full px-1 py-3 font-bold rounded-lg text-center relative overflow-hidden group border-2 border-yellow-400 shadow-xl"
             style={{
-              background: "linear-gradient(92deg, #26e6d3 0%, #175cff 102%)",
-              color: "#fff",
-              border: "none",
-              boxShadow: "0 8px 32px 0 rgba(38,230,211,0.24), 0 2px 8px 0 rgba(23,92,255,0.12)"
-            }}
-            onMouseEnter={e => {
-              e.currentTarget.style.background = "linear-gradient(98deg, #25d3c9 0%, #5123e3 100%)";
-              e.currentTarget.style.boxShadow = "0 12px 36px 0 rgba(80,84,207,0.25), 0 2px 8px 0 rgba(38,230,211,0.10)";
-              e.currentTarget.style.transform = "translateY(-2px) scale(1.014)";
-            }}
-            onMouseLeave={e => {
-              e.currentTarget.style.background = "linear-gradient(92deg, #26e6d3 0%, #175cff 102%)";
-              e.currentTarget.style.boxShadow = "0 8px 32px 0 rgba(38,230,211,0.24), 0 2px 8px 0 rgba(23,92,255,0.12)";
-              e.currentTarget.style.transform = "none";
+              background: "linear-gradient(90deg, #f7e260 0%, #ffb300 100%)",
+              letterSpacing: ".02em",
+              boxShadow: "0 6px 30px 0 rgba(255,223,72,0.13)",
             }}
           >
-            <span className="inline-flex items-center gap-2 relative z-10">
-              Explore Eduvantix for Institutions
+            <span className="relative z-20 flex items-center justify-center gap-2">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFD600" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="mr-2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" /></svg>
+              <span className="uppercase tracking-widest text-[12px] text-black">Explore Eduvantix For Institutions</span>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFD600" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="ml-2"><path d="M12 18v-6m0 0c-1.7-1.7-4.4-1.7-6 0m6 0c1.7-1.7 4.4-1.7 6 0" /></svg>
             </span>
             <span
-              aria-hidden="true"
-              className="absolute inset-0 rounded-[1.15rem] bg-gradient-to-r from-cyan-300 to-blue-500 opacity-0 group-hover:opacity-10 transition-opacity pointer-events-none"
-            />
+              className="absolute left-[-85%] top-0 w-[170%] h-full bg-gradient-to-r from-white/30 to-yellow-100/10 opacity-80 blur-[1.5px] transform skew-x-[-18deg] animate-premium-shimmer pointer-events-none"
+            ></span>
           </a>
         </div>
       </div>

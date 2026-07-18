@@ -604,69 +604,77 @@ export default function LiveChat({
           className="flex items-center justify-between px-4 py-2.5 border-b select-none"
           style={{ borderColor: "rgba(148, 163, 184, 0.16)" }}
         >
-          <div className="flex items-center gap-3 overflow-x-auto no-scrollbar flex-1 min-w-0 pr-2">
+          <div className="flex items-center justify-between overflow-x-auto no-scrollbar flex-1 min-w-0 pr-4">
             <button
               onClick={() => setActiveTab("chat")}
-              className={`flex items-center gap-1.5 pb-0.5 border-b-2 text-xs font-extrabold uppercase tracking-wider transition-colors cursor-pointer shrink-0 whitespace-nowrap ${activeTab === "chat"
+              className={`flex items-center justify-center pb-1 border-b-2 transition-colors cursor-pointer shrink-0 w-10 ${activeTab === "chat"
                   ? "border-zinc-500 text-[var(--text-primary)]"
                   : "border-transparent text-[var(--text-muted)] hover:text-[var(--text-primary)]"
                 }`}
               id="tab-chat-btn"
+              title="Chat"
             >
-              <MessageSquare size={13} />
-              <span>Chat</span>
-              <span
-                className="text-[9px] font-bold px-1.5 py-0.2 rounded-full"
-                style={{ backgroundColor: "var(--bg-badge)", color: "var(--text-accent)" }}
-              >
-                {filteredMessages.length}
-              </span>
-              {hasNewMessage && activeTab !== "chat" && (
-                <span className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse ml-0.5" />
-              )}
+              <div className="relative">
+                <MessageSquare size={16} />
+                {filteredMessages.length > 0 && (
+                  <span
+                    className="absolute -top-2 -right-2 text-[8px] font-bold px-1 rounded-full"
+                    style={{ backgroundColor: "var(--bg-badge)", color: "var(--text-accent)" }}
+                  >
+                    {filteredMessages.length}
+                  </span>
+                )}
+                {hasNewMessage && activeTab !== "chat" && (
+                  <span className="absolute -top-1 -right-1 w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse" />
+                )}
+              </div>
             </button>
 
             <button
               onClick={() => setActiveTab("participants")}
-              className={`flex items-center gap-1.5 pb-0.5 border-b-2 text-xs font-extrabold uppercase tracking-wider transition-colors cursor-pointer shrink-0 whitespace-nowrap ${activeTab === "participants"
+              className={`flex items-center justify-center pb-1 border-b-2 transition-colors cursor-pointer shrink-0 w-10 ${activeTab === "participants"
                   ? "border-zinc-500 text-[var(--text-primary)]"
                   : "border-transparent text-[var(--text-muted)] hover:text-[var(--text-primary)]"
                 }`}
               id="tab-participants-btn"
+              title="Students"
             >
-              <Users size={13} />
-              <span>Students</span>
-              <span
-                className="text-[9px] font-bold px-1.5 py-0.2 rounded-full"
-                style={{ backgroundColor: "var(--bg-badge)", color: "var(--text-accent)" }}
-              >
-                {studentParticipantsCount}
-              </span>
+              <div className="relative">
+                <Users size={16} />
+                {studentParticipantsCount > 0 && (
+                  <span
+                    className="absolute -top-2 -right-2 text-[8px] font-bold px-1 rounded-full"
+                    style={{ backgroundColor: "var(--bg-badge)", color: "var(--text-accent)" }}
+                  >
+                    {studentParticipantsCount}
+                  </span>
+                )}
+              </div>
             </button>
 
             <button
               onClick={() => setActiveTab("polls")}
-              className={`flex items-center gap-1.5 pb-0.5 border-b-2 text-xs font-extrabold uppercase tracking-wider transition-colors cursor-pointer shrink-0 whitespace-nowrap ${activeTab === "polls"
+              className={`flex items-center justify-center pb-1 border-b-2 transition-colors cursor-pointer shrink-0 w-10 ${activeTab === "polls"
                   ? "border-zinc-500 text-[var(--text-primary)]"
                   : "border-transparent text-[var(--text-muted)] hover:text-[var(--text-primary)]"
                 }`}
               id="tab-polls-btn"
+              title="Polls"
             >
-              <BarChart2 size={13} />
-              <span>Polls</span>
+              <BarChart2 size={16} />
             </button>
 
             {isHost && (
               <button
                 onClick={() => setActiveTab("settings")}
-                className={`flex items-center gap-1.5 pb-0.5 border-b-2 text-xs font-extrabold uppercase tracking-wider transition-colors cursor-pointer shrink-0 whitespace-nowrap ${activeTab === "settings"
+                className={`flex items-center justify-center pb-1 border-b-2 transition-colors cursor-pointer shrink-0 w-10 ${activeTab === "settings"
                     ? "border-zinc-500 text-[var(--text-primary)]"
                     : "border-transparent text-[var(--text-muted)] hover:text-[var(--text-primary)]"
                   }`}
                 id="tab-settings-btn"
+                title="Settings"
               >
-                <Settings size={13} />
-                <span>Settings</span>
+                <Settings size={16} />
               </button>
             )}
           </div>

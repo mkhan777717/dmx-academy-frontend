@@ -72,6 +72,21 @@ const FEATURES_LIST = [
         gradient: "from-amber-500/20 via-amber-500/5 to-transparent",
         accentColor: "amber",
     },
+    {
+        title: "Smart Anti-Cheat & Proctoring",
+        subtitle: "Anti-Cheat Exams",
+        icon: ShieldAlert,
+        description: "Ensure academic integrity with our military-grade proctoring suite. Track face visibility, detect multiple faces, monitor tab switches, and log screen sharing during high-stakes exams.",
+        bullets: [
+            "AI face tracking and identity verification",
+            "Automatic tab-switch and screen-leave detection",
+            "Hardware monitoring (webcam & mic enforcement)",
+            "Detailed proctoring logs and trust scores"
+        ],
+        mockup: "anticheat",
+        gradient: "from-rose-500/20 via-rose-500/5 to-transparent",
+        accentColor: "rose",
+    }
 ];
 
 
@@ -1380,7 +1395,113 @@ function AIVivaMockup() {
       </TiltCard>
     );
   }
-  
+  // ─── Interactive Anti-Cheat Mockup ──────────────────────────────────────
+  function AntiCheatMockup() {
+    const theme = useThemeStore();
+    const reduced = useReducedMotion();
+    return (
+      <TiltCard
+        className="w-full aspect-[4/3] sm:aspect-video rounded-xl sm:rounded-[1.5rem] overflow-hidden border shadow-2xl relative select-none"
+        style={{
+          backgroundColor: theme.isDark ? "#0A0A0C" : "#FFFFFF",
+          borderColor: theme.cardBorder,
+        }}
+      >
+        {/* Browser Top Bar */}
+        <div
+          className="h-8 sm:h-10 flex items-center px-3 sm:px-4 gap-2 sm:gap-3"
+          style={{ backgroundColor: theme.isDark ? "rgba(255,255,255,0.03)" : "rgba(0,0,0,0.02)", borderBottom: `1px solid ${theme.cardBorder}` }}
+        >
+          <div className="flex gap-1.5">
+            <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-rose-500/80" />
+            <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-amber-500/80" />
+            <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-emerald-500/80" />
+          </div>
+          <div className="flex-1 ml-2">
+            <div className="w-32 sm:w-48 h-4 sm:h-5 rounded-md mx-auto flex items-center justify-center gap-2" style={{ backgroundColor: theme.isDark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.05)" }}>
+              <ShieldAlert size={10} className="text-slate-400" />
+              <span className="text-[8px] sm:text-[10px] font-mono text-slate-400 font-medium">exam.eduvantix.com</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Mockup Body */}
+        <div className="p-4 sm:p-6 h-full flex gap-4">
+          
+          {/* Webcam Feed Area */}
+          <div className="flex-1 flex flex-col gap-4">
+            <div className="relative flex-1 rounded-xl overflow-hidden border flex items-center justify-center" style={{ backgroundColor: "#000", borderColor: theme.cardBorder }}>
+              <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=600&h=400&fit=crop" alt="Student Feed" className="absolute inset-0 w-full h-full object-cover opacity-80" />
+              
+              {/* Face Tracking Box */}
+              <motion.div 
+                className="absolute w-32 h-40 border border-emerald-500 rounded shadow-[0_0_15px_rgba(16,185,129,0.3)]"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5, delay: 0.5 }}
+              >
+                <div className="absolute -top-1 -left-1 w-2 h-2 border-t border-l border-emerald-500"></div>
+                <div className="absolute -top-1 -right-1 w-2 h-2 border-t border-r border-emerald-500"></div>
+                <div className="absolute -bottom-1 -left-1 w-2 h-2 border-b border-l border-emerald-500"></div>
+                <div className="absolute -bottom-1 -right-1 w-2 h-2 border-b border-r border-emerald-500"></div>
+                <span className="absolute -bottom-5 left-1/2 -translate-x-1/2 bg-emerald-500 text-white text-[8px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap">Identity Verified</span>
+              </motion.div>
+              
+              {/* Recording Indicator */}
+              <div className="absolute top-3 left-3 bg-black/60 backdrop-blur-md px-2 py-1 rounded flex items-center gap-1.5 border border-white/10">
+                <motion.div className="w-2 h-2 rounded-full bg-rose-500" animate={reduced ? {} : { opacity: [1, 0.5, 1] }} transition={{ duration: 1.5, repeat: Infinity }} />
+                <span className="text-white text-[8px] font-bold tracking-wider">REC</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Sidebar / Logs */}
+          <div className="w-48 rounded-xl flex flex-col p-4 border" style={{ backgroundColor: theme.cardBg, borderColor: theme.cardBorder }}>
+            <div className="flex items-center gap-2 mb-4">
+              <ShieldAlert size={14} className="text-rose-500" />
+              <span className="text-[10px] font-bold uppercase tracking-widest text-rose-500">Proctor Logs</span>
+            </div>
+            
+            <div className="space-y-3">
+              {[
+                { time: "10:04", msg: "Exam started", type: "info" },
+                { time: "10:12", msg: "Tab switch detected", type: "alert" },
+                { time: "10:15", msg: "Face out of frame", type: "warn" },
+                { time: "10:16", msg: "Face visible", type: "info" }
+              ].map((log, i) => (
+                <motion.div 
+                  key={i} 
+                  className="flex gap-2 text-[9px]"
+                  initial={{ opacity: 0, x: 10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.3 * i + 0.5 }}
+                >
+                  <span className="text-slate-500 font-mono">{log.time}</span>
+                  <span className={log.type === 'alert' ? "text-rose-500 font-bold" : log.type === 'warn' ? "text-amber-500 font-bold" : "text-emerald-500"}>
+                    {log.msg}
+                  </span>
+                </motion.div>
+              ))}
+            </div>
+
+            <div className="mt-auto pt-4 border-t" style={{ borderColor: theme.cardBorder }}>
+              <div className="text-[9px] text-slate-500 mb-1">Trust Score</div>
+              <div className="w-full h-1.5 bg-slate-200/20 rounded-full overflow-hidden">
+                <motion.div 
+                  className="h-full bg-amber-500 rounded-full" 
+                  initial={{ width: "100%" }} 
+                  animate={{ width: "85%" }} 
+                  transition={{ delay: 1, duration: 1 }} 
+                />
+              </div>
+              <div className="text-[10px] font-bold text-amber-500 mt-1">85% (Warnings)</div>
+            </div>
+          </div>
+        </div>
+      </TiltCard>
+    );
+  }
+
   function ScreenshotPlaceholder({ label = "Screenshot Coming Soon", icon: Icon = ImageIcon }) {
     const reduced = useReducedMotion();
     const borderRef = useRef(null);
@@ -1451,6 +1572,7 @@ function FeatureMobileCard({ feature, index }) {
         case "viva": return <AIVivaMockup />;
         case "live": return <LiveSessionMockup />;
         case "coding": return <CodingContestMockup />;
+        case "anticheat": return <AntiCheatMockup />;
         default: return <ScreenshotPlaceholder />;
       }
     };
@@ -1716,6 +1838,7 @@ function FeatureScrollStack() {
                 case "viva": return <AIVivaMockup />;
                 case "live": return <LiveSessionMockup />;
                 case "coding": return <CodingContestMockup />;
+                case "anticheat": return <AntiCheatMockup />;
                 default: return <ScreenshotPlaceholder />;
             }
         };

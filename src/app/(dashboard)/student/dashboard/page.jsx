@@ -338,6 +338,7 @@ export default function StudentDashboard() {
       </div>
 
       {/* ── Dashboard Widgets: Goal & Recommended ─── */}
+      {/* 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Daily Goal Tracker */}
         {/* <div className="p-6 rounded-2xl border border-[var(--border-primary)] flex flex-col justify-between" style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
@@ -390,6 +391,7 @@ export default function StudentDashboard() {
           </div>
         </div> */}
       </div>
+      */}
 
 
       {/* ── Bottom Section: Contests & Submissions ─ */}

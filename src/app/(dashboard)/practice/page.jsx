@@ -210,6 +210,7 @@ export default function PracticeCatalogPage() {
               <span>Interactive Practice Sandbox</span>
             </div>
             <h1 className="text-4xl font-serif tracking-tight" style={{ color: "var(--text-primary)" }}>
+            <h1 className="text-4xl font-serif tracking-tight" style={{ color: "var(--text-primary)" }}>
               Interactive Code Zone
             </h1>
             <p className="text-sm max-w-xl leading-relaxed" style={{ color: "var(--text-secondary)" }}>

@@ -128,15 +128,17 @@ const TemplateProfessional = ({ data }) => {
         {personalInfo?.title && <div className="text-teal-700 uppercase tracking-widest text-[10pt] font-bold mt-1">{personalInfo.title}</div>}
       </div>
       
-      <div className="bg-slate-800 text-white text-[9.5pt] py-1.5 px-4 mb-4 flex flex-wrap justify-center gap-x-4 gap-y-1 font-medium">
-        {personalInfo?.location && <span>{personalInfo.location}</span>}
-        {personalInfo?.location && personalInfo?.phone && <span>•</span>}
-        {personalInfo?.phone && <span>{personalInfo.phone}</span>}
-        {personalInfo?.phone && personalInfo?.email && <span>•</span>}
-        {personalInfo?.email && <span>{personalInfo.email}</span>}
-        {personalInfo?.email && personalInfo?.linkedin && <span>•</span>}
-        {personalInfo?.linkedin && <span>{personalInfo.linkedin.replace(/^https?:\/\//, '')}</span>}
-      </div>
+      {(personalInfo?.location || personalInfo?.phone || personalInfo?.email || personalInfo?.linkedin) && (
+        <div className="bg-slate-800 text-white text-[9.5pt] py-1.5 px-4 mb-4 flex flex-wrap justify-center gap-x-4 gap-y-1 font-medium">
+          {personalInfo?.location && <span>{personalInfo.location}</span>}
+          {personalInfo?.location && personalInfo?.phone && <span>•</span>}
+          {personalInfo?.phone && <span>{personalInfo.phone}</span>}
+          {personalInfo?.phone && personalInfo?.email && <span>•</span>}
+          {personalInfo?.email && <span>{personalInfo.email}</span>}
+          {personalInfo?.email && personalInfo?.linkedin && <span>•</span>}
+          {personalInfo?.linkedin && <span>{personalInfo.linkedin.replace(/^https?:\/\//, '')}</span>}
+        </div>
+      )}
 
       {summary && (
         <div className="text-[10pt] leading-relaxed mb-5 text-justify">
@@ -222,14 +224,16 @@ const TemplateContemporary = ({ data }) => {
         {personalInfo?.title && <div className="text-sky-700 uppercase tracking-widest text-[11pt] mt-1">{personalInfo.title}</div>}
       </div>
 
-      <div className="bg-sky-50 p-2.5 text-[9pt] text-slate-600 flex flex-wrap gap-x-4 gap-y-1 mb-6 rounded-sm border-l-2 border-sky-600">
-        {personalInfo?.phone && <span>{personalInfo.phone}</span>}
-        {personalInfo?.phone && personalInfo?.email && <span>|</span>}
-        {personalInfo?.email && <span>{personalInfo.email}</span>}
-        {personalInfo?.email && personalInfo?.location && <span>|</span>}
-        {personalInfo?.location && <span>{personalInfo.location}</span>}
-        {personalInfo?.linkedin && <><span>|</span><span>{personalInfo.linkedin.replace(/^https?:\/\//, '')}</span></>}
-      </div>
+      {(personalInfo?.phone || personalInfo?.email || personalInfo?.location || personalInfo?.linkedin) && (
+        <div className="bg-sky-50 p-2.5 text-[9pt] text-slate-600 flex flex-wrap gap-x-4 gap-y-1 mb-6 rounded-sm border-l-2 border-sky-600">
+          {personalInfo?.phone && <span>{personalInfo.phone}</span>}
+          {personalInfo?.phone && personalInfo?.email && <span>|</span>}
+          {personalInfo?.email && <span>{personalInfo.email}</span>}
+          {personalInfo?.email && personalInfo?.location && <span>|</span>}
+          {personalInfo?.location && <span>{personalInfo.location}</span>}
+          {personalInfo?.linkedin && <><span>|</span><span>{personalInfo.linkedin.replace(/^https?:\/\//, '')}</span></>}
+        </div>
+      )}
 
       {summary && (
         <div className="mb-6">
@@ -412,9 +416,9 @@ const TemplateSplit = ({ data }) => {
   const fullName = `${personalInfo?.firstName || ''} ${personalInfo?.lastName || ''}`.trim();
 
   return (
-    <div className="font-sans text-gray-800 leading-tight grid grid-cols-[2fr_1fr] h-full" style={{ minHeight: 'calc(297mm - 30mm)' }}>
+    <div className="font-sans text-gray-800 leading-tight w-full relative clearfix" style={{ minHeight: '297mm', borderRight: '70mm solid #f9fafb', boxSizing: 'border-box' }}>
       {/* Left Column */}
-      <div className="pr-6">
+      <div style={{ float: 'left', width: '140mm' }} className="pt-[15mm] pb-[15mm] pl-[10mm] pr-6">
         <div className="mb-8">
           <h1 className="text-[28pt] font-black uppercase leading-none mb-1 text-gray-900">{fullName || 'Your Name'}</h1>
           {personalInfo?.title && <div className="uppercase tracking-widest text-gray-500 text-[9pt] font-bold">{personalInfo.title}</div>}
@@ -462,7 +466,7 @@ const TemplateSplit = ({ data }) => {
       </div>
 
       {/* Right Column */}
-      <div className="pl-6 border-l border-gray-200 bg-gray-50 -my-6 -mr-6 py-6 pr-6 h-[calc(100%+30mm)]">
+      <div style={{ float: 'right', width: '70mm', marginRight: '-70mm' }} className="pt-[15mm] pb-[15mm] pr-[10mm] pl-6 border-l border-gray-200">
         
         <div className="mb-8">
           <h2 className="uppercase font-bold text-gray-900 text-[11pt] mb-3 border-b border-gray-300 pb-1">Contact</h2>
@@ -502,6 +506,7 @@ const TemplateSplit = ({ data }) => {
         )}
 
       </div>
+      <div style={{ clear: 'both' }}></div>
     </div>
   );
 };
@@ -514,9 +519,9 @@ const TemplateCreative = ({ data }) => {
   const fullName = `${personalInfo?.firstName || ''} ${personalInfo?.lastName || ''}`.trim();
 
   return (
-    <div className="font-sans text-gray-800 leading-tight grid grid-cols-[1fr_2fr] h-full" style={{ minHeight: 'calc(297mm - 30mm)' }}>
+    <div className="font-sans text-gray-800 leading-tight w-full relative clearfix" style={{ minHeight: '297mm', borderLeft: '70mm solid #f0f0f0', boxSizing: 'border-box' }}>
       {/* Left Column (Gray) */}
-      <div className="bg-[#f0f0f0] -my-6 -ml-6 py-6 pl-6 pr-6 h-[calc(100%+30mm)]">
+      <div style={{ float: 'left', width: '70mm', marginLeft: '-70mm' }} className="pt-[15mm] pb-[15mm] pl-[10mm] pr-6">
         
         {education && education.length > 0 && (
           <div className="mb-8 mt-12">
@@ -579,7 +584,7 @@ const TemplateCreative = ({ data }) => {
       </div>
 
       {/* Right Column (White) */}
-      <div className="pl-8 pt-4">
+      <div style={{ float: 'right', width: '140mm' }} className="pt-[15mm] pb-[15mm] pr-[10mm] pl-8">
         
         <div className="mb-10 flex justify-between items-start gap-4">
           <div>
@@ -654,6 +659,7 @@ const TemplateCreative = ({ data }) => {
         )}
 
       </div>
+      <div style={{ clear: 'both' }}></div>
     </div>
   );
 };
@@ -682,8 +688,10 @@ export default function ResumePreview({ data, template = 'executive' }) {
     }
   };
 
+  const isEdgeToEdge = template === 'split' || template === 'creative';
+
   return (
-    <div className="bg-white mx-auto shadow-2xl print:shadow-none transition-all duration-300" style={{ width: '210mm', minHeight: '297mm', padding: '15mm 10mm' }}>
+    <div className="bg-white mx-auto shadow-2xl print:shadow-none transition-all duration-300 relative" style={{ width: '210mm', minHeight: '297mm', padding: isEdgeToEdge ? '0' : '15mm 10mm' }}>
       {renderTemplate()}
     </div>
   );
