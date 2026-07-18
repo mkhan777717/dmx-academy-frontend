@@ -261,7 +261,8 @@ export default function CoursesCatalogPage() {
         </motion.section>
 
         {/* ─── MAIN CONTENT ─────────────────────────────────────────────── */}
-        <section className="relative z-10 flex-1 w-full px-4 md:px-8 lg:px-12 pb-20">
+        <section className="relative z-10 flex-1 w-full px-4 sm:px-8 md:px-10 lg:px-16 xl:px-28 pb-20">
+   
 
           {/* Category + controls bar */}
           <div className="max-w-[1600px] mx-auto">
@@ -600,9 +601,9 @@ export default function CoursesCatalogPage() {
         </section>
 
         {/* ─── CTA Banner ──────────────────────────────────────────────── */}
-        {!loading && filteredCourses.length > 0 && (
-          <section className="relative z-10 w-full px-4 md:px-8 lg:px-12 pb-20">
-            <div className="max-w-[1600px] mx-auto">
+        {!loading && !user > 0 && (
+          <section className="relative z-10 w-full px-4 sm:px-8 md:px-10 lg:px-16 xl:px-28 pb-20">
+            <div className="max-w-[600px] mx-auto">
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -634,27 +635,16 @@ export default function CoursesCatalogPage() {
 
                 <div className="relative flex-shrink-0 flex flex-col sm:flex-row gap-3">
                   <button
-                    onClick={() => setSelectedCategory("All Courses")}
+                    onClick={() => window.location.href = "/login"}
                     className="flex items-center gap-2 px-6 py-3.5 rounded-xl text-sm font-bold bg-white text-gray-900 transition-all hover:shadow-xl hover:-translate-y-0.5 cursor-pointer"
-                  >
-                    <Play size={14} />
-                    Browse All Courses
-                  </button>
-                  <button
-                    onClick={() => document.querySelector("input")?.focus()}
-                    className="flex items-center gap-2 px-6 py-3.5 rounded-xl text-sm font-bold border-2 border-white/30 text-white hover:bg-white/10 transition-all cursor-pointer"
-                  >
-                    <Search size={14} />
-                    Search Skills
+                  > 
+                    Sign in now
                   </button>
                 </div>
               </motion.div>
             </div>
           </section>
         )}
-
-        {/* Footer (public only) */}
-        {!user && <Footer />}
       </div>
       <Footer />
     </>

@@ -193,13 +193,8 @@ const CertIllustration = () => {
   };
 
   return (
-    <div className="w-full h-full flex items-center justify-center p-6 [perspective:1000px] overflow-hidden 
-      bg-fuchsia-50 dark:bg-[var(--bg-secondary)]
-      relative group">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(232,121,249,0.075)_0,transparent_100%)] 
-        dark:bg-[radial-gradient(circle_at_center,rgba(162,28,175,0.1)_0,transparent_100%)]
-        pointer-events-none transition-opacity duration-500 group-hover:opacity-100 opacity-50" />
-
+    <div className="w-full h-full flex items-center justify-center p-6 [perspective:1000px] overflow-hidden bg-fuchsia-50 dark:bg-[var(--bg-secondary)] relative group">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(232,121,249,0.075)_0,transparent_100%)] dark:bg-[radial-gradient(circle_at_center,rgba(162,28,175,0.1)_0,transparent_100%)] pointer-events-none transition-opacity duration-500 group-hover:opacity-100 opacity-50" />
       <motion.div
         ref={cardRef}
         onMouseMove={handleMouseMove}

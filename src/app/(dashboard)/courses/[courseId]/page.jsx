@@ -623,10 +623,9 @@ export default function DynamicCoursePage() {
 
   return (
     <div className="flex h-screen w-screen overflow-hidden font-sans" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }}>
-      {/* Adjusted: Navbar type 2 is now absolute and zIndex high */}
-      <div style={{ position: 'absolute', zIndex: 100 }}>
+    
         <Navbar type={2}/>
-      </div>
+
       {/* 1. SIDEBAR NAVIGATION */}
       <aside 
         className={`fixed inset-y-0 left-0 z-40 flex w-80 flex-col border-r shadow-xl transition-transform duration-300 md:static md:translate-x-0 ${
@@ -925,20 +924,11 @@ export default function DynamicCoursePage() {
             </button>
             <span className="font-bold text-sm font-display" style={{ color: "var(--text-primary)" }}>{title}</span>
           </div>
-          <div className="h-2 w-24 rounded-full overflow-hidden" style={{ backgroundColor: "var(--border-primary)" }}>
-            <motion.div 
-              className="h-full"
-              style={{ background: "var(--accent-gradient)" }}
-              initial={{ width: 0 }}
-              animate={{ width: `${progressPercent}%` }}
-              transition={{ type: "spring", stiffness: 80, damping: 15 }}
-            />
-          </div>
         </header>
 
         {/* Main Tutorial Reader Panel */}
         <main ref={contentRef} className="flex-grow overflow-y-auto px-4 py-8 md:px-12 md:py-12" style={{ backgroundColor: "var(--bg-card)" }}>
-          <div className="mx-auto max-w-3xl space-y-8">
+          <div className="mx-auto space-y-8">
             
             <AnimatePresence mode="wait">
               {activeTab === "curriculum" && activeLesson ? (
