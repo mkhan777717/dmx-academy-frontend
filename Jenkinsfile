@@ -38,10 +38,8 @@ pipeline {
         }
 
         stage('Archive Build') {
-            steps {
-                // .next folder holds the production build
-                sh 'tar -czf build.tar.gz .next public package.json package-lock.json next.config.js'
-                archiveArtifacts artifacts: 'build.tar.gz', fingerprint: true
+             steps {
+                sh 'tar -czf build.tar.gz .next public package.json package-lock.json next.config.*'
             }
         }
 
