@@ -1,10 +1,6 @@
 pipeline {
     agent any
 
-    tools {
-        nodejs 'NodeJS' // must match name in Manage Jenkins > Tools
-    }
-
     environment {
         NODE_ENV = 'production'
         NEXT_PUBLIC_API_URL = credentials('next-public-api-url') // example for public env vars
