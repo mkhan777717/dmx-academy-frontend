@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        NODE_ENV = 'production'
+        // NODE_ENV = 'production'
         NEXT_PUBLIC_API_URL = credentials('next-public-api-url') // example for public env vars
     }
 
