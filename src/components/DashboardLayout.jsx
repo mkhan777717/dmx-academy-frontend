@@ -7,7 +7,7 @@ import {
   LayoutDashboard, Trophy, LogOut,
   Menu, X, ChevronLeft, ChevronRight, BookOpen, ArrowLeftRight,
   Code, Brain, Radio, AlertTriangle, FileText, Gamepad2, FileCheck, Activity, Settings, Paintbrush,
-  ShieldAlert, Layers, Users, PlusCircle, List, Bell, CheckCircle2, Check, MessageSquare, Crown
+  ShieldAlert, Layers, Users, PlusCircle, List, Bell, CheckCircle2, Check, MessageSquare, Crown, HeartHandshake, ClipboardList
 } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
 import { useAuth } from "@/context/AuthContext";
@@ -357,6 +357,7 @@ export default function DashboardLayout({ children }) {
       hasAccess("allowedArcade") && { label: "Learn with Games", href: "/student/games", icon: Gamepad2 },
       isInstituteStudent && hasAccess("allowedStudyMaterial") && { label: "Study Materials", href: "/student/materials", icon: FileText },
       { label: "Resume Builder", href: "/student/resume", icon: FileCheck },
+      { label: "Share Feedback", href: "/feedback", icon: HeartHandshake },
     ].filter(Boolean);
   } else {
     sidebarLinks = [
@@ -373,10 +374,12 @@ export default function DashboardLayout({ children }) {
       (isBatchMgr || isInstAdmin || isMentor) && canShowFeature("allowedAiViva") && { label: "AI Viva", href: "/mentor/viva/questions", icon: Brain, featureFlag: "allowedAiViva" },
       (isBatchMgr || isInstAdmin || isMentor) && canShowFeature("allowedStudyMaterial") && { label: "Study Materials", href: "/mentor/viva/materials", icon: FileText, featureFlag: "allowedStudyMaterial" },
       isSuperAdmin && { label: "AI Settings", href: "/admin/viva/ai-settings", icon: Settings },
+      isSuperAdmin && { label: "User Feedbacks", href: "/admin/feedback", icon: ClipboardList },
       (isSuperAdmin || isInstAdmin || isBatchMgr || isMentor) && canShowFeature("allowedContest") && { label: "Contests", href: "/admin/contests", icon: Trophy, featureFlag: "allowedContest" },
       (isSuperAdmin || isInstAdmin || isBatchMgr || isMentor) && canShowFeature("allowedProblems") && { label: "Problems", href: "/admin/problems", icon: Code, featureFlag: "allowedProblems" },
       (isSuperAdmin || isInstAdmin || isBatchMgr || isMentor) && canShowFeature("allowedGoLive") && { label: "Go Live", href: "/admin/live", icon: Radio, featureFlag: "allowedGoLive" },
       (isSuperAdmin || isInstAdmin || isBatchMgr || isMentor) && canShowFeature("allowedArcade") && { label: "Arcade Questions", href: "/admin/arcade", icon: Gamepad2, featureFlag: "allowedArcade" },
+      !isSuperAdmin && { label: "Share Feedback", href: "/feedback", icon: HeartHandshake },
     ].filter(Boolean);
   }
 
