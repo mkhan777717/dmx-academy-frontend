@@ -236,9 +236,8 @@ export default function DashboardLayout({ children }) {
 
       const hasSession = isStudentSession || isAdminSession || isMentorSession;
 
-      if (!hasSession) {
-        const requiresAuth = ['/admin', '/mentor', '/student', '/contest', '/discuss'].some(route => pathname.startsWith(route));
-        if (requiresAuth) {
+      if (!hasSession && !pathname.startsWith('/practice') && !pathname.startsWith('/contest') && !pathname.startsWith('/courses') && !pathname.startsWith('/live-classes')) {
+        if (pathname.startsWith('/admin') || pathname.startsWith('/mentor') || pathname.startsWith('/student')) {
           router.push(`/login?redirect=${encodeURIComponent(pathname)}`);
           return;
         }
