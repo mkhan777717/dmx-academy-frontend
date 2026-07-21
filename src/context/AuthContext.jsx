@@ -93,7 +93,9 @@ export function AuthProvider({ children }) {
     clearLegacySessions();
     localStorage.removeItem("eduvantix_auth_token");
     localStorage.removeItem("eduvantix_auth_user");
-    // Note: eduvantix_local_accounts is intentionally kept so users can log back in
+    if (typeof window !== "undefined") {
+      document.cookie = "eduvantix_auth_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    }
   };
 
   // Sync WebSocket for single-session tracking
@@ -243,6 +245,9 @@ export function AuthProvider({ children }) {
         setIsInstituteBlocked(false);
         localStorage.setItem("eduvantix_auth_token", data.token);
         localStorage.setItem("eduvantix_auth_user", JSON.stringify(data.user));
+        if (typeof window !== "undefined") {
+          document.cookie = `eduvantix_auth_token=${data.token}; path=/; max-age=86400; SameSite=Lax`;
+        }
         return { success: true, user: data.user };
       }
 
