@@ -691,7 +691,14 @@ export default function ResumePreview({ data, template = 'executive' }) {
   const isEdgeToEdge = template === 'split' || template === 'creative';
 
   return (
-    <div className="bg-white mx-auto shadow-2xl print:shadow-none transition-all duration-300 relative" style={{ width: '210mm', minHeight: '297mm', padding: isEdgeToEdge ? '0' : '15mm 10mm' }}>
+    <div 
+      className="bg-white mx-auto shadow-2xl print:shadow-none transition-all duration-300 relative print:filter-none" 
+      style={{ 
+        width: '210mm', 
+        minHeight: '297mm', 
+        padding: isEdgeToEdge ? '0' : '15mm 10mm'
+      }}
+    >
       {renderTemplate()}
     </div>
   );

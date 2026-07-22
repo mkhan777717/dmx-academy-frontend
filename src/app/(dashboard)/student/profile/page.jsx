@@ -382,9 +382,11 @@ export default function StudentProfile() {
               const premiumUntil = user?.premiumUntil ? new Date(user.premiumUntil) : null;
               const isPremium = premiumUntil && premiumUntil > now;
               let daysLeft = 0;
+              let hoursLeft = 0;
               if (isPremium) {
                 const diffTime = premiumUntil - now;
-                daysLeft = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                daysLeft = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+                hoursLeft = Math.floor((diffTime / (1000 * 60 * 60)) % 24);
               }
 
               return (
@@ -410,9 +412,9 @@ export default function StudentProfile() {
                         <div className="flex items-center justify-between text-xs font-semibold">
                           <div className="flex items-center gap-2 text-[var(--text-secondary)]">
                             <Clock size={14} />
-                            <span>Days Remaining</span>
+                            <span>Premium Time Left</span>
                           </div>
-                          <span className="text-amber-500 font-black font-serif-display text-base">{daysLeft} Days</span>
+                          <span className="text-amber-500 font-black font-serif-display text-base">{daysLeft}d {hoursLeft}h</span>
                         </div>
                         <div className="flex items-center justify-between text-xs font-semibold">
                           <div className="flex items-center gap-2 text-[var(--text-secondary)]">
@@ -488,6 +490,43 @@ export default function StudentProfile() {
                 </div>
               )) : (
                 <p className="text-xs text-[var(--text-muted)] italic">No languages used yet.</p>
+              )}
+            </div>
+          </div>
+
+          {/* Referrals Section */}
+          <div className="p-6 rounded-2xl border" style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-[10px] font-bold uppercase tracking-[0.2em]" style={{ color: "var(--text-secondary)" }}>Your Referrals</h2>
+              <span className="text-[10px] font-bold text-emerald-500 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full">
+                {user?.referredUsers?.length || 0} TOTAL
+              </span>
+            </div>
+            
+            <div className="space-y-3">
+              {user?.referredUsers && user.referredUsers.length > 0 ? (
+                user.referredUsers.map(ru => (
+                  <div key={ru.id} className="flex items-center gap-3 p-3 rounded-lg bg-[var(--bg-hover)] border transition-colors hover:border-[var(--accent-primary)]" style={{ borderColor: "var(--border-primary)" }}>
+                    {ru.avatarUrl ? (
+                      <img src={ru.avatarUrl} alt={ru.username} className="w-10 h-10 rounded-full object-cover border-2 border-[var(--border-primary)]" />
+                    ) : (
+                       <div className="w-10 h-10 rounded-full bg-[var(--bg-secondary)] flex items-center justify-center border-2 border-[var(--border-primary)] shadow-sm">
+                         <User size={16} className="text-[var(--text-muted)]" />
+                       </div>
+                    )}
+                    <div className="flex flex-col">
+                      <span className="text-sm font-bold tracking-tight" style={{ color: "var(--text-primary)" }}>{ru.fullName || ru.username}</span>
+                      <span className="text-[10px] font-bold uppercase tracking-widest mt-0.5" style={{ color: "var(--text-muted)" }}>
+                        Joined {new Date(ru.createdAt).toLocaleDateString()}
+                      </span>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="text-center py-6 px-4 space-y-2 rounded-xl border border-dashed border-[var(--border-primary)] bg-[var(--bg-secondary)]/50">
+                  <p className="text-xs text-[var(--text-secondary)] font-medium">You haven't referred anyone yet.</p>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--accent-primary)]">Share your code to earn premium!</p>
+                </div>
               )}
             </div>
           </div>

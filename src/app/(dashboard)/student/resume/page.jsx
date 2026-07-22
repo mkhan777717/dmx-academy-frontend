@@ -219,7 +219,7 @@ export default function ResumeBuilderPage() {
               className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border mb-4 w-fit shadow-sm"
               style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)", backgroundColor: "var(--bg-secondary)" }}
             >
-              <FileText size={12} className="text-violet-500" />
+              <FileText size={12} style={{ color: "var(--text-accent)" }} />
               Resume Builder
             </motion.div>
             <h1 className="text-4xl font-serif tracking-tight" style={{ color: "var(--text-primary)" }}>
@@ -258,7 +258,7 @@ export default function ResumeBuilderPage() {
                     </motion.span>
                   ) : (
                     <motion.span key="idle" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex items-center">
-                      <Save className="w-4 h-4 mr-2 text-violet-500" />
+                      <Save className="w-4 h-4 mr-2" style={{ color: "var(--text-accent)" }} />
                       Save Progress
                     </motion.span>
                   )}
@@ -266,10 +266,10 @@ export default function ResumeBuilderPage() {
               </motion.button>
 
               <motion.button
-                whileHover={{ y: -2, boxShadow: "0 12px 24px -8px rgba(139,92,246,0.45)" }}
+                whileHover={{ y: -2, boxShadow: "0 12px 24px -8px var(--accent-glow)" }}
                 whileTap={{ scale: 0.97 }}
                 onClick={handlePrint}
-                className="flex-1 sm:flex-none flex items-center justify-center px-5 py-2.5 rounded-xl font-bold text-[var(--text-on-accent)] text-sm shadow-md shadow-violet-500/20 cursor-pointer"
+                className="flex-1 sm:flex-none flex items-center justify-center px-5 py-2.5 rounded-xl font-bold text-[var(--text-on-accent)] text-sm shadow-md cursor-pointer"
                 style={{ background: "var(--accent-primary)" }}
               >
                 <Download className="w-4 h-4 mr-2" />
@@ -326,7 +326,7 @@ export default function ResumeBuilderPage() {
               style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}
             >
               <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest shrink-0 px-3 border-r" style={{ color: "var(--text-secondary)", borderColor: "var(--border-primary)" }}>
-                <LayoutTemplate size={14} className="text-violet-500" />
+                <LayoutTemplate size={14} style={{ color: "var(--text-accent)" }} />
                 Templates
               </div>
               <div className="flex items-center gap-1.5 overflow-x-auto flex-nowrap pl-3 pr-2 scrollbar-hide py-1">
@@ -344,7 +344,8 @@ export default function ResumeBuilderPage() {
                         <motion.span
                           layoutId="templatePill"
                           transition={{ type: "spring", stiffness: 420, damping: 34 }}
-                          className="absolute inset-0 rounded-lg bg-violet-500 shadow-md shadow-violet-500/20"
+                          className="absolute inset-0 rounded-lg shadow-md"
+                          style={{ backgroundColor: "var(--accent-primary)", boxShadow: "0 4px 6px -1px var(--accent-glow), 0 2px 4px -1px var(--accent-glow)" }}
                         />
                       )}
                       <span
