@@ -4,7 +4,7 @@ import React, { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
-import { Mail, Lock, User, ShieldAlert, ArrowRight, RefreshCw, AlertCircle, GraduationCap, Sparkles, Eye, EyeOff, Ban } from "lucide-react";
+import { Mail, Lock, User, ShieldAlert, ArrowRight, RefreshCw, AlertCircle, GraduationCap, Sparkles, Eye, EyeOff, Ban, Award } from "lucide-react";
 import { GoogleOAuthProvider, useGoogleLogin } from "@react-oauth/google";
 import useThemeStore from "@/store/useThemeStore";
 
@@ -112,6 +112,7 @@ function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [referralCode, setReferralCode] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -293,7 +294,7 @@ function LoginForm() {
     try {
       let result;
       if (isRegistering)
-        result = await register(username, email, password, submitRole);
+        result = await register(username, email, password, submitRole, referralCode);
       else result = await login(email, password);
       if (result.success) {
         // Always prefer freeCoursePath if available
@@ -423,8 +424,9 @@ function LoginForm() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <AnimatePresence mode="popLayout">
               {isRegistering && (
-                <motion.div key="username" initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}>
+                <motion.div key="username" initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="space-y-4 overflow-hidden">
                   <InputField label="Name" type="text" value={username} onChange={setUsername} icon={<User size={14} />} placeholder="enter name" />
+                  <InputField label="Referral Code (Optional)" type="text" value={referralCode} onChange={e => setReferralCode(e.toUpperCase())} icon={<Award size={14} />} placeholder="ENTER CODE" />
                 </motion.div>
               )}
             </AnimatePresence>

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
-import { Activity, Award, Zap, User, X, Save, RefreshCw, CheckCircle2 } from "lucide-react";
+import { Activity, Award, Zap, User, X, Save, RefreshCw, CheckCircle2, Crown, Clock, CalendarDays } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 
@@ -194,10 +194,6 @@ export default function StudentProfile() {
   const [saveError, setSaveError] = useState("");
   const [saveSuccess, setSaveSuccess] = useState("");
 
-  // Referral state
-  const [referralInput, setReferralInput] = useState("");
-  const [referralStatus, setReferralStatus] = useState(null); // { type: "success" | "error", message: "" }
-  const [referralLoading, setReferralLoading] = useState(false);
 
   const AVATARS = [
     { id: "1", url: "/images/avatar%201.png", label: "Avatar 1" },
@@ -273,38 +269,6 @@ export default function StudentProfile() {
     }
   };
 
-  const handleApplyReferral = async (e) => {
-    e.preventDefault();
-    if (!referralInput.trim()) return;
-
-    setReferralLoading(true);
-    setReferralStatus(null);
-    try {
-      const res = await fetch(`${API_BASE}/api/auth/referral/apply`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          ...(token ? { Authorization: `Bearer ${token}` } : {})
-        },
-        body: JSON.stringify({ referralCode: referralInput.trim() })
-      });
-      const data = await res.json();
-      if (data.success) {
-        setReferralStatus({ type: "success", message: data.message });
-        setReferralInput("");
-        if (user) {
-          user.premiumUntil = data.premiumUntil;
-          user.referredById = 999; // just to prevent UI from allowing multiple if we wanted to enforce it visually
-        }
-      } else {
-        setReferralStatus({ type: "error", message: data.message || "Failed to apply referral code." });
-      }
-    } catch (err) {
-      setReferralStatus({ type: "error", message: "Network error. Please try again." });
-    } finally {
-      setReferralLoading(false);
-    }
-  };
 
   useEffect(() => {
     if (!user) return;
@@ -409,6 +373,85 @@ export default function StudentProfile() {
                 Edit Profile
               </button>
             </div>
+          </div>
+          
+          {/* Subscription Plan */}
+          <div className="p-6 rounded-2xl border relative overflow-hidden" style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
+            {(() => {
+              const now = new Date();
+              const premiumUntil = user?.premiumUntil ? new Date(user.premiumUntil) : null;
+              const isPremium = premiumUntil && premiumUntil > now;
+              let daysLeft = 0;
+              if (isPremium) {
+                const diffTime = premiumUntil - now;
+                daysLeft = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+              }
+
+              return (
+                <>
+                  {isPremium && (
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/10 rounded-bl-full -z-10 blur-2xl" />
+                  )}
+                  <h2 className="text-[10px] font-bold uppercase tracking-[0.2em] mb-6" style={{ color: "var(--text-secondary)" }}>Subscription Plan</h2>
+                  
+                  {isPremium ? (
+                    <div className="space-y-4 relative z-10">
+                      <div className="flex items-center gap-3">
+                        <div className="p-2.5 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 text-white shadow-lg shadow-amber-500/20">
+                          <Crown size={20} />
+                        </div>
+                        <div>
+                          <h3 className="font-black text-lg text-amber-500 tracking-tight">Premium Member</h3>
+                          <p className="text-[10px] font-bold tracking-widest text-[var(--text-muted)] uppercase mt-0.5">Active Subscription</p>
+                        </div>
+                      </div>
+                      
+                      <div className="pt-4 border-t border-[var(--border-primary)] space-y-3">
+                        <div className="flex items-center justify-between text-xs font-semibold">
+                          <div className="flex items-center gap-2 text-[var(--text-secondary)]">
+                            <Clock size={14} />
+                            <span>Days Remaining</span>
+                          </div>
+                          <span className="text-amber-500 font-black font-serif-display text-base">{daysLeft} Days</span>
+                        </div>
+                        <div className="flex items-center justify-between text-xs font-semibold">
+                          <div className="flex items-center gap-2 text-[var(--text-secondary)]">
+                            <CalendarDays size={14} />
+                            <span>Valid Until</span>
+                          </div>
+                          <span className="text-[var(--text-primary)] font-bold">{premiumUntil.toLocaleDateString()}</span>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-3">
+                        <div className="p-2.5 rounded-xl bg-[var(--bg-secondary)] text-[var(--text-secondary)] border border-[var(--border-primary)]">
+                          <User size={20} />
+                        </div>
+                        <div>
+                          <h3 className="font-black text-lg text-[var(--text-primary)] tracking-tight">Free Tier</h3>
+                          <p className="text-[10px] font-bold tracking-widest text-[var(--text-muted)] uppercase mt-0.5">Basic Access</p>
+                        </div>
+                      </div>
+                      
+                      <div className="pt-4 border-t border-[var(--border-primary)]">
+                         <div className="flex items-center justify-between text-xs font-semibold">
+                          <div className="flex items-center gap-2 text-[var(--text-secondary)]">
+                            <CalendarDays size={14} />
+                            <span>Joined On</span>
+                          </div>
+                          <span className="text-[var(--text-primary)] font-bold">{user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A'}</span>
+                        </div>
+                        <button className="w-full mt-4 py-2.5 rounded-lg text-[11px] font-bold uppercase tracking-widest bg-amber-500/10 text-amber-500 border border-amber-500/20 hover:bg-amber-500/20 transition-colors">
+                          Upgrade to Premium
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </>
+              );
+            })()}
           </div>
           
           {/* Community Stats */}
@@ -553,81 +596,7 @@ export default function StudentProfile() {
             )}
           </div>
 
-          {/* Refer & Earn Section */}
-          <div className="p-6 rounded-2xl border border-[var(--border-primary)]" style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}>
-            <div className="flex items-center justify-between mb-4 pb-4 border-b" style={{ borderColor: "var(--border-primary)" }}>
-              <div className="flex items-center gap-2">
-                <div className="p-2 rounded-lg bg-amber-500/10 text-amber-500">
-                  <Award size={18} />
-                </div>
-                <h2 className="text-sm font-bold" style={{ color: "var(--text-primary)" }}>Refer & Earn Premium</h2>
-              </div>
-              <div className="text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded bg-[var(--bg-primary)] border" style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}>
-                {user.premiumUntil && new Date(user.premiumUntil) > new Date() ? `Premium active until ${new Date(user.premiumUntil).toLocaleDateString()}` : "Free Tier"}
-              </div>
-            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Left: Your Code */}
-              <div className="space-y-3">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-secondary)]">Your Referral Code</p>
-                <div className="flex items-center gap-2">
-                  <div className="flex-1 p-3 rounded-lg border text-sm font-mono tracking-wider font-bold text-center bg-[var(--bg-primary)]" style={{ borderColor: "var(--border-primary)", color: "var(--text-primary)" }}>
-                    {user.referralCode || "Generating..."}
-                  </div>
-                  <button 
-                    onClick={() => {
-                      if (user.referralCode) {
-                        navigator.clipboard.writeText(user.referralCode);
-                        setSaveSuccess("Referral code copied!");
-                        setTimeout(() => setSaveSuccess(""), 2000);
-                      }
-                    }}
-                    className="p-3 rounded-lg border hover:bg-[var(--bg-hover)] transition-colors"
-                    style={{ borderColor: "var(--border-primary)" }}
-                    title="Copy to clipboard"
-                  >
-                    <Save size={18} />
-                  </button>
-                </div>
-                <p className="text-[10px] text-[var(--text-muted)] leading-relaxed">
-                  Share this code with your friends. Both of you will receive 7 days of premium! It stacks!
-                </p>
-              </div>
-
-              {/* Right: Enter Code */}
-              <div className="space-y-3">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-secondary)]">Redeem a Code</p>
-                <form onSubmit={handleApplyReferral} className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <input 
-                      type="text" 
-                      value={referralInput}
-                      onChange={(e) => setReferralInput(e.target.value.toUpperCase())}
-                      placeholder="ENTER CODE"
-                      className="flex-1 w-full px-4 py-3 text-sm rounded-lg border outline-none focus:ring-2 focus:ring-[var(--accent-primary)] transition-all bg-[var(--bg-primary)] uppercase font-mono tracking-widest font-bold"
-                      style={{ borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
-                      disabled={referralLoading}
-                    />
-                    <button 
-                      type="submit"
-                      disabled={!referralInput.trim() || referralLoading}
-                      className="px-4 py-3 rounded-lg text-xs font-bold uppercase tracking-widest transition-transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
-                      style={{ backgroundColor: "var(--accent-primary)", color: "var(--text-on-accent)" }}
-                    >
-                      {referralLoading ? <RefreshCw size={16} className="animate-spin" /> : "Redeem"}
-                    </button>
-                  </div>
-                  {referralStatus && (
-                    <div className={`text-[10px] font-bold p-2 rounded flex items-center gap-2 ${referralStatus.type === 'success' ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20' : 'bg-rose-500/10 text-rose-500 border border-rose-500/20'}`}>
-                      {referralStatus.type === 'success' ? <CheckCircle2 size={12} /> : <X size={12} />}
-                      {referralStatus.message}
-                    </div>
-                  )}
-                </form>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
 
