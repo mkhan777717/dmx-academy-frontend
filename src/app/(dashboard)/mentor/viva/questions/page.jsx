@@ -29,7 +29,7 @@ const emptyForm = {
   difficulty: "EASY", expectedAnswer: "", keywords: ""
 };
 
-export default function AIAllInOneVivaPage() {
+export default function AIAllInOneVivaPage({ children }) {
   const { user, token, API_BASE } = useAuth();
 
   // --- Common Headers ---
@@ -917,6 +917,10 @@ export default function AIAllInOneVivaPage() {
           <div>
             <h1 className="text-2xl font-black">Generate &amp; Review Questions</h1>
             <p className="text-xs text-[var(--text-muted)]">PDF: {activeMaterial?.title}</p>
+            
+        {/* Render any injected children (like AI Settings) */}
+        {children}
+        
           </div>
         </div>
 

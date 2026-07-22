@@ -18,7 +18,9 @@ const PRESET_MODELS = [
   { value: "deepseek-r1:7b", label: "DeepSeek-R1 7B" },
 ];
 
-export default function AISettingsPage() {
+import AIAllInOneVivaPage from "@/app/(dashboard)/mentor/viva/questions/page";
+
+function AISettingsPanel() {
   const { user, token, API_BASE } = useAuth();
   const router = useRouter();
 
@@ -58,13 +60,6 @@ export default function AISettingsPage() {
 
   useEffect(() => { if (user) fetchSettings(); }, [user, fetchSettings]);
 
-  // Hard redirect non-super-admins away
-  useEffect(() => {
-    if (user && user.role !== "ADMIN") {
-      router.replace("/admin/dashboard");
-    }
-  }, [user, router]);
-
   const handleSave = async () => {
     setSaving(true); setSaved(false); setError("");
     try {
@@ -97,20 +92,13 @@ export default function AISettingsPage() {
     </div>
   );
 
-  if (user.role !== "ADMIN") return null;
-
   const isHealthy = health?.available && health?.modelAvailable;
 
   return (
-    <div className="space-y-6 animate-fade-in pb-12 max-w-2xl px-0 sm:px-6">
-      {/* Header */}
-      <section className="flex flex-col gap-2 border-b pb-6 shrink-0" style={{ borderColor: "var(--border-primary)" }}>
-        <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border border-[var(--border-primary)] mb-3 w-fit"
-          style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)", backgroundColor: "var(--bg-secondary)" }}>
-          <Brain size={12} className="text-violet-500" />
-          AI Viva
-        </div>
-        <h1 className="text-4xl font-serif tracking-tight" style={{ color: "var(--text-primary)" }}>AI Settings</h1>
+    <div className="space-y-6 animate-fade-in pb-12 w-full mt-16 pt-12 border-t" style={{ borderColor: "var(--border-primary)" }}>
+      {/* Section Header */}
+      <section className="flex flex-col gap-2 shrink-0">
+        <h2 className="text-3xl font-serif tracking-tight" style={{ color: "var(--text-primary)" }}>AI Settings</h2>
         <p className="text-sm max-w-xl" style={{ color: "var(--text-secondary)" }}>
           Configure the local LLM used for answer evaluation and session summaries.
         </p>
@@ -306,5 +294,25 @@ export default function AISettingsPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function AdminAIVivaPage() {
+  const { user } = useAuth();
+  const router = useRouter();
+
+  // Hard redirect non-super-admins away
+  useEffect(() => {
+    if (user && user.role !== "ADMIN") {
+      router.replace("/admin/dashboard");
+    }
+  }, [user, router]);
+
+  if (!user || user.role !== "ADMIN") return null;
+
+  return (
+    <AIAllInOneVivaPage>
+      <AISettingsPanel />
+    </AIAllInOneVivaPage>
   );
 }

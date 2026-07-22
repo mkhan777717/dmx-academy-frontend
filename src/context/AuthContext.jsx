@@ -280,13 +280,13 @@ export function AuthProvider({ children }) {
   };
 
   // ---------------------------------------------------------------------------
-  const register = async (username, email, password, role = "USER") => {
+  const register = async (username, email, password, role = "USER", referralCode = "") => {
     // 1. Try real backend
     try {
       const res = await fetch(`${API_BASE}/api/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, email, password, role }),
+        body: JSON.stringify({ username, email, password, role, referralCode }),
         signal: AbortSignal.timeout(30000),
       });
 
