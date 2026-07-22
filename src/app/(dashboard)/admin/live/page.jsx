@@ -50,6 +50,9 @@ import {
   Volume2,
   VolumeX,
   User,
+  CalendarDays,
+  Trash2,
+  Film,
 } from "lucide-react";
 import { ReactionOverlay, ReactionPicker } from "@/components/LiveReactions";
 
@@ -203,9 +206,9 @@ function DraggableVideo({ track, name, isLocal = false, defaultPosition = { x: 2
     const parent = boxRef.current?.parentElement;
     if (parent && position.x === defaultPosition.x && position.y === defaultPosition.y) {
       const parentRect = parent.getBoundingClientRect();
-      const x = alignLeft ? 20 : parentRect.width - 210;
-      const y = parentRect.height - 162; // 144 (h-36) + 18
-      setPosition({ x: Math.max(20, x), y: Math.max(20, y) });
+      const x = alignLeft ? 16 : Math.max(16, parentRect.width - 208);
+      const y = Math.max(16, parentRect.height - 156); // 144 (h-36) + 12
+      setPosition({ x: Math.max(16, x), y: Math.max(16, y) });
     }
   }, [alignLeft, defaultPosition]);
 
@@ -854,28 +857,28 @@ function BroadcastPanel({ session, onEndSession, authToken, shouldRecord }) {
           </div>
 
           {/* Broadcast Control Bar */}
-          <div className="flex items-center justify-between p-3.5 rounded-[1.35rem] border border-[var(--border-primary)] bg-[var(--bg-card)]/40 backdrop-blur-md shrink-0 shadow-lg"
+          <div className="flex items-center justify-center p-3.5 rounded-[1.35rem] border border-[var(--border-primary)] bg-[var(--bg-card)]/40 backdrop-blur-md shrink-0 shadow-lg"
             style={{ borderColor: "rgba(148, 163, 184, 0.16)" }}
           >
-            <div className="flex items-center gap-1 flex-wrap">
+            <div className="flex items-center gap-1.5 flex-wrap">
               <TrackToggle
                 source={Track.Source.Microphone}
                 showIcon={true}
-                className="px-4 py-2.5 rounded-xl border border-[var(--border-primary)] text-[10px] font-extrabold uppercase tracking-wider transition-all hover:scale-105 cursor-pointer shadow-sm text-slate-200 hover:text-white bg-[var(--bg-hover)] border-[var(--border-primary)]/50 hover:bg-slate-750"
+                className="px-3 py-2 rounded-xl border border-[var(--border-primary)] text-[10px] font-extrabold uppercase tracking-wider transition-all hover:scale-105 cursor-pointer shadow-sm text-slate-200 hover:text-white bg-[var(--bg-hover)] border-[var(--border-primary)]/50 hover:bg-slate-750"
               >
                 Mic
               </TrackToggle>
               <TrackToggle
                 source={Track.Source.Camera}
                 showIcon={true}
-                className="px-4 py-2.5 rounded-xl border border-[var(--border-primary)] text-[10px] font-extrabold uppercase tracking-wider transition-all hover:scale-105 cursor-pointer shadow-sm text-slate-200 hover:text-white bg-[var(--bg-hover)] border-[var(--border-primary)]/50 hover:bg-slate-750"
+                className="px-3 py-2 rounded-xl border border-[var(--border-primary)] text-[10px] font-extrabold uppercase tracking-wider transition-all hover:scale-105 cursor-pointer shadow-sm text-slate-200 hover:text-white bg-[var(--bg-hover)] border-[var(--border-primary)]/50 hover:bg-slate-750"
               >
                 Camera
               </TrackToggle>
               {speakingStudentScreenTrack?.publication?.track ? (
                 <button
                   disabled
-                  className="px-4 py-2.5 rounded-xl border border-[var(--border-primary)] text-[10px] font-extrabold uppercase tracking-wider transition-all opacity-40 cursor-not-allowed text-slate-200 bg-[var(--bg-hover)] border-[var(--border-primary)]/50"
+                  className="px-3 py-2 rounded-xl border border-[var(--border-primary)] text-[10px] font-extrabold uppercase tracking-wider transition-all opacity-40 cursor-not-allowed text-slate-200 bg-[var(--bg-hover)] border-[var(--border-primary)]/50"
                   title="A student is currently sharing their screen"
                 >
                   Share Screen
@@ -884,7 +887,7 @@ function BroadcastPanel({ session, onEndSession, authToken, shouldRecord }) {
                 <TrackToggle
                   source={Track.Source.ScreenShare}
                   showIcon={true}
-                  className="px-4 py-2.5 rounded-xl border border-[var(--border-primary)] text-[10px] font-extrabold uppercase tracking-wider transition-all hover:scale-105 cursor-pointer shadow-sm text-slate-200 hover:text-white bg-[var(--bg-hover)] border-[var(--border-primary)]/50 hover:bg-slate-750"
+                  className="px-3 py-2 rounded-xl border border-[var(--border-primary)] text-[10px] font-extrabold uppercase tracking-wider transition-all hover:scale-105 cursor-pointer shadow-sm text-slate-200 hover:text-white bg-[var(--bg-hover)] border-[var(--border-primary)]/50 hover:bg-slate-750"
                 >
                   Share Screen
                 </TrackToggle>
@@ -923,7 +926,7 @@ function BroadcastPanel({ session, onEndSession, authToken, shouldRecord }) {
                 id="admin-chat-toggle-btn"
               >
                 <MessageSquare size={14} />
-                <span>Live Chat</span>
+                Live Chat
               </button>
 
               <ReactionPicker onReact={handleReaction} />
@@ -941,9 +944,9 @@ function BroadcastPanel({ session, onEndSession, authToken, shouldRecord }) {
 
               <button
                 onClick={onEndSession}
-                className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-red-500 hover:bg-red-600 text-white text-xs font-extrabold uppercase tracking-wider transition-all hover:scale-105 shadow-lg shadow-red-500/20 cursor-pointer"
+                className="flex items-center gap-2 px-3 py-2 rounded-xl bg-red-500 hover:bg-red-600 text-white text-[10px] font-extrabold uppercase tracking-wider transition-all hover:scale-105 shadow-lg shadow-red-500/20 cursor-pointer"
               >
-                <StopCircle size={16} />
+                <StopCircle size={14} />
                 End Session
               </button>
             </div>
@@ -1051,6 +1054,16 @@ export default function AdminLivePage() {
 
   const [pastSessions, setPastSessions] = useState([]);
   const [loadingPast, setLoadingPast] = useState(false);
+  const [scheduledSessions, setScheduledSessions] = useState([]);
+  const [loadingScheduled, setLoadingScheduled] = useState(false);
+  const [scheduledAtDate, setScheduledAtDate] = useState("");
+  const [isScheduling, setIsScheduling] = useState(false);
+  const [startConfirmSession, setStartConfirmSession] = useState(null);
+  const [deleteConfirmSession, setDeleteConfirmSession] = useState(null);
+  const [deletePastConfirmSession, setDeletePastConfirmSession] = useState(null);
+  const [successMsg, setSuccessMsg] = useState(null);
+  const [showPastModal, setShowPastModal] = useState(false);
+  const [rightColumnTab, setRightColumnTab] = useState("upcoming"); // "upcoming" | "past"
   const [checkingSession, setCheckingSession] = useState(true); // true until we've checked for active session
   const [selectedVideoUrl, setSelectedVideoUrl] = useState(null);
   const [selectedVideoSession, setSelectedVideoSession] = useState(null);
@@ -1228,10 +1241,11 @@ export default function AdminLivePage() {
     }
   };
 
-  const handleDeleteSession = async (id) => {
-    const confirmed = window.confirm("Are you sure you want to delete this past broadcast? This cannot be undone.");
-    if (!confirmed) return;
+  const handleDeleteSession = (past) => {
+    setDeletePastConfirmSession(past);
+  };
 
+  const executeDeleteSession = async (id) => {
     try {
       const res = await fetch(`${API_BASE}/api/livekit/session/${id}`, {
         method: "DELETE",
@@ -1243,17 +1257,146 @@ export default function AdminLivePage() {
       if (data.success) {
         setPastSessions((prev) => prev.filter((s) => s.id !== id));
       } else {
-        alert(data.message || "Failed to delete session.");
+        setError(data.message || "Failed to delete past broadcast.");
       }
     } catch (err) {
       console.error("Failed to delete session:", err);
-      alert("Error connecting to server to delete session.");
+      setError("Error connecting to server to delete session.");
+    }
+  };
+
+  const fetchScheduledSessions = async () => {
+    try {
+      setLoadingScheduled(true);
+      const res = await fetch(`${API_BASE}/api/livekit/sessions/scheduled`, {
+        headers: authToken ? { Authorization: `Bearer ${authToken}` } : {},
+      });
+      const data = await res.json();
+      if (data.success && data.sessions) {
+        setScheduledSessions(data.sessions);
+      }
+    } catch (err) {
+      console.error("Failed to fetch scheduled sessions:", err);
+    } finally {
+      setLoadingScheduled(false);
+    }
+  };
+
+  const handleScheduleSession = async () => {
+    if (!formState.title.trim()) {
+      setError("Session title is required.");
+      return;
+    }
+    if (!scheduledAtDate) {
+      setError("Please select a date and time to schedule the class.");
+      return;
+    }
+
+    setIsScheduling(true);
+    setError(null);
+    setSuccessMsg(null);
+
+    try {
+      const res = await fetch(`${API_BASE}/api/livekit/session`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${authToken}`,
+        },
+        body: JSON.stringify({
+          title: formState.title,
+          description: formState.description,
+          thumbnailUrl: formState.thumbnailUrl,
+          scheduledAt: scheduledAtDate,
+          isScheduled: true,
+          batchIds: selectedBatchIds,
+          showWatermark,
+          watermarkOptions: Object.keys(watermarkOpts).filter(k => watermarkOpts[k]).join(','),
+        }),
+      });
+
+      const data = await res.json();
+      if (!data.success) {
+        setError(data.message || "Failed to schedule session.");
+        return;
+      }
+
+      setFormState({ title: "", description: "", thumbnailPreview: null, thumbnailUrl: "" });
+      setScheduledAtDate("");
+      fetchScheduledSessions();
+      setSuccessMsg("Live class scheduled successfully!");
+      setTimeout(() => setSuccessMsg(null), 5000);
+    } catch (e) {
+      console.error("[LIVE] handleScheduleSession error:", e);
+      setError("Failed to schedule session.");
+    } finally {
+      setIsScheduling(false);
+    }
+  };
+
+  const handleStartScheduledSession = (schedSession) => {
+    setStartConfirmSession(schedSession);
+  };
+
+  const executeStartScheduledSession = async (schedSession) => {
+    setIsStarting(true);
+    setError(null);
+
+    try {
+      const res = await fetch(`${API_BASE}/api/livekit/session/${schedSession.id}/start`, {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
+
+      const data = await res.json();
+      if (!data.success) {
+        setError(data.message || "Failed to start live session.");
+        setIsStarting(false);
+        return;
+      }
+
+      setSession(data.session);
+      setActiveSession(data.session);
+      await fetchToken(data.session.roomName);
+      setScheduledSessions(prev => prev.filter(s => s.id !== schedSession.id));
+    } catch (e) {
+      console.error("Failed to start scheduled session:", e);
+      setError("Error starting live session.");
+    } finally {
+      setIsStarting(false);
+    }
+  };
+
+  const handleDeleteScheduledSession = (schedSession) => {
+    setDeleteConfirmSession(schedSession);
+  };
+
+  const executeDeleteScheduledSession = async (id) => {
+    try {
+      const res = await fetch(`${API_BASE}/api/livekit/session/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
+      const data = await res.json();
+      if (data.success) {
+        setScheduledSessions((prev) => prev.filter((s) => s.id !== id));
+      } else {
+        setError(data.message || "Failed to cancel scheduled session.");
+      }
+    } catch (err) {
+      console.error("Failed to cancel scheduled session:", err);
+      setError("Error connecting to server to cancel session.");
     }
   };
 
   useEffect(() => {
     if (!session && authToken) {
       fetchPastSessions();
+      fetchScheduledSessions();
     }
   }, [session, authToken]);
 
@@ -1328,10 +1471,10 @@ export default function AdminLivePage() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Check size limit: 2MB (2 * 1024 * 1024 bytes)
-    const MAX_SIZE = 2 * 1024 * 1024;
+    // Check size limit: 10MB (10 * 1024 * 1024 bytes)
+    const MAX_SIZE = 10 * 1024 * 1024;
     if (file.size > MAX_SIZE) {
-      setError("Thumbnail image exceeds the 2MB size limit. Please choose a smaller file.");
+      setError("Thumbnail image exceeds the 10MB size limit. Please choose a smaller file.");
       e.target.value = ""; // Clear file input selection
       setFormState((prev) => ({
         ...prev,
@@ -1458,7 +1601,8 @@ export default function AdminLivePage() {
   // ─── Pre-Session Form (Setup) ──────────────────────────────────────
   if (!session || !livekitToken) {
     return (
-      <div className="flex-1 overflow-y-auto w-full custom-scrollbar pb-10 pr-1">
+      <>
+        <div className="flex-1 overflow-y-auto w-full custom-scrollbar pb-10 pr-1">
         <div className="max-w-7xl mx-auto space-y-12 lg:space-y-0 lg:grid lg:grid-cols-[1.3fr_1fr] lg:gap-12 animate-fade-in px-4 sm:px-6 lg:px-8">
           
           {/* Left Column: Setup Form */}
@@ -1527,7 +1671,7 @@ export default function AdminLivePage() {
                 Thumbnail Image
               </label>
               <span className="text-[9px] font-black text-amber-500 bg-amber-500/10 border border-[var(--border-primary)] border-amber-500/20 px-2 py-0.5 rounded-md uppercase tracking-wider select-none">
-                16:9 Aspect Ratio • Max 2MB
+                16:9 Aspect Ratio • Max 10MB
               </span>
             </div>
             <div className="flex items-start gap-4">
@@ -1549,7 +1693,7 @@ export default function AdminLivePage() {
                       Upload Image
                     </span>
                     <span className="text-[8px] font-medium block opacity-75" style={{ color: "var(--text-muted)" }}>
-                      16:9 • Max 2MB
+                      16:9 • Max 10MB
                     </span>
                   </div>
                 )}
@@ -1562,7 +1706,7 @@ export default function AdminLivePage() {
                 />
               </label>
               <p className="text-[10px] leading-relaxed pt-1" style={{ color: "var(--text-muted)" }}>
-                Optional thumbnail that students will see before joining. Recommended: 16:9 aspect ratio, max size: 2MB.
+                Optional thumbnail that students will see before joining. Recommended: 16:9 aspect ratio, max size: 10MB.
               </p>
             </div>
           </div>
@@ -1700,6 +1844,25 @@ export default function AdminLivePage() {
             )}
           </div>
 
+          {/* Schedule Date & Time */}
+          <div className="space-y-2">
+            <label className="text-xs font-extrabold uppercase tracking-wider flex items-center justify-between" style={{ color: "var(--text-secondary)" }}>
+              <span>Schedule Date & Time (Optional)</span>
+              <span className="text-[9px] font-bold text-[var(--text-muted)]">Select if scheduling for future</span>
+            </label>
+            <input
+              type="datetime-local"
+              value={scheduledAtDate}
+              onChange={(e) => setScheduledAtDate(e.target.value)}
+              className="w-full px-4 py-3 rounded-xl border border-[var(--border-primary)] text-sm font-medium outline-none transition-colors"
+              style={{
+                backgroundColor: "var(--bg-secondary)",
+                borderColor: "var(--border-primary)",
+                color: "var(--text-primary)",
+              }}
+            />
+          </div>
+
           {/* Error Message */}
           {error && (
             <div className="flex items-center gap-2 p-3 rounded-xl bg-red-500/10 text-red-500 text-xs font-bold">
@@ -1708,140 +1871,321 @@ export default function AdminLivePage() {
             </div>
           )}
 
-          {/* Go Live Button */}
-          <button
-            onClick={handleStartSession}
-            disabled={isStarting || !formState.title.trim()}
-            className="w-full flex items-center justify-center gap-3 px-6 py-4 rounded-xl text-[var(--text-on-accent)] text-sm font-bold uppercase tracking-wider transition-transform hover:-translate-y-0.5 shadow-md disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
-            style={{
-              background: "var(--accent-primary)",
-            }}
-            id="go-live-btn"
-          >
-            {isStarting ? (
-              <>
-                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                Starting Session...
-              </>
-            ) : (
-              <>
-                <Radio size={18} />
-                Go Live Now
-              </>
-            )}
-          </button>
+          {/* Action Buttons: Go Live Now or Schedule Class */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+            <button
+              onClick={handleStartSession}
+              disabled={isStarting || isScheduling || !formState.title.trim()}
+              className="w-full flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl text-[var(--text-on-accent)] text-xs font-extrabold uppercase tracking-wider transition-transform hover:-translate-y-0.5 shadow-md disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+              style={{ background: "var(--accent-primary)" }}
+              id="go-live-btn"
+            >
+              {isStarting ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  Starting...
+                </>
+              ) : (
+                <>
+                  <Radio size={16} />
+                  Go Live Now
+                </>
+              )}
+            </button>
+
+            <button
+              onClick={handleScheduleSession}
+              disabled={isStarting || isScheduling || !formState.title.trim() || !scheduledAtDate}
+              className="w-full flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl border border-[var(--border-primary)] text-xs font-extrabold uppercase tracking-wider transition-all hover:bg-[var(--bg-hover)] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+              style={{ color: "var(--text-primary)", backgroundColor: "var(--bg-secondary)" }}
+              id="schedule-class-btn"
+            >
+              {isScheduling ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-t-transparent rounded-full animate-spin border-amber-500" />
+                  Scheduling...
+                </>
+              ) : (
+                <>
+                  <CalendarDays size={16} className="text-amber-500" />
+                  Schedule Class
+                </>
+              )}
+            </button>
+          </div>
         </div>
 
-        {/* LiveKit Status Info */}
+        {/* Live Status Info */}
         <div className="flex items-center gap-2 p-3 rounded-xl border border-[var(--border-primary)] text-[10px] font-semibold"
           style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)", color: "var(--text-muted)" }}
         >
           <Sparkles size={12} style={{ color: "var(--text-accent)" }} />
-          Powered by LiveKit — Students will see your camera, microphone, and screen share in real-time.
+          Students will see your camera, microphone, and screen share in real-time.
         </div>
           </div>
 
-          {/* Right Column: Past Broadcasts */}
-          <div className="w-full lg:sticky lg:top-0 lg:h-max">
-        {/* Past Broadcasts List */}
-        <div className="space-y-4">
-          <div className="space-y-1">
-            <h2 className="text-xl font-serif" style={{ color: "var(--text-primary)" }}>
-              Past Broadcasts
-            </h2>
-            <p className="text-xs" style={{ color: "var(--text-secondary)" }}>
-              Manage and delete your previously ended live sessions.
-            </p>
-          </div>
+          {/* Right Column: Scheduled & Past Broadcasts */}
+          <div className="w-full lg:sticky lg:top-0 lg:h-max space-y-6">
 
-          {loadingPast ? (
-            <div className="flex items-center justify-center p-6 border border-[var(--border-primary)] border-dashed rounded-2xl"
-              style={{ borderColor: "var(--border-primary)" }}
-            >
-              <div className="w-6 h-6 border-2 border-t-transparent rounded-full animate-spin" style={{ borderColor: "var(--text-accent)" }} />
+        {/* Tab Switcher for Right Column */}
+        <div className="flex items-center gap-2 p-1 rounded-xl bg-[var(--bg-secondary)] border border-[var(--border-primary)] shadow-sm">
+          <button
+            type="button"
+            onClick={() => setRightColumnTab("upcoming")}
+            className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-xs font-bold transition-all outline-none focus:outline-none focus:ring-0 select-none cursor-pointer border ${
+              rightColumnTab === "upcoming"
+                ? "bg-[var(--bg-card)] text-[var(--text-primary)] shadow-sm border-[var(--border-primary)]"
+                : "border-transparent text-[var(--text-muted)] hover:text-[var(--text-primary)]"
+            }`}
+          >
+            <CalendarDays size={14} className="text-amber-500" />
+            <span>Upcoming Classes</span>
+            {scheduledSessions.length > 0 && (
+              <span className="px-1.5 py-0.2 rounded text-[9px] font-black bg-amber-500/10 text-amber-500 border border-amber-500/20">
+                {scheduledSessions.length}
+              </span>
+            )}
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setRightColumnTab("past")}
+            className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-xs font-bold transition-all outline-none focus:outline-none focus:ring-0 select-none cursor-pointer border ${
+              rightColumnTab === "past"
+                ? "bg-[var(--bg-card)] text-[var(--text-primary)] shadow-sm border-[var(--border-primary)]"
+                : "border-transparent text-[var(--text-muted)] hover:text-[var(--text-primary)]"
+            }`}
+          >
+            <Film size={14} className="text-violet-500" />
+            <span>Past Broadcasts</span>
+            {pastSessions.length > 0 && (
+              <span className="px-1.5 py-0.2 rounded text-[9px] font-black bg-violet-500/10 text-violet-500 border border-violet-500/20">
+                {pastSessions.length}
+              </span>
+            )}
+          </button>
+        </div>
+
+        {/* Scheduled Classes List */}
+        {rightColumnTab === "upcoming" ? (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-lg font-serif flex items-center gap-2" style={{ color: "var(--text-primary)" }}>
+                  <CalendarDays size={17} className="text-amber-500" />
+                  Upcoming Scheduled Classes
+                </h2>
+                <p className="text-xs" style={{ color: "var(--text-secondary)" }}>
+                  Classes scheduled for future broadcasts. Start them anytime.
+                </p>
+              </div>
             </div>
-          ) : pastSessions.length === 0 ? (
-            <div className="flex flex-col items-center justify-center p-10 border border-[var(--border-primary)] border-dashed rounded-2xl text-center space-y-2"
-              style={{ borderColor: "var(--border-primary)", backgroundColor: "var(--bg-card)" }}
-            >
-              <p className="text-xs font-bold" style={{ color: "var(--text-muted)" }}>No past broadcasts found</p>
-              <p className="text-[10px]" style={{ color: "var(--text-muted)" }}>Your ended broadcasts will appear here.</p>
-            </div>
-          ) : (
-            <div className="grid gap-3">
-              {pastSessions.map((past) => (
-                <div
-                  key={past.id}
-                  className="flex items-center justify-between p-4 rounded-2xl border border-[var(--border-primary)] transition-colors hover:bg-[var(--bg-secondary)] gap-4"
-                  style={{
-                    backgroundColor: "var(--bg-primary)",
-                    borderColor: "var(--border-primary)",
-                  }}
-                >
-                  <div className="flex items-center gap-4 min-w-0">
-                    {past.thumbnailUrl ? (
-                      <img
-                        src={past.thumbnailUrl}
-                        alt=""
-                        className="w-14 h-9 rounded-lg object-cover bg-[var(--bg-hover)] shrink-0"
-                      />
-                    ) : (
-                      <div className="w-14 h-9 rounded-lg bg-[var(--bg-hover)] flex items-center justify-center shrink-0 border"
-                        style={{ borderColor: "var(--border-primary)" }}
-                      >
-                        <Radio size={14} style={{ color: "var(--text-muted)" }} />
-                      </div>
-                    )}
-                    <div className="min-w-0">
-                      <h4 className="text-xs font-black truncate" style={{ color: "var(--text-primary)" }}>
-                        {past.title} <span className="text-[9px] font-normal text-[var(--text-muted)] opacity-80 ml-2">by {past.host?.username || 'Unknown'}</span>
-                      </h4>
-                      <p className="text-[10px] text-[var(--text-muted)] leading-tight mt-0.5">
-                        {new Date(past.startedAt).toLocaleDateString()} at {new Date(past.startedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                      </p>
-                      {past.endedAt && (
-                        <p className="text-[9px] text-[var(--text-muted)] font-semibold opacity-70 mt-0.5">
-                          Duration: {Math.round((new Date(past.endedAt) - new Date(past.startedAt)) / 60000)} mins
-                        </p>
+
+            {loadingScheduled ? (
+              <div className="flex items-center justify-center p-6 border border-[var(--border-primary)] border-dashed rounded-2xl">
+                <div className="w-6 h-6 border-2 border-t-transparent rounded-full animate-spin" style={{ borderColor: "var(--text-accent)" }} />
+              </div>
+            ) : scheduledSessions.length === 0 ? (
+              <div className="flex flex-col items-center justify-center p-8 border border-[var(--border-primary)] border-dashed rounded-2xl text-center space-y-1"
+                style={{ borderColor: "var(--border-primary)", backgroundColor: "var(--bg-card)" }}
+              >
+                <p className="text-xs font-bold" style={{ color: "var(--text-primary)" }}>No upcoming scheduled classes</p>
+                <p className="text-[10px]" style={{ color: "var(--text-muted)" }}>Use the form to schedule a live class for later.</p>
+              </div>
+            ) : (
+              <div className="grid gap-3">
+                {scheduledSessions.map((s) => (
+                  <div
+                    key={s.id}
+                    className="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-2xl border border-[var(--border-primary)] transition-all hover:bg-[var(--bg-secondary)] gap-3 shadow-sm"
+                    style={{
+                      backgroundColor: "var(--bg-primary)",
+                      borderColor: "var(--border-primary)",
+                    }}
+                  >
+                    <div className="flex items-center gap-3 min-w-0 flex-1">
+                      {s.thumbnailUrl ? (
+                        <img
+                          src={s.thumbnailUrl}
+                          alt=""
+                          className="w-14 h-9 rounded-lg object-cover bg-[var(--bg-hover)] shrink-0"
+                        />
+                      ) : (
+                        <div
+                          className="w-14 h-9 rounded-lg bg-amber-500/10 flex items-center justify-center shrink-0 border border-amber-500/20"
+                        >
+                          <CalendarDays size={14} className="text-amber-500" />
+                        </div>
                       )}
+                      <div className="space-y-1 min-w-0 flex-1">
+                        <div className="flex items-center gap-2">
+                          <span className="px-2 py-0.5 rounded text-[9px] font-extrabold uppercase bg-amber-500/10 text-amber-500 border border-amber-500/20">
+                            Scheduled
+                          </span>
+                          <h4 className="text-xs font-extrabold truncate" style={{ color: "var(--text-primary)" }}>
+                            {s.title}
+                          </h4>
+                        </div>
+                        {s.description && (
+                          <p className="text-[11px] line-clamp-1 leading-relaxed" style={{ color: "var(--text-secondary)" }}>
+                            {s.description}
+                          </p>
+                        )}
+                        <div className="flex items-center gap-3 text-[10px] pt-0.5" style={{ color: "var(--text-muted)" }}>
+                          <span className="flex items-center gap-1 font-semibold text-amber-500">
+                            <CalendarDays size={11} />
+                            {s.scheduledAt ? new Date(s.scheduledAt).toLocaleString("en-IN", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", hour12: true }) : "Scheduled"}
+                          </span>
+                          {s.batches && s.batches.length > 0 && (
+                            <span className="truncate max-w-[120px]">
+                              Cohort: {s.batches.map(b => b.name).join(", ")}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          handleStartScheduledSession(s);
+                        }}
+                        disabled={isStarting}
+                        className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-extrabold uppercase tracking-wider flex items-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50 shadow-sm"
+                      >
+                        <Radio size={12} />
+                        Start Now
+                      </button>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          handleDeleteScheduledSession(s);
+                        }}
+                        className="p-1.5 rounded-lg border border-[var(--border-primary)] hover:bg-red-500/10 hover:text-red-500 text-slate-400 transition-colors cursor-pointer"
+                        title="Cancel Scheduled Class"
+                      >
+                        <Trash2 size={13} />
+                      </button>
                     </div>
                   </div>
-
-                  <div className="flex items-center gap-2 shrink-0">
-                    {past.recordingUrl ? (
-                      <button
-                        onClick={() => {
-                          const url = past.recordingUrl.startsWith('/') ? `${API_BASE}${past.recordingUrl}` : past.recordingUrl;
-                          setSelectedVideoUrl(url);
-                          setSelectedVideoSession(past);
-                        }}
-                        className="px-3 py-1.5 rounded-xl bg-zinc-500/10 hover:bg-zinc-500/20 text-zinc-500 text-[10px] font-extrabold uppercase tracking-wider transition-all border border-[var(--border-primary)] border-zinc-500/10 hover:scale-[1.02] cursor-pointer text-center shrink-0"
-                      >
-                        Watch
-                      </button>
-                    ) : (past.isRecording && (past.egressSegments || (past.endedAt && (new Date() - new Date(past.endedAt)) < 180000))) ? (
-                      <span className="text-[9px] font-extrabold text-neutral-500 bg-neutral-500/10 px-2 py-1.5 rounded border border-[var(--border-primary)] border-neutral-500/20 animate-pulse shrink-0">
-                        Processing...
-                      </span>
-                    ) : (
-                      <span className="text-[9px] font-bold text-slate-500 bg-slate-500/5 px-2 py-1.5 rounded border border-[var(--border-primary)] border-dashed border-slate-500/10 shrink-0">
-                        No Recording
-                      </span>
-                    )}
-
-                    <button
-                      onClick={() => handleDeleteSession(past.id)}
-                      className="p-2 rounded-xl text-rose-500 hover:bg-rose-500/10 transition-all border border-[var(--border-primary)] border-transparent hover:border-rose-500/20 text-[10px] font-bold uppercase tracking-wider cursor-pointer shrink-0"
-                      title="Delete past broadcast"
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
+            )}
+          </div>
+        ) : (
+          /* Past Broadcasts List */
+          <div className="space-y-4">
+            <div className="space-y-1">
+              <h2 className="text-lg font-serif flex items-center gap-2" style={{ color: "var(--text-primary)" }}>
+                <Film size={17} className="text-violet-500" />
+                Past Broadcasts
+              </h2>
+              <p className="text-xs" style={{ color: "var(--text-secondary)" }}>
+                Watch recordings, manage, and delete your previously ended live sessions.
+              </p>
             </div>
-          )}
-        </div>
+
+            {loadingPast ? (
+              <div className="flex items-center justify-center p-6 border border-[var(--border-primary)] border-dashed rounded-2xl"
+                style={{ borderColor: "var(--border-primary)" }}
+              >
+                <div className="w-6 h-6 border-2 border-t-transparent rounded-full animate-spin" style={{ borderColor: "var(--text-accent)" }} />
+              </div>
+            ) : pastSessions.length === 0 ? (
+              <div className="flex flex-col items-center justify-center p-10 border border-[var(--border-primary)] border-dashed rounded-2xl text-center space-y-2"
+                style={{ borderColor: "var(--border-primary)", backgroundColor: "var(--bg-card)" }}
+              >
+                <p className="text-xs font-bold" style={{ color: "var(--text-muted)" }}>No past broadcasts found</p>
+                <p className="text-[10px]" style={{ color: "var(--text-muted)" }}>Your ended broadcasts will appear here.</p>
+              </div>
+            ) : (
+              <div className="grid gap-3">
+                {pastSessions.map((past) => (
+                  <div
+                    key={past.id}
+                    className="flex items-center justify-between p-4 rounded-2xl border border-[var(--border-primary)] transition-colors hover:bg-[var(--bg-secondary)] gap-4"
+                    style={{
+                      backgroundColor: "var(--bg-primary)",
+                      borderColor: "var(--border-primary)",
+                    }}
+                  >
+                    <div className="flex items-center gap-4 min-w-0">
+                      {past.thumbnailUrl ? (
+                        <img
+                          src={past.thumbnailUrl}
+                          alt=""
+                          className="w-14 h-9 rounded-lg object-cover bg-[var(--bg-hover)] shrink-0"
+                        />
+                      ) : (
+                        <div className="w-14 h-9 rounded-lg bg-[var(--bg-hover)] flex items-center justify-center shrink-0 border"
+                          style={{ borderColor: "var(--border-primary)" }}
+                        >
+                          <Radio size={14} style={{ color: "var(--text-muted)" }} />
+                        </div>
+                      )}
+                      <div className="min-w-0">
+                        <h4 className="text-xs font-black truncate" style={{ color: "var(--text-primary)" }}>
+                          {past.title} <span className="text-[9px] font-normal text-[var(--text-muted)] opacity-80 ml-2">by {past.host?.username || 'Unknown'}</span>
+                        </h4>
+                        <p className="text-[10px] text-[var(--text-muted)] leading-tight mt-0.5">
+                          {new Date(past.startedAt).toLocaleDateString()} at {new Date(past.startedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        </p>
+                        {past.endedAt && (
+                          <p className="text-[9px] text-[var(--text-muted)] font-semibold opacity-70 mt-0.5">
+                            Duration: {Math.round((new Date(past.endedAt) - new Date(past.startedAt)) / 60000)} mins
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2 shrink-0">
+                      {past.recordingUrl ? (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const url = past.recordingUrl.startsWith('/') ? `${API_BASE}${past.recordingUrl}` : past.recordingUrl;
+                            setSelectedVideoUrl(url);
+                            setSelectedVideoSession(past);
+                          }}
+                          className="px-3 py-1.5 rounded-xl bg-zinc-500/10 hover:bg-zinc-500/20 text-zinc-500 text-[10px] font-extrabold uppercase tracking-wider transition-all border border-zinc-500/20 hover:scale-[1.02] cursor-pointer text-center shrink-0"
+                        >
+                          Watch
+                        </button>
+                      ) : (past.isRecording && (past.egressSegments || (past.endedAt && (new Date() - new Date(past.endedAt)) < 180000))) ? (
+                        <span className="text-[9px] font-extrabold text-neutral-500 bg-neutral-500/10 px-2 py-1.5 rounded border border-neutral-500/20 animate-pulse shrink-0">
+                          Processing...
+                        </span>
+                      ) : (
+                        <span className="text-[9px] font-bold text-slate-500 bg-slate-500/5 px-2 py-1.5 rounded border border-dashed border-slate-500/10 shrink-0">
+                          No Recording
+                        </span>
+                      )}
+
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          handleDeleteSession(past);
+                        }}
+                        className="p-1.5 rounded-lg border border-[var(--border-primary)] hover:bg-red-500/10 hover:text-red-500 text-slate-400 transition-colors cursor-pointer"
+                        title="Delete Past Broadcast"
+                      >
+                        <Trash2 size={13} />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
           </div>
         </div>
 
@@ -2024,13 +2368,275 @@ export default function AdminLivePage() {
           </div>
         </div>
       )}
-      </div>
+      {/* Custom Modal: Start Scheduled Session */}
+      {startConfirmSession && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+          <div
+            className="w-full max-w-sm rounded-2xl p-6 border border-[var(--border-primary)] shadow-2xl text-center space-y-5"
+            style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}
+          >
+            <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center mx-auto border border-emerald-500/20">
+              <Radio size={22} className="animate-pulse" />
+            </div>
+            <div className="space-y-2">
+              <h3 className="text-lg font-black tracking-tight" style={{ color: "var(--text-primary)" }}>
+                Start Live Class Now?
+              </h3>
+              <p className="text-xs leading-relaxed" style={{ color: "var(--text-muted)" }}>
+                Are you sure you want to start <span className="font-bold" style={{ color: "var(--text-primary)" }}>"{startConfirmSession.title}"</span>? Students will be notified and can join the broadcast immediately.
+              </p>
+            </div>
+            <div className="flex gap-3 pt-1">
+              <button
+                type="button"
+                onClick={() => setStartConfirmSession(null)}
+                className="flex-1 py-2.5 rounded-xl border border-[var(--border-primary)] text-xs font-semibold transition-all cursor-pointer hover:bg-[var(--bg-hover)]"
+                style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  const target = startConfirmSession;
+                  setStartConfirmSession(null);
+                  executeStartScheduledSession(target);
+                }}
+                className="flex-1 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold uppercase tracking-wider transition-all shadow-md cursor-pointer"
+              >
+                Start Now
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Custom Modal: Delete/Cancel Scheduled Session */}
+      {deleteConfirmSession && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+          <div
+            className="w-full max-w-sm rounded-2xl p-6 border border-[var(--border-primary)] shadow-2xl text-center space-y-5"
+            style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}
+          >
+            <div className="w-12 h-12 rounded-2xl bg-red-500/10 text-red-500 flex items-center justify-center mx-auto border border-red-500/20">
+              <Trash2 size={22} />
+            </div>
+            <div className="space-y-2">
+              <h3 className="text-lg font-black tracking-tight" style={{ color: "var(--text-primary)" }}>
+                Cancel Scheduled Class?
+              </h3>
+              <p className="text-xs leading-relaxed" style={{ color: "var(--text-muted)" }}>
+                Are you sure you want to cancel <span className="font-bold" style={{ color: "var(--text-primary)" }}>"{deleteConfirmSession.title}"</span>? This class will be permanently removed.
+              </p>
+            </div>
+            <div className="flex gap-3 pt-1">
+              <button
+                type="button"
+                onClick={() => setDeleteConfirmSession(null)}
+                className="flex-1 py-2.5 rounded-xl border border-[var(--border-primary)] text-xs font-semibold transition-all cursor-pointer hover:bg-[var(--bg-hover)]"
+                style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}
+              >
+                Keep Class
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  const targetId = deleteConfirmSession.id;
+                  setDeleteConfirmSession(null);
+                  executeDeleteScheduledSession(targetId);
+                }}
+                className="flex-1 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold uppercase tracking-wider transition-all shadow-md cursor-pointer"
+              >
+                Cancel Class
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Custom Modal: Delete Past Broadcast */}
+      {deletePastConfirmSession && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+          <div
+            className="w-full max-w-sm rounded-2xl p-6 border border-[var(--border-primary)] shadow-2xl text-center space-y-5"
+            style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}
+          >
+            <div className="w-12 h-12 rounded-2xl bg-red-500/10 text-red-500 flex items-center justify-center mx-auto border border-red-500/20">
+              <Trash2 size={22} />
+            </div>
+            <div className="space-y-2">
+              <h3 className="text-lg font-black tracking-tight" style={{ color: "var(--text-primary)" }}>
+                Delete Past Broadcast?
+              </h3>
+              <p className="text-xs leading-relaxed" style={{ color: "var(--text-muted)" }}>
+                This will permanently delete <span className="font-bold" style={{ color: "var(--text-primary)" }}>"{deletePastConfirmSession.title}"</span> recording and data. This action cannot be undone.
+              </p>
+            </div>
+            <div className="flex gap-3 pt-1">
+              <button
+                type="button"
+                onClick={() => setDeletePastConfirmSession(null)}
+                className="flex-1 py-2.5 rounded-xl border border-[var(--border-primary)] text-xs font-semibold transition-all cursor-pointer hover:bg-[var(--bg-hover)]"
+                style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  const targetId = deletePastConfirmSession.id;
+                  setDeletePastConfirmSession(null);
+                  executeDeleteSession(targetId);
+                }}
+                className="flex-1 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold uppercase tracking-wider transition-all shadow-md cursor-pointer"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal: View Past Broadcasts & Recordings */}
+      {showPastModal && (
+        <div className="fixed inset-0 z-[9990] flex items-center justify-center bg-black/70 backdrop-blur-md p-4 animate-in fade-in duration-200">
+          <div
+            className="w-full max-w-3xl max-h-[85vh] flex flex-col rounded-3xl border border-[var(--border-primary)] shadow-2xl overflow-hidden"
+            style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between p-6 border-b border-[var(--border-primary)]"
+              style={{ borderColor: "var(--border-primary)" }}
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-violet-500/10 text-violet-500 flex items-center justify-center border border-violet-500/20">
+                  <Film size={20} />
+                </div>
+                <div>
+                  <h3 className="text-lg font-serif" style={{ color: "var(--text-primary)" }}>
+                    Past Broadcasts & Recordings
+                  </h3>
+                  <p className="text-xs" style={{ color: "var(--text-muted)" }}>
+                    Watch recorded streams and manage past live sessions.
+                  </p>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setShowPastModal(false)}
+                className="p-2 rounded-xl border border-[var(--border-primary)] hover:bg-[var(--bg-hover)] transition-colors cursor-pointer text-slate-400"
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            {/* Body List */}
+            <div className="p-6 overflow-y-auto custom-scrollbar flex-1 space-y-4">
+              {loadingPast ? (
+                <div className="flex items-center justify-center p-12">
+                  <div className="w-8 h-8 border-2 border-t-transparent rounded-full animate-spin" style={{ borderColor: "var(--text-accent)" }} />
+                </div>
+              ) : pastSessions.length === 0 ? (
+                <div className="flex flex-col items-center justify-center p-12 border border-dashed rounded-2xl text-center space-y-2"
+                  style={{ borderColor: "var(--border-primary)" }}
+                >
+                  <Film size={32} className="opacity-40 text-slate-400" />
+                  <p className="text-sm font-bold" style={{ color: "var(--text-primary)" }}>No past broadcasts found</p>
+                  <p className="text-xs" style={{ color: "var(--text-muted)" }}>Your ended live sessions and recorded broadcasts will appear here.</p>
+                </div>
+              ) : (
+                <div className="grid gap-3">
+                  {pastSessions.map((past) => (
+                    <div
+                      key={past.id}
+                      className="flex items-center justify-between p-4 rounded-2xl border transition-colors hover:bg-[var(--bg-secondary)] gap-4"
+                      style={{
+                        backgroundColor: "var(--bg-primary)",
+                        borderColor: "var(--border-primary)",
+                      }}
+                    >
+                      <div className="flex items-center gap-4 min-w-0">
+                        {past.thumbnailUrl ? (
+                          <img
+                            src={past.thumbnailUrl}
+                            alt=""
+                            className="w-16 h-10 rounded-xl object-cover bg-[var(--bg-hover)] shrink-0"
+                          />
+                        ) : (
+                          <div className="w-16 h-10 rounded-xl bg-[var(--bg-hover)] flex items-center justify-center shrink-0 border"
+                            style={{ borderColor: "var(--border-primary)" }}
+                          >
+                            <Radio size={16} style={{ color: "var(--text-muted)" }} />
+                          </div>
+                        )}
+                        <div className="min-w-0">
+                          <h4 className="text-xs font-black truncate" style={{ color: "var(--text-primary)" }}>
+                            {past.title} <span className="text-[9px] font-normal text-[var(--text-muted)] opacity-80 ml-2">by {past.host?.username || 'Unknown'}</span>
+                          </h4>
+                          <p className="text-[10px] text-[var(--text-muted)] leading-tight mt-0.5">
+                            {new Date(past.startedAt).toLocaleDateString()} at {new Date(past.startedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                          </p>
+                          {past.endedAt && (
+                            <p className="text-[9px] text-[var(--text-muted)] font-semibold opacity-70 mt-0.5">
+                              Duration: {Math.round((new Date(past.endedAt) - new Date(past.startedAt)) / 60000)} mins
+                            </p>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2 shrink-0">
+                        {past.recordingUrl ? (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const url = past.recordingUrl.startsWith('/') ? `${API_BASE}${past.recordingUrl}` : past.recordingUrl;
+                              setSelectedVideoUrl(url);
+                              setSelectedVideoSession(past);
+                              setShowPastModal(false);
+                            }}
+                            className="px-3 py-1.5 rounded-xl bg-zinc-500/10 hover:bg-zinc-500/20 text-zinc-500 text-[10px] font-extrabold uppercase tracking-wider transition-all border border-zinc-500/20 hover:scale-[1.02] cursor-pointer text-center shrink-0"
+                          >
+                            Watch
+                          </button>
+                        ) : (past.isRecording && (past.egressSegments || (past.endedAt && (new Date() - new Date(past.endedAt)) < 180000))) ? (
+                          <span className="text-[9px] font-extrabold text-neutral-500 bg-neutral-500/10 px-2 py-1.5 rounded border border-neutral-500/20 animate-pulse shrink-0">
+                            Processing...
+                          </span>
+                        ) : (
+                          <span className="text-[9px] font-bold text-slate-500 bg-slate-500/5 px-2 py-1.5 rounded border border-dashed border-slate-500/10 shrink-0">
+                            No Recording
+                          </span>
+                        )}
+
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            handleDeleteSession(past);
+                          }}
+                          className="p-1.5 rounded-lg border border-[var(--border-primary)] hover:bg-red-500/10 hover:text-red-500 text-slate-400 transition-colors cursor-pointer"
+                          title="Delete Past Broadcast"
+                        >
+                          <Trash2 size={13} />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+      </>
     );
   }
 
   // ─── Active Session (Broadcasting) ─────────────────────────────────
   return (
-    <div className="h-full flex flex-col min-h-0 overflow-hidden">
+    <div className="h-full flex flex-col min-h-0 overflow-hidden px-4 sm:px-6 py-3">
       <button
         type="button"
         onClick={handleBackToPortal}
@@ -2102,6 +2708,135 @@ export default function AdminLivePage() {
                 }}
                 className="flex-1 py-2.5 rounded-xl bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold transition-all cursor-pointer">
                 End Session
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Custom Modal: Start Scheduled Session */}
+      {startConfirmSession && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+          <div
+            className="w-full max-w-sm rounded-2xl p-6 border border-[var(--border-primary)] shadow-2xl text-center space-y-5"
+            style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}
+          >
+            <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center mx-auto border border-emerald-500/20">
+              <Radio size={22} className="animate-pulse" />
+            </div>
+            <div className="space-y-2">
+              <h3 className="text-lg font-black tracking-tight" style={{ color: "var(--text-primary)" }}>
+                Start Live Class Now?
+              </h3>
+              <p className="text-xs leading-relaxed" style={{ color: "var(--text-muted)" }}>
+                Are you sure you want to start <span className="font-bold" style={{ color: "var(--text-primary)" }}>"{startConfirmSession.title}"</span>? Students will be notified and can join the broadcast immediately.
+              </p>
+            </div>
+            <div className="flex gap-3 pt-1">
+              <button
+                type="button"
+                onClick={() => setStartConfirmSession(null)}
+                className="flex-1 py-2.5 rounded-xl border border-[var(--border-primary)] text-xs font-semibold transition-all cursor-pointer hover:bg-[var(--bg-hover)]"
+                style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  const target = startConfirmSession;
+                  setStartConfirmSession(null);
+                  executeStartScheduledSession(target);
+                }}
+                className="flex-1 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold uppercase tracking-wider transition-all shadow-md cursor-pointer"
+              >
+                Start Now
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Custom Modal: Delete/Cancel Scheduled Session */}
+      {deleteConfirmSession && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+          <div
+            className="w-full max-w-sm rounded-2xl p-6 border border-[var(--border-primary)] shadow-2xl text-center space-y-5"
+            style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}
+          >
+            <div className="w-12 h-12 rounded-2xl bg-red-500/10 text-red-500 flex items-center justify-center mx-auto border border-red-500/20">
+              <Trash2 size={22} />
+            </div>
+            <div className="space-y-2">
+              <h3 className="text-lg font-black tracking-tight" style={{ color: "var(--text-primary)" }}>
+                Cancel Scheduled Class?
+              </h3>
+              <p className="text-xs leading-relaxed" style={{ color: "var(--text-muted)" }}>
+                Are you sure you want to cancel <span className="font-bold" style={{ color: "var(--text-primary)" }}>"{deleteConfirmSession.title}"</span>? This class will be permanently removed.
+              </p>
+            </div>
+            <div className="flex gap-3 pt-1">
+              <button
+                type="button"
+                onClick={() => setDeleteConfirmSession(null)}
+                className="flex-1 py-2.5 rounded-xl border border-[var(--border-primary)] text-xs font-semibold transition-all cursor-pointer hover:bg-[var(--bg-hover)]"
+                style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}
+              >
+                Keep Class
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  const targetId = deleteConfirmSession.id;
+                  setDeleteConfirmSession(null);
+                  executeDeleteScheduledSession(targetId);
+                }}
+                className="flex-1 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold uppercase tracking-wider transition-all shadow-md cursor-pointer"
+              >
+                Cancel Class
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Custom Modal: Delete Past Broadcast */}
+      {deletePastConfirmSession && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+          <div
+            className="w-full max-w-sm rounded-2xl p-6 border border-[var(--border-primary)] shadow-2xl text-center space-y-5"
+            style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}
+          >
+            <div className="w-12 h-12 rounded-2xl bg-red-500/10 text-red-500 flex items-center justify-center mx-auto border border-red-500/20">
+              <Trash2 size={22} />
+            </div>
+            <div className="space-y-2">
+              <h3 className="text-lg font-black tracking-tight" style={{ color: "var(--text-primary)" }}>
+                Delete Past Broadcast?
+              </h3>
+              <p className="text-xs leading-relaxed" style={{ color: "var(--text-muted)" }}>
+                This will permanently delete <span className="font-bold" style={{ color: "var(--text-primary)" }}>"{deletePastConfirmSession.title}"</span> recording and data. This action cannot be undone.
+              </p>
+            </div>
+            <div className="flex gap-3 pt-1">
+              <button
+                type="button"
+                onClick={() => setDeletePastConfirmSession(null)}
+                className="flex-1 py-2.5 rounded-xl border border-[var(--border-primary)] text-xs font-semibold transition-all cursor-pointer hover:bg-[var(--bg-hover)]"
+                style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  const targetId = deletePastConfirmSession.id;
+                  setDeletePastConfirmSession(null);
+                  executeDeleteSession(targetId);
+                }}
+                className="flex-1 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold uppercase tracking-wider transition-all shadow-md cursor-pointer"
+              >
+                Delete
               </button>
             </div>
           </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useAuth } from "@/context/AuthContext";
 import {
   LiveKitRoom,
@@ -36,6 +36,8 @@ import {
   Trophy,
   Share2,
   Check,
+  CalendarDays,
+  AlertTriangle,
 } from "lucide-react";
 import Link from "next/link";
 import LivePollPopup from "@/components/LivePollPopup";
@@ -668,7 +670,7 @@ console.log(session)
         </div>
       </div>
 
-      <div className="flex items-center justify-start lg:justify-end gap-2 flex-wrap w-full lg:w-auto shrink-0">
+      <div className="flex items-center justify-start lg:justify-end gap-1.5 flex-nowrap min-w-0 max-w-full overflow-visible">
         {/* Restore Mentor Camera Button */}
         {isHostCameraActive && isHostCameraHiddenLocal && (
           <button
@@ -734,7 +736,7 @@ console.log(session)
           <button
             onClick={disableHandraise ? undefined : toggleRaiseHand}
             disabled={disableHandraise || blockedUsers?.includes(user?.username)}
-            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all mr-1 ${
+            className={`group relative flex items-center justify-center p-2.5 rounded-xl text-xs font-bold transition-all mr-1 ${
               disableHandraise
                 ? "opacity-40 cursor-not-allowed text-slate-500 bg-slate-800/10 border-slate-700/10"
                 : blockedUsers?.includes(user?.username)
@@ -756,14 +758,14 @@ console.log(session)
             }
             id="raise-hand-btn"
           >
-            <Hand size={14} className={isHandRaised && !blockedUsers?.includes(user?.username) && !disableHandraise ? "animate-bounce" : ""} />
-            <span>
+            <Hand size={15} className={isHandRaised && !blockedUsers?.includes(user?.username) && !disableHandraise ? "animate-bounce" : ""} />
+            <span className="absolute -top-9 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all duration-200 pointer-events-none bg-slate-950/95 backdrop-blur-md text-white text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-lg border border-slate-700/70 shadow-2xl whitespace-nowrap z-[100]">
               {disableHandraise
-                ? "Disabled"
+                ? "Hand Raise Disabled"
                 : blockedUsers?.includes(user?.username)
                 ? "Blocked"
                 : isHandRaised
-                ? "Hand Raised"
+                ? "Hand Raised (Click to Lower)"
                 : "Raise Hand"}
             </span>
           </button>
@@ -772,20 +774,21 @@ console.log(session)
         {/* Chat Toggle Button */}
         <button
           onClick={onToggleChatOpen}
-          className="relative flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-[var(--border-primary)] text-[10px] font-bold uppercase tracking-wide transition-all cursor-pointer"
+          className="group relative flex items-center justify-center p-2.5 rounded-xl border border-[var(--border-primary)] text-[10px] font-bold uppercase tracking-wide transition-all cursor-pointer"
           style={{
             backgroundColor: isChatOpen && activeTab !== "polls" ? "var(--bg-badge)" : "var(--bg-primary)",
             borderColor: isChatOpen && activeTab !== "polls" ? "var(--border-accent)" : "var(--border-primary)",
             color: isChatOpen && activeTab !== "polls" ? "var(--text-accent)" : "var(--text-primary)",
           }}
-          title={isChatOpen && activeTab !== "polls" ? "Hide Live Chat" : "Show Live Chat"}
           id="chat-toggle-btn"
         >
-          <MessageSquare size={12} />
-          <span>Live Chat</span>
+          <MessageSquare size={15} />
           {!isChatOpen && hasUnreadMessages && (
             <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full animate-pulse" />
           )}
+          <span className="absolute -top-9 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all duration-200 pointer-events-none bg-slate-950/95 backdrop-blur-md text-white text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-lg border border-slate-700/70 shadow-2xl whitespace-nowrap z-[100]">
+            {isChatOpen && activeTab !== "polls" ? "Hide Live Chat" : "Show Live Chat"}
+          </span>
         </button>
 
         {/* Leaderboard / Polls Tab Button */}
@@ -1218,17 +1221,26 @@ export default function LiveViewerPage() {
     return () => document.removeEventListener("fullscreenchange", handler);
   }, []);
 
+  // Scheduled Session & Countdown states
+  const [scheduledSession, setScheduledSession] = useState(null);
+  const [countdownTime, setCountdownTime] = useState({ hours: "00", minutes: "00", seconds: "00", totalMs: 0 });
+  const [isWaitingForMentor, setIsWaitingForMentor] = useState(false);
+
+  // Accidental Leave Popup Modal states
+  const [showLeaveModal, setShowLeaveModal] = useState(false);
+  const [pendingLeaveTarget, setPendingLeaveTarget] = useState(null);
+  // Ref so the global click handler can check if a live session is active
+  const sessionRef = useRef(null);
+  // Keep sessionRef in sync with session state
+  useEffect(() => { sessionRef.current = session; }, [session]);
+
   // Accidental Leave Protection Dialogs
   useEffect(() => {
-    // 1. Browser tab close or refresh warning
-    const handleBeforeUnload = (e) => {
-      e.preventDefault();
-      e.returnValue = "Are you sure you want to leave the live session?";
-      return e.returnValue;
-    };
 
-    // 2. Intercept local client-side navigation click events
+    // 2. Intercept local client-side navigation click events with custom popup modal
+    // Only intercept when there is an active live session
     const handleGlobalClick = (e) => {
+      if (!sessionRef.current) return; // no session — allow navigation freely
       let target = e.target;
       while (target && target.tagName !== "A") {
         target = target.parentElement;
@@ -1236,33 +1248,29 @@ export default function LiveViewerPage() {
       if (target && target.getAttribute("href")) {
         const href = target.getAttribute("href");
         if (href && !href.startsWith("#") && href !== "/live" && href !== "") {
-          const confirmed = window.confirm("Are you sure you want to leave the live session?");
-          if (!confirmed) {
-            e.preventDefault();
-            e.stopPropagation();
-          }
+          e.preventDefault();
+          e.stopPropagation();
+          setPendingLeaveTarget(href);
+          setShowLeaveModal(true);
         }
       }
     };
 
-    // 3. Handle browser back button (history navigation)
+    // 3. Handle browser back button (history navigation) with custom popup modal
     window.history.pushState(null, "", window.location.href);
 
-    const handlePopState = () => {
-      const confirmed = window.confirm("Are you sure you want to leave the live session?");
-      if (!confirmed) {
-        window.history.pushState(null, "", window.location.href);
-      } else {
-        window.history.back();
-      }
+    const handlePopState = (e) => {
+      if (!sessionRef.current) return; // no active session — allow back freely
+      e.preventDefault();
+      window.history.pushState(null, "", window.location.href);
+      setPendingLeaveTarget("BACK");
+      setShowLeaveModal(true);
     };
 
-    window.addEventListener("beforeunload", handleBeforeUnload);
     document.addEventListener("click", handleGlobalClick, { capture: true });
     window.addEventListener("popstate", handlePopState);
 
     return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
       document.removeEventListener("click", handleGlobalClick, { capture: true });
       window.removeEventListener("popstate", handlePopState);
     };
@@ -1302,9 +1310,33 @@ export default function LiveViewerPage() {
 
       if (data.success && data.session) {
         setSession(data.session);
+        setScheduledSession(null);
 
         if (authToken) {
           await fetchViewerToken(data.session.roomName);
+        }
+      } else {
+        setSession(null);
+        // If not currently live, check if there is a scheduled session!
+        try {
+          const schedRes = await fetch(`${API_BASE}/api/livekit/sessions/scheduled`, {
+            headers: authToken ? { Authorization: `Bearer ${authToken}` } : {}
+          });
+          const schedData = await schedRes.json();
+          if (schedData.success && schedData.sessions && schedData.sessions.length > 0) {
+            let found = null;
+            if (sessionId) {
+              found = schedData.sessions.find(s => s.id === parseInt(sessionId, 10));
+            }
+            if (!found) {
+              found = schedData.sessions[0]; // fallback to first scheduled session
+            }
+            if (found) {
+              setScheduledSession(found);
+            }
+          }
+        } catch (schedErr) {
+          console.error("Failed to fetch scheduled sessions:", schedErr);
         }
       }
     } catch (e) {
@@ -1317,6 +1349,48 @@ export default function LiveViewerPage() {
   useEffect(() => {
     checkActiveSession();
   }, [checkActiveSession]);
+
+  // Real-time countdown timer & polling for scheduled session
+  useEffect(() => {
+    if (!scheduledSession || !scheduledSession.scheduledAt || session) return;
+
+    const targetTime = new Date(scheduledSession.scheduledAt).getTime();
+
+    const updateTimer = () => {
+      const now = new Date().getTime();
+      const diff = targetTime - now;
+
+      if (diff <= 0) {
+        setCountdownTime({ hours: "00", minutes: "00", seconds: "00", totalMs: 0 });
+        setIsWaitingForMentor(true);
+      } else {
+        const hrs = Math.floor(diff / (1000 * 60 * 60));
+        const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const secs = Math.floor((diff % (1000 * 60)) / 1000);
+
+        setCountdownTime({
+          hours: String(hrs).padStart(2, "0"),
+          minutes: String(mins).padStart(2, "0"),
+          seconds: String(secs).padStart(2, "0"),
+          totalMs: diff,
+        });
+        setIsWaitingForMentor(false);
+      }
+    };
+
+    updateTimer();
+    const timerInterval = setInterval(updateTimer, 1000);
+
+    // Poll every 3 seconds to check if mentor has started the session
+    const pollInterval = setInterval(() => {
+      checkActiveSession();
+    }, 3000);
+
+    return () => {
+      clearInterval(timerInterval);
+      clearInterval(pollInterval);
+    };
+  }, [scheduledSession, session, checkActiveSession]);
 
   // Set up polling interval to check if session has ended, without refetching token
   useEffect(() => {
@@ -1420,6 +1494,114 @@ export default function LiveViewerPage() {
             <p className="text-xs font-semibold" style={{ color: "var(--text-secondary)" }}>
               Checking for live sessions...
             </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ─── Scheduled Live Class Countdown & Waiting Screen ──────────────
+  if (!session && scheduledSession) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center p-4 sm:p-6 lg:p-8" style={{ backgroundColor: "var(--bg-primary)" }}>
+        <div className="w-full max-w-xl rounded-3xl border p-8 sm:p-12 shadow-2xl text-center space-y-8 relative overflow-hidden"
+          style={{
+            backgroundColor: "var(--bg-card)",
+            borderColor: "var(--border-accent)",
+            backgroundImage: "radial-gradient(circle at top, color-mix(in srgb, var(--accent-primary) 10%, transparent), transparent 70%)"
+          }}
+        >
+          {/* Header Badge */}
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest border mx-auto"
+            style={{ backgroundColor: "color-mix(in srgb, var(--accent-primary) 12%, transparent)", color: "var(--text-accent)", borderColor: "var(--border-accent)" }}
+          >
+            <CalendarDays size={14} />
+            Upcoming Live Class
+          </div>
+
+          {/* Title & Host info */}
+          <div className="space-y-3">
+            <h1 className="text-3xl sm:text-4xl font-black tracking-tight" style={{ color: "var(--text-primary)" }}>
+              {scheduledSession.title}
+            </h1>
+            {scheduledSession.description && (
+              <p className="text-sm sm:text-base leading-relaxed max-w-md mx-auto" style={{ color: "var(--text-secondary)" }}>
+                {scheduledSession.description}
+              </p>
+            )}
+            {scheduledSession.host && (
+              <p className="text-sm font-bold text-slate-400 pt-1">
+                Hosted by <span style={{ color: "var(--text-accent)" }}>{scheduledSession.host.username}</span>
+              </p>
+            )}
+          </div>
+
+          {/* Big Countdown Timer or Waiting State */}
+          {!isWaitingForMentor && countdownTime.totalMs > 0 ? (
+            <div className="space-y-5 pt-2">
+              <p className="text-sm font-bold uppercase tracking-wider flex items-center justify-center gap-2" style={{ color: "var(--text-accent)" }}>
+                <Clock size={16} className="animate-pulse" style={{ color: "var(--text-accent)" }} />
+                Live Class Begins In
+              </p>
+
+              <div className="flex items-center justify-center gap-3 sm:gap-5 font-mono select-none">
+                <div className="flex flex-col items-center px-5 py-4 sm:px-8 sm:py-6 rounded-2xl min-w-[85px] sm:min-w-[110px] shadow-sm border"
+                  style={{ backgroundColor: "color-mix(in srgb, var(--accent-primary) 10%, transparent)", borderColor: "var(--border-accent)" }}
+                >
+                  <span className="text-4xl sm:text-6xl font-black" style={{ color: "var(--text-accent)" }}>{countdownTime.hours}</span>
+                  <span className="text-[10px] sm:text-xs font-bold uppercase mt-1" style={{ color: "var(--text-accent)", opacity: 0.7 }}>Hours</span>
+                </div>
+                <span className="text-3xl sm:text-5xl font-black" style={{ color: "var(--text-accent)", opacity: 0.4 }}>:</span>
+                <div className="flex flex-col items-center px-5 py-4 sm:px-8 sm:py-6 rounded-2xl min-w-[85px] sm:min-w-[110px] shadow-sm border"
+                  style={{ backgroundColor: "color-mix(in srgb, var(--accent-primary) 10%, transparent)", borderColor: "var(--border-accent)" }}
+                >
+                  <span className="text-4xl sm:text-6xl font-black" style={{ color: "var(--text-accent)" }}>{countdownTime.minutes}</span>
+                  <span className="text-[10px] sm:text-xs font-bold uppercase mt-1" style={{ color: "var(--text-accent)", opacity: 0.7 }}>Minutes</span>
+                </div>
+                <span className="text-3xl sm:text-5xl font-black" style={{ color: "var(--text-accent)", opacity: 0.4 }}>:</span>
+                <div className="flex flex-col items-center px-5 py-4 sm:px-8 sm:py-6 rounded-2xl min-w-[85px] sm:min-w-[110px] shadow-sm border"
+                  style={{ backgroundColor: "color-mix(in srgb, var(--accent-primary) 10%, transparent)", borderColor: "var(--border-accent)" }}
+                >
+                  <span className="text-4xl sm:text-6xl font-black" style={{ color: "var(--text-accent)" }}>{countdownTime.seconds}</span>
+                  <span className="text-[10px] sm:text-xs font-bold uppercase mt-1" style={{ color: "var(--text-accent)", opacity: 0.7 }}>Seconds</span>
+                </div>
+              </div>
+            </div>
+          ) : (
+            /* Waiting for mentor state */
+            <div className="pt-2">
+              <div className="flex flex-col items-center justify-center gap-4 p-6 sm:p-8 rounded-2xl border"
+                style={{ backgroundColor: "color-mix(in srgb, var(--accent-primary) 10%, transparent)", borderColor: "var(--border-accent)" }}
+              >
+                <div className="w-16 h-16 rounded-2xl flex items-center justify-center border"
+                  style={{ backgroundColor: "color-mix(in srgb, var(--accent-primary) 18%, transparent)", borderColor: "var(--border-accent)" }}
+                >
+                  <Radio size={32} className="animate-spin" style={{ color: "var(--text-accent)" }} />
+                </div>
+                <span className="text-lg sm:text-xl font-black tracking-tight" style={{ color: "var(--text-accent)" }}>
+                  Waiting for mentor to start the class...
+                </span>
+                <p className="text-sm font-medium leading-relaxed max-w-sm" style={{ color: "var(--text-secondary)" }}>
+                  The scheduled time has arrived. You will automatically join the live stream the moment your mentor begins!
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Back button */}
+          <div className="pt-4 border-t border-[var(--border-primary)]">
+            <Link
+              href="/student/dashboard"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-bold transition-all hover:scale-105"
+              style={{
+                backgroundColor: "var(--bg-primary)",
+                border: "1px solid var(--border-primary)",
+                color: "var(--text-primary)",
+              }}
+            >
+              <ArrowLeft size={15} />
+              Back to Dashboard
+            </Link>
           </div>
         </div>
       </div>
@@ -1625,6 +1807,55 @@ export default function LiveViewerPage() {
           </div>
         )}
       </div>
+
+      {/* Accidental Leave Protection Custom Modal */}
+      {showLeaveModal && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/70 backdrop-blur-md p-4 animate-in fade-in duration-200">
+          <div
+            className="w-full max-w-sm rounded-3xl p-6 border border-[var(--border-primary)] shadow-2xl text-center space-y-5"
+            style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}
+          >
+            <div className="w-12 h-12 rounded-2xl bg-rose-500/10 text-rose-500 flex items-center justify-center mx-auto border border-rose-500/20">
+              <AlertTriangle size={24} />
+            </div>
+            <div className="space-y-2">
+              <h3 className="text-lg font-black tracking-tight" style={{ color: "var(--text-primary)" }}>
+                Leave Live Session?
+              </h3>
+              <p className="text-xs leading-relaxed" style={{ color: "var(--text-muted)" }}>
+                Are you sure you want to leave the live class? You can rejoin anytime from the portal dashboard.
+              </p>
+            </div>
+            <div className="flex gap-3 pt-1">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowLeaveModal(false);
+                  setPendingLeaveTarget(null);
+                }}
+                className="flex-1 py-2.5 rounded-xl border border-[var(--border-primary)] text-xs font-semibold transition-all cursor-pointer hover:bg-[var(--bg-hover)]"
+                style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}
+              >
+                Stay in Class
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowLeaveModal(false);
+                  if (pendingLeaveTarget === "BACK") {
+                    window.history.back();
+                  } else if (pendingLeaveTarget) {
+                    window.location.href = pendingLeaveTarget;
+                  }
+                }}
+                className="flex-1 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold uppercase tracking-wider transition-all shadow-md cursor-pointer"
+              >
+                Leave
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

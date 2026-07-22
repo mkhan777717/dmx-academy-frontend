@@ -185,12 +185,83 @@ function PastSessionCard({ session, onWatchRecording }) {
   );
 }
 
-// ─── Main LiveBanner Component ───────────────────────────────────────
+// ─── Scheduled Session Card (upcoming class) ──────────────────────────
+function ScheduledSessionCard({ session }) {
+  return (
+    <div
+      className="group flex flex-col rounded-xl border border-amber-500/20 overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
+      style={{ backgroundColor: "var(--bg-card)" }}
+    >
+      {/* Thumbnail area */}
+      <div className="relative aspect-video w-full overflow-hidden flex items-center justify-center border-b border-amber-500/10 bg-amber-500/5">
+        {session.thumbnailUrl ? (
+          <img src={session.thumbnailUrl} alt={session.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+        ) : (
+          <div className="flex flex-col items-center justify-center gap-2">
+            <CalendarDays size={32} className="text-amber-500" />
+            <span className="text-[10px] font-extrabold uppercase tracking-wider text-amber-500">Upcoming Live Class</span>
+          </div>
+        )}
+        <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5 px-2.5 py-0.5 rounded bg-amber-500 text-slate-950 text-[9px] font-extrabold uppercase tracking-wider shadow-md">
+          <CalendarDays size={10} />
+          Scheduled
+        </div>
+        {session.host && (
+          <div className="absolute bottom-2.5 left-2.5 text-[8px] font-bold px-1.5 py-0.5 rounded border border-[var(--border-primary)] bg-slate-950/70 backdrop-blur-sm text-slate-200">
+            by {session.host.username}
+          </div>
+        )}
+      </div>
+
+      {/* Info area */}
+      <div className="p-3.5 flex-1 flex flex-col justify-between gap-3">
+        <div className="space-y-1">
+          <h4 className="text-xs font-extrabold line-clamp-2 leading-snug" style={{ color: "var(--text-primary)" }}>
+            {session.title}
+          </h4>
+          {session.description && (
+            <p className="text-[10px] line-clamp-2 leading-relaxed" style={{ color: "var(--text-secondary)" }}>
+              {session.description}
+            </p>
+          )}
+        </div>
+
+        <div className="space-y-2.5 pt-2 border-t border-[var(--border-primary)]">
+          <div className="flex items-center gap-1.5 text-[10px] font-bold text-amber-500">
+            <Clock size={11} />
+            <span>
+              {session.scheduledAt
+                ? new Date(session.scheduledAt).toLocaleString("en-IN", {
+                    day: "numeric",
+                    month: "short",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: true,
+                  })
+                : "Scheduled Soon"}
+            </span>
+          </div>
+
+          <Link
+            href={`/live?sessionId=${session.id}`}
+            className="flex items-center justify-center gap-1.5 w-full py-2 rounded-lg bg-amber-500 hover:bg-amber-600 text-slate-950 text-[10px] font-extrabold uppercase tracking-wider transition-colors shadow-md text-center cursor-pointer"
+          >
+            <Play size={10} />
+            <span>Join Class</span>
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Main LiveBanner Component ───────────────────────────────
 export default function LiveBanner() {
   const { user } = useAuth();
   const [activeSession, setActiveSession] = useState(null);
   const [pastSessions, setPastSessions] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [scheduledSessions, setScheduledSessions] = useState([]);
   const [selectedVideoUrl, setSelectedVideoUrl] = useState(null);
   const [selectedVideoSession, setSelectedVideoSession] = useState(null);
   const [watermarkPos, setWatermarkPos] = useState({ top: "15%", left: "15%" });
@@ -305,29 +376,32 @@ export default function LiveBanner() {
   };
 
   const handleSeek = (e) => {
-    const time = parseFloat(e.target.value);
+    const seekTime = parseFloat(e.target.value);
+    setCurrentTime(seekTime);
     if (videoRef.current) {
-      videoRef.current.currentTime = time;
-      setCurrentTime(time);
+      videoRef.current.currentTime = seekTime;
     }
   };
 
   const handleVolumeChange = (e) => {
-    const vol = parseFloat(e.target.value);
-    setVolume(vol);
-    setIsMuted(vol === 0);
+    const newVol = parseFloat(e.target.value);
+    setVolume(newVol);
     if (videoRef.current) {
-      videoRef.current.volume = vol;
-      videoRef.current.muted = vol === 0;
+      videoRef.current.volume = newVol;
+      setIsMuted(newVol === 0);
     }
   };
 
   const handleToggleMute = () => {
-    const nextMute = !isMuted;
-    setIsMuted(nextMute);
     if (videoRef.current) {
-      videoRef.current.muted = nextMute;
-      videoRef.current.volume = nextMute ? 0 : volume;
+      if (isMuted) {
+        videoRef.current.muted = false;
+        setIsMuted(false);
+        if (volume === 0) setVolume(1);
+      } else {
+        videoRef.current.muted = true;
+        setIsMuted(true);
+      }
     }
   };
 
@@ -338,35 +412,35 @@ export default function LiveBanner() {
     return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
   };
 
+  // Watermark positioning interval for security
   useEffect(() => {
-    if (!selectedVideoUrl) return;
+    if (!selectedVideoUrl || !selectedVideoSession?.showWatermark) return;
     const interval = setInterval(() => {
-      const top = Math.floor(Math.random() * 65) + 15; // 15% to 80%
-      const left = Math.floor(Math.random() * 65) + 15; // 15% to 80%
-      setWatermarkPos({ top: `${top}%`, left: `${left}%` });
-    }, 10000); // Shift every 10 seconds
+      const top = Math.floor(Math.random() * 70 + 10) + "%";
+      const left = Math.floor(Math.random() * 70 + 10) + "%";
+      setWatermarkPos({ top, left });
+    }, 4000);
     return () => clearInterval(interval);
-  }, [selectedVideoUrl]);
+  }, [selectedVideoUrl, selectedVideoSession]);
 
   useEffect(() => {
     fetchSessions();
-
-    // Poll for active session every 30 seconds
-    const interval = setInterval(fetchSessions, 30000);
+    const interval = setInterval(() => {
+      fetchSessions();
+    }, 15000); // Auto-poll every 15s for live session status updates
     return () => clearInterval(interval);
   }, []);
 
-  // Auto-poll recently ended sessions to fetch compilation status in real-time
+  // Poll processing recordings
   useEffect(() => {
     const hasProcessing = pastSessions.some(
       (s) => s.isRecording && !s.recordingUrl && (s.egressSegments || (s.endedAt && (new Date() - new Date(s.endedAt)) < 180000))
     );
-
     if (!hasProcessing) return;
 
     const interval = setInterval(() => {
       fetchSessions();
-    }, 6000); // Check every 6 seconds
+    }, 5000);
 
     return () => clearInterval(interval);
   }, [pastSessions]);
@@ -381,6 +455,14 @@ export default function LiveBanner() {
         setActiveSession(activeData.session);
       } else {
         setActiveSession(null);
+      }
+
+      // Fetch scheduled sessions
+      const schedRes = await fetch(`${API_BASE}/api/livekit/sessions/scheduled`);
+      const schedData = await schedRes.json();
+
+      if (schedData.success && schedData.sessions) {
+        setScheduledSessions(schedData.sessions);
       }
 
       // Fetch all sessions for past sessions display
@@ -444,43 +526,63 @@ export default function LiveBanner() {
           </div>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-          {/* Active Session Card */}
-          {activeSession && (
-            <div className="md:col-span-1 space-y-3">
-              <div className="flex items-center gap-1.5 text-xs font-extrabold uppercase tracking-wider text-red-500">
-                <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-                Active Live Session
-              </div>
-              <LiveNowBanner session={activeSession} />
-            </div>
-          )}
-
-          {/* Past Sessions Grid */}
-          {pastSessions.length > 0 && (
-            <div className={activeSession ? "md:col-span-2 space-y-3" : "md:col-span-3 space-y-3"}>
+        <div className="space-y-8">
+          {/* Scheduled Sessions Grid */}
+          {scheduledSessions.length > 0 && (
+            <div className="space-y-3">
               <div className="flex items-center gap-2">
-                <CalendarDays size={14} style={{ color: "var(--text-accent)" }} />
-                <h3 className="text-xs font-extrabold uppercase tracking-wider" style={{ color: "var(--text-secondary)" }}>
-                  Past Broadcasts
+                <CalendarDays size={14} className="text-amber-500" />
+                <h3 className="text-xs font-extrabold uppercase tracking-wider text-amber-500">
+                  Upcoming Scheduled Classes
                 </h3>
               </div>
-              <div className={`grid gap-4 ${activeSession ? "grid-cols-1 sm:grid-cols-2" : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"}`}>
-                {pastSessions.map((session) => (
-                  <PastSessionCard
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {scheduledSessions.map((session) => (
+                  <ScheduledSessionCard
                     key={session.id}
                     session={session}
-                    onWatchRecording={(url, s) => {
-                      setSelectedVideoUrl(url);
-                      setSelectedVideoSession(s);
-                    }}
                   />
                 ))}
               </div>
             </div>
           )}
 
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Active Session Card */}
+            {activeSession && (
+              <div className="md:col-span-1 space-y-3">
+                <div className="flex items-center gap-1.5 text-xs font-extrabold uppercase tracking-wider text-red-500">
+                  <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+                  Active Live Session
+                </div>
+                <LiveNowBanner session={activeSession} />
+              </div>
+            )}
+
+            {/* Past Sessions Grid */}
+            {pastSessions.length > 0 && (
+              <div className={activeSession ? "md:col-span-2 space-y-3" : "md:col-span-3 space-y-3"}>
+                <div className="flex items-center gap-2">
+                  <CalendarDays size={14} style={{ color: "var(--text-accent)" }} />
+                  <h3 className="text-xs font-extrabold uppercase tracking-wider" style={{ color: "var(--text-secondary)" }}>
+                    Past Broadcasts
+                  </h3>
+                </div>
+                <div className={`grid gap-4 ${activeSession ? "grid-cols-1 sm:grid-cols-2" : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"}`}>
+                  {pastSessions.map((session) => (
+                    <PastSessionCard
+                      key={session.id}
+                      session={session}
+                      onWatchRecording={(url, s) => {
+                        setSelectedVideoUrl(url);
+                        setSelectedVideoSession(s);
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       )}
 

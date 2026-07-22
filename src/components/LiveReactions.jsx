@@ -82,7 +82,7 @@ export function ReactionPicker({ onReact }) {
 
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-[var(--border-primary)] text-[10px] font-bold uppercase tracking-wide transition-all cursor-pointer"
+        className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-[var(--border-primary)] text-[10px] font-bold uppercase tracking-wide transition-all cursor-pointer hover:scale-105"
         style={{
           backgroundColor: isOpen ? "var(--bg-badge)" : "var(--bg-primary)",
           borderColor: isOpen ? "var(--border-accent)" : "var(--border-primary)",
@@ -90,7 +90,7 @@ export function ReactionPicker({ onReact }) {
         }}
         title="Send Reaction"
       >
-        <Smile size={12} />
+        <Smile size={14} />
         <span className="hidden sm:inline">React</span>
       </button>
     </div>
