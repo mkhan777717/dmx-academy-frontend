@@ -275,10 +275,17 @@ export default function StudentDashboard() {
             </button>
             <button
               onClick={() => router.push("/contest")}
-              className="px-6 py-3 rounded-xl font-bold text-xs transition-all border border-[var(--border-primary)] cursor-pointer flex items-center gap-2 hover:bg-[var(--bg-hover)]"
+              className="px-6 py-3 rounded-xl font-bold text-xs transition-all border border-[var(--border-primary)] cursor-pointer flex items-center gap-2 hover:bg-[var(--bg-hover)] hover:-translate-y-0.5"
               style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
             >
               <span>Contest Arena</span>
+              <ArrowUpRight size={14} />
+            </button>
+            <button
+              onClick={() => router.push("/student/daily-challenges")}
+              className="px-6 py-3 rounded-xl font-bold text-xs transition-all border border-amber-500/20 bg-amber-500/5 cursor-pointer flex items-center gap-2 hover:bg-amber-500/10 text-amber-500 shadow-sm hover:-translate-y-0.5"
+            >
+              <span>Daily Challenge</span>
               <ArrowUpRight size={14} />
             </button>
           </div>

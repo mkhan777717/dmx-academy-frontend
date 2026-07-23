@@ -273,7 +273,14 @@ export default function AdminDashboard() {
             Manage the competitive programming workspace, verify active web streams, audit problem schemas, and publish synchronized contest events.
           </p>
         </div>
-        <div className="flex items-center gap-3 shrink-0">
+        <div className="flex flex-wrap items-center gap-3 shrink-0">
+          <button
+            onClick={() => router.push("/admin/daily-challenges")}
+            className="px-5 py-2.5 rounded-xl font-semibold text-xs border border-amber-500/20 bg-amber-500/5 hover:bg-amber-500/10 transition-colors flex items-center space-x-1.5 cursor-pointer text-amber-500 shadow-sm"
+          >
+            <span>Daily Challenges</span>
+            <ArrowUpRight size={14} />
+          </button>
           <button
             onClick={() => router.push("/contest")}
             className="px-5 py-2.5 rounded-xl font-semibold text-xs border border-[var(--border-primary)] transition-colors hover:bg-[var(--bg-secondary)] flex items-center space-x-1.5 cursor-pointer"

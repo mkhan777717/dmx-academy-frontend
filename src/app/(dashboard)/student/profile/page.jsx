@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
-import { Activity, Award, Zap, User, X, Save, RefreshCw, CheckCircle2, Crown, Clock, CalendarDays } from "lucide-react";
+import { Activity, Award, Zap, User, X, Save, RefreshCw, CheckCircle2, Crown, Clock, CalendarDays, Target } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 
