@@ -309,7 +309,7 @@ export default function TypeRacer({ onBack }) {
         )}
 
         {/* ── Code Display ─────────────────────────────────────────────── */}
-        <div className="relative bg-[var(--bg-primary)] border border-[var(--border-primary)] rounded-3xl p-6 overflow-hidden">
+        <div className="relative bg-[var(--bg-primary)] border border-[var(--border-primary)] rounded-3xl p-6 overflow-hidden min-h-[260px] flex flex-col justify-center">
           {/* Header bar */}
           <div className="flex items-center gap-1.5 mb-4">
             <span className="w-2.5 h-2.5 rounded-full bg-rose-500/70" />

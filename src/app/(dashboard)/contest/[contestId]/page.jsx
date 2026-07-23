@@ -1767,20 +1767,47 @@ export default function ContestWorkspace() {
       );
     }
 
-    switch (activeLeftTab) {
-      case "description":
-        return <div className="space-y-4 text-sm leading-relaxed text-[var(--text-secondary)]">{renderText(problemTabs.description)}</div>;
-      case "followup":
-        return <div className="space-y-4 text-sm leading-relaxed text-[var(--text-secondary)]">{renderText(problemTabs.followup)}</div>;
-      case "editorial":
-        return <div className="space-y-4 text-sm leading-relaxed text-[var(--text-secondary)]">{renderText(problemTabs.editorial)}</div>;
-      case "solution":
-        return <div className="space-y-4 text-sm leading-relaxed text-[var(--text-secondary)]">{renderText(problemTabs.solution)}</div>;
-      case "evaluation":
-        return <div className="space-y-4 text-sm leading-relaxed text-[var(--text-secondary)]">{renderText(problemTabs.evaluation)}</div>;
-      default:
-        return null;
-    }
+    const tabTitleMap = {
+      description: "Description",
+      followup: "Followup",
+      editorial: "Editorial",
+      solution: "Solution",
+      evaluation: "Evaluation",
+    };
+
+    const rawContent = problemTabs[activeLeftTab];
+    const isDefaultOrEmpty = !rawContent || 
+      rawContent.includes("No official solution has been published") || 
+      rawContent.includes("No editorial has been published") ||
+      rawContent.includes("No follow-up questions have been added");
+
+    return (
+      <div className="space-y-6">
+        {/* Tab Header Title */}
+        <div className="border-b border-[var(--border-primary)] pb-3">
+          <h2 className="text-xl font-extrabold text-[var(--text-primary)] tracking-tight">
+            {tabTitleMap[activeLeftTab] || "Overview"}
+          </h2>
+        </div>
+
+        {/* Content or Empty State Card */}
+        {isDefaultOrEmpty ? (
+          <div className="flex flex-col items-center justify-center p-12 text-center rounded-2xl border border-[var(--border-primary)] bg-slate-500/5 space-y-3 my-4">
+            <div className="h-12 w-12 rounded-2xl flex items-center justify-center bg-slate-500/10 text-[var(--text-muted)] border border-[var(--border-primary)]">
+              <CheckCircle2 size={24} className="text-slate-400 opacity-60" />
+            </div>
+            <h3 className="text-sm font-bold text-[var(--text-primary)]">No Official Content Published</h3>
+            <p className="text-xs text-[var(--text-secondary)] max-w-sm leading-relaxed">
+              No official {activeLeftTab} has been published for this problem yet. Check back later or test your own logic.
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-4 text-sm leading-relaxed text-[var(--text-secondary)]">
+            {renderText(rawContent)}
+          </div>
+        )}
+      </div>
+    );
   };
 
   const renderText = (markdownText) => {
