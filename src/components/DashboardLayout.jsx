@@ -20,7 +20,16 @@ export default function DashboardLayout({ children }) {
 
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [checkingAuth, setCheckingAuth] = useState(true);
+  const [checkingAuth, setCheckingAuth] = useState(() => {
+    if (typeof window !== "undefined") {
+      const hasSession = localStorage.getItem("synapse_student_session") === "true" ||
+                         localStorage.getItem("synapse_admin_session") === "true" ||
+                         localStorage.getItem("synapse_mentor_session") === "true" ||
+                         !!localStorage.getItem("eduvantix_auth_token");
+      return !hasSession;
+    }
+    return true;
+  });
   const [dashboardUser, setDashboardUser] = useState(null);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
@@ -28,22 +37,25 @@ export default function DashboardLayout({ children }) {
   // Role & Session States
   const [roleName, setRoleName] = useState("Scholar");
   const [showEndConfirmModal, setShowEndConfirmModal] = useState(false);
-  const [pendingNavAction, setPendingNavAction] = useState(null);
+  const { isDark, initTheme } = useThemeStore();
+  const [isMounted, setIsMounted] = useState(false);
 
-  const effectiveRole = user?.role || (typeof window !== "undefined" ? JSON.parse(localStorage.getItem("eduvantix_auth_user") || "{}")?.role : null);
+  useEffect(() => {
+    setIsMounted(true);
+    initTheme();
+  }, [initTheme]);
+
+  const effectiveRole = user?.role || (isMounted ? JSON.parse(localStorage.getItem("eduvantix_auth_user") || "{}")?.role : null);
   const isSuperAdmin = effectiveRole === "ADMIN";
   const isInstAdmin = effectiveRole === "INSTITUTE_ADMIN";
   const isBatchMgr = effectiveRole === "BATCH_MANAGER";
   const isMentor = effectiveRole === "MENTOR";
   const isStudent = effectiveRole === "USER";
-  const { isDark, initTheme } = useThemeStore();
 
-  useEffect(() => {
-    initTheme();
-  }, [initTheme]);
-  const isStudentSession = typeof window !== "undefined" && localStorage.getItem("synapse_student_session") === "true";
-  const isAdminSession = typeof window !== "undefined" && localStorage.getItem("synapse_admin_session") === "true";
-  const isMentorSession = typeof window !== "undefined" && localStorage.getItem("synapse_mentor_session") === "true";
+  const isStudentSession = isMounted ? (localStorage.getItem("synapse_student_session") === "true" || isStudent) : isStudent;
+  const isAdminSession = isMounted ? (localStorage.getItem("synapse_admin_session") === "true" || isSuperAdmin || isInstAdmin || isBatchMgr) : (isSuperAdmin || isInstAdmin || isBatchMgr);
+  const isMentorSession = isMounted ? (localStorage.getItem("synapse_mentor_session") === "true" || isMentor) : isMentor;
+  const isLoginRoute = pathname === "/student" || pathname === "/admin" || pathname === "/mentor";
 
   useEffect(() => {
     if (!user || !isStudentSession) return;
@@ -96,8 +108,6 @@ export default function DashboardLayout({ children }) {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const isLoginRoute = pathname === "/student" || pathname === "/admin" || pathname === "/mentor";
-
       const hasSession = isStudentSession || isAdminSession || isMentorSession;
 
       if (!hasSession) {
@@ -126,10 +136,12 @@ export default function DashboardLayout({ children }) {
         else if (isBatchMgr) displayRole = "Batch Manager";
 
         setDashboardUser({ name, email, role: displayRole, initials, avatarUrl });
+        setCheckingAuth(false);
+      } else {
+        setCheckingAuth(false);
       }
-      setCheckingAuth(false);
     }
-  }, [pathname, router, user, roleName, isStudentSession, isAdminSession, isMentorSession]);
+  }, [pathname, router, user, roleName, isStudentSession, isAdminSession, isMentorSession, isSuperAdmin, isInstAdmin, isBatchMgr]);
 
   const handleLogout = () => setShowLogoutConfirm(true);
 
@@ -167,19 +179,6 @@ export default function DashboardLayout({ children }) {
     setPendingNavAction(null);
   };
 
-  const isLoginRoute = pathname === "/student" || pathname === "/admin" || pathname === "/mentor";
-
-  if (checkingAuth) {
-    return (
-      <div className="flex h-screen items-center justify-center" style={{ backgroundColor: "var(--bg-primary)" }}>
-        <div className="space-y-4 text-center">
-          <div className="w-8 h-8 border-2 rounded-full border-t-transparent animate-spin mx-auto" style={{ borderColor: "var(--accent-primary)" }} />
-          <p className="text-xs" style={{ color: "var(--text-muted)" }}>Verifying authorization…</p>
-        </div>
-      </div>
-    );
-  }
-
   if (isLoginRoute) return <>{children}</>;
 
   const isPracticeWorkspace = pathname.startsWith("/practice/");
@@ -204,16 +203,16 @@ export default function DashboardLayout({ children }) {
   let sidebarLinks = [];
 
   if (isStudentSession) {
-    const isInstituteStudent = !!dashboardUser?.instituteId;
     sidebarLinks = [
       { label: "Dashboard", href: "/student/dashboard", icon: LayoutDashboard },
       { label: "Practice Arena", href: "/practice", icon: Code },
       { label: "Contest Arena", href: "/contest", icon: Trophy },
+      { label: "Exam Center", href: "/exams", icon: FileText },
       { label: "Discuss Forum", href: "/discuss", icon: MessageSquare },
       { label: "AI Viva", href: "/student/viva", icon: Brain },
       { label: "Live Sessions", href: "/live-classes", icon: Radio },
       { label: "Learn with Games", href: "/student/games", icon: Gamepad2 },
-      isInstituteStudent && { label: "Study Materials", href: "/student/materials", icon: FileText },
+      { label: "Study Materials", href: "/student/materials", icon: FileText },
       { label: "Resume Builder", href: "/student/resume", icon: FileCheck },
     ].filter(Boolean);
   } else {
@@ -223,6 +222,7 @@ export default function DashboardLayout({ children }) {
         href: isMentor ? "/mentor/dashboard" : "/admin/dashboard",
         icon: LayoutDashboard
       },
+      (isSuperAdmin || isInstAdmin || isBatchMgr || isMentor) && { label: "Exam Center", href: "/exams", icon: FileText },
       isSuperAdmin && { label: "Institutes & Admins", href: "/admin/institutes", icon: ShieldAlert },
       isInstAdmin && { label: "Manage Batches", href: "/admin/batches", icon: Layers },
       isInstAdmin && { label: "Manage People", href: "/admin/people", icon: Users },
@@ -474,7 +474,7 @@ export default function DashboardLayout({ children }) {
             </div>
             <div className="space-y-1.5">
               <h3 className="text-base font-black" style={{ color: "var(--text-primary)" }}>Sign out?</h3>
-              <p className="text-xs" style={{ color: "var(--text-muted)" }}>You'll need to sign back in to access your portal.</p>
+              <p className="text-xs" style={{ color: "var(--text-muted)" }}>You&apos;ll need to sign back in to access your portal.</p>
             </div>
             <div className="flex gap-3">
               <button type="button" onClick={() => setShowLogoutConfirm(false)}

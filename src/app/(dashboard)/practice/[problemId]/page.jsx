@@ -879,20 +879,47 @@ export default function PracticeWorkspace() {
       solution: problem?.solution,
       evaluation: problem?.evaluation,
     });
-    switch (activeLeftTab) {
-      case "description":
-        return <div className="space-y-4 text-sm leading-relaxed text-[var(--text-secondary)]">{renderText(tabs.description)}</div>;
-      case "followup":
-        return <div className="space-y-4 text-sm leading-relaxed text-[var(--text-secondary)]">{renderText(tabs.followup)}</div>;
-      case "editorial":
-        return <div className="space-y-4 text-sm leading-relaxed text-[var(--text-secondary)]">{renderText(tabs.editorial)}</div>;
-      case "solution":
-        return <div className="space-y-4 text-sm leading-relaxed text-[var(--text-secondary)]">{renderText(tabs.solution)}</div>;
-      case "evaluation":
-        return <div className="space-y-4 text-sm leading-relaxed text-[var(--text-secondary)]">{renderText(tabs.evaluation)}</div>;
-      default:
-        return null;
-    }
+    const tabTitleMap = {
+      description: "Description",
+      followup: "Followup",
+      editorial: "Editorial",
+      solution: "Solution",
+      evaluation: "Evaluation",
+    };
+
+    const rawContent = tabs[activeLeftTab];
+    const isDefaultOrEmpty = !rawContent || 
+      rawContent.includes("No official solution has been published") || 
+      rawContent.includes("No editorial has been published") ||
+      rawContent.includes("No follow-up questions have been added");
+
+    return (
+      <div className="space-y-6">
+        {/* Tab Header Title */}
+        <div className="border-b border-[var(--border-primary)] pb-3">
+          <h2 className="text-xl font-extrabold text-[var(--text-primary)] tracking-tight">
+            {tabTitleMap[activeLeftTab] || "Overview"}
+          </h2>
+        </div>
+
+        {/* Content or Empty State Card */}
+        {isDefaultOrEmpty ? (
+          <div className="flex flex-col items-center justify-center p-12 text-center rounded-2xl border border-[var(--border-primary)] bg-slate-500/5 space-y-3 my-4">
+            <div className="h-12 w-12 rounded-2xl flex items-center justify-center bg-slate-500/10 text-[var(--text-muted)] border border-[var(--border-primary)]">
+              <CheckCircle2 size={24} className="text-slate-400 opacity-60" />
+            </div>
+            <h3 className="text-sm font-bold text-[var(--text-primary)]">No Official Content Published</h3>
+            <p className="text-xs text-[var(--text-secondary)] max-w-sm leading-relaxed">
+              No official {activeLeftTab} has been published for this problem yet. Check back later or test your own logic.
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-4 text-sm leading-relaxed text-[var(--text-secondary)]">
+            {renderText(rawContent)}
+          </div>
+        )}
+      </div>
+    );
   };
 
   // String parsing function for left tabs markdown formats
@@ -1078,19 +1105,22 @@ export default function PracticeWorkspace() {
               { id: "solution", label: "Solution", icon: <CheckCircle2 size={13} /> },
               { id: "evaluation", label: "Evaluation", icon: <ClipboardCheck size={13} /> },
               { id: "excalidraw", label: "Excalidraw", icon: <Palette size={13} /> }
-            ].map(tab => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveLeftTab(tab.id)}
-                className={`flex items-center space-x-1 px-4 py-2 text-xs font-semibold cursor-pointer border-b-2 transition-all whitespace-nowrap ${activeLeftTab === tab.id
-                    ? "border-zinc-500 text-zinc-500"
-                    : "border-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
-                  }`}
-              >
-                {tab.icon}
-                <span>{tab.label}</span>
-              </button>
-            ))}
+            ].map(tab => {
+              const isActive = activeLeftTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveLeftTab(tab.id)}
+                  className={`flex items-center space-x-1.5 px-4 py-2 text-xs font-semibold cursor-pointer border-b-2 transition-all whitespace-nowrap ${isActive
+                      ? "border-[var(--text-accent)] text-[var(--text-primary)] font-bold bg-slate-500/10"
+                      : "border-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-slate-500/5"
+                    }`}
+                >
+                  {tab.icon}
+                  <span>{tab.label}</span>
+                </button>
+              );
+            })}
           </div>
 
           {/* Left panel scrollable body */}
