@@ -38,8 +38,8 @@ export default function AIAllInOneVivaPage({ children }) {
     ...(token ? { Authorization: `Bearer ${token}` } : {})
   }), [token]);
 
-  // Main subsection tabs: "bank" | "schedule"
-  const [subSectionTab, setSubSectionTab] = useState("bank");
+  // Main subsection tabs: "bank" | "schedule" | "settings"
+  const [subSectionTab, setSubSectionTab] = useState(children ? "settings" : "bank");
 
   // ==========================================
   // 1. QUESTION BANK STATE
@@ -145,7 +145,7 @@ export default function AIAllInOneVivaPage({ children }) {
     try {
       const res = await fetch(`${API_BASE}/api/viva/questions`, { headers: getHeaders() });
       const data = await res.json();
-      if (res.ok && data.success) setQuestions(data.questions);
+      if (res.ok && data.success) setQuestions(data.questions || []);
       else setError(data.message || "Failed to load questions.");
     } catch {
       setError("Network error loading questions.");
@@ -170,7 +170,7 @@ export default function AIAllInOneVivaPage({ children }) {
     try {
       const res = await fetch(`${API_BASE}/api/viva/materials`, { headers: getHeaders() });
       const data = await res.json();
-      if (res.ok && data.success) setMaterials(data.materials);
+      if (res.ok && data.success) setMaterials(data.materials || []);
     } catch { /* silent */ }
     finally { setMaterialsLoading(false); }
   }, [API_BASE, getHeaders]);
@@ -180,7 +180,7 @@ export default function AIAllInOneVivaPage({ children }) {
     try {
       const res = await fetch(`${API_BASE}/api/viva/scheduled`, { headers: getHeaders() });
       const data = await res.json();
-      if (res.ok && data.success) setVivas(data.vivas);
+      if (res.ok && data.success) setVivas(data.vivas || []);
     } catch { /* silent */ }
     finally { setVivasLoading(false); }
   }, [API_BASE, getHeaders]);
@@ -705,7 +705,7 @@ export default function AIAllInOneVivaPage({ children }) {
                      <label className="block text-xs font-bold text-[var(--text-muted)] mb-1">Select Subject *</label>
                      <select required value={scheduleSubject} onChange={e => setScheduleSubject(e.target.value)} className="w-full bg-[#161B2B] border border-[var(--border-primary)] rounded-xl p-3 text-sm outline-none">
                        <option value="">Select Folder</option>
-                       {instituteSubjectNames.map(s => <option key={s} value={s}>{s}</option>)}
+                       {subjectNames.map(s => <option key={s} value={s}>{s}</option>)}
                      </select>
                    </div>
                   <div>
@@ -732,7 +732,7 @@ export default function AIAllInOneVivaPage({ children }) {
                       <p className="text-slate-500 text-xs text-center py-10">No questions in bank.</p>
                     ) : (
                       questions
-                        .filter(q => q.instituteId !== null && (!scheduleSubject || q.subject.toLowerCase() === scheduleSubject.toLowerCase()))
+                        .filter(q => (!scheduleSubject || q.subject.toLowerCase() === scheduleSubject.toLowerCase()))
                         .map(q => {
                           const isSel = scheduleSelectedQuestions.includes(q.id);
                           return (
@@ -1052,7 +1052,7 @@ export default function AIAllInOneVivaPage({ children }) {
             </div>
           </div>
 
-          {activeTab !== "global" && (
+          {(activeTab !== "global" || user?.role === "ADMIN") && (
             <div className="flex items-center gap-3">
               <button
                 onClick={() => {
@@ -1161,33 +1161,32 @@ export default function AIAllInOneVivaPage({ children }) {
           </div>
           
           <div className="flex items-center gap-3">
-            {subSectionTab === "bank" ? (
-              activeTab !== "global" && (
-                <>
-                  <button
-                    onClick={() => { setSubjectModalError(""); setNewFolderSubjectName(""); setSubjectModalOpen(true); }}
-                    className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-[var(--bg-card)] border border-[var(--border-primary)] hover:bg-[var(--bg-hover)] font-medium text-xs text-[var(--text-secondary)] transition-all cursor-pointer"
-                  >
-                    <Plus className="w-4 h-4 text-[var(--text-muted)]" />
-                    <span>Add Folder</span>
-                  </button>
-                  <button
-                    onClick={() => { setExtractModalOpen(true); fetchMaterials(); }}
-                    className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-[var(--bg-card)] border border-[var(--border-primary)] hover:bg-[var(--bg-hover)] font-medium text-xs text-[var(--text-secondary)] transition-all cursor-pointer"
-                  >
-                    <Sparkles className="w-4 h-4 text-[var(--text-muted)]" />
-                    <span>Extract from PDF</span>
-                  </button>
-                  <button
-                    onClick={openCreate}
-                    className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-[var(--accent-primary)] hover:bg-[var(--accent-secondary)] font-semibold text-xs text-[var(--text-on-accent)] shadow-lg transition-all cursor-pointer"
-                  >
-                    <Plus className="w-4 h-4" />
-                    <span>Add Question</span>
-                  </button>
-                </>
-              )
-            ) : (
+            {subSectionTab === "bank" && (activeTab !== "global" || user?.role === "ADMIN") && (
+              <>
+                <button
+                  onClick={() => { setSubjectModalError(""); setNewFolderSubjectName(""); setSubjectModalOpen(true); }}
+                  className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-[var(--bg-card)] border border-[var(--border-primary)] hover:bg-[var(--bg-hover)] font-medium text-xs text-[var(--text-secondary)] transition-all cursor-pointer"
+                >
+                  <Plus className="w-4 h-4 text-[var(--text-muted)]" />
+                  <span>Add Folder</span>
+                </button>
+                <button
+                  onClick={() => { setExtractModalOpen(true); fetchMaterials(); }}
+                  className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-[var(--bg-card)] border border-[var(--border-primary)] hover:bg-[var(--bg-hover)] font-medium text-xs text-[var(--text-secondary)] transition-all cursor-pointer"
+                >
+                  <Sparkles className="w-4 h-4 text-[var(--text-muted)]" />
+                  <span>Extract from PDF</span>
+                </button>
+                <button
+                  onClick={openCreate}
+                  className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-[var(--accent-primary)] hover:bg-[var(--accent-secondary)] font-semibold text-xs text-[var(--text-on-accent)] shadow-lg transition-all cursor-pointer"
+                >
+                  <Plus className="w-4 h-4" />
+                  <span>Add Question</span>
+                </button>
+              </>
+            )}
+            {subSectionTab === "schedule" && (
               <button
                 onClick={() => {
                   setEditingVivaId(null);
@@ -1214,8 +1213,8 @@ export default function AIAllInOneVivaPage({ children }) {
           </div>
         </section>
 
-        {/* Tab Switcher: Question Bank vs Schedule Viva */}
-        <div className="flex space-x-1 p-1 bg-[var(--bg-card)] border border-[var(--border-primary)] rounded-xl max-w-md">
+        {/* Tab Switcher: Question Bank vs Schedule Viva vs Settings */}
+        <div className="flex space-x-1 p-1 bg-[var(--bg-card)] border border-[var(--border-primary)] rounded-xl w-fit min-w-[300px]">
           <button
             type="button"
             onClick={() => setSubSectionTab("bank")}
@@ -1230,6 +1229,15 @@ export default function AIAllInOneVivaPage({ children }) {
           >
             Schedule Viva
           </button>
+          {children && (
+            <button
+              type="button"
+              onClick={() => setSubSectionTab("settings")}
+              className={`flex-1 py-2 px-4 rounded-lg font-bold text-xs transition-all cursor-pointer ${subSectionTab === "settings" ? "bg-[var(--accent-primary)] text-[var(--text-on-accent)]" : "text-[var(--text-muted)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)]"}`}
+            >
+              AI Settings
+            </button>
+          )}
         </div>
 
         {error && <div className="p-4 rounded-xl bg-rose-500/10 border border-[var(--border-primary)] border-rose-500/20 text-rose-400 text-xs">{error}</div>}
@@ -1324,6 +1332,15 @@ export default function AIAllInOneVivaPage({ children }) {
                 </div>
               )}
             </div>
+          </div>
+        )}
+
+        {/* ==========================================
+            TAB 3: AI SETTINGS
+            ========================================== */}
+        {subSectionTab === "settings" && children && (
+          <div className="animate-fade-in">
+            {children}
           </div>
         )}
 

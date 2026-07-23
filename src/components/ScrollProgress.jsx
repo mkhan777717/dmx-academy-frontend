@@ -4,10 +4,7 @@ import { useScroll, useSpring, motion } from "framer-motion";
 import { useRef } from "react";
 
 export default function ScrollProgress() {
-  const ref = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-  });
+  const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
     stiffness: 100,
     damping: 30,

@@ -191,10 +191,7 @@ function FloatingParticles({ count = 12 }) {
 
 // ─── Scroll Progress Indicator ────────────────────────────────────────
 function ScrollProgress() {
-  const ref = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-  });
+  const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
   return (
     <motion.div

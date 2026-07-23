@@ -456,7 +456,7 @@ function LoginForm() {
             <AnimatePresence mode="popLayout">
               {isRegistering && (
                 <motion.div key="username" initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="space-y-4 overflow-hidden">
-                  <InputField label="Name" type="text" value={username} onChange={setUsername} icon={<User size={14} />} placeholder="enter name" />
+                  <InputField label="Username" type="text" value={username} onChange={setUsername} icon={<User size={14} />} placeholder="enter username" />
                   
                   <div className="space-y-1.5">
                     <label className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Referral Code (Optional)</label>

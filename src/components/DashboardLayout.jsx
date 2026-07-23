@@ -374,7 +374,7 @@ export default function DashboardLayout({ children }) {
       { label: "Discuss Forum", href: "/discuss", icon: MessageSquare },
       (isBatchMgr || isInstAdmin || isMentor) && canShowFeature("allowedAiViva") && { label: "AI Viva", href: "/mentor/viva/questions", icon: Brain, featureFlag: "allowedAiViva" },
       (isBatchMgr || isInstAdmin || isMentor) && canShowFeature("allowedStudyMaterial") && { label: "Study Materials", href: "/mentor/viva/materials", icon: FileText, featureFlag: "allowedStudyMaterial" },
-      isSuperAdmin && { label: "AI Settings", href: "/admin/viva/ai-settings", icon: Settings },
+      isSuperAdmin && { label: "AI Viva", href: "/admin/viva/ai-settings", icon: Brain },
       isSuperAdmin && { label: "User Feedbacks", href: "/admin/feedback", icon: ClipboardList },
       (isSuperAdmin || isInstAdmin || isBatchMgr || isMentor) && canShowFeature("allowedContest") && { label: "Contests", href: "/admin/contests", icon: Trophy, featureFlag: "allowedContest" },
       (isSuperAdmin || isInstAdmin || isBatchMgr || isMentor) && canShowFeature("allowedProblems") && { label: "Problems", href: "/admin/problems", icon: Code, featureFlag: "allowedProblems" },
