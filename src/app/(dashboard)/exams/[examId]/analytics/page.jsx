@@ -6,9 +6,11 @@ import { useAuth } from "@/context/AuthContext";
 import { buildAuthHeaders, getApiBase } from "@/utils/api";
 import { 
   ArrowLeft, BarChart4, Users, Award, Download, CheckCircle2, 
-  AlertTriangle, Clock, ShieldAlert, BookOpen, Send 
+  AlertTriangle, Clock, ShieldAlert, BookOpen, Send, FileCheck
 } from "lucide-react";
 import { motion } from "framer-motion";
+import StudentPaperCheckingModal from "@/components/exam/StudentPaperCheckingModal";
+import ProctorReportModal from "@/components/exam/proctor/ProctorReportModal";
 
 export default function ExamAnalyticsDashboard() {
   const { examId } = useParams();
@@ -27,6 +29,20 @@ export default function ExamAnalyticsDashboard() {
   const [evalComment, setEvalComment] = useState("");
   const [savingGrade, setSavingGrade] = useState(false);
   const [pendingAnswers, setPendingAnswers] = useState([]);
+
+  // Student paper checking modal states
+  const [selectedAttemptId, setSelectedAttemptId] = useState(null);
+  const [isCheckingModalOpen, setIsCheckingModalOpen] = useState(false);
+
+  // Proctor report modal states
+  const [proctorReportSessionId, setProctorReportSessionId] = useState(null);
+  const [proctorStudentName, setProctorStudentName] = useState("");
+  const [isProctorReportModalOpen, setIsProctorReportModalOpen] = useState(false);
+
+  const handleCheckStudentPaper = (attemptId) => {
+    setSelectedAttemptId(attemptId);
+    setIsCheckingModalOpen(true);
+  };
 
   useEffect(() => {
     fetchAnalytics();
@@ -267,44 +283,7 @@ export default function ExamAnalyticsDashboard() {
         </div>
       )}
 
-      {/* Pending Evaluations Section */}
-      {pendingAnswers.length > 0 && (
-        <div className="rounded-2xl border border-amber-500/30 bg-amber-500/10 dark:bg-amber-500/5 p-6 space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-amber-600 dark:text-amber-400">
-              <BookOpen size={18} />
-              <h3 className="text-sm font-bold">Descriptive & Coding Papers Requiring Mentor Grading ({pendingAnswers.length})</h3>
-            </div>
-          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {pendingAnswers.map((ans) => (
-              <div key={ans.id} className="rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-slate-900/60 p-4 space-y-3 shadow-sm">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h4 className="text-xs font-bold text-slate-900 dark:text-white">{ans.question?.title}</h4>
-                    <span className="text-3xs text-indigo-600 dark:text-indigo-400 font-extrabold block">Candidate: {ans.attempt?.user?.username || ans.attempt?.user?.email}</span>
-                  </div>
-                  <span className="px-2 py-0.5 rounded text-3xs font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 shrink-0">
-                    {ans.question?.type} • Needs Grade
-                  </span>
-                </div>
-
-                <p className="text-2xs text-slate-700 dark:text-slate-300 line-clamp-3 bg-slate-50 dark:bg-slate-950 p-2.5 rounded-lg font-mono border border-slate-100 dark:border-white/5">
-                  {ans.descriptiveAnswer || ans.codingCode || "No answer text provided."}
-                </p>
-
-                <button
-                  onClick={() => handleOpenEvaluation(ans)}
-                  className="w-full rounded-lg bg-indigo-600 hover:bg-indigo-500 py-2 text-2xs font-bold text-white transition-colors shadow-md"
-                >
-                  Grade Submission
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
 
       {/* Core Split Dashboard Content */}
       {analytics && (
@@ -386,72 +365,99 @@ export default function ExamAnalyticsDashboard() {
 
             {/* Table 1: Attempted Candidates */}
             {rosterTab === "ATTEMPTED" && (
-              <table className="w-full text-left text-2xs leading-relaxed border-collapse">
-                <thead>
-                  <tr className="border-b border-slate-200 dark:border-white/5 text-slate-500 font-extrabold uppercase">
-                    <th className="pb-3">Candidate Email</th>
-                    <th className="pb-3 text-center">Status</th>
-                    <th className="pb-3 text-center">Score Marks</th>
-                    <th className="pb-3 text-center">Proctor Warnings</th>
-                    <th className="pb-3 text-right">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {(analytics.attempts || [])
-                    .filter(att => {
-                      const email = (att.email || '').toLowerCase();
-                      const username = (att.username || '').toLowerCase();
-                      const isStaff = email.includes('admin') || email.includes('mentor') || email.includes('batchmanager') || email.startsWith('pst@') || username === 'admin' || username === 'mentor';
-                      return !isStaff;
-                    })
-                    .map((att) => (
-                    <tr key={att.id} className="border-b border-slate-100 dark:border-white/5 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
-                      <td className="py-3 font-semibold text-slate-900 dark:text-white">
-                        {att.username}
-                        <span className="block text-3xs text-slate-500 font-normal">{att.email}</span>
-                      </td>
-                      <td className="py-3 text-center">
-                        <span className={`inline-flex px-2 py-0.5 rounded text-3xs font-bold uppercase ${
-                          att.status === "SUBMITTED" || att.status === "AUTO_SUBMITTED"
-                            ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
-                            : "bg-amber-500/10 text-amber-600 dark:text-amber-400"
-                        }`}>
-                          {att.status}
-                        </span>
-                      </td>
-                      <td className="py-3 text-center font-bold text-slate-900 dark:text-white">
-                        {att.score !== null ? `${att.score} / ${att.examVersion?.maxMarks || analytics.maxMarks || 10}` : "--"}
-                      </td>
-                      <td className="py-3 text-center font-bold">
-                        <span className={att.proctorFlags > 0 ? "text-amber-600 dark:text-amber-500" : "text-slate-500"}>
-                          {att.proctorFlags} Logs
-                        </span>
-                      </td>
-                      <td className="py-3 text-right flex items-center justify-end gap-2">
-                        {att.resultPublished ? (
-                          <span className="inline-flex items-center gap-1 rounded-lg bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 text-3xs font-extrabold text-emerald-600 dark:text-emerald-400">
-                            <CheckCircle2 size={10} />
-                            Published
-                          </span>
-                        ) : (
-                          <button
-                            onClick={() => handlePublishSingleAttempt(att.id)}
-                            className="rounded-lg bg-indigo-600 hover:bg-indigo-500 px-2.5 py-1 text-3xs font-bold text-white transition-colors shadow-sm"
-                          >
-                            Publish Result
-                          </button>
-                        )}
-                        <button
-                          onClick={() => router.push(`/exams/${examId}/result/${att.id}`)}
-                          className="rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 border border-slate-200 dark:border-white/10 px-3 py-1 font-bold text-slate-700 dark:text-white transition-colors"
-                        >
-                          Scorecard
-                        </button>
-                      </td>
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs leading-relaxed border-collapse min-w-[650px]">
+                  <thead>
+                    <tr className="border-b border-slate-200 dark:border-white/10 text-slate-500 font-extrabold uppercase text-3xs tracking-wider">
+                      <th className="px-4 py-3 whitespace-nowrap">Candidate</th>
+                      <th className="px-4 py-3 text-center whitespace-nowrap">Status</th>
+                      <th className="px-4 py-3 text-center whitespace-nowrap">Score</th>
+                      <th className="px-4 py-3 text-center whitespace-nowrap">Proctor Logs</th>
+                      <th className="px-4 py-3 text-right whitespace-nowrap">Actions</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {(analytics.attempts || [])
+                      .filter(att => {
+                        const email = (att.email || '').toLowerCase();
+                        const username = (att.username || '').toLowerCase();
+                        const isStaff = email.includes('admin') || email.includes('mentor') || email.includes('batchmanager') || email.startsWith('pst@') || username === 'admin' || username === 'mentor';
+                        return !isStaff;
+                      })
+                      .map((att) => (
+                      <tr 
+                        key={att.id} 
+                        onClick={() => handleCheckStudentPaper(att.id)}
+                        className="border-b border-slate-100 dark:border-white/5 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors cursor-pointer"
+                      >
+                        <td className="px-4 py-3 font-semibold text-slate-900 dark:text-white whitespace-nowrap">
+                          <span className="block font-bold">{att.username}</span>
+                          <span className="block text-3xs text-slate-500 font-normal">{att.email}</span>
+                        </td>
+                        <td className="px-4 py-3 text-center whitespace-nowrap">
+                          <span className={`inline-flex px-2.5 py-1 rounded-md text-3xs font-bold uppercase tracking-wide ${
+                            att.status === "SUBMITTED" || att.status === "AUTO_SUBMITTED"
+                              ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20"
+                              : "bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20"
+                          }`}>
+                            {att.status}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 text-center font-black text-slate-900 dark:text-white whitespace-nowrap">
+                          {att.score !== null ? `${att.score} / ${att.examVersion?.maxMarks || analytics.maxMarks || 10}` : "--"}
+                        </td>
+                        <td className="px-4 py-3 text-center font-bold whitespace-nowrap">
+                          <span className={att.proctorFlags > 0 ? "text-amber-600 dark:text-amber-500 font-extrabold" : "text-slate-500 font-normal"}>
+                            {att.proctorFlags} Logs
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 text-right whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+                          <div className="flex items-center justify-end gap-2">
+                            <button
+                              onClick={() => handleCheckStudentPaper(att.id)}
+                              className="inline-flex items-center gap-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 px-3 py-1.5 text-xs font-bold text-white transition-colors shadow-sm whitespace-nowrap"
+                            >
+                              <FileCheck size={14} />
+                              Check Paper
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setProctorReportSessionId(att.proctorSessionId || String(att.id));
+                                setProctorStudentName(att.username || "Candidate");
+                                setIsProctorReportModalOpen(true);
+                              }}
+                              className="inline-flex items-center gap-1 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 px-2.5 py-1.5 text-xs font-bold text-amber-600 dark:text-amber-400 transition-colors whitespace-nowrap"
+                            >
+                              <ShieldAlert size={13} />
+                              Proctor Report
+                            </button>
+                            {att.resultPublished ? (
+                              <span className="inline-flex items-center gap-1 rounded-lg bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1.5 text-xs font-extrabold text-emerald-600 dark:text-emerald-400 whitespace-nowrap">
+                                <CheckCircle2 size={12} />
+                                Published
+                              </span>
+                            ) : (
+                              <button
+                                onClick={() => handlePublishSingleAttempt(att.id)}
+                                className="rounded-lg bg-slate-200 dark:bg-white/10 hover:bg-slate-300 dark:hover:bg-white/20 px-3 py-1.5 text-xs font-bold text-slate-800 dark:text-white transition-colors whitespace-nowrap"
+                              >
+                                Publish Result
+                              </button>
+                            )}
+                            <button
+                              onClick={() => router.push(`/exams/${examId}/result/${att.id}`)}
+                              className="rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 border border-slate-200 dark:border-white/10 px-3 py-1.5 font-bold text-slate-700 dark:text-white transition-colors text-xs whitespace-nowrap"
+                            >
+                              Scorecard
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             )}
 
             {/* Table 2: Unattempted Candidates */}
@@ -498,7 +504,7 @@ export default function ExamAnalyticsDashboard() {
         </div>
       )}
 
-      {/* Evaluation Modal */}
+      {/* Single Answer Evaluation Modal */}
       {evaluatingAnswer && (
         <div className="fixed inset-0 z-50 bg-slate-950/60 dark:bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
           <div className="w-full max-w-lg rounded-3xl border border-slate-200 dark:border-white/10 bg-white dark:bg-slate-900 p-6 space-y-6 shadow-2xl">
@@ -564,6 +570,33 @@ export default function ExamAnalyticsDashboard() {
             </form>
           </div>
         </div>
+      )}
+
+      {/* Student Paper Checking Modal */}
+      {isCheckingModalOpen && selectedAttemptId && (
+        <StudentPaperCheckingModal
+          attemptId={selectedAttemptId}
+          examId={examId}
+          isOpen={isCheckingModalOpen}
+          onClose={() => {
+            setIsCheckingModalOpen(false);
+            setSelectedAttemptId(null);
+            fetchAnalytics();
+            fetchPendingGrades();
+          }}
+        />
+      )}
+
+      {/* Proctor Report Modal */}
+      {isProctorReportModalOpen && proctorReportSessionId && (
+        <ProctorReportModal
+          sessionId={proctorReportSessionId}
+          studentName={proctorStudentName}
+          onClose={() => {
+            setIsProctorReportModalOpen(false);
+            setProctorReportSessionId(null);
+          }}
+        />
       )}
 
     </div>
