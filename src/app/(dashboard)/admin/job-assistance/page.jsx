@@ -431,7 +431,7 @@ export default function AdminJobAssistancePage() {
                           title="Download Resume"
                         >
                           <Download size={11} />
-                          PDF
+                          Download
                         </button>
                       </td>
                       <td className="px-4 py-3 whitespace-nowrap">
