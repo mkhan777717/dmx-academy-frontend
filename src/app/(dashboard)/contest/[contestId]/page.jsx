@@ -14,6 +14,10 @@ import { useAuth } from "@/context/AuthContext";
 import { wrapCodeForBackend } from "@/utils/codeWrapper";
 import { getSocket } from "@/utils/socket";
 import { getProblemTabs } from "@/utils/problemTabsData";
+import ProctoringBanner from "@/components/workspace/ProctoringBanner";
+import AntiCheatGrid from "@/components/workspace/AntiCheatGrid";
+import VoiceAssistantWidget from "@/components/workspace/VoiceAssistantWidget";
+import WhiteboardCanvas from "@/components/workspace/WhiteboardCanvas";
 
 
 const getRandom = () => Math.random();
@@ -2465,59 +2469,20 @@ export default function ContestWorkspace() {
               </div>
 
               {/* Scrollable pane details */}
-              <div className="flex-1 overflow-y-auto p-6 space-y-4" style={{ backgroundColor: "var(--bg-card)" }}>
+              <div className="flex-1 overflow-y-auto p-5 space-y-4 bg-[#0b0c12]">
+                <ProctoringBanner timeRemaining={formatTimer()} isProctored={true} />
+
                 {/* Sketch whiteboard */}
-                <div className={activeLeftTab === "excalidraw" ? "block space-y-4 h-full" : "hidden"}>
-                  <div className="flex items-center justify-between p-3 rounded-2xl border" style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}>
-                    <div className="flex items-center space-x-3">
-                      <div className="flex space-x-1.5">
-                        {["#6366f1", "#10b981", "#ef4444", "#f59e0b", "#e2e8f0"].map(col => (
-                          <button
-                            key={col}
-                            onClick={() => setDrawColor(col)}
-                            className={`h-5 w-5 rounded-full border border-[var(--border-primary)] cursor-pointer transition-transform ${drawColor === col ? "scale-110 border-zinc-500 shadow-sm" : "border-slate-500/20"
-                              }`}
-                            style={{ backgroundColor: col }}
-                          />
-                        ))}
-                      </div>
-                      <span className="h-4 w-px bg-slate-500/20" />
-                      <div className="flex items-center space-x-1.5">
-                        <span className="text-[10px] text-[var(--text-secondary)] font-bold">Size:</span>
-                        <input
-                          type="range"
-                          min="1"
-                          max="10"
-                          value={lineWidth}
-                          onChange={(e) => setLineWidth(parseInt(e.target.value))}
-                          className="w-16 h-1 bg-slate-200 rounded-lg appearance-none cursor-pointer"
-                        />
-                      </div>
-                    </div>
-
-                    <button
-                      onClick={clearCanvas}
-                      className="flex items-center space-x-1 px-2.5 py-1.5 rounded-lg text-xs font-bold text-rose-500 hover:bg-rose-500/5 transition-colors cursor-pointer"
-                    >
-                      <Trash2 size={13} />
-                      <span>Clear Sketch</span>
-                    </button>
-                  </div>
-
-                  <div className="border border-[var(--border-primary)] rounded-2xl overflow-hidden shadow-inner bg-[var(--bg-card)]/5" style={{ borderColor: "var(--border-primary)" }}>
-                    <canvas
-                      ref={canvasRef}
-                      onMouseDown={startDrawing}
-                      onMouseMove={draw}
-                      onMouseUp={stopDrawing}
-                      onMouseLeave={stopDrawing}
-                      className="w-full cursor-crosshair h-[400px] block"
-                    />
-                  </div>
+                <div className={activeLeftTab === "excalidraw" ? "block h-[520px] w-full" : "hidden"}>
+                  <WhiteboardCanvas />
                 </div>
+
 
                 {/* Text blocks */}
                 {activeLeftTab !== "excalidraw" && renderTabContent()}
+
+                {/* Anti-Cheat Grid */}
+                <AntiCheatGrid cameraActive={true} micActive={true} screenActive={true} tabSwitches={violations || 0} />
               </div>
             </div>
 
@@ -2563,78 +2528,16 @@ export default function ContestWorkspace() {
                 </div>
               </div>
 
-              {/* Voice Assistant panel */}
-              <div
-                className="flex items-center justify-between p-3.5 border-b shadow-[0_4px_15px_rgba(99,102,241,0.03)] transition-all duration-300 relative overflow-hidden"
-                style={{
-                  borderColor: "var(--border-primary)",
-                  background: "linear-gradient(90deg, rgba(99, 102, 241, 0.03) 0%, rgba(139, 92, 246, 0.03) 50%, rgba(244, 63, 94, 0.03) 100%)"
-                }}
-              >
-                {/* Glowing edge accents */}
-                <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-zinc-500/20 via-slate-500/20 to-[var(--text-primary)]/20" />
-
-                <div className="flex items-center space-x-3.5 relative z-10">
-                  <button
-                    onClick={isSpeaking ? stopSpeaking : () => askVoiceAssistant()}
-                    disabled={isListening || assistantTyping}
-                    className={`relative h-9 w-9 rounded-full flex items-center justify-center text-white transition-all border border-[var(--border-primary)] border-transparent outline-none focus:outline-none shadow-md ${isSpeaking
-                      ? "bg-rose-500 hover:bg-rose-600 cursor-pointer shadow-rose-500/25"
-                      : isListening
-                        ? "bg-red-500 shadow-red-500/35 scale-105"
-                        : "bg-[var(--accent-primary)] hover:bg-zinc-700 cursor-pointer shadow-zinc-600/25 hover:scale-105 active:scale-95"
-                      }`}
-                    title={isSpeaking ? "Stop speaking" : "Start query"}
-                  >
-                    {isSpeaking ? (
-                      <Volume2 size={15} className="animate-bounce" />
-                    ) : (
-                      <Mic size={15} className={isListening ? "animate-pulse" : ""} />
-                    )}
-                    {isListening && (
-                      <span className="absolute inset-0 rounded-full border-2 border-red-500 animate-ping opacity-75" />
-                    )}
-                  </button>
-
-                  <div>
-                    <div className="text-xs font-black tracking-wider text-[var(--text-primary)] flex items-center space-x-1.5">
-                      <span>VOICE AI DEVELOPER ASSISTANT</span>
-                      <span className="h-1.5 w-1.5 rounded-full bg-zinc-500 animate-pulse" />
-                    </div>
-                    <div className="text-[10px] text-[var(--text-secondary)] font-semibold mt-0.5">
-                      {isListening ? "Listening to query..." : assistantTyping ? "AI typing hints..." : isSpeaking ? "Speaking... (Click speaker icon to stop)" : "Locked on explaining security & algorithms."}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex items-center space-x-3 relative z-10">
-                  {/* Animated Wave equalizer */}
-                  {voiceWaveform && (
-                    <div className="flex space-x-1 items-end h-5 px-3">
-                      {[1, 2, 3, 4, 5, 6].map(bar => (
-                        <span
-                          key={bar}
-                          className="w-0.75 bg-gradient-to-t from-zinc-500 to-slate-500 rounded-full animate-waveform-bar"
-                          style={{
-                            animationDelay: `${bar * 0.1}s`,
-                            animationDuration: `${0.6 + (bar % 3) * 0.2}s`,
-                            height: "100%",
-                            minHeight: "4px"
-                          }}
-                        />
-                      ))}
-                    </div>
-                  )}
-
-                  <button
-                    onClick={() => askVoiceAssistant()}
-                    disabled={isListening || assistantTyping}
-                    className="px-3.5 py-1.8 bg-[var(--accent-primary)] hover:bg-zinc-700 text-white font-bold rounded-full text-[10px] shadow-md hover:shadow-zinc-600/15 transition-all cursor-pointer disabled:opacity-50 hover:scale-102 active:scale-98"
-                  >
-                    Start Query
-                  </button>
-                </div>
+              {/* Voice Assistant Widget */}
+              <div className="p-3">
+                <VoiceAssistantWidget
+                  messages={assistantMessages}
+                  isListening={isListening}
+                  isSpeaking={isSpeaking}
+                  onToggleListen={askVoiceAssistant}
+                />
               </div>
+
 
               {/* Editor screen */}
               <div className="flex-1 flex overflow-hidden font-mono text-sm relative" style={{ backgroundColor: "var(--bg-code)" }}>

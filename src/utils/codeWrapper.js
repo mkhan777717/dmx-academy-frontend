@@ -4,7 +4,15 @@
  * can run it successfully and match standard I/O assertions.
  */
 export function wrapCodeForBackend(problemSlug, language, userCode) {
-  const lang = language.toLowerCase();
+  // Handle flexible signature fallback if called without problemSlug
+  if (userCode === undefined && language !== undefined) {
+    userCode = language;
+    language = problemSlug;
+    problemSlug = "";
+  }
+
+  const lang = (language || "").toLowerCase();
+  const slug = (problemSlug || "").toLowerCase();
   
   if (problemSlug === "auth-vs-auth") {
     if (lang === "javascript") {
