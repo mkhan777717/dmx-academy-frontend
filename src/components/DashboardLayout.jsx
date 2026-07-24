@@ -12,7 +12,7 @@ import {
 import ThemeToggle from "@/components/ThemeToggle";
 import { useAuth } from "@/context/AuthContext";
 import useThemeStore from "@/store/useThemeStore";
-import ReferralCard from "@/components/ReferralCard";
+import GiftCoupon from "@/components/GiftCoupon";
 
 export default function DashboardLayout({ children }) {
   const router = useRouter();
@@ -537,10 +537,6 @@ export default function DashboardLayout({ children }) {
           })}
         </nav>
 
-        {isStudentSession && (
-          <ReferralCard isCollapsed={isSidebarCollapsed} />
-        )}
-
         <div className="p-2 border-t space-y-1" style={{ borderColor: "var(--border-primary)" }}>
           <button
             onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
@@ -673,6 +669,8 @@ export default function DashboardLayout({ children }) {
                 )}
               </div>
             )}
+
+            {isStudentSession && <GiftCoupon />}
 
             {dashboardUser && (
               <div className="relative">
