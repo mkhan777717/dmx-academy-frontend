@@ -7,7 +7,7 @@ import {
   LayoutDashboard, Trophy, LogOut,
   Menu, X, ChevronLeft, ChevronRight, BookOpen, ArrowLeftRight,
   Code, Brain, Radio, AlertTriangle, FileText, Gamepad2, FileCheck, Activity, Settings, Paintbrush,
-  ShieldAlert, Layers, Users, PlusCircle, List, Bell, CheckCircle2, Check, MessageSquare, Crown, HeartHandshake, ClipboardList, Target, Briefcase
+  ShieldAlert, Layers, Users, PlusCircle, List, Bell, CheckCircle2, Check, MessageSquare, Crown, HeartHandshake, ClipboardList, Target, Briefcase, CalendarDays
 } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
 import { useAuth } from "@/context/AuthContext";
@@ -356,6 +356,7 @@ export default function DashboardLayout({ children }) {
       { label: "AI Viva", href: "/student/viva", icon: Brain },
       { label: "Live Sessions", href: "/live-classes", icon: Radio },
       { label: "Learn with Games", href: "/student/games", icon: Gamepad2 },
+      { label: "Events", href: "/events", icon: CalendarDays },
       { label: "Study Materials", href: "/student/materials", icon: FileText },
       { label: "Resume Builder", href: "/student/resume", icon: FileCheck },
       { label: "Job Assistance", href: "/student/job-assistance", icon: Briefcase },
@@ -383,6 +384,7 @@ export default function DashboardLayout({ children }) {
       (isSuperAdmin || isInstAdmin || isBatchMgr || isMentor) && canShowFeature("allowedProblems") && { label: "Problems", href: "/admin/problems", icon: Code, featureFlag: "allowedProblems" },
       (isSuperAdmin || isInstAdmin || isBatchMgr || isMentor) && canShowFeature("allowedGoLive") && { label: "Go Live", href: "/admin/live", icon: Radio, featureFlag: "allowedGoLive" },
       (isSuperAdmin || isInstAdmin || isBatchMgr || isMentor) && canShowFeature("allowedArcade") && { label: "Arcade Questions", href: "/admin/arcade", icon: Gamepad2, featureFlag: "allowedArcade" },
+      (isSuperAdmin || isInstAdmin || isBatchMgr || isMentor) && { label: "Events", href: "/events/organizer", icon: CalendarDays },
       !isSuperAdmin && { label: "Share Feedback", href: "/feedback", icon: HeartHandshake },
     ].filter(Boolean);
   }
@@ -598,8 +600,24 @@ export default function DashboardLayout({ children }) {
 
       <div className="flex-1 flex flex-col h-full overflow-hidden">
         {!isLiveStudioMode && (
-          <header className="flex justify-end px-6 h-14 border-b flex-shrink-0" style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)" }}  >
-          <div className="flex items-center gap-3">
+          <header className="flex justify-between items-center px-4 md:px-6 h-14 border-b flex-shrink-0" style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)" }}>
+            <div className="flex items-center gap-3 md:hidden">
+              <button 
+                onClick={() => setIsMobileMenuOpen(true)} 
+                className="p-1.5 rounded-lg text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] transition-colors cursor-pointer"
+              >
+                <Menu size={20} />
+              </button>
+              <Link href="/">
+                <img
+                  src={isDark ? "/logo-white-text.webp" : "/logo-black-text.webp"}
+                  alt="Eduvantix Logo"
+                  className="h-5 object-contain"
+                />
+              </Link>
+            </div>
+            
+            <div className="flex items-center gap-3 ml-auto">
 
             {isSuperAdmin && (
               <div className="relative">
