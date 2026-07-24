@@ -12,6 +12,12 @@ import {
   Terminal, Play, Send, CheckCircle, XCircle, Lock
 } from "lucide-react";
 import { motion } from "framer-motion";
+// ── AI Proctoring ─────────────────────────────────────────────────────────────
+import ConsentModal from "@/components/exam/proctor/ConsentModal";
+import ProctoringCamera from "@/components/exam/proctor/ProctoringCamera";
+import ProctoringToast from "@/components/exam/proctor/ProctoringToast";
+import { useCamera } from "@/hooks/useCamera";
+import { useProctor } from "@/hooks/useProctor";
 
 export default function StudentExamRunner() {
   const { attemptId } = useParams();
@@ -39,10 +45,71 @@ export default function StudentExamRunner() {
   const [fontSize, setFontSize] = useState(14);
   const [isCompiling, setIsCompiling] = useState(false);
   const [compilationResult, setCompilationResult] = useState(null);
-
-  // Proctoring States
+  const executionTimer = useRef(null);
+  const pollingInterval = useRef(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [proctorCount, setProctorCount] = useState(0);
+
+  // ── AI Proctoring State ───────────────────────────────────────────────────
+  const [proctorConsented, setProctorConsented] = useState(null); // null=pending, true, false
+  const [proctorSessionId, setProctorSessionId] = useState(null);
+  const [proctorFlags, setProctorFlags] = useState([]);
+  const [showConsentModal, setShowConsentModal] = useState(false);
+  const proctorSessionRef = useRef(null);
+
+  // Camera hook
+  const { videoRef, cameraState, isActive: isCameraActive, startCamera, stopCamera, captureFrame } = useCamera();
+
+  // Proctor orchestration hook
+  const { isConnected: isProctoringConnected, activeFlags, sendBrowserEvent } = useProctor({
+    sessionId: proctorSessionId,
+    user,
+    token,
+    captureFrame,
+    isCameraActive,
+    onFlag: (flags) => setProctorFlags(flags),
+    enabled: proctorConsented === true && !!proctorSessionId,
+  });
+
+  const handleProctorConsentAccept = useCallback(async () => {
+    setProctorConsented(true);
+    setShowConsentModal(false);
+    try {
+      const headers = buildAuthHeaders(token, user);
+      const res = await fetch(`${API_BASE}/api/v1/proctor/session/start`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify({
+          attempt_id: parseInt(attemptId, 10),
+          consent_given: true
+        })
+      });
+      const data = await res.json();
+      if (data.session_id) {
+        setProctorSessionId(data.session_id);
+        startCamera();
+      }
+    } catch (e) {
+      console.error("[Proctor] Failed to start proctor session", e);
+    }
+  }, [API_BASE, attemptId, token, user, startCamera]);
+
+  const handleProctorConsentDecline = useCallback(async () => {
+    setProctorConsented(false);
+    setShowConsentModal(false);
+    try {
+      const headers = buildAuthHeaders(token, user);
+      await fetch(`${API_BASE}/api/v1/proctor/event/browser`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify({
+          session_id: `declined-${attemptId}`,
+          flag: "CONSENT_DECLINED",
+          metadata: { attemptId }
+        })
+      });
+    } catch (e) {}
+  }, [API_BASE, attemptId, token, user]);
 
   // Timer Ref
   const [timeLeft, setTimeLeft] = useState(0); // seconds
@@ -67,6 +134,18 @@ export default function StudentExamRunner() {
       router.push("/exams");
       return;
     }
+    // End proctoring session if active
+    if (proctorSessionId) {
+      try {
+        const headers = buildAuthHeaders(token, user);
+        await fetch(`${API_BASE}/api/v1/proctor/session/end`, {
+          method: "POST",
+          headers,
+          body: JSON.stringify({ session_id: proctorSessionId, reason: isAuto ? "AUTO_SUBMIT" : "MANUAL_SUBMIT" }),
+        });
+      } catch {}
+      stopCamera();
+    }
     try {
       setSubmitting(true);
       console.log("[Workspace] Finalizing assessment submission...", { isAuto });
@@ -89,7 +168,7 @@ export default function StudentExamRunner() {
     } finally {
       setSubmitting(false);
     }
-  }, [router, token, user, API_BASE, attemptId]);
+  }, [router, token, user, API_BASE, attemptId, proctorSessionId, stopCamera]);
 
   const executeSubmitRef = useRef(executeSubmit);
   useEffect(() => {
@@ -221,7 +300,16 @@ export default function StudentExamRunner() {
   useEffect(() => {
     console.log("[Workspace] Workspace mounted / initialized for attempt:", attemptId);
     fetchAttemptDetails();
-    
+  }, [fetchAttemptDetails, attemptId]);
+
+  // Show consent modal if in progress and consent not decided
+  useEffect(() => {
+    if (attempt && attempt.status === "IN_PROGRESS" && proctorConsented === null) {
+      setShowConsentModal(true);
+    }
+  }, [attempt, proctorConsented]);
+
+  useEffect(() => {
     window.addEventListener("online", handleOnline);
     window.addEventListener("offline", handleOffline);
 
@@ -233,23 +321,35 @@ export default function StudentExamRunner() {
     document.addEventListener("fullscreenchange", checkFullscreenState);
 
     const socket = getSocket();
-    if (socket && user?.id) {
-      console.log("[Workspace] WebSocket Connected for user:", user.id);
-      socket.emit("joinUser", { userId: user.id });
-      
-      socket.on("codingResult", (data) => {
-        if (data.attemptId == attemptId) {
-          console.log("[Workspace] Received coding execution result:", data);
-          setCompilationResult(data);
-          setIsCompiling(false);
 
-          if (data.jobType === "SUBMIT_CODE") {
-            const scoreVal = data.score;
-            const qId = data.questionId;
-            setAnswers(prev => prev.map(ans => ans.questionId === qId ? { ...ans, score: scoreVal, isGraded: true } : ans));
-          }
+    const processExecutionResult = (data) => {
+      if (data && data.attemptId == attemptId) {
+        if (executionTimer.current) clearTimeout(executionTimer.current);
+        if (pollingInterval.current) clearInterval(pollingInterval.current);
+        console.log("[Workspace] Received coding execution result:", data);
+        setCompilationResult(data);
+        setIsCompiling(false);
+
+        if (data.jobType === "SUBMIT_CODE" || data.jobType === "SUBMIT") {
+          const scoreVal = data.score;
+          const qId = data.questionId;
+          setAnswers(prev => prev.map(ans => ans.questionId === qId ? { ...ans, score: scoreVal, isGraded: true } : ans));
         }
-      });
+      }
+    };
+
+    const handleConnect = () => {
+      if (user?.id) {
+        console.log("[Workspace] WebSocket connected/reconnected for user:", user.id);
+        socket.emit("joinUser", { userId: user.id });
+      }
+    };
+
+    if (socket && user?.id) {
+      console.log("[Workspace] Initializing WebSocket listeners for user:", user.id);
+      socket.emit("joinUser", { userId: user.id });
+      socket.on("connect", handleConnect);
+      socket.on("codingResult", processExecutionResult);
     }
 
     return () => {
@@ -263,9 +363,12 @@ export default function StudentExamRunner() {
       document.removeEventListener("fullscreenchange", checkFullscreenState);
       
       if (socket) {
-        socket.off("codingResult");
+        socket.off("connect", handleConnect);
+        socket.off("codingResult", processExecutionResult);
       }
       if (timerInterval.current) clearInterval(timerInterval.current);
+      if (executionTimer.current) clearTimeout(executionTimer.current);
+      if (pollingInterval.current) clearInterval(pollingInterval.current);
     };
   }, [attemptId, fetchAttemptDetails, handleOnline, handleOffline, blockClipboard, blockRightClick, handleWindowBlur, checkFullscreenState, user]);
 
@@ -350,14 +453,60 @@ export default function StudentExamRunner() {
 
   // ── Code Runner execution triggers ─────────────────────────────────────────
 
+  const startResultPolling = (jobId) => {
+    if (pollingInterval.current) clearInterval(pollingInterval.current);
+    if (!jobId) return;
+
+    let pollAttempts = 0;
+    pollingInterval.current = setInterval(async () => {
+      pollAttempts += 1;
+      if (pollAttempts > 10) { // Stop after 15 seconds (10 * 1500ms)
+        clearInterval(pollingInterval.current);
+        return;
+      }
+      try {
+        const headers = buildAuthHeaders(token, user);
+        const res = await fetch(`${API_BASE}/api/v1/attempts/${attemptId}/coding-result/${jobId}`, { headers });
+        const json = await res.json();
+        if (json.success && !json.pending && json.data) {
+          if (executionTimer.current) clearTimeout(executionTimer.current);
+          clearInterval(pollingInterval.current);
+          setCompilationResult(json.data);
+          setIsCompiling(false);
+
+          if (json.data.jobType === "SUBMIT_CODE" || json.data.jobType === "SUBMIT") {
+            const scoreVal = json.data.score;
+            const qId = json.data.questionId;
+            setAnswers(prev => prev.map(ans => ans.questionId === qId ? { ...ans, score: scoreVal, isGraded: true } : ans));
+          }
+        }
+      } catch (err) {
+        console.warn("[Workspace] Polling error:", err);
+      }
+    }, 1500);
+  };
+
   const handleRunCode = async (questionId, currentCode) => {
     if (isReadOnly) {
       alert("This attempt has been submitted and locked. You are viewing your code in Read-Only Review Mode.");
       return;
     }
     try {
-      setCompilationResult(null);
+      setCompilationResult({ status: "PROCESSING", message: "Queued in Redis. Sandboxed runner compiling & executing test cases..." });
       setIsCompiling(true);
+
+      if (executionTimer.current) clearTimeout(executionTimer.current);
+      if (pollingInterval.current) clearInterval(pollingInterval.current);
+
+      executionTimer.current = setTimeout(() => {
+        if (pollingInterval.current) clearInterval(pollingInterval.current);
+        setIsCompiling(false);
+        setCompilationResult({
+          status: "FAILED",
+          error: "Execution timeout. Sandboxed execution worker did not return within 15 seconds."
+        });
+      }, 15000);
+
       const headers = buildAuthHeaders(token, user);
       const res = await fetch(`${API_BASE}/api/v1/attempts/${attemptId}/run`, {
         method: "POST",
@@ -366,11 +515,17 @@ export default function StudentExamRunner() {
       });
       const json = await res.json();
       if (!json.success) {
+        if (executionTimer.current) clearTimeout(executionTimer.current);
+        if (pollingInterval.current) clearInterval(pollingInterval.current);
         setIsCompiling(false);
         alert(json.message || "Failed to trigger compilation run");
+      } else if (json.data?.jobId) {
+        startResultPolling(json.data.jobId);
       }
     } catch (err) {
       console.error(err);
+      if (executionTimer.current) clearTimeout(executionTimer.current);
+      if (pollingInterval.current) clearInterval(pollingInterval.current);
       setIsCompiling(false);
       alert("Network compilation run failure");
     }
@@ -382,8 +537,21 @@ export default function StudentExamRunner() {
       return;
     }
     try {
-      setCompilationResult(null);
+      setCompilationResult({ status: "PROCESSING", message: "Queued in Redis. Sandboxed runner compiling & executing test cases..." });
       setIsCompiling(true);
+
+      if (executionTimer.current) clearTimeout(executionTimer.current);
+      if (pollingInterval.current) clearInterval(pollingInterval.current);
+
+      executionTimer.current = setTimeout(() => {
+        if (pollingInterval.current) clearInterval(pollingInterval.current);
+        setIsCompiling(false);
+        setCompilationResult({
+          status: "FAILED",
+          error: "Execution timeout. Sandboxed execution worker did not return within 15 seconds."
+        });
+      }, 15000);
+
       const headers = buildAuthHeaders(token, user);
       const res = await fetch(`${API_BASE}/api/v1/attempts/${attemptId}/submit-code`, {
         method: "POST",
@@ -392,11 +560,17 @@ export default function StudentExamRunner() {
       });
       const json = await res.json();
       if (!json.success) {
+        if (executionTimer.current) clearTimeout(executionTimer.current);
+        if (pollingInterval.current) clearInterval(pollingInterval.current);
         setIsCompiling(false);
         alert(json.message || "Failed to trigger compilation submit");
+      } else if (json.data?.jobId) {
+        startResultPolling(json.data.jobId);
       }
     } catch (err) {
       console.error(err);
+      if (executionTimer.current) clearTimeout(executionTimer.current);
+      if (pollingInterval.current) clearInterval(pollingInterval.current);
       setIsCompiling(false);
       alert("Network compilation submission failure");
     }
@@ -471,10 +645,30 @@ export default function StudentExamRunner() {
   const activeAns = answers.find(a => a.questionId === activeQ?.id || a.questionId === activeQ?.originalQuestionId) || answers[activeIndex];
 
   let starter = activeQ?.codingDetails?.starterCode;
-  if (typeof starter === 'object' && starter !== null) {
-    starter = starter[selectedLanguage.toLowerCase()] || starter.default || starter.javascript || JSON.stringify(starter);
+  if (typeof starter === 'string' && starter.trim().startsWith('{')) {
+    try { starter = JSON.parse(starter); } catch (e) {}
   }
-  const activeCodeVal = activeAns?.codingCode || (typeof starter === 'string' ? starter : "");
+  if (typeof starter === 'object' && starter !== null) {
+    const targetLang = (selectedLanguage || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+    const foundKey = Object.keys(starter).find(k => {
+      const kClean = k.toLowerCase().replace(/[^a-z0-9]/g, '');
+      return kClean.includes(targetLang) || targetLang.includes(kClean);
+    });
+    starter = (foundKey ? starter[foundKey] : null) || starter.python || starter.Python || starter.javascript || starter.default || "";
+  }
+  if (typeof starter !== 'string') starter = "";
+
+  let rawActiveCode = activeAns?.codingCode || starter;
+  if (typeof rawActiveCode === 'string' && rawActiveCode.trim().startsWith('{')) {
+    const trimmed = rawActiveCode.trim();
+    if (trimmed.includes('}') && (trimmed.includes('"Python"') || trimmed.includes('"python"') || trimmed.includes('"javascript"'))) {
+      const braceEnd = trimmed.indexOf('}');
+      if (braceEnd !== -1) {
+        rawActiveCode = trimmed.substring(braceEnd + 1).trim();
+      }
+    }
+  }
+  const activeCodeVal = rawActiveCode;
 
   return (
     <div className="fixed inset-0 z-[9999] bg-slate-100 dark:bg-slate-950 flex flex-col font-sans select-none pointer-events-auto">
@@ -699,8 +893,12 @@ export default function StudentExamRunner() {
                             onChange={(e) => setSelectedLanguage(e.target.value)}
                             className="bg-slate-900 text-slate-300 font-bold border border-white/5 rounded px-2.5 py-1"
                           >
-                            <option value="JAVASCRIPT">JavaScript</option>
-                            <option value="PYTHON">Python</option>
+                            <option value="JAVASCRIPT">JavaScript (Node.js)</option>
+                            <option value="PYTHON">Python 3</option>
+                            <option value="CPP">C++17</option>
+                            <option value="JAVA">Java 17</option>
+                            <option value="C">C11</option>
+                            <option value="GO">Go 1.21</option>
                           </select>
                           <select
                             value={fontSize}
@@ -723,7 +921,7 @@ export default function StudentExamRunner() {
                         <Editor
                           height="100%"
                           theme={editorTheme}
-                          language={selectedLanguage.toLowerCase()}
+                          language={selectedLanguage.toLowerCase() === 'cpp' ? 'cpp' : selectedLanguage.toLowerCase()}
                           value={activeCodeVal}
                           onChange={(val) => handleCodingChange(activeQ.id, val)}
                           options={{
@@ -767,7 +965,7 @@ export default function StudentExamRunner() {
                         {isCompiling && (
                           <div className="flex items-center gap-2 text-indigo-400 animate-pulse">
                             <RefreshCw size={13} className="animate-spin" />
-                            <span>Queued in Redis. Sandboxed runner executing test cases...</span>
+                            <span>Queued in Redis. Sandboxed runner compiling & executing test cases...</span>
                           </div>
                         )}
 
@@ -781,17 +979,34 @@ export default function StudentExamRunner() {
                           <div className="space-y-4">
                             <div className="flex items-center gap-2">
                               <span className="font-extrabold text-slate-400">Status:</span>
-                              <span className={`font-black uppercase ${
+                              <span className={`font-black uppercase flex items-center gap-1.5 ${
                                 compilationResult.status === "FINISHED" && compilationResult.overallPass
                                   ? "text-emerald-400" 
+                                  : (compilationResult.status === "PROCESSING" || compilationResult.status === "QUEUED" || compilationResult.status === "COMPILING" || isCompiling)
+                                  ? "text-indigo-400"
                                   : "text-rose-400"
                               }`}>
+                                {(compilationResult.status === "PROCESSING" || compilationResult.status === "QUEUED" || compilationResult.status === "COMPILING" || isCompiling) && (
+                                  <RefreshCw size={13} className="animate-spin" />
+                                )}
                                 {compilationResult.status === "FINISHED" 
                                   ? (compilationResult.overallPass ? "ALL CASES PASSED" : "FAILED TEST CASES")
-                                  : "COMPILATION ERROR"
+                                  : (compilationResult.status === "PROCESSING" || compilationResult.status === "QUEUED" || compilationResult.status === "COMPILING" || isCompiling)
+                                  ? "PROCESSING"
+                                  : "EXECUTION ERROR"
                                 }
                               </span>
                             </div>
+
+                            {/* Compiler Error / Stderr Banner */}
+                            {compilationResult.status !== "PROCESSING" && compilationResult.status !== "QUEUED" && compilationResult.status !== "COMPILING" && !isCompiling && (compilationResult.stderr || compilationResult.error) && (
+                              <div className="p-3 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-300 space-y-1 font-mono text-3xs">
+                                <span className="font-bold text-rose-400 block">Compiler / Runtime Stderr:</span>
+                                <pre className="whitespace-pre-wrap leading-relaxed overflow-x-auto max-h-36">
+                                  {compilationResult.stderr || compilationResult.error}
+                                </pre>
+                              </div>
+                            )}
 
                             {compilationResult.status === "FINISHED" && (
                               <div className="space-y-2">
@@ -805,14 +1020,23 @@ export default function StudentExamRunner() {
                                       <div className="flex items-center justify-between">
                                         <span className="font-bold text-slate-400">Case #{index + 1}</span>
                                         {res.passed ? (
-                                          <span className="text-emerald-400 font-bold flex items-center gap-0.5"><CheckCircle size={11} /> Pass</span>
+                                          <span className="text-emerald-400 font-bold flex items-center gap-0.5"><CheckCircle size={11} /> Pass ({res.executionTime || 0}ms)</span>
                                         ) : (
-                                          <span className="text-rose-400 font-bold flex items-center gap-0.5"><XCircle size={11} /> Fail</span>
+                                          <span className="text-rose-400 font-bold flex items-center gap-0.5"><XCircle size={11} /> Fail ({res.executionTime || 0}ms)</span>
                                         )}
                                       </div>
                                       
                                       {res.input && (
                                         <p className="text-slate-500">Input: <span className="text-slate-300">{res.input}</span></p>
+                                      )}
+                                      {res.expectedOutput && (
+                                        <p className="text-slate-500">Expected: <span className="text-emerald-400">{res.expectedOutput}</span></p>
+                                      )}
+                                      {res.actualOutput !== undefined && (
+                                        <p className="text-slate-500">Output: <span className={res.passed ? "text-slate-200" : "text-rose-400"}>{res.actualOutput || "(empty)"}</span></p>
+                                      )}
+                                      {res.stderr && (
+                                        <p className="text-rose-400 text-3xs font-mono">Error: {res.stderr}</p>
                                       )}
                                     </div>
                                   ))}
@@ -860,6 +1084,26 @@ export default function StudentExamRunner() {
         </div>
 
       </div>
+
+      {/* AI Proctoring Components */}
+      {showConsentModal && (
+        <ConsentModal
+          examTitle={attempt?.examVersion?.exam?.title || "Assessment"}
+          onAccept={handleProctorConsentAccept}
+          onDecline={handleProctorConsentDecline}
+        />
+      )}
+
+      {proctorConsented === true && (
+        <>
+          <ProctoringCamera
+            videoRef={videoRef}
+            cameraState={cameraState}
+            isConnected={isProctoringConnected}
+          />
+          <ProctoringToast flags={proctorFlags} />
+        </>
+      )}
 
     </div>
   );

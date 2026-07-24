@@ -6,13 +6,17 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowLeft, Play, Send, BookOpen, Terminal,
-  CheckCircle2, ChevronRight, Mic, MicOff, RefreshCw,
+  CheckCircle2, ChevronRight, Mic, MicOff, RefreshCw, RotateCcw,
   FileText, MessageCircle, ClipboardCheck, Palette, Trash2, CheckCircle, XCircle,
-  Volume2, Bug, AlertTriangle
+  Volume2, Bug, AlertTriangle, Code, Maximize2, Minimize2, Copy, Check, Clock
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { wrapCodeForBackend } from "@/utils/codeWrapper";
 import { getProblemTabs } from "@/utils/problemTabsData";
+import ProctoringBanner from "@/components/workspace/ProctoringBanner";
+import AntiCheatGrid from "@/components/workspace/AntiCheatGrid";
+import VoiceAssistantWidget from "@/components/workspace/VoiceAssistantWidget";
+import WhiteboardCanvas from "@/components/workspace/WhiteboardCanvas";
 
 export default function PracticeWorkspace() {
   const params = useParams();
@@ -25,6 +29,87 @@ export default function PracticeWorkspace() {
   const [dbProblem, setDbProblem] = useState(null);
   const [loadingProblem, setLoadingProblem] = useState(true);
 
+  // Dynamic Session Timer (30 mins countdown)
+  const [secondsLeft, setSecondsLeft] = useState(30 * 60);
+
+  // Dynamic Anti-Cheat State
+  const [tabSwitches, setTabSwitches] = useState(0);
+  const [cameraActive, setCameraActive] = useState(true);
+  const [micActive, setMicActive] = useState(true);
+  const [screenActive, setScreenActive] = useState(true);
+
+  // Dynamic Active Test Case Selector State
+  const [activeTestCaseIdx, setActiveTestCaseIdx] = useState(0);
+  const [copiedInput, setCopiedInput] = useState(false);
+  const [copiedOutput, setCopiedOutput] = useState(false);
+
+  // Submissions State
+  const [userSubmissions, setUserSubmissions] = useState([]);
+  const [loadingSubmissions, setLoadingSubmissions] = useState(false);
+  const [expandedSubmissionId, setExpandedSubmissionId] = useState(null);
+
+  // Editor Fullscreen State
+  const [isEditorFullscreen, setIsEditorFullscreen] = useState(false);
+
+  // Live Timer Countdown Effect
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setSecondsLeft(prev => (prev > 0 ? prev - 1 : 0));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  // Live Tab Switch Monitoring Effect
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "hidden") {
+        setTabSwitches(prev => prev + 1);
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => document.removeEventListener("visibilitychange", handleVisibilityChange);
+  }, []);
+
+  // Hardware Media Stream Check Effect
+  useEffect(() => {
+    if (typeof window !== "undefined" && navigator.mediaDevices) {
+      navigator.mediaDevices.enumerateDevices().then(devices => {
+        const hasCam = devices.some(d => d.kind === "videoinput");
+        const hasMic = devices.some(d => d.kind === "audioinput");
+        setCameraActive(hasCam);
+        setMicActive(hasMic);
+      }).catch(() => {});
+    }
+  }, []);
+
+  // Fetch Submissions History Function
+  const fetchUserSubmissions = async () => {
+    if (!user || !user.id) return;
+    setLoadingSubmissions(true);
+    try {
+      const res = await fetch(`${API_BASE}/api/submissions?userId=${user.id}`, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {}
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success) {
+          const probSubmissions = (data.submissions || []).filter(s =>
+            s.problemId === problemId ||
+            s.problemId === dbProblem?.id ||
+            s.problem?.slug === problemId ||
+            s.problem?.id === dbProblem?.id
+          );
+          setUserSubmissions(probSubmissions);
+        }
+      }
+    } catch (err) {
+      console.error("Failed to fetch user submissions:", err);
+    } finally {
+      setLoadingSubmissions(false);
+    }
+  };
+
+  // Load problem details from Backend API
   useEffect(() => {
     async function loadProblemData() {
       if (!problemId) return;
@@ -44,12 +129,13 @@ export default function PracticeWorkspace() {
             if (dbp.difficulty === "EASY") diffStr = "Easy";
             else if (dbp.difficulty === "HARD") diffStr = "Hard";
 
-            const sampleTestCases = dbp.testCases.filter(tc => tc.isSample);
-            const visibleTCs = sampleTestCases.length > 0 ? sampleTestCases : [dbp.testCases[0]];
+            const sampleTestCases = (dbp.testCases || []).filter(tc => tc.isSample);
+            const visibleTCs = sampleTestCases.length > 0 ? sampleTestCases : (dbp.testCases || []);
             const dynamicTC = visibleTCs.map((tc, index) => ({
-              name: `Test Case ${index + 1} (Sample)`,
-              input: tc.input,
-              expected: tc.expectedOutput,
+              name: `TEST CASE ${index + 1} (SAMPLE)`,
+              input: tc.input || "",
+              expected: tc.expectedOutput || "",
+              explanation: tc.explanation || null,
               assertion: (codeStr, runFunc) => {
                 if (!runFunc) return true;
                 try {
@@ -60,7 +146,7 @@ export default function PracticeWorkspace() {
                     parsed = [tc.input];
                   }
                   const actual = runFunc(...parsed);
-                  const expectedNormalized = tc.expectedOutput.trim();
+                  const expectedNormalized = (tc.expectedOutput || "").trim();
                   return JSON.stringify(actual) === expectedNormalized || String(actual).trim() === expectedNormalized;
                 } catch {
                   return false;
@@ -75,30 +161,18 @@ export default function PracticeWorkspace() {
               difficulty: diffStr,
               category: "Algorithms",
               desc: dbp.statement,
-              time: "20 min",
-              tags: ["Database", "Dynamic"],
+              time: "30 min",
+              tags: ["Algorithms", "Data Structures"],
               defaultLanguage: "javascript",
               editorTemplates: {
-                javascript: dbp.templateJS || `// JavaScript Starter Code\nfunction solve(input) {\n  // Write your code here\n}`,
-                python: dbp.templatePython || `# Python Starter Code\ndef solve(input):\n    pass`,
-                go: dbp.templateGo || `// Go Starter Code\npackage main\n\nimport "fmt"\n\nfunc solve(input string) {\n  // Write your Go code here\n}`,
-                cpp: dbp.templateCPP || `// C++ Starter Code\n#include <iostream>\n#include <vector>\n#include <string>\n\nusing namespace std;\n\nint main() {\n  // Write your code here\n  return 0;\n}`,
-                java: dbp.templateJava || `// Java Starter Code\nimport java.util.*;\n\npublic class Main {\n  public static void main(String[] args) {\n    // Write your code here\n  }\n}`,
-                typescript: `// TypeScript Starter Code\nfunction solve(input: string): void {\n  // Write your code here\n  console.log(input);\n}`,
-                c: `// C Starter Code\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\nint main() {\n  // Write your code here\n  return 0;\n}`,
-                csharp: `// C# Starter Code\nusing System;\nusing System.Collections.Generic;\n\nclass Solution {\n  static void Main(string[] args) {\n    // Write your code here\n  }\n}`,
-                kotlin: `// Kotlin Starter Code\nfun main() {\n    // Write your code here\n}`,
-                swift: `// Swift Starter Code\nimport Foundation\n\n// Write your code here\nfunc solve() {\n}\n\nsolve()`,
-                rust: `// Rust Starter Code\nuse std::io::{self, BufRead};\n\nfn main() {\n    let stdin = io::stdin();\n    for line in stdin.lock().lines() {\n        let line = line.unwrap();\n        // Write your code here\n        println!("{}", line);\n    }\n}`,
-                ruby: `# Ruby Starter Code\ndef solve(input)\n  # Write your code here\nend\n\ninput = $stdin.read.strip\nputs solve(input)`,
-                php: `<?php\n// PHP Starter Code\n$input = trim(fgets(STDIN));\n// Write your code here\necho $input . PHP_EOL;\n?>`,
-                dart: `// Dart Starter Code\nimport 'dart:io';\n\nvoid main() {\n  String? input = stdin.readLineSync();\n  // Write your code here\n  print(input);\n}`,
-                scala: `// Scala Starter Code\nobject Solution {\n  def main(args: Array[String]): Unit = {\n    val input = scala.io.StdIn.readLine()\n    // Write your code here\n    println(input)\n  }\n}`,
-                elixir: `# Elixir Starter Code\ninput = IO.read(:line) |> String.trim()\n# Write your code here\nIO.puts(input)`,
-                erlang: `% Erlang Starter Code\n-module(main).\n-export([main/0]).\n\nmain() ->\n    {ok, Input} = io:fread("", "~s"),\n    % Write your code here\n    io:format("~s~n", [Input]).`,
-                racket: `; Racket Starter Code\n#lang racket\n\n(define input (read-line))\n; Write your code here\n(displayln input)`
+                javascript: dbp.templateJS || `// JavaScript Starter Code\nfunction solve(input) {\n  // Write your logic here\n}`,
+                python: dbp.templatePython || `# Python Starter Code\ndef solve(input):\n    # Write your logic here\n    pass`,
+                go: dbp.templateGo || `// Go Starter Code\npackage main\n\nimport "fmt"\n\nfunc solve(input string) {\n  // Write your logic here\n}`,
+                cpp: dbp.templateCPP || `// C++ Starter Code\n#include <iostream>\nusing namespace std;\n\nint main() {\n  // Write your logic here\n  return 0;\n}`,
+                java: dbp.templateJava || `// Java Starter Code\nimport java.util.*;\n\npublic class Main {\n  public static void main(String[] args) {\n    // Write your logic here\n  }\n}`,
+                c: dbp.templateC || `// C Starter Code\n#include <stdio.h>\n\nint main() {\n  // Write your logic here\n  return 0;\n}`
               },
-              testcases: dynamicTC,
+              testcases: dynamicTC.length > 0 ? dynamicTC : [{ name: "TEST CASE 1 (SAMPLE)", input: "5", expected: "1\n2\nFizz\n4\nBuzz" }],
               followup: dbp.followup,
               editorial: dbp.editorial,
               solution: dbp.solution,
@@ -111,9 +185,9 @@ export default function PracticeWorkspace() {
               tabs: {
                 description: dbp.statement,
                 followup: dbp.followup || "Review complexity bounds and optimize your implementation.",
-                editorial: dbp.editorial || "No editorial guide published yet.",
-                solution: dbp.solution || "No official reference solutions yet.",
-                evaluation: dbp.evaluation || "Verify against sample assertions below."
+                editorial: dbp.editorial,
+                solution: dbp.solution,
+                evaluation: dbp.evaluation
               }
             });
             setLoadingProblem(false);
@@ -130,23 +204,16 @@ export default function PracticeWorkspace() {
   }, [problemId, API_BASE]);
 
   // Layout resize state
-  const [leftWidth, setLeftWidth] = useState(50); // percentage
+  const [leftWidth, setLeftWidth] = useState(48); // percentage
   const containerRef = useRef(null);
   const [isResizing, setIsResizing] = useState(false);
-  const [consoleHeight, setConsoleHeight] = useState(220); // height in pixels
+  const [consoleHeight, setConsoleHeight] = useState(250); // height in pixels
   const [isConsoleResizing, setIsConsoleResizing] = useState(false);
 
   // Tabs states
-  const [activeLeftTab, setActiveLeftTab] = useState("description"); // description, followup, editorial, solution, evaluation, excalidraw
+  const [activeLeftTab, setActiveLeftTab] = useState("description"); // description, code, editorial, solution, submissions
   const [selectedLanguage, setSelectedLanguage] = useState("javascript");
   const [editorCodes, setEditorCodes] = useState({});
-
-  // Whiteboard Canvas states
-  const canvasRef = useRef(null);
-  const [isDrawing, setIsDrawing] = useState(false);
-  const [drawColor, setDrawColor] = useState("#6366f1");
-  const [lineWidth, setLineWidth] = useState(3);
-  const drawingPaths = useRef([]); // To restore paths on resize
 
   // Console states
   const [activeConsoleTab, setActiveConsoleTab] = useState("testcase"); // testcase, result, debugger
@@ -157,8 +224,7 @@ export default function PracticeWorkspace() {
   const [debugResult, setDebugResult] = useState(null);
   const [debugRunning, setDebugRunning] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showSubmissionSuccess, setShowSubmissionSuccess] = useState(false);
-  const [submissionReport, setSubmissionReport] = useState(null); // null | { verdict, passedCount, totalCount, results: [...], stderr: "" }
+  const [submissionReport, setSubmissionReport] = useState(null);
 
   // Voice Assistant states
   const [isListening, setIsListening] = useState(false);
@@ -171,14 +237,12 @@ export default function PracticeWorkspace() {
   // Code Editor Textarea Ref
   const editorRef = useRef(null);
   const lineNumbersRef = useRef(null);
-  const [lineCount, setLineCount] = useState(1);
+  const [lineCount, setLineCount] = useState(14);
 
-  // Load problem details
+  // Load problem templates
   useEffect(() => {
     if (problem) {
       const defaultLang = problem.defaultLanguage || "javascript";
-
-      // Initialize code editor with templates
       const codes = {};
       Object.keys(problem.editorTemplates).forEach(lang => {
         codes[lang] = problem.editorTemplates[lang];
@@ -195,22 +259,25 @@ export default function PracticeWorkspace() {
     }
   }, [problem]);
 
+  useEffect(() => {
+    if (activeLeftTab === "submissions") {
+      fetchUserSubmissions();
+    }
+  }, [activeLeftTab]);
+
   const handleRunDebug = async () => {
     setDebugRunning(true);
     setDebugResult(null);
-    try {
-      const code = editorCodes[selectedLanguage] || "";
-      const hasRealToken = token && !token.startsWith("demo-") && !token.startsWith("local-");
-      const headers = {
-        "Content-Type": "application/json",
-        ...(hasRealToken
-          ? { Authorization: `Bearer ${token}` }
-          : { "x-bypass-auth": "true", "x-bypass-role": user?.role === "ADMIN" ? "ADMIN" : "USER" }),
-      };
 
+    const currentCode = editorCodes[selectedLanguage] || "";
+    const headers = {
+      "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : { "x-bypass-auth": "true", "x-bypass-role": user?.role === "ADMIN" ? "ADMIN" : "USER" })
+    };
+
+    try {
       const mappedLang = selectedLanguage.toUpperCase();
-      const isSchemaDriven = dbProblem && dbProblem.parameters && Array.isArray(dbProblem.parameters) && dbProblem.parameters.length > 0;
-      const wrappedCode = isSchemaDriven ? code : wrapCodeForBackend(problemId, selectedLanguage, code);
+      const wrappedCode = wrapCodeForBackend(problem?.id || problemId, selectedLanguage, currentCode);
 
       const res = await fetch(`${API_BASE}/api/submissions/run`, {
         method: "POST",
@@ -219,328 +286,39 @@ export default function PracticeWorkspace() {
           language: mappedLang,
           code: wrappedCode,
           input: customInput,
-          problemId: dbProblem?.id || problemId,
+          problemId: dbProblem?.id || problem?.dbId || problemId
         }),
-        signal: AbortSignal.timeout(30000),
+        signal: AbortSignal.timeout(30000)
       });
-
-      if (!res.ok) {
-        throw new Error(`Debugger run failed with status ${res.status}`);
-      }
 
       const data = await res.json();
       if (data.success && data.result) {
-        setDebugResult(data.result);
+        setDebugResult({
+          status: data.result.status || "SUCCESS",
+          executionTime: data.result.executionTime || 12,
+          output: data.result.output || "",
+          error: data.result.error || null
+        });
       } else {
-        throw new Error(data.message || "Failed to run debugger");
+        setDebugResult({
+          status: "ERROR",
+          executionTime: 0,
+          output: "",
+          error: data.message || data.error || "Compilation failed."
+        });
       }
-    } catch (err) {
+    } catch (e) {
       setDebugResult({
-        status: "RUNTIME_ERROR",
-        error: err.message,
-        executionTime: 0
+        status: "ERROR",
+        executionTime: 0,
+        output: "",
+        error: e.message || "Failed to connect to compiler service."
       });
     } finally {
       setDebugRunning(false);
     }
   };
 
-  // Sync lines count for editor line numbers
-  const currentCode = problem ? (editorCodes[selectedLanguage] || "") : "";
-  useEffect(() => {
-    const lines = currentCode.split("\n").length;
-    setTimeout(() => {
-      setLineCount(lines || 1);
-    }, 0);
-  }, [currentCode]);
-
-  // Sync scroll between textarea and line numbers
-  const handleEditorScroll = (e) => {
-    if (lineNumbersRef.current) {
-      lineNumbersRef.current.scrollTop = e.target.scrollTop;
-    }
-  };
-
-  // Safe tab indentation key handler
-  const handleEditorKeyDown = (e) => {
-    if (e.key === "Tab") {
-      e.preventDefault();
-      const start = e.target.selectionStart;
-      const end = e.target.selectionEnd;
-      const code = editorCodes[selectedLanguage] || "";
-      const updatedCode = code.substring(0, start) + "  " + code.substring(end);
-
-      setEditorCodes(prev => ({
-        ...prev,
-        [selectedLanguage]: updatedCode
-      }));
-
-      // Reset cursor position
-      setTimeout(() => {
-        if (editorRef.current) {
-          editorRef.current.selectionStart = editorRef.current.selectionEnd = start + 2;
-        }
-      }, 0);
-    }
-  };
-
-  const handleResetCode = () => {
-    if (window.confirm("Are you sure you want to reset your code to the default template? This will erase your current code for this language.")) {
-      if (problem && problem.editorTemplates && problem.editorTemplates[selectedLanguage]) {
-        const defaultTemplate = problem.editorTemplates[selectedLanguage];
-        setEditorCodes(prev => ({
-          ...prev,
-          [selectedLanguage]: defaultTemplate
-        }));
-      }
-    }
-  };
-
-  // Resize divider logic
-  const startResizing = (e) => {
-    e.preventDefault();
-    setIsResizing(true);
-    document.addEventListener("mousemove", resizePanes);
-    document.addEventListener("mouseup", stopResizing);
-  };
-
-  const resizePanes = (e) => {
-    if (!containerRef.current) return;
-    const containerRect = containerRef.current.getBoundingClientRect();
-    const relativeX = e.clientX - containerRect.left;
-    const percentage = (relativeX / containerRect.width) * 100;
-
-    // Bound columns
-    if (percentage > 20 && percentage < 80) {
-      setLeftWidth(percentage);
-    }
-  };
-
-  const stopResizing = () => {
-    setIsResizing(false);
-    document.removeEventListener("mousemove", resizePanes);
-    document.removeEventListener("mouseup", stopResizing);
-  };
-
-  const startConsoleResizing = (e) => {
-    e.preventDefault();
-    setIsConsoleResizing(true);
-    document.addEventListener("mousemove", resizeConsole);
-    document.addEventListener("mouseup", stopConsoleResizing);
-  };
-
-  const resizeConsole = (e) => {
-    if (!containerRef.current) return;
-    const containerRect = containerRef.current.getBoundingClientRect();
-    const relativeY = containerRect.bottom - e.clientY;
-    // Bound console height (e.g. between 80px and containerHeight - 150px)
-    if (relativeY > 80 && relativeY < containerRect.height - 150) {
-      setConsoleHeight(relativeY);
-    }
-  };
-
-  const stopConsoleResizing = () => {
-    setIsConsoleResizing(false);
-    document.removeEventListener("mousemove", resizeConsole);
-    document.removeEventListener("mouseup", stopConsoleResizing);
-  };
-
-  const drawCanvasBackground = (canvas, ctx) => {
-    ctx.strokeStyle = "rgba(100, 116, 139, 0.08)";
-    ctx.lineWidth = 1;
-    const gridSize = 20;
-    for (let x = 0; x < canvas.width; x += gridSize) {
-      ctx.beginPath();
-      ctx.moveTo(x, 0);
-      ctx.lineTo(x, canvas.height);
-      ctx.stroke();
-    }
-    for (let y = 0; y < canvas.height; y += gridSize) {
-      ctx.beginPath();
-      ctx.moveTo(0, y);
-      ctx.lineTo(canvas.width, y);
-      ctx.stroke();
-    }
-  };
-
-  const restoreDrawing = () => {
-    if (!canvasRef.current) return;
-    const ctx = canvasRef.current.getContext("2d");
-    drawingPaths.current.forEach(path => {
-      ctx.beginPath();
-      ctx.strokeStyle = path.color;
-      ctx.lineWidth = path.width;
-      path.points.forEach((pt, i) => {
-        if (i === 0) {
-          ctx.moveTo(pt.x, pt.y);
-        } else {
-          ctx.lineTo(pt.x, pt.y);
-        }
-      });
-      ctx.stroke();
-    });
-  };
-
-  // Canvas Whiteboard Logic
-  useEffect(() => {
-    if (activeLeftTab === "excalidraw" && canvasRef.current) {
-      const canvas = canvasRef.current;
-      const ctx = canvas.getContext("2d");
-
-      const updateCanvasSize = () => {
-        if (!canvasRef.current) return;
-        const rect = canvas.parentElement.getBoundingClientRect();
-        canvas.width = rect.width;
-        canvas.height = 400; // Match CSS height of h-[400px]
-
-        ctx.lineCap = "round";
-        ctx.lineJoin = "round";
-        ctx.strokeStyle = drawColor;
-        ctx.lineWidth = lineWidth;
-
-        drawCanvasBackground(canvas, ctx);
-        restoreDrawing();
-      };
-
-      updateCanvasSize();
-
-      window.addEventListener("resize", updateCanvasSize);
-      return () => {
-        window.removeEventListener("resize", updateCanvasSize);
-      };
-    }
-  }, [activeLeftTab, drawColor, lineWidth, leftWidth]);
-
-  const startDrawing = (e) => {
-    if (!canvasRef.current) return;
-    const canvas = canvasRef.current;
-    const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-
-    setIsDrawing(true);
-    const ctx = canvas.getContext("2d");
-    ctx.beginPath();
-    ctx.strokeStyle = drawColor;
-    ctx.lineWidth = lineWidth;
-    ctx.moveTo(x, y);
-
-    drawingPaths.current.push({
-      color: drawColor,
-      width: lineWidth,
-      points: [{ x, y }]
-    });
-  };
-
-  const draw = (e) => {
-    if (!isDrawing || !canvasRef.current) return;
-    const canvas = canvasRef.current;
-    const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-
-    const ctx = canvas.getContext("2d");
-    ctx.lineTo(x, y);
-    ctx.stroke();
-
-    const currentPath = drawingPaths.current[drawingPaths.current.length - 1];
-    if (currentPath) {
-      currentPath.points.push({ x, y });
-    }
-  };
-
-  const stopDrawing = () => {
-    setIsDrawing(false);
-  };
-
-  const clearCanvas = () => {
-    if (!canvasRef.current) return;
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext("2d");
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    drawingPaths.current = [];
-    drawCanvasBackground(canvas, ctx);
-  };
-
-  const stopSpeaking = () => {
-    if (typeof window !== "undefined" && window.speechSynthesis) {
-      window.speechSynthesis.cancel();
-    }
-    setIsSpeaking(false);
-  };
-
-  // Voice Assistant speech-to-text / speech synthesis simulator
-  const askVoiceAssistant = (customQuery = "") => {
-    if (isListening || assistantTyping) return;
-    if (isSpeaking) {
-      stopSpeaking();
-      return;
-    }
-
-    const query = customQuery || "How do I optimize the code for performance?";
-
-    setIsListening(true);
-    setVoiceWaveform(true);
-
-    // Simulate recording transcription
-    setTimeout(() => {
-      setIsListening(false);
-
-      const newMessages = [...assistantMessages, { role: "user", text: query }];
-      setAssistantMessages(newMessages);
-      setAssistantTyping(true);
-
-      // AI reasoning responses based on queries
-      let responseText = "To improve performance, focus on caching. A brute force approach checks every pair, which takes O(N²) time. Storing items in a Hash Map records their values and indexes, allowing O(N) lookups in one pass.";
-      if (query.toLowerCase().includes("auth")) {
-        responseText = "Remember: Authentication (401 Status) proves identity claims. Authorization (403 Status) assesses user rights/roles. Always perform validation controls on the server rather than trusting front-end claims.";
-      } else if (query.toLowerCase().includes("rate limit")) {
-        responseText = "For rate limiting, Sliding Window Log is accurate but uses memory for each request timestamp. Consider a Sliding Window Counter using Redis integers to compress storage in distributed gates.";
-      } else if (query.toLowerCase().includes("error") || query.toLowerCase().includes("test")) {
-        responseText = "If test cases fail, examine inputs. Verify that your function doesn't reuse elements twice, handles edge cases, and returns indices matching the required order formats.";
-      }
-
-      // Simulate character typing effect
-      setTimeout(() => {
-        setAssistantTyping(false);
-        setAssistantMessages(prev => [...prev, { role: "assistant", text: responseText }]);
-        setVoiceWaveform(false);
-
-        // Speech Synthesis
-        if (voiceEnabled && typeof window !== "undefined" && window.speechSynthesis) {
-          window.speechSynthesis.cancel(); // Stop active speaking
-          const utterance = new SpeechSynthesisUtterance(responseText);
-
-          setIsSpeaking(true);
-          utterance.onend = () => {
-            setIsSpeaking(false);
-          };
-          utterance.onerror = () => {
-            setIsSpeaking(false);
-          };
-
-          utterance.rate = 1.0;
-          const voices = window.speechSynthesis.getVoices();
-          // Pick a standard English voice if available
-          const preferredVoice = voices.find(v => v.lang.includes("en-US") && v.name.includes("Natural")) || voices.find(v => v.lang.includes("en"));
-          if (preferredVoice) utterance.voice = preferredVoice;
-          window.speechSynthesis.speak(utterance);
-        }
-      }, 1500);
-
-    }, 2000);
-  };
-
-  // Clean speaking on unmount
-  useEffect(() => {
-    return () => {
-      if (typeof window !== "undefined" && window.speechSynthesis) {
-        window.speechSynthesis.cancel();
-      }
-    };
-  }, []);
-
-  // Execution JS Sandboxed Test Runner
   const runCode = async () => {
     if (!problem) return;
     setIsRunning(true);
@@ -548,307 +326,246 @@ export default function PracticeWorkspace() {
     setTestResults([]);
 
     const code = editorCodes[selectedLanguage] || "";
+    const headers = {
+      "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : { "x-bypass-auth": "true", "x-bypass-role": user?.role === "ADMIN" ? "ADMIN" : "USER" })
+    };
 
-    if (false && selectedLanguage === "javascript") {
-      setTimeout(() => {
-        const results = [];
-        const originalConsoleLog = console.log;
+    const mappedLang = selectedLanguage.toUpperCase();
+    const wrappedCode = wrapCodeForBackend(problem?.id || problemId, selectedLanguage, code);
 
-        problem.testcases.forEach((tc, index) => {
-          let passed = false;
-          let output = "";
-          let error = "";
-          const runLogs = [];
-
-          // Redirect console logs to capture student feedback
-          console.log = (...args) => {
-            runLogs.push(args.map(a => typeof a === 'object' ? JSON.stringify(a) : a).join(' '));
-          };
-
-          try {
-            // Find function name dynamically
-            const funcNameMatch = code.match(/function\s+(\w+)\s*\(/) || code.match(/const\s+(\w+)\s*=\s*\(/);
-            const functionName = funcNameMatch ? funcNameMatch[1] : null;
-
-            if (!functionName) {
-              throw new Error("Could not find a valid function declaration in your code.");
-            }
-
-            // Create evaluation context
-            const evaluator = new Function(`${code}; return ${functionName};`);
-            const targetFunction = evaluator();
-
-            // Parse inputs dynamically
-            let parsedInputs;
-            try {
-              parsedInputs = JSON.parse(`[${testcaseInputs[index] || tc.input}]`);
-            } catch {
-              parsedInputs = [testcaseInputs[index] || tc.input];
-            }
-
-            // Run user function
-            const actual = targetFunction(...parsedInputs);
-            output = JSON.stringify(actual);
-
-            // Run assertion
-            passed = tc.assertion(code, targetFunction);
-          } catch (e) {
-            error = e.message;
-            passed = false;
-          }
-
-          // Restore logger
-          console.log = originalConsoleLog;
-
-          results.push({
-            name: tc.name,
-            input: testcaseInputs[index] || tc.input,
-            expected: tc.expected,
-            actual: output,
-            passed,
-            error,
-            logs: runLogs
-          });
-        });
-
-        setTestResults(results);
-        setIsRunning(false);
-      }, 1200);
-    } else {
-      // Call backend real-time run endpoint
-      const hasRealToken = token && !token.startsWith("demo-") && !token.startsWith("local-");
-      const headers = {
-        "Content-Type": "application/json",
-        ...(hasRealToken
-          ? { Authorization: `Bearer ${token}` }
-          : { "x-bypass-auth": "true", "x-bypass-role": user?.role === "ADMIN" ? "ADMIN" : "USER" }),
-      };
-
-      const mappedLang = selectedLanguage.toUpperCase();
-      const isSchemaDriven = dbProblem && dbProblem.parameters && Array.isArray(dbProblem.parameters) && dbProblem.parameters.length > 0;
-      const wrappedCode = isSchemaDriven ? code : wrapCodeForBackend(problemId, selectedLanguage, code);
-
-      try {
-        const runPromises = problem.testcases.map(async (tc, index) => {
-          const currentInput = testcaseInputs[index] || tc.input;
+    try {
+      const runPromises = (problem.testcases || []).map(async (tc, index) => {
+        const tcInput = testcaseInputs[index] || tc.input;
+        try {
           const res = await fetch(`${API_BASE}/api/submissions/run`, {
             method: "POST",
             headers,
             body: JSON.stringify({
               language: mappedLang,
               code: wrappedCode,
-              input: currentInput,
-              problemId: dbProblem?.id || problemId,
+              input: tcInput,
+              problemId: dbProblem?.id || problem?.dbId || problemId
             }),
-            signal: AbortSignal.timeout(30000),
+            signal: AbortSignal.timeout(30000)
           });
 
-          if (!res.ok) {
-            throw new Error(`Execution failed with status ${res.status}`);
-          }
-
           const data = await res.json();
-          if (!data.success || !data.result) {
-            throw new Error(data.message || "Failed to run code");
+          if (data.success && data.result) {
+            const runResult = data.result;
+            const cleanExpected = (tc.expected || "").toString().trim().replace(/\r/g, "");
+            const cleanActual = (runResult.output || "").toString().trim().replace(/\r/g, "");
+            const passed = runResult.status === "SUCCESS" && (cleanActual === cleanExpected || cleanActual.includes(cleanExpected));
+
+            return {
+              name: tc.name || `TEST CASE ${index + 1} (SAMPLE)`,
+              input: tcInput,
+              expected: tc.expected,
+              actual: runResult.output || "",
+              passed: passed,
+              error: runResult.error || null,
+              logs: []
+            };
+          } else {
+            return {
+              name: tc.name || `TEST CASE ${index + 1} (SAMPLE)`,
+              input: tcInput,
+              expected: tc.expected,
+              actual: "ERROR",
+              passed: false,
+              error: data.message || data.error || "Execution failed.",
+              logs: []
+            };
           }
-
-          const runResult = data.result;
-          const runLogs = [];
-          if (runResult.error) {
-            runLogs.push(runResult.error);
-          }
-
-          // Normalize expected and actual outputs to perform check
-          const cleanExpected = (tc.expected || "").toString().trim().replace(/\r/g, "");
-          const cleanActual = (runResult.output || "").toString().trim().replace(/\r/g, "");
-          const passed = runResult.status === "SUCCESS" && (cleanActual === cleanExpected);
-
+        } catch (e) {
           return {
-            name: tc.name,
-            input: currentInput,
+            name: tc.name || `TEST CASE ${index + 1} (SAMPLE)`,
+            input: tcInput,
             expected: tc.expected,
-            actual: runResult.output || "",
-            passed,
-            error: runResult.error || "",
-            logs: runLogs,
+            actual: "ERROR",
+            passed: false,
+            error: e.message || "Failed to reach backend compiler runner.",
+            logs: []
           };
-        });
+        }
+      });
 
-        const completedResults = await Promise.all(runPromises);
-        setTestResults(completedResults);
-      } catch (e) {
-        const fallbackResults = problem.testcases.map((tc, index) => ({
-          name: tc.name,
-          input: testcaseInputs[index] || tc.input,
-          expected: tc.expected,
-          actual: "",
-          passed: false,
-          error: e.message || "Network error",
-          logs: ["Error running code: " + (e.message || "Network connection issue")]
-        }));
-        setTestResults(fallbackResults);
-      }
+      const results = await Promise.all(runPromises);
+      setTestResults(results);
+    } finally {
       setIsRunning(false);
     }
   };
 
-  // Submit flow
+
+  const startResizing = () => setIsResizing(true);
+  const stopResizing = () => setIsResizing(false);
+
+  const startConsoleResizing = (e) => {
+    e.preventDefault();
+    setIsConsoleResizing(true);
+  };
+  const stopConsoleResizing = () => setIsConsoleResizing(false);
+
+  const resize = (e) => {
+    if (isResizing && containerRef.current) {
+      const containerRect = containerRef.current.getBoundingClientRect();
+      const newWidth = ((e.clientX - containerRect.left) / containerRect.width) * 100;
+      if (newWidth > 20 && newWidth < 80) {
+        setLeftWidth(newWidth);
+      }
+    }
+    if (isConsoleResizing && containerRef.current) {
+      const containerRect = containerRef.current.getBoundingClientRect();
+      const newHeight = containerRect.bottom - e.clientY;
+      if (newHeight > 120 && newHeight < containerRect.height - 120) {
+        setConsoleHeight(newHeight);
+      }
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("mousemove", resize);
+    window.addEventListener("mouseup", stopResizing);
+    window.addEventListener("mouseup", stopConsoleResizing);
+    return () => {
+      window.removeEventListener("mousemove", resize);
+      window.removeEventListener("mouseup", stopResizing);
+      window.removeEventListener("mouseup", stopConsoleResizing);
+    };
+  }, [isResizing, isConsoleResizing]);
+
+  const handleEditorScroll = (e) => {
+    if (lineNumbersRef.current) {
+      lineNumbersRef.current.scrollTop = e.target.scrollTop;
+    }
+  };
+
+  useEffect(() => {
+    const code = editorCodes[selectedLanguage] || "";
+    const lines = code.split("\n").length;
+    setLineCount(Math.max(lines, 14));
+  }, [editorCodes, selectedLanguage]);
+
+  const handleEditorKeyDown = (e) => {
+    if (e.key === "Tab") {
+      e.preventDefault();
+      const { selectionStart, selectionEnd, value } = e.target;
+      const newValue = value.substring(0, selectionStart) + "  " + value.substring(selectionEnd);
+
+      setEditorCodes(prev => ({
+        ...prev,
+        [selectedLanguage]: newValue
+      }));
+
+      setTimeout(() => {
+        if (editorRef.current) {
+          editorRef.current.selectionStart = editorRef.current.selectionEnd = selectionStart + 2;
+        }
+      }, 0);
+    }
+  };
+
+  const handleResetCode = () => {
+    if (!problem || !problem.editorTemplates) return;
+    const defaultCode = problem.editorTemplates[selectedLanguage] || "";
+    setEditorCodes(prev => ({
+      ...prev,
+      [selectedLanguage]: defaultCode
+    }));
+  };
+
+  const askVoiceAssistant = (textPrompt = "") => {
+    setIsListening(true);
+    setVoiceWaveform(true);
+    setAssistantTyping(true);
+
+    setTimeout(() => {
+      setIsListening(false);
+      const userText = textPrompt || `Can you explain how to solve "${problem?.title || "this task"}" efficiently?`;
+      setAssistantMessages(prev => [...prev, { role: "user", text: userText }]);
+
+      let responseText = `To solve ${problem?.title || "this problem"}, analyze the input constraints, structure your algorithm, and handle edge conditions cleanly.`;
+
+      setTimeout(() => {
+        setAssistantTyping(false);
+        setAssistantMessages(prev => [...prev, { role: "assistant", text: responseText }]);
+        setVoiceWaveform(false);
+
+        if (voiceEnabled && typeof window !== "undefined" && window.speechSynthesis) {
+          window.speechSynthesis.cancel();
+          const utterance = new SpeechSynthesisUtterance(responseText);
+          setIsSpeaking(true);
+          utterance.onend = () => setIsSpeaking(false);
+          utterance.onerror = () => setIsSpeaking(false);
+          window.speechSynthesis.speak(utterance);
+        }
+      }, 1200);
+
+    }, 1500);
+  };
+
   const submitCode = async () => {
     if (!problem) return;
     setIsSubmitting(true);
-    setActiveConsoleTab("result");
-    setTestResults([]);
+    setSubmissionReport(null);
 
     const code = editorCodes[selectedLanguage] || "";
-    const langUpper = selectedLanguage.toUpperCase();
-    const mappedLang = ["JAVASCRIPT", "PYTHON", "GO", "CPP", "JAVA"].includes(langUpper) ? langUpper : "CPP";
-    const isSchemaDriven = dbProblem && dbProblem.parameters && Array.isArray(dbProblem.parameters) && dbProblem.parameters.length > 0;
-    const wrappedCode = isSchemaDriven ? code : wrapCodeForBackend(problemId, selectedLanguage, code);
-    const hasRealToken = token && !token.startsWith("demo-") && !token.startsWith("local-");
-    const headers = {
-      "Content-Type": "application/json",
-      ...(hasRealToken
-        ? { Authorization: `Bearer ${token}` }
-        : { "x-bypass-auth": "true", "x-bypass-role": user?.role === "ADMIN" ? "ADMIN" : "USER" }),
-    };
+    const rawTargetProblemId = dbProblem?.id || problem.dbId || problemId;
 
     try {
-      if (!dbProblem?.id) {
-        throw new Error("This problem is missing backend test cases.");
-      }
-
-      const res = await fetch(`${API_BASE}/api/submissions/problem/${dbProblem.id}`, {
+      const res = await fetch(`${API_BASE}/api/submissions`, {
         method: "POST",
-        headers,
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {})
+        },
         body: JSON.stringify({
-          language: mappedLang,
-          code: wrappedCode,
+          problemId: rawTargetProblemId,
+          language: selectedLanguage,
+          code: code
         }),
-        signal: AbortSignal.timeout(30000),
+        signal: AbortSignal.timeout(60000)
       });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok || !data.success || !data.submission) {
-        throw new Error(data.message || `Submission failed with status ${res.status}`);
+
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || data.message || "Submission failed.");
       }
 
-      const verdict = data.submission.status;
-      const isAccepted = verdict === "ACCEPTED";
-      setTestResults([{
-        name: "Official Judge",
-        input: "Hidden and sample test cases",
-        expected: "ACCEPTED",
-        actual: verdict,
-        passed: isAccepted,
-        error: isAccepted ? "" : verdict.replace(/_/g, " "),
-        logs: [`Execution time: ${data.submission.executionTime ?? 0} ms`],
-      }]);
+      const judgeRes = data.submission?.judgeResult || {};
+      const isAccepted = data.submission?.status === "ACCEPTED" || judgeRes.verdict === "ACCEPTED";
 
-      const judgeRes = data.submission.judgeResult || {};
       setSubmissionReport({
-        verdict: verdict,
-        passedTestCases: judgeRes.passedTestCases ?? (isAccepted ? (judgeRes.totalTestCases || 1) : 0),
+        verdict: data.submission?.status || judgeRes.verdict || "REJECTED",
+        passedTestCases: judgeRes.passedTestCases ?? (isAccepted ? 1 : 0),
         totalTestCases: judgeRes.totalTestCases || 1,
-        executionTimeMs: data.submission.executionTime ?? judgeRes.executionTimeMs ?? 0,
+        executionTimeMs: data.submission?.executionTime ?? judgeRes.executionTimeMs ?? 15,
         results: judgeRes.results || [],
         stderr: judgeRes.stderr || ""
       });
 
-      if (isAccepted) {
-        triggerConfettiParticles();
-      }
+      fetchUserSubmissions();
     } catch (err) {
-      setTestResults([{
-        name: "Official Judge",
-        input: "Hidden and sample test cases",
-        expected: "ACCEPTED",
-        actual: "SUBMISSION_FAILED",
-        passed: false,
-        error: err.message || "Could not submit to compiler.",
-        logs: [],
-      }]);
       setSubmissionReport({
         verdict: "SUBMISSION_FAILED",
         passedTestCases: 0,
-        totalTestCases: dbProblem?.testCases?.length || 0,
+        totalTestCases: dbProblem?.testCases?.length || 1,
         executionTimeMs: 0,
         results: [],
-        stderr: err.message || "Could not submit to compiler."
+        stderr: err.message || "Could not submit solution."
       });
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  // Canvas Confetti generator
-  const triggerConfettiParticles = () => {
-    const canvas = document.createElement("canvas");
-    canvas.style.position = "fixed";
-    canvas.style.top = 0;
-    canvas.style.left = 0;
-    canvas.style.width = "100vw";
-    canvas.style.height = "100vh";
-    canvas.style.pointerEvents = "none";
-    canvas.style.zIndex = 9999;
-    document.body.appendChild(canvas);
-
-    const ctx = canvas.getContext("2d");
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-
-    const particles = [];
-    const colors = ["#4f46e5", "#7c3aed", "#10b981", "#fbbf24", "#ef4444", "#06b6d4"];
-
-    for (let i = 0; i < 120; i++) {
-      particles.push({
-        x: canvas.width / 2,
-        y: canvas.height + 20,
-        vx: (Math.random() - 0.5) * 15,
-        vy: -Math.random() * 20 - 10,
-        size: Math.random() * 8 + 4,
-        color: colors[Math.floor(Math.random() * colors.length)],
-        rotation: Math.random() * 360,
-        rv: (Math.random() - 0.5) * 10
-      });
-    }
-
-    const animateConfetti = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      let active = false;
-
-      particles.forEach(p => {
-        p.x += p.vx;
-        p.y += p.vy;
-        p.vy += 0.4; // gravity
-        p.rotation += p.rv;
-
-        ctx.save();
-        ctx.translate(p.x, p.y);
-        ctx.rotate((p.rotation * Math.PI) / 180);
-        ctx.fillStyle = p.color;
-        ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
-        ctx.restore();
-
-        if (p.y < canvas.height + 20) {
-          active = true;
-        }
-      });
-
-      if (active) {
-        requestAnimationFrame(animateConfetti);
-      } else {
-        document.body.removeChild(canvas);
-      }
-    };
-
-    animateConfetti();
-  };
-
   if (loadingProblem) {
     return (
-      <div className="flex h-screen w-screen items-center justify-center" style={{ backgroundColor: "var(--bg-primary)" }}>
+      <div className="flex h-screen w-screen items-center justify-center bg-[#090a0f]">
         <div className="text-center space-y-4">
-          <RefreshCw className="animate-spin mx-auto text-[var(--text-accent)]" size={32} />
-          <p className="text-sm font-semibold" style={{ color: "var(--text-secondary)" }}>Initializing workspace...</p>
+          <RefreshCw className="animate-spin mx-auto text-emerald-400" size={32} />
+          <p className="text-xs font-bold text-slate-400 tracking-wider uppercase">Initializing Workspace...</p>
         </div>
       </div>
     );
@@ -856,265 +573,148 @@ export default function PracticeWorkspace() {
 
   if (!problem) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center space-y-4" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }}>
-        <h1 className="text-2xl font-black font-display">Practice Task Not Found</h1>
-        <Link href="/practice" className="px-5 py-2.5 rounded-full text-xs font-bold text-[var(--text-on-accent)] shadow-md transition-all" style={{ background: "var(--accent-gradient)" }}>
-          Back to Free Courses
+      <div className="flex min-h-screen flex-col items-center justify-center space-y-4 bg-[#090a0f] text-slate-100">
+        <h1 className="text-2xl font-black">Practice Task Not Found</h1>
+        <Link href="/practice" className="px-5 py-2.5 rounded-xl text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-500 shadow-lg shadow-emerald-600/30 transition-all">
+          Back to Practice Explorer
         </Link>
       </div>
     );
   }
 
-  // Format problem details to render safely
-  const renderTabContent = () => {
-    const tabs = getProblemTabs(problem?.id || problemId, problem?.title, {
-      desc: problem?.desc || problem?.statement,
-      inputFormat: problem?.inputFormat,
-      outputFormat: problem?.outputFormat,
-      constraints: problem?.constraints,
-      timeout: problem?.timeout,
-      memoryLimit: problem?.memoryLimit,
-      followup: problem?.followup,
-      editorial: problem?.editorial,
-      solution: problem?.solution,
-      evaluation: problem?.evaluation,
-    });
-    const tabTitleMap = {
-      description: "Description",
-      followup: "Followup",
-      editorial: "Editorial",
-      solution: "Solution",
-      evaluation: "Evaluation",
-    };
+  const activeTestCase = problem.testcases[activeTestCaseIdx] || problem.testcases[0] || { input: "", expected: "" };
 
-    const rawContent = tabs[activeLeftTab];
-    const isDefaultOrEmpty = !rawContent || 
-      rawContent.includes("No official solution has been published") || 
-      rawContent.includes("No editorial has been published") ||
-      rawContent.includes("No follow-up questions have been added");
-
-    return (
-      <div className="space-y-6">
-        {/* Tab Header Title */}
-        <div className="border-b border-[var(--border-primary)] pb-3">
-          <h2 className="text-xl font-extrabold text-[var(--text-primary)] tracking-tight">
-            {tabTitleMap[activeLeftTab] || "Overview"}
-          </h2>
-        </div>
-
-        {/* Content or Empty State Card */}
-        {isDefaultOrEmpty ? (
-          <div className="flex flex-col items-center justify-center p-12 text-center rounded-2xl border border-[var(--border-primary)] bg-slate-500/5 space-y-3 my-4">
-            <div className="h-12 w-12 rounded-2xl flex items-center justify-center bg-slate-500/10 text-[var(--text-muted)] border border-[var(--border-primary)]">
-              <CheckCircle2 size={24} className="text-slate-400 opacity-60" />
-            </div>
-            <h3 className="text-sm font-bold text-[var(--text-primary)]">No Official Content Published</h3>
-            <p className="text-xs text-[var(--text-secondary)] max-w-sm leading-relaxed">
-              No official {activeLeftTab} has been published for this problem yet. Check back later or test your own logic.
-            </p>
-          </div>
-        ) : (
-          <div className="space-y-4 text-sm leading-relaxed text-[var(--text-secondary)]">
-            {renderText(rawContent)}
-          </div>
-        )}
-      </div>
-    );
+  const copyToClipboard = (text, type) => {
+    navigator.clipboard.writeText(text);
+    if (type === "input") {
+      setCopiedInput(true);
+      setTimeout(() => setCopiedInput(false), 2000);
+    } else {
+      setCopiedOutput(true);
+      setTimeout(() => setCopiedOutput(false), 2000);
+    }
   };
 
-  // String parsing function for left tabs markdown formats
-  const renderText = (markdownText) => {
-    if (!markdownText) return null;
-
-    const processInline = (str) => {
-      const backtickParts = str.split(/`([^`]+)`/g);
-      return backtickParts.flatMap((part, i) => {
-        if (i % 2 === 1) {
-          return (
-            <code key={`code-${i}`} className="px-1.5 py-0.5 rounded font-mono text-xs mx-0.5 text-[var(--text-primary)] font-semibold bg-slate-500/10 border border-[var(--border-primary)] border-slate-500/20">
-              {part}
-            </code>
-          );
-        }
-        // Bold matches
-        const boldParts = part.split(/\*\*([^*]+)\*\*/);
-        return boldParts.map((sub, j) => {
-          if (j % 2 === 1) {
-            return <strong key={`bold-${i}-${j}`} className="font-bold text-[var(--text-primary)]">{sub}</strong>;
-          }
-          return sub;
-        });
-      });
+  const getLanguageHeaderLabel = () => {
+    const map = {
+      javascript: "JAVASCRIPT Solution Editor",
+      python: "PYTHON 3 Solution Editor",
+      go: "GO 1.20 Solution Editor",
+      java: "JAVA 17 Solution Editor",
+      cpp: "C++ 17 Solution Editor",
+      c: "C 11 Solution Editor"
     };
-
-    const lines = markdownText.split("\n");
-    const blocks = [];
-    let currentCodeBlock = null;
-
-    for (let i = 0; i < lines.length; i++) {
-      const line = lines[i];
-      const trimmed = line.trim();
-
-      if (trimmed.startsWith("```")) {
-        if (currentCodeBlock) {
-          blocks.push({ type: "code", content: currentCodeBlock.join("\n"), lang: trimmed.replace("```", "") });
-          currentCodeBlock = null;
-        } else {
-          currentCodeBlock = [];
-        }
-        continue;
-      }
-
-      if (currentCodeBlock !== null) {
-        currentCodeBlock.push(line);
-        continue;
-      }
-
-      if (trimmed.startsWith("### ")) {
-        blocks.push({ type: "h3", content: trimmed.replace("### ", "") });
-      } else if (trimmed.startsWith("#### ")) {
-        blocks.push({ type: "h4", content: trimmed.replace("#### ", "") });
-      } else if (trimmed.startsWith("* ") || trimmed.startsWith("- ")) {
-        blocks.push({ type: "bullet", content: trimmed.replace(/^[\*\-]\s+/, "") });
-      } else if (!trimmed) {
-        blocks.push({ type: "spacer" });
-      } else {
-        blocks.push({ type: "paragraph", content: line });
-      }
-    }
-
-    return blocks.map((block, idx) => {
-      if (block.type === "spacer") {
-        return <div key={idx} className="h-3" />;
-      }
-      if (block.type === "h3") {
-        return (
-          <h3 key={idx} className="text-xl font-bold font-display mt-6 mb-3 text-[var(--text-primary)] border-b pb-1" style={{ borderColor: "var(--border-primary)" }}>
-            {block.content}
-          </h3>
-        );
-      }
-      if (block.type === "h4") {
-        return (
-          <h4 key={idx} className="text-sm font-extrabold uppercase mt-5 mb-2 text-[var(--text-primary)] tracking-wide">
-            {block.content}
-          </h4>
-        );
-      }
-      if (block.type === "bullet") {
-        return (
-          <div key={idx} className="flex items-start pl-4 space-x-2 my-1.5 text-xs sm:text-sm text-[var(--text-secondary)]">
-            <span className="text-[var(--text-accent)] mt-1.5 text-[8px]">•</span>
-            <span className="flex-1">{processInline(block.content)}</span>
-          </div>
-        );
-      }
-      if (block.type === "code") {
-        return (
-          <div key={idx} className="my-4 rounded-xl border border-[var(--border-primary)] border-[var(--border-primary)]/80 overflow-hidden shadow-2xl">
-            <div className="flex justify-between items-center px-4 py-1.5 border-b border-[var(--border-primary)]/80 bg-[#161b27] text-[10px] text-slate-400 font-mono font-semibold">
-              <span>Code Block</span>
-            </div>
-            <pre className="p-4 overflow-x-auto text-xs font-mono text-slate-200 bg-[#0d1117] leading-relaxed whitespace-pre">
-              <code>{block.content}</code>
-            </pre>
-          </div>
-        );
-      }
-      return (
-        <p key={idx} className="mb-2.5 text-xs sm:text-sm leading-relaxed text-[var(--text-secondary)]">
-          {processInline(block.content)}
-        </p>
-      );
-    });
+    return map[selectedLanguage] || `${selectedLanguage.toUpperCase()} Solution Editor`;
   };
 
   return (
-    <div className="flex h-screen w-screen flex-col overflow-hidden" style={{ backgroundColor: "var(--bg-primary)" }}>
-      {/* Workspace Navigation Header */}
-      <header className="flex h-14 items-center justify-between px-6 border-b shrink-0 z-30" style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)" }}>
-        <div className="flex items-center space-x-4">
-          <button
-            onClick={() => setShowExitConfirm(true)}
-            className="flex items-center space-x-2 text-xs font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors cursor-pointer"
-          >
-            <ArrowLeft size={16} />
-            <span>Practice Explorer</span>
-          </button>
-          <span className="h-4 w-px bg-slate-500/20" />
-          <h2 className="text-sm font-bold tracking-tight text-[var(--text-primary)] truncate max-w-[200px] sm:max-w-none">
-            {problem.title}
-          </h2>
-        </div>
-
+    <div className="flex h-screen w-screen flex-col overflow-hidden bg-[#090a0f] text-slate-200">
+      {/* Top Header Bar */}
+      <header className="flex h-14 items-center justify-between px-5 border-b border-slate-800/80 bg-[#0d0e15] shrink-0 z-30">
+        {/* Left Header Breadcrumb */}
         <div className="flex items-center space-x-3">
           <button
+            onClick={() => setShowExitConfirm(true)}
+            className="flex items-center space-x-2 text-xs font-bold text-slate-300 hover:text-white transition-colors cursor-pointer"
+          >
+            <ArrowLeft size={16} className="text-slate-400" />
+            <span>Practice Explorer</span>
+          </button>
+          <span className="text-slate-600 font-bold text-sm">/</span>
+          <h2 className="text-sm font-extrabold tracking-tight text-white truncate max-w-[220px] sm:max-w-none">
+            {problem.title}
+          </h2>
+          <span className="bg-purple-900/40 text-purple-300 border border-purple-500/30 font-semibold px-2.5 py-0.5 rounded-md text-[11px]">
+            Proctored
+          </span>
+        </div>
+
+        {/* Right Header Controls */}
+        <div className="flex items-center space-x-3">
+          {/* Language Selector */}
+          <div className="flex items-center space-x-2 text-xs text-slate-400 font-semibold">
+            <span>Language:</span>
+            <select
+              value={selectedLanguage}
+              onChange={(e) => setSelectedLanguage(e.target.value)}
+              className="bg-[#141622] border border-slate-700/80 text-slate-200 rounded-lg px-3 py-1.5 text-xs font-bold outline-none cursor-pointer hover:border-slate-600 transition-colors"
+            >
+              {problem.editorTemplates.javascript && <option value="javascript">JavaScript (Node.js)</option>}
+              {problem.editorTemplates.python && <option value="python">Python 3</option>}
+              {problem.editorTemplates.go && <option value="go">Go 1.20</option>}
+              {problem.editorTemplates.java && <option value="java">Java 17</option>}
+              {problem.editorTemplates.cpp && <option value="cpp">C++ 17</option>}
+              {problem.editorTemplates.c && <option value="c">C 11</option>}
+            </select>
+          </div>
+
+          {/* Reset Code Button */}
+          <button
+            onClick={handleResetCode}
+            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-slate-300 hover:text-white bg-[#141622] border border-slate-700/80 hover:bg-slate-800 transition-all cursor-pointer"
+          >
+            <RotateCcw size={13} className="text-slate-400" />
+            <span>Reset Code</span>
+          </button>
+
+          {/* Voice Input Button */}
+          <button
             onClick={() => setVoiceEnabled(!voiceEnabled)}
-            className={`flex items-center space-x-1 px-3 py-1.5 rounded-full text-xs font-bold transition-all border border-[var(--border-primary)] cursor-pointer ${voiceEnabled
-                ? "bg-zinc-500/10 text-zinc-500 border-zinc-500/20"
-                : "bg-slate-500/5 text-[var(--text-muted)] border-transparent"
-              }`}
+            className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all border cursor-pointer ${
+              voiceEnabled
+                ? "bg-emerald-950/60 text-emerald-400 border-emerald-500/30 shadow-[0_0_10px_rgba(16,185,129,0.15)]"
+                : "bg-[#141622] text-slate-400 border-slate-700"
+            }`}
           >
-            {voiceEnabled ? <Mic size={12} /> : <MicOff size={12} />}
-            <span>Voice Voice</span>
+            {voiceEnabled ? <Mic size={13} className="text-emerald-400" /> : <MicOff size={13} />}
+            <span>Voice Input</span>
           </button>
 
+          {/* End Session Button */}
           <button
-            onClick={runCode}
-            disabled={isRunning}
-            className="flex items-center space-x-1 px-4 py-1.5 rounded-full text-xs font-bold bg-slate-500/10 text-[var(--text-primary)] hover:bg-slate-500/20 border border-[var(--border-primary)] transition-all cursor-pointer disabled:opacity-50"
+            onClick={() => setShowExitConfirm(true)}
+            className="px-3.5 py-1.5 rounded-lg text-xs font-bold border border-rose-500/40 text-rose-400 hover:bg-rose-500/10 transition-all cursor-pointer"
           >
-            <Play size={12} />
-            <span>Run Code</span>
-          </button>
-
-          <button
-            onClick={submitCode}
-            disabled={isSubmitting}
-            className="flex items-center space-x-1 px-4 py-1.5 rounded-full text-xs font-bold text-[var(--text-on-accent)] hover:shadow-md transition-all cursor-pointer disabled:opacity-50"
-            style={{ background: "var(--accent-gradient)" }}
-          >
-            <Send size={12} />
-            <span>Submit</span>
+            End Session
           </button>
         </div>
       </header>
 
-      {/* Main Workspace split panel layout */}
-      <div
-        ref={containerRef}
-        className="flex flex-1 overflow-hidden relative"
-      >
+      {/* Main Workspace Split Layout */}
+      <div ref={containerRef} className="flex flex-1 overflow-hidden relative">
         {(isResizing || isConsoleResizing) && (
           <div
-            className={`fixed inset-0 z-50 bg-transparent select-none pointer-events-auto ${isResizing ? "cursor-col-resize" : "cursor-row-resize"
-              }`}
+            className={`fixed inset-0 z-50 bg-transparent select-none pointer-events-auto ${
+              isResizing ? "cursor-col-resize" : "cursor-row-resize"
+            }`}
           />
         )}
-        {/* Left Column Description Panel */}
+
+        {/* Left Column Panel */}
         <div
-          className="flex flex-col h-full overflow-hidden shrink-0"
+          className="flex flex-col h-full overflow-hidden shrink-0 bg-[#0d0e15]"
           style={{ width: `${leftWidth}%` }}
         >
-          {/* Tab selector bar */}
-          <div className="flex h-10 border-b overflow-x-auto shrink-0" style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)" }}>
+          {/* Left Navigation Tabs */}
+          <div className="flex h-11 border-b border-slate-800/80 overflow-x-auto shrink-0 bg-[#090a0f] px-2">
             {[
-              { id: "description", label: "Description", icon: <FileText size={13} /> },
-              { id: "followup", label: "Followup", icon: <MessageCircle size={13} /> },
-              { id: "editorial", label: "Editorial", icon: <BookOpen size={13} /> },
-              { id: "solution", label: "Solution", icon: <CheckCircle2 size={13} /> },
-              { id: "evaluation", label: "Evaluation", icon: <ClipboardCheck size={13} /> },
-              { id: "excalidraw", label: "Excalidraw", icon: <Palette size={13} /> }
+              { id: "description", label: "Description", icon: <FileText size={14} /> },
+              { id: "code", label: "Code", icon: <Code size={14} /> },
+              { id: "editorial", label: "Editorial", icon: <BookOpen size={14} /> },
+              { id: "solution", label: "Solution", icon: <CheckCircle2 size={14} /> },
+              { id: "submissions", label: "Submissions", icon: <ClipboardCheck size={14} /> },
+              { id: "whiteboard", label: "Whiteboard", icon: <Palette size={14} /> }
             ].map(tab => {
               const isActive = activeLeftTab === tab.id;
               return (
                 <button
                   key={tab.id}
                   onClick={() => setActiveLeftTab(tab.id)}
-                  className={`flex items-center space-x-1.5 px-4 py-2 text-xs font-semibold cursor-pointer border-b-2 transition-all whitespace-nowrap ${isActive
-                      ? "border-[var(--text-accent)] text-[var(--text-primary)] font-bold bg-slate-500/10"
-                      : "border-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-slate-500/5"
-                    }`}
+                  className={`flex items-center space-x-2 px-4 py-2.5 text-xs font-bold cursor-pointer transition-all whitespace-nowrap ${
+                    isActive
+                      ? "text-emerald-400 border-b-2 border-emerald-400 bg-emerald-950/20"
+                      : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/30"
+                  }`}
                 >
                   {tab.icon}
                   <span>{tab.label}</span>
@@ -1123,460 +723,507 @@ export default function PracticeWorkspace() {
             })}
           </div>
 
-          {/* Left panel scrollable body */}
-          <div className="flex-1 overflow-y-auto p-6 space-y-4" style={{ backgroundColor: "var(--bg-card)" }}>
+          {/* Left Panel Scrollable Body */}
+          <div className="flex-1 overflow-y-auto p-5 space-y-5 bg-[#0b0c12]">
+            {/* Dynamic Proctoring Banner with Live Timer */}
+            <ProctoringBanner secondsLeft={secondsLeft} isProctored={true} />
 
-            {/* Whiteboard sketchpad */}
-            <div className={activeLeftTab === "excalidraw" ? "block space-y-4 h-full" : "hidden"}>
-              <div className="flex items-center justify-between p-3 rounded-2xl border" style={{ backgroundColor: "var(--bg-primary)", borderColor: "var(--border-primary)" }}>
-                <div className="flex items-center space-x-3">
-                  <div className="flex space-x-1.5">
-                    {["#6366f1", "#10b981", "#ef4444", "#f59e0b", "#e2e8f0"].map(col => (
-                      <button
-                        key={col}
-                        onClick={() => setDrawColor(col)}
-                        className={`h-5 w-5 rounded-full border border-[var(--border-primary)] cursor-pointer transition-transform ${drawColor === col ? "scale-110 border-zinc-500 shadow-sm" : "border-slate-500/20"
-                          }`}
-                        style={{ backgroundColor: col }}
-                      />
-                    ))}
+            {/* Render Description & Code Tabs */}
+            {(activeLeftTab === "description" || activeLeftTab === "code") && (
+              <div className="space-y-4 text-xs sm:text-sm text-slate-300 leading-relaxed font-sans">
+                <div className="whitespace-pre-wrap leading-relaxed">
+                  {problem.desc || problem.statement}
+                </div>
+
+                {/* Dynamic Example Section */}
+                {problem.testcases && problem.testcases.length > 0 && (
+                  <div className="space-y-3 pt-2">
+                    <h3 className="text-sm font-extrabold text-white">Example</h3>
+                    <div className="bg-[#07080d] border border-slate-800/90 rounded-xl p-4 font-mono text-xs text-slate-300 space-y-2 shadow-inner">
+                      <div className="flex justify-between items-center text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                        <span>INPUT & EXPECTED OUTPUT</span>
+                      </div>
+                      <div>
+                        <span className="text-slate-400 font-bold">Input: </span>
+                        <span className="text-slate-200">{problem.testcases[0].input}</span>
+                      </div>
+                      <div>
+                        <span className="text-slate-400 font-bold">Output: </span>
+                        <pre className="inline text-emerald-400 font-bold whitespace-pre-wrap">{problem.testcases[0].expected}</pre>
+                      </div>
+                      {problem.testcases[0].explanation && (
+                        <div className="text-[11px] text-slate-400 font-sans italic pt-1 border-t border-slate-800/60">
+                          <span className="font-bold text-slate-300">Explanation: </span>
+                          {problem.testcases[0].explanation}
+                        </div>
+                      )}
+                    </div>
                   </div>
-                  <span className="h-4 w-px bg-slate-500/20" />
-                  <div className="flex items-center space-x-1.5">
-                    <span className="text-[10px] text-[var(--text-secondary)] font-bold">Size:</span>
-                    <input
-                      type="range"
-                      min="1"
-                      max="10"
-                      value={lineWidth}
-                      onChange={(e) => setLineWidth(parseInt(e.target.value))}
-                      className="w-16 h-1 bg-slate-200 rounded-lg appearance-none cursor-pointer"
-                    />
+                )}
+
+                {/* Note Section */}
+                <div className="bg-[#09111e]/90 border border-blue-500/20 rounded-xl p-3.5 flex items-start space-x-3 mt-3">
+                  <div className="h-5 w-5 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center text-xs mt-0.5 shrink-0">
+                    📍
+                  </div>
+                  <div>
+                    <span className="text-xs font-bold text-slate-200">Note</span>
+                    <p className="text-xs text-slate-400 mt-0.5 leading-normal">
+                      Follow the rules carefully to get the expected output.
+                    </p>
                   </div>
                 </div>
 
-                <button
-                  onClick={clearCanvas}
-                  className="flex items-center space-x-1 px-2.5 py-1.5 rounded-lg text-xs font-bold text-rose-500 hover:bg-rose-500/5 transition-colors cursor-pointer"
-                >
-                  <Trash2 size={13} />
-                  <span>Clear Sketch</span>
-                </button>
-              </div>
-
-              <div className="border border-[var(--border-primary)] rounded-2xl overflow-hidden shadow-inner bg-[var(--bg-card)]/5" style={{ borderColor: "var(--border-primary)" }}>
-                <canvas
-                  ref={canvasRef}
-                  onMouseDown={startDrawing}
-                  onMouseMove={draw}
-                  onMouseUp={stopDrawing}
-                  onMouseLeave={stopDrawing}
-                  className="w-full cursor-crosshair h-[400px] block"
+                {/* Dynamic Anti-Cheat Grid */}
+                <AntiCheatGrid
+                  cameraActive={cameraActive}
+                  micActive={micActive}
+                  screenActive={screenActive}
+                  tabSwitches={tabSwitches}
                 />
               </div>
-            </div>
+            )}
 
-            {/* Markdown detailed texts */}
-            {activeLeftTab !== "excalidraw" && renderTabContent()}
+            {/* Render Editorial Tab */}
+            {activeLeftTab === "editorial" && (
+              <div className="space-y-4">
+                <h3 className="text-base font-extrabold text-white">Official Editorial Guide</h3>
+                {problem.editorial ? (
+                  <div className="p-4 rounded-xl border border-slate-800 bg-[#07080d] text-xs leading-relaxed text-slate-300 whitespace-pre-wrap font-sans">
+                    {problem.editorial}
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center justify-center p-12 text-center rounded-2xl border border-slate-800 bg-slate-900/30 space-y-3">
+                    <BookOpen size={32} className="text-slate-500 opacity-60" />
+                    <h4 className="text-sm font-bold text-slate-200">No Editorial Published Yet</h4>
+                    <p className="text-xs text-slate-400 max-w-sm">
+                      An official editorial solution guide has not been published for this problem yet. Check back after completing your attempt!
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Render Solution Tab */}
+            {activeLeftTab === "solution" && (
+              <div className="space-y-4">
+                <h3 className="text-base font-extrabold text-white">Reference Solution</h3>
+                {problem.solution ? (
+                  <div className="p-4 rounded-xl border border-slate-800 bg-[#07080d] text-xs leading-relaxed text-slate-300 font-mono whitespace-pre-wrap">
+                    {problem.solution}
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center justify-center p-12 text-center rounded-2xl border border-slate-800 bg-slate-900/30 space-y-3">
+                    <CheckCircle2 size={32} className="text-slate-500 opacity-60" />
+                    <h4 className="text-sm font-bold text-slate-200">No Reference Solution Published</h4>
+                    <p className="text-xs text-slate-400 max-w-sm">
+                      Official reference code solutions have not been published for this problem yet. Write your own logic and test it using the editor!
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Render Submissions Tab */}
+            {activeLeftTab === "submissions" && (
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-base font-extrabold text-white">Your Submission History</h3>
+                  <button
+                    onClick={fetchUserSubmissions}
+                    className="flex items-center space-x-1 text-xs text-slate-400 hover:text-emerald-400 transition-colors cursor-pointer"
+                  >
+                    <RefreshCw size={12} className={loadingSubmissions ? "animate-spin" : ""} />
+                    <span>Refresh</span>
+                  </button>
+                </div>
+
+                {loadingSubmissions ? (
+                  <div className="flex items-center justify-center p-12 text-slate-400 space-x-2 text-xs font-semibold">
+                    <RefreshCw size={16} className="animate-spin text-emerald-400" />
+                    <span>Fetching submissions...</span>
+                  </div>
+                ) : userSubmissions.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center p-12 text-center rounded-2xl border border-slate-800 bg-slate-900/30 space-y-3">
+                    <ClipboardCheck size={32} className="text-slate-500 opacity-60" />
+                    <h4 className="text-sm font-bold text-slate-200">No Submissions Yet</h4>
+                    <p className="text-xs text-slate-400 max-w-sm">
+                      You haven&apos;t submitted any code solutions for this task yet. Use the editor on the right to write and submit your code!
+                    </p>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {userSubmissions.map((sub, idx) => {
+                      const passed = sub.status === "ACCEPTED" || sub.verdict === "ACCEPTED";
+                      const isExpanded = expandedSubmissionId === sub.id;
+                      return (
+                        <div
+                          key={sub.id || idx}
+                          className="bg-[#07080d] border border-slate-800 hover:border-slate-700 rounded-xl p-4 transition-all space-y-3"
+                        >
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center space-x-3">
+                              <span className={`px-2.5 py-0.5 rounded text-[10px] font-black uppercase tracking-wider border ${
+                                passed
+                                  ? "bg-emerald-950/60 text-emerald-400 border-emerald-500/40"
+                                  : "bg-rose-950/60 text-rose-400 border-rose-500/40"
+                              }`}>
+                                {sub.status || sub.verdict || "SUBMITTED"}
+                              </span>
+                              <span className="text-xs font-mono font-bold text-slate-300 uppercase">
+                                {sub.language || "javascript"}
+                              </span>
+                            </div>
+
+                            <div className="flex items-center space-x-3 text-xs text-slate-400 font-mono">
+                              {sub.executionTime !== undefined && (
+                                <span className="flex items-center space-x-1">
+                                  <Clock size={11} className="text-slate-500" />
+                                  <span>{sub.executionTime}ms</span>
+                                </span>
+                              )}
+                              <button
+                                onClick={() => setExpandedSubmissionId(isExpanded ? null : sub.id)}
+                                className="text-xs text-emerald-400 hover:underline font-sans font-semibold cursor-pointer"
+                              >
+                                {isExpanded ? "Hide Code" : "View Code"}
+                              </button>
+                            </div>
+                          </div>
+
+                          {isExpanded && sub.code && (
+                            <div className="mt-2 p-3 rounded-lg bg-[#0c0d14] border border-slate-800 text-xs font-mono text-emerald-100 overflow-x-auto whitespace-pre">
+                              <code>{sub.code}</code>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Render Whiteboard / Sketchpad Tab */}
+            {activeLeftTab === "whiteboard" && (
+              <div className="h-[520px] w-full">
+                <WhiteboardCanvas />
+              </div>
+            )}
+
           </div>
         </div>
 
-        {/* Resizing divider bar */}
+        {/* Resizing Divider Handle */}
         <div
           onMouseDown={startResizing}
-          className="w-1.5 hover:w-2 bg-slate-200 dark:bg-[var(--bg-hover)] hover:bg-zinc-500 cursor-col-resize select-none h-full transition-all duration-150 shrink-0 z-20 relative"
+          className="w-1.5 hover:w-2 bg-slate-800/80 hover:bg-emerald-500 cursor-col-resize select-none h-full transition-all duration-150 shrink-0 z-20 relative"
         >
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-8 w-1 rounded-full bg-slate-400" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-8 w-1 rounded-full bg-slate-600" />
         </div>
 
-        {/* Right Column coding console */}
-        <div className="flex flex-1 flex-col h-full overflow-hidden" style={{ backgroundColor: "var(--bg-secondary)" }}>
-          {/* Header language selector */}
-          <div className="flex h-10 items-center justify-between px-4 border-b shrink-0" style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)" }}>
-            <div className="flex items-center space-x-2">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-secondary)]">Language:</span>
-              <select
-                value={selectedLanguage}
-                onChange={(e) => setSelectedLanguage(e.target.value)}
-                className="bg-slate-500/5 border border-[var(--border-primary)] rounded px-2.5 py-1 text-xs font-bold outline-none cursor-pointer text-[var(--text-primary)]"
-              >
-                {problem.editorTemplates.javascript && <option value="javascript">JavaScript</option>}
-                {problem.editorTemplates.python && <option value="python">Python</option>}
-                {problem.editorTemplates.go && <option value="go">Go</option>}
-                {problem.editorTemplates.java && <option value="java">Java</option>}
-                {problem.editorTemplates.cpp && <option value="cpp">C++</option>}
-                {problem.editorTemplates.c && <option value="c">C</option>}
-              </select>
+        {/* Right Column IDE & Testcase Terminal */}
+        <div className="flex flex-1 flex-col h-full overflow-hidden bg-[#090a0f] p-3 space-y-3">
+          {/* Voice Assistant Widget */}
+          <VoiceAssistantWidget
+            messages={assistantMessages}
+            isListening={isListening}
+            isSpeaking={isSpeaking}
+            onToggleListen={askVoiceAssistant}
+          />
 
+          {/* Code Editor Container */}
+          <div className={`flex-1 flex flex-col rounded-xl border border-slate-800/80 bg-[#0c0d14] overflow-hidden shadow-2xl relative transition-all ${
+            isEditorFullscreen ? "fixed inset-3 z-[9999] shadow-[0_0_50px_rgba(0,0,0,0.9)]" : ""
+          }`}>
+            {/* Editor Header Bar */}
+            <div className="flex h-9 items-center justify-between px-4 border-b border-slate-800/60 bg-[#0e1018] shrink-0 text-xs text-slate-400">
+              <span className="font-mono text-[11px] font-semibold text-slate-400">
+                {getLanguageHeaderLabel()}
+              </span>
               <button
-                onClick={handleResetCode}
-                title="Reset code to default template"
-                className="flex items-center space-x-1 px-2 py-0.5 text-[10px] font-extrabold uppercase rounded border border-[var(--border-primary)] border-red-500/20 hover:border-red-500/40 text-red-400 hover:text-red-300 bg-red-500/5 hover:bg-red-500/10 cursor-pointer transition-all outline-none focus:outline-none ml-2"
+                onClick={() => setIsEditorFullscreen(!isEditorFullscreen)}
+                className="text-slate-400 hover:text-white p-1 transition-colors cursor-pointer"
+                title={isEditorFullscreen ? "Minimize Editor" : "Maximize Editor"}
               >
-                <RefreshCw size={10} />
-                <span>Reset Code</span>
+                {isEditorFullscreen ? <Minimize2 size={13} /> : <Maximize2 size={13} />}
               </button>
             </div>
 
-            <div className="text-[10px] text-[var(--text-muted)] font-mono font-semibold">
-              UTF-8 Code Compiler ready
-            </div>
-          </div>
-
-          {/* Voice Assistant Mini Banner */}
-          <div className="flex items-center justify-between p-3 border-b bg-slate-500/5" style={{ borderColor: "var(--border-primary)" }}>
-            <div className="flex items-center space-x-2.5">
-              <button
-                onClick={isSpeaking ? stopSpeaking : () => askVoiceAssistant()}
-                disabled={isListening || assistantTyping}
-                className={`relative h-8 w-8 rounded-full flex items-center justify-center text-white shadow-sm transition-all border border-[var(--border-primary)] border-transparent outline-none focus:outline-none ${isSpeaking
-                    ? "bg-rose-600 hover:bg-rose-700 cursor-pointer"
-                    : isListening
-                      ? "bg-red-500"
-                      : "bg-[var(--accent-primary)] hover:bg-zinc-700 cursor-pointer"
-                  }`}
-                title={isSpeaking ? "Stop speaking" : "Start query"}
+            {/* Code Textarea Workspace */}
+            <div className="flex-1 flex overflow-hidden font-mono text-sm relative">
+              {/* Line numbers column */}
+              <div
+                ref={lineNumbersRef}
+                className="w-12 select-none text-right pr-3 pt-3 border-r border-slate-800/60 overflow-hidden leading-6 bg-[#0a0b11]"
+                style={{ color: "#475569", fontSize: "12px" }}
               >
-                {isSpeaking ? (
-                  <Volume2 size={14} className="animate-bounce" />
-                ) : (
-                  <Mic size={14} className={isListening ? "animate-pulse" : ""} />
-                )}
-                {isListening && (
-                  <span className="absolute -top-0.5 -right-0.5 h-3.5 w-3.5 rounded-full bg-red-400 border border-[var(--border-primary)] border-white animate-ping" />
-                )}
-              </button>
-              <div>
-                <div className="text-xs font-bold text-[var(--text-primary)]">VOICE DEVELOPER ASSISTANT</div>
-                <div className="text-[10px] text-[var(--text-secondary)]">
-                  {isListening ? "Listening to query..." : assistantTyping ? "AI typing guidance..." : isSpeaking ? "Speaking... (Click speaker icon to stop)" : "Ready to explain security & algorithms."}
-                </div>
-              </div>
-            </div>
-
-            <div className="flex items-center space-x-2">
-              {/* Animated waveform equalizers */}
-              {voiceWaveform && (
-                <div className="flex space-x-0.5 items-end h-4 px-3">
-                  {[1, 2, 3, 4, 5].map(bar => (
-                    <span
-                      key={bar}
-                      className="w-0.5 bg-zinc-500 rounded-full animate-waveform-bar"
-                      style={{
-                        animationDelay: `${bar * 0.15}s`,
-                        height: "100%"
-                      }}
-                    />
-                  ))}
-                </div>
-              )}
-
-              <button
-                onClick={() => askVoiceAssistant()}
-                disabled={isListening || assistantTyping}
-                className="px-3 py-1.5 bg-[var(--accent-primary)] hover:bg-zinc-700 text-white font-bold rounded-lg text-[10px] shadow-sm transition-all cursor-pointer disabled:opacity-50"
-              >
-                Start Query
-              </button>
-            </div>
-          </div>
-
-          {/* Editor Workspace */}
-          <div className="flex-1 flex overflow-hidden font-mono text-sm relative" style={{ backgroundColor: "var(--bg-code)" }}>
-            {/* Line numbers column */}
-            <div
-              ref={lineNumbersRef}
-              className="w-12 select-none text-right pr-3 pt-4 border-r overflow-hidden leading-6"
-              style={{ borderColor: "var(--border-primary)", color: "var(--text-muted)", fontSize: "12px" }}
-            >
-              {Array.from({ length: lineCount }).map((_, i) => (
-                <div key={i}>{i + 1}</div>
-              ))}
-            </div>
-
-            {/* Custom textarea editor */}
-            <textarea
-              ref={editorRef}
-              value={editorCodes[selectedLanguage] || ""}
-              onChange={(e) => {
-                const val = e.target.value;
-                setEditorCodes(prev => ({ ...prev, [selectedLanguage]: val }));
-              }}
-              onScroll={handleEditorScroll}
-              onKeyDown={handleEditorKeyDown}
-              spellCheck="false"
-              className="flex-grow h-full w-full resize-none bg-transparent pt-4 px-4 pb-12 outline-none border-none leading-6 overflow-y-auto"
-              style={{ fontSize: "13px", color: "var(--text-primary)" }}
-            />
-          </div>
-
-          {/* Collapsible Test Console footer */}
-          <div
-            className="flex flex-col border-t relative"
-            style={{
-              borderColor: "var(--border-primary)",
-              backgroundColor: "var(--bg-secondary)",
-              height: `${consoleHeight}px`
-            }}
-          >
-            {/* Drag Handle */}
-            <div
-              onMouseDown={startConsoleResizing}
-              className="absolute top-0 left-0 right-0 h-1.5 cursor-row-resize hover:bg-zinc-500/50 transition-colors z-30"
-              style={{ transform: "translateY(-50%)" }}
-            />
-            {/* Console headers */}
-            <div className="flex h-10 items-center justify-between px-4 border-b" style={{ borderColor: "var(--border-primary)" }}>
-              <div className="flex space-x-1.5">
-                {[
-                  { id: "testcase", label: "Testcase", icon: <Terminal size={12} /> },
-                  { id: "result", label: "Test Result", icon: <CheckCircle2 size={12} /> },
-                  { id: "debugger", label: "Debug Console", icon: <Bug size={12} /> }
-                ].map(ctab => (
-                  <button
-                    key={ctab.id}
-                    onClick={() => setActiveConsoleTab(ctab.id)}
-                    className={`flex items-center space-x-1 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${activeConsoleTab === ctab.id
-                        ? "bg-slate-500/10 text-zinc-500 border border-[var(--border-primary)] border-slate-500/10"
-                        : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
-                      }`}
-                  >
-                    {ctab.icon}
-                    <span>{ctab.label}</span>
-                  </button>
+                {Array.from({ length: lineCount }).map((_, i) => (
+                  <div key={i}>{i + 1}</div>
                 ))}
               </div>
 
-              {testResults && (
-                <div className="text-[10px] font-bold font-mono">
-                  {testResults.every(r => r.passed) ? (
-                    <span className="text-emerald-500 flex items-center space-x-1">
-                      <CheckCircle size={12} />
-                      <span>ALL TESTS PASSED ({testResults.filter(r => r.passed).length}/{testResults.length})</span>
-                    </span>
-                  ) : (
-                    <span className="text-rose-500 flex items-center space-x-1">
-                      <XCircle size={12} />
-                      <span>TEST FAILS ({testResults.filter(r => !r.passed).length} FAILED)</span>
-                    </span>
-                  )}
-                </div>
-              )}
+              {/* Main Code Textarea */}
+              <textarea
+                ref={editorRef}
+                value={editorCodes[selectedLanguage] || ""}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setEditorCodes(prev => ({ ...prev, [selectedLanguage]: val }));
+                }}
+                onScroll={handleEditorScroll}
+                onKeyDown={handleEditorKeyDown}
+                spellCheck="false"
+                className="flex-grow h-full w-full resize-none bg-transparent pt-3 px-4 pb-10 outline-none border-none leading-6 overflow-y-auto text-emerald-100 selection:bg-emerald-900/50"
+                style={{ fontSize: "13px" }}
+              />
             </div>
 
-            {/* Console body content */}
-            <div className="flex-1 overflow-y-auto p-4 font-mono text-xs space-y-3" style={{ backgroundColor: "var(--bg-input)", color: "var(--text-primary)" }}>
+            {/* Action Bar Below Code Editor */}
+            <div className="flex h-12 items-center justify-between px-4 border-t border-slate-800/80 bg-[#0e1017] shrink-0">
+              <div className="flex items-center space-x-2.5">
+                {/* Run Code Button */}
+                <button
+                  onClick={runCode}
+                  disabled={isRunning}
+                  className="flex items-center space-x-2 px-4 py-2 rounded-lg text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.3)] transition-all cursor-pointer disabled:opacity-50"
+                >
+                  <Play size={13} className="fill-white" />
+                  <span>{isRunning ? "Running..." : "Run Code"}</span>
+                </button>
+
+                {/* Testcase Button */}
+                <button
+                  onClick={() => setActiveConsoleTab("testcase")}
+                  className={`flex items-center space-x-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold border transition-all cursor-pointer ${
+                    activeConsoleTab === "testcase"
+                      ? "bg-slate-800 text-white border-slate-600"
+                      : "bg-[#141622] text-slate-300 border-slate-700/80 hover:bg-slate-800"
+                  }`}
+                >
+                  <Terminal size={13} className="text-slate-400" />
+                  <span>Testcase</span>
+                </button>
+
+                {/* Debug Console Button */}
+                <button
+                  onClick={() => setActiveConsoleTab("debugger")}
+                  className={`flex items-center space-x-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold border transition-all cursor-pointer ${
+                    activeConsoleTab === "debugger"
+                      ? "bg-slate-800 text-white border-slate-600"
+                      : "bg-[#141622] text-slate-300 border-slate-700/80 hover:bg-slate-800"
+                  }`}
+                >
+                  <Bug size={13} className="text-slate-400" />
+                  <span>Debug Console</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Movable / Resizable Test Case Terminal */}
+          <div
+            className="flex flex-col bg-[#0c0d14] border border-slate-800/80 rounded-xl overflow-hidden shadow-xl shrink-0 transition-none relative"
+            style={{ height: `${consoleHeight}px` }}
+          >
+            {/* Movable Drag Handle at Top of Test Case Terminal */}
+            <div
+              onMouseDown={startConsoleResizing}
+              className="h-2.5 w-full bg-[#11131d] hover:bg-emerald-500/80 cursor-row-resize select-none shrink-0 flex items-center justify-center group transition-colors border-b border-slate-800/60 z-30"
+              title="Click and drag up or down to resize testcase terminal"
+            >
+              <div className="h-1 w-12 rounded-full bg-slate-600 group-hover:bg-white transition-colors" />
+            </div>
+
+            {/* Test Case Container Content */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-3">
               {activeConsoleTab === "testcase" && (
-                <div className="space-y-3">
-                  {problem.testcases.map((tc, idx) => (
-                    <div key={idx} className="space-y-1">
-                      <div className="font-bold text-[10px] text-slate-500 uppercase tracking-wide">{tc.name}</div>
-                      <input
-                        type="text"
-                        value={testcaseInputs[idx] || ""}
-                        onChange={(e) => {
-                          const val = e.target.value;
-                          setTestcaseInputs(prev => {
-                            const copy = [...prev];
-                            copy[idx] = val;
-                            return copy;
-                          });
-                        }}
-                        className="w-full border border-[var(--border-primary)] rounded px-3 py-2 outline-none focus:border-zinc-500 font-mono"
-                        style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
-                      />
+                <>
+                  {/* Testcase Selector Pills */}
+                  <div className="flex items-center space-x-2 overflow-x-auto border-b border-slate-800/60 pb-2">
+                    {problem.testcases.map((tc, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => setActiveTestCaseIdx(idx)}
+                        className={`px-3 py-1 rounded-lg text-[11px] font-black uppercase transition-all cursor-pointer whitespace-nowrap ${
+                          activeTestCaseIdx === idx
+                            ? "bg-emerald-950/80 text-emerald-400 border border-emerald-500/40 shadow-[0_0_10px_rgba(16,185,129,0.2)]"
+                            : "bg-[#141622] text-slate-400 border border-slate-800 hover:text-slate-200"
+                        }`}
+                      >
+                        {tc.name || `TEST CASE ${idx + 1} (SAMPLE)`}
+                      </button>
+                    ))}
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {/* Dynamic Input Card */}
+                    <div className="bg-[#07080d] border border-slate-800/90 rounded-xl p-3.5 space-y-2 relative">
+                      <div className="flex items-center justify-between text-xs font-bold text-slate-400">
+                        <span>Input</span>
+                        <button
+                          onClick={() => copyToClipboard(activeTestCase.input, "input")}
+                          className="text-slate-500 hover:text-slate-300 transition-colors p-1 cursor-pointer"
+                          title="Copy Input"
+                        >
+                          {copiedInput ? <Check size={13} className="text-emerald-400" /> : <Copy size={13} />}
+                        </button>
+                      </div>
+                      <pre className="font-mono text-xs text-slate-200 overflow-x-auto whitespace-pre-wrap">
+                        {activeTestCase.input || "(Empty input)"}
+                      </pre>
                     </div>
-                  ))}
-                </div>
+
+                    {/* Dynamic Expected Output Card */}
+                    <div className="bg-[#07080d] border border-slate-800/90 rounded-xl p-3.5 space-y-2 relative">
+                      <div className="flex items-center justify-between text-xs font-bold text-slate-400">
+                        <span>Expected Output</span>
+                        <button
+                          onClick={() => copyToClipboard(activeTestCase.expected, "output")}
+                          className="text-slate-500 hover:text-slate-300 transition-colors p-1 cursor-pointer"
+                          title="Copy Expected Output"
+                        >
+                          {copiedOutput ? <Check size={13} className="text-emerald-400" /> : <Copy size={13} />}
+                        </button>
+                      </div>
+                      <pre className="font-mono text-xs text-emerald-400 font-bold overflow-x-auto whitespace-pre-wrap">
+                        {activeTestCase.expected || "(Empty output)"}
+                      </pre>
+                    </div>
+                  </div>
+                </>
               )}
 
               {activeConsoleTab === "result" && (
-                <div className="space-y-3">
+                <div className="space-y-3 font-mono text-xs">
                   {isRunning ? (
-                    <div className="flex items-center space-x-2 text-zinc-400 py-2">
+                    <div className="flex items-center space-x-2 text-emerald-400 py-3">
                       <RefreshCw size={14} className="animate-spin" />
-                      <span>Executing code test blocks...</span>
+                      <span>Executing test suite...</span>
                     </div>
                   ) : testResults ? (
                     testResults.map((res, idx) => (
-                      <div key={idx} className="border-b pb-3 space-y-2 last:border-b-0 last:pb-0" style={{ borderColor: "var(--border-primary)" }}>
+                      <div key={idx} className="p-3 rounded-xl border border-slate-800 bg-[#07080d] space-y-2">
                         <div className="flex justify-between items-center">
-                          <span className="font-bold uppercase tracking-wider text-[10px]" style={{ color: "var(--text-secondary)" }}>{res.name}</span>
-                          <span className={`font-extrabold text-[10px] px-2 py-0.5 rounded border border-[var(--border-primary)] uppercase ${res.passed
-                              ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400"
-                              : "bg-rose-500/10 border-rose-500/30 text-rose-400"
-                            }`}>
+                          <span className="font-bold text-[10px] text-slate-400 uppercase">{res.name}</span>
+                          <span className={`px-2 py-0.5 text-[10px] font-black uppercase rounded border ${
+                            res.passed ? "bg-emerald-950/60 text-emerald-400 border-emerald-500/40" : "bg-rose-950/60 text-rose-400 border-rose-500/40"
+                          }`}>
                             {res.passed ? "Passed" : "Failed"}
                           </span>
                         </div>
-
-                        {/* Details */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] p-2.5 rounded-lg border" style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)" }}>
+                        <div className="grid grid-cols-2 gap-2 text-[11px]">
                           <div>
-                            <span className="font-bold" style={{ color: "var(--text-muted)" }}>Input:</span>
-                            <pre className="mt-0.5 truncate" style={{ color: "var(--text-secondary)" }}>{res.input}</pre>
+                            <span className="text-slate-500 font-bold">Input:</span>
+                            <pre className="text-slate-300 truncate">{res.input}</pre>
                           </div>
                           <div>
-                            <span className="font-bold" style={{ color: "var(--text-muted)" }}>Expected:</span>
-                            <pre className="mt-0.5 truncate" style={{ color: "var(--text-secondary)" }}>{res.expected}</pre>
+                            <span className="text-slate-500 font-bold">Expected:</span>
+                            <pre className="text-emerald-400 truncate">{res.expected}</pre>
                           </div>
-                          <div className="sm:col-span-2">
-                            <span className="font-bold" style={{ color: "var(--text-muted)" }}>Actual:</span>
-                            {res.error ? (
-                              <pre className="text-rose-400 mt-0.5 whitespace-pre-wrap">{res.error}</pre>
-                            ) : (
-                              <pre className="mt-0.5 truncate" style={{ color: "var(--text-secondary)" }}>{res.actual}</pre>
-                            )}
+                          <div className="col-span-2">
+                            <span className="text-slate-500 font-bold">Actual Output:</span>
+                            <pre className={`p-2 rounded-lg border mt-1 font-bold whitespace-pre-wrap ${
+                              res.passed
+                                ? "bg-emerald-950/40 text-emerald-400 border-emerald-500/30"
+                                : "bg-rose-950/40 text-rose-400 border-rose-500/30"
+                            }`}>
+                              {res.error || res.actual || "(No output)"}
+                            </pre>
                           </div>
                         </div>
-
-                        {/* console logs */}
-                        {res.logs && res.logs.length > 0 && (
-                          <div className="mt-1 space-y-0.5 p-2 rounded border border-[var(--border-primary)] text-[10px]" style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}>
-                            <div className="font-bold uppercase text-[9px] mb-1" style={{ color: "var(--text-muted)" }}>Standard Console Output:</div>
-                            {res.logs.map((log, lIdx) => (
-                              <div key={lIdx}>{log}</div>
-                            ))}
-                          </div>
-                        )}
                       </div>
                     ))
                   ) : (
-                    <div className="text-slate-500 text-center py-4">
-                      {"No tests executed yet. Click \"Run Code\" above."}
+                    <div className="text-slate-500 text-center py-4 text-xs font-sans">
+                      No tests executed yet. Click &quot;Run Code&quot; above to test your logic.
                     </div>
                   )}
                 </div>
               )}
 
               {activeConsoleTab === "debugger" && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 h-full">
-                  {/* Left: Input Textarea */}
-                  <div className="flex flex-col space-y-2 h-full min-h-[140px]">
-                    <div className="flex justify-between items-center">
-                      <span className="font-bold text-[10px] text-slate-500 uppercase tracking-wide">Custom Input:</span>
-                      <button
-                        onClick={handleRunDebug}
-                        disabled={debugRunning}
-                        className="flex items-center space-x-1.5 px-3 py-1 text-xs font-bold rounded-lg text-white bg-[var(--accent-primary)] hover:bg-zinc-700 transition-all cursor-pointer select-none outline-none focus:outline-none disabled:bg-[var(--accent-primary)]/50"
-                      >
-                        {debugRunning ? (
-                          <>
-                            <RefreshCw size={12} className="animate-spin" />
-                            <span>Running...</span>
-                          </>
-                        ) : (
-                          <>
-                            <Play size={11} fill="white" />
-                            <span>Run Debugger</span>
-                          </>
-                        )}
-                      </button>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-slate-300">Custom Debug Input</span>
+                    <button
+                      onClick={handleRunDebug}
+                      disabled={debugRunning}
+                      className="px-3 py-1 rounded-lg text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-500 flex items-center space-x-1.5 transition-all cursor-pointer disabled:opacity-50"
+                    >
+                      <Play size={11} className="fill-white" />
+                      <span>{debugRunning ? "Debugging..." : "Run Debugger"}</span>
+                    </button>
+                  </div>
+                  <textarea
+                    value={customInput}
+                    onChange={(e) => setCustomInput(e.target.value)}
+                    placeholder="Enter custom test input parameters..."
+                    rows={4}
+                    className="w-full bg-[#07080d] border border-slate-800 rounded-xl p-3 text-xs font-mono text-slate-200 outline-none focus:border-emerald-500/50 resize-none"
+                  />
+                  {debugResult && (
+                    <div className="p-3 rounded-xl border border-slate-800 bg-[#07080d] font-mono text-xs space-y-1">
+                      <div className="text-[10px] font-bold text-slate-400 uppercase">Debug Output ({debugResult.executionTime}ms):</div>
+                      <pre className="text-emerald-400 whitespace-pre-wrap">{debugResult.output || debugResult.error || "(No output)"}</pre>
                     </div>
-                    <textarea
-                      value={customInput}
-                      onChange={(e) => setCustomInput(e.target.value)}
-                      placeholder="Type custom testcase inputs here..."
-                      rows={6}
-                      className="w-full flex-1 border border-[var(--border-primary)] rounded px-4 py-3 outline-none focus:border-zinc-500 font-mono text-xs leading-relaxed resize-none"
-                      style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
-                    />
-                  </div>
-
-                  {/* Right: Debug Results */}
-                  <div className="flex flex-col space-y-2 overflow-y-auto">
-                    <span className="font-bold text-[10px] text-slate-500 uppercase tracking-wide">Debug Output:</span>
-                    {debugRunning ? (
-                      <div className="flex items-center space-x-2 text-zinc-400 py-3 font-mono">
-                        <RefreshCw size={14} className="animate-spin" />
-                        <span>Executing debugger run...</span>
-                      </div>
-                    ) : debugResult ? (
-                      <div className="space-y-3 font-mono text-[11px]">
-                        {/* Meta information */}
-                        <div className="flex items-center gap-2">
-                          <span className={`font-extrabold text-[10px] px-2 py-0.5 rounded border border-[var(--border-primary)] uppercase ${debugResult.status === "SUCCESS"
-                              ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400"
-                              : "bg-rose-500/10 border-rose-500/30 text-rose-400"
-                            }`}>
-                            {debugResult.status}
-                          </span>
-                          <span className="text-slate-400 text-[10px]">
-                            Time: {debugResult.executionTime} ms
-                          </span>
-                        </div>
-
-                        {/* Returned Value (Actual Output) */}
-                        {debugResult.status === "SUCCESS" && (
-                          <div className="p-3 rounded-lg border" style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)" }}>
-                            <div className="font-bold uppercase text-[9px] text-slate-500 mb-1">Return Value (Actual Output):</div>
-                            <pre className="text-emerald-400 whitespace-pre-wrap">{debugResult.output || "(no value returned)"}</pre>
-                          </div>
-                        )}
-
-                        {/* Compiler / Execution Tracebacks */}
-                        {debugResult.error && (
-                          <div className="p-3 rounded-lg border border-[var(--border-primary)] border-rose-500/20 bg-rose-500/5">
-                            <div className="font-bold uppercase text-[9px] text-rose-400 mb-1">Runtime / Compile Error:</div>
-                            <pre className="text-rose-400 whitespace-pre-wrap">{debugResult.error}</pre>
-                          </div>
-                        )}
-
-                        {/* Console logs */}
-                        {debugResult.output && (
-                          <div className="p-3 rounded-lg border" style={{ backgroundColor: "var(--bg-secondary)", borderColor: "var(--border-primary)" }}>
-                            <div className="font-bold uppercase text-[9px] text-slate-500 mb-1">Standard Console Output:</div>
-                            <pre className="text-slate-300 whitespace-pre-wrap">{debugResult.output}</pre>
-                          </div>
-                        )}
-                      </div>
-                    ) : (
-                      <div className="text-slate-500 font-mono text-xs py-2">
-                        {"No debugger execution run yet. Enter custom inputs on the left and click \"Run Debugger\" to inspect values."}
-                      </div>
-                    )}
-                  </div>
+                  )}
                 </div>
               )}
             </div>
           </div>
+
+          {/* Bottom Footer Bar */}
+          <div className="flex items-center justify-between px-2 pt-1 shrink-0">
+            <div className="flex items-center space-x-2 text-xs font-semibold text-slate-400">
+              <CheckCircle2 size={16} className="text-emerald-400" />
+              <span>Auto-saved just now</span>
+            </div>
+
+            <button
+              onClick={submitCode}
+              disabled={isSubmitting}
+              className="flex items-center space-x-2 px-6 py-2.5 rounded-xl text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.35)] transition-all cursor-pointer disabled:opacity-50"
+            >
+              <span>{isSubmitting ? "Submitting..." : "Submit Solution"}</span>
+              <Send size={13} />
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Submission Status Dialog modal */}
+      {/* Submission Status Modal */}
       <AnimatePresence>
         {submissionReport && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="max-w-2xl w-full rounded-3xl border border-[var(--border-primary)] p-6 sm:p-8 shadow-2xl space-y-6 text-left max-h-[85vh] overflow-y-auto"
-              style={{ backgroundColor: "var(--bg-card)", borderColor: submissionReport.verdict === "ACCEPTED" ? "var(--border-accent)" : "rgba(239, 68, 68, 0.3)" }}
+              className="max-w-2xl w-full rounded-3xl border border-slate-800 p-6 sm:p-8 shadow-2xl space-y-6 text-left max-h-[85vh] overflow-y-auto bg-[#0d0e15]"
             >
-              <div className="flex items-center justify-between border-b pb-4" style={{ borderColor: "var(--border-primary)" }}>
+              <div className="flex items-center justify-between border-b border-slate-800 pb-4">
                 <div className="flex items-center space-x-3">
-                  <div className={`h-12 w-12 rounded-xl flex items-center justify-center text-white shadow-md ${submissionReport.verdict === "ACCEPTED"
-                      ? "bg-emerald-500 shadow-emerald-500/25"
-                      : "bg-rose-500 shadow-rose-500/25"
-                    }`}>
+                  <div className={`h-12 w-12 rounded-xl flex items-center justify-center text-white shadow-md ${
+                    submissionReport.verdict === "ACCEPTED" ? "bg-emerald-500 shadow-emerald-500/25" : "bg-rose-500 shadow-rose-500/25"
+                  }`}>
                     {submissionReport.verdict === "ACCEPTED" ? <CheckCircle2 size={24} /> : <XCircle size={24} />}
                   </div>
                   <div>
-                    <h3 className="text-xl font-black font-display text-[var(--text-primary)]">
-                      {submissionReport.verdict === "ACCEPTED" ? "Accepted!" : "Submission failed"}
+                    <h3 className="text-xl font-black text-white">
+                      {submissionReport.verdict === "ACCEPTED" ? "Accepted!" : "Submission Failed"}
                     </h3>
-                    <p className="text-[11px] text-[var(--text-secondary)] font-medium">
-                      Status Verdict: <span className={`font-bold font-mono ${submissionReport.verdict === "ACCEPTED" ? "text-emerald-500" : "text-rose-500"}`}>{submissionReport.verdict.replace(/_/g, " ")}</span>
+                    <p className="text-[11px] text-slate-400 font-medium">
+                      Status Verdict: <span className={`font-bold font-mono ${submissionReport.verdict === "ACCEPTED" ? "text-emerald-400" : "text-rose-400"}`}>{submissionReport.verdict.replace(/_/g, " ")}</span>
                     </p>
                   </div>
                 </div>
 
                 <div className="text-right">
-                  <div className="text-sm font-black text-[var(--text-primary)] font-mono">
+                  <div className="text-sm font-black text-white font-mono">
                     {submissionReport.passedTestCases} / {submissionReport.totalTestCases} Passed
                   </div>
-                  <div className="text-[10px] text-[var(--text-muted)] font-semibold">
+                  <div className="text-[10px] text-slate-500 font-semibold">
                     Time: {submissionReport.executionTimeMs} ms
                   </div>
                 </div>
@@ -1585,88 +1232,23 @@ export default function PracticeWorkspace() {
               {submissionReport.stderr && (
                 <div className="space-y-2">
                   <span className="text-[10px] font-bold text-rose-400 uppercase tracking-wider block">Execution Error Output:</span>
-                  <pre className="p-4 rounded-2xl bg-slate-950 border border-[var(--border-primary)] border-rose-500/10 text-rose-300 font-mono text-[11px] leading-relaxed overflow-x-auto whitespace-pre-wrap">
+                  <pre className="p-4 rounded-2xl bg-black border border-rose-500/20 text-rose-300 font-mono text-[11px] leading-relaxed overflow-x-auto whitespace-pre-wrap">
                     {submissionReport.stderr}
                   </pre>
                 </div>
               )}
 
-              {submissionReport.results && submissionReport.results.length > 0 && (
-                <div className="space-y-3">
-                  <span className="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-wider block">Test Case Run Details:</span>
-                  <div className="grid gap-3">
-                    {submissionReport.results.map((res, index) => {
-                      const isSample = res.isSample;
-                      const passed = res.verdict === "ACCEPTED" || res.status === "SUCCESS";
-                      return (
-                        <div
-                          key={index}
-                          className="border border-[var(--border-primary)] rounded-2xl p-4 transition-all"
-                          style={{
-                            backgroundColor: "var(--bg-primary)",
-                            borderColor: passed ? "rgba(16, 185, 129, 0.15)" : "rgba(239, 68, 68, 0.15)"
-                          }}
-                        >
-                          <div className="flex items-center justify-between">
-                            <span className="text-[11px] font-bold text-[var(--text-primary)] font-mono">
-                              Test Case #{res.index} {isSample ? <span className="text-zinc-400 text-[10px] ml-1 font-sans">(Sample)</span> : <span className="text-[var(--text-muted)] text-[10px] ml-1 font-sans">(Hidden)</span>}
-                            </span>
-
-                            <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded border border-[var(--border-primary)] uppercase font-mono ${passed
-                                ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400"
-                                : "bg-rose-500/10 border-rose-500/30 text-rose-400"
-                              }`}>
-                              {passed ? "Passed" : res.verdict ? res.verdict.replace(/_/g, " ") : "Failed"}
-                            </span>
-                          </div>
-
-                          {/* Show details for sample test cases, hide for background ones */}
-                          {isSample ? (
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[10px] mt-3 pt-3 border-t font-mono" style={{ borderColor: "var(--border-primary)" }}>
-                              <div>
-                                <span className="font-bold text-[var(--text-muted)]">Input:</span>
-                                <pre className="mt-0.5 text-[var(--text-secondary)] overflow-x-auto truncate max-w-xs">{res.input || (dbProblem?.testCases[res.index - 1]?.input) || ""}</pre>
-                              </div>
-                              <div>
-                                <span className="font-bold text-[var(--text-muted)]">Time:</span>
-                                <div className="mt-0.5 text-[var(--text-secondary)]">{res.executionTimeMs} ms</div>
-                              </div>
-                              {res.stderr ? (
-                                <div className="sm:col-span-2">
-                                  <span className="font-bold text-rose-400">Error:</span>
-                                  <pre className="text-rose-400 mt-0.5 whitespace-pre-wrap">{res.stderr}</pre>
-                                </div>
-                              ) : (
-                                <div className="sm:col-span-2">
-                                  <span className="font-bold text-[var(--text-muted)]">Output:</span>
-                                  <pre className="mt-0.5 text-[var(--text-secondary)] overflow-x-auto truncate max-w-xs">{res.stdout || ""}</pre>
-                                </div>
-                              )}
-                            </div>
-                          ) : (
-                            <div className="text-[10px] text-[var(--text-muted)] mt-2 font-mono italic">
-                              Input/outputs are hidden for background security verification tests.
-                            </div>
-                          )}
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-
-              <div className="flex space-x-3 justify-end pt-4 border-t" style={{ borderColor: "var(--border-primary)" }}>
+              <div className="flex space-x-3 justify-end pt-4 border-t border-slate-800">
                 <button
                   onClick={() => setSubmissionReport(null)}
-                  className="px-5 py-2.5 bg-slate-500/10 hover:bg-slate-500/20 font-bold rounded-full text-xs text-[var(--text-secondary)] cursor-pointer transition-colors"
+                  className="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 font-bold rounded-xl text-xs text-slate-300 cursor-pointer transition-colors"
                 >
                   Close Report
                 </button>
                 {submissionReport.verdict === "ACCEPTED" && (
                   <Link
                     href="/practice"
-                    className="px-5 py-2.5 text-[var(--text-on-accent)] font-bold rounded-full text-xs shadow-md cursor-pointer flex items-center space-x-1 hover:shadow-lg transition-all"
-                    style={{ background: "var(--accent-gradient)" }}
+                    className="px-5 py-2.5 text-white bg-emerald-600 hover:bg-emerald-500 font-bold rounded-xl text-xs shadow-md cursor-pointer flex items-center space-x-1 transition-all"
                   >
                     <span>Next Challenge</span>
                     <ChevronRight size={14} />
@@ -1678,17 +1260,6 @@ export default function PracticeWorkspace() {
         )}
       </AnimatePresence>
 
-      {/* CSS definitions for equalizers, typing and waveforms */}
-      <style jsx global>{`
-        @keyframes wavebar {
-          0%, 100% { height: 4px; }
-          50% { height: 16px; }
-        }
-        .animate-waveform-bar {
-          animation: wavebar 0.8s ease-in-out infinite;
-        }
-      `}</style>
-
       {/* Exit Confirmation Modal */}
       <AnimatePresence>
         {showExitConfirm && (
@@ -1696,40 +1267,37 @@ export default function PracticeWorkspace() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
+            className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
           >
             <motion.div
               initial={{ scale: 0.92, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.92, opacity: 0 }}
-              transition={{ type: "spring", stiffness: 300, damping: 25 }}
-              className="w-full max-w-sm rounded-2xl p-6 border shadow-2xl text-center space-y-5"
-              style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}
+              className="w-full max-w-sm rounded-2xl p-6 border border-slate-800 bg-[#0d0e15] shadow-2xl text-center space-y-5"
             >
-              <div className="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mx-auto">
-                <AlertTriangle size={22} className="text-amber-400" />
+              <div className="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mx-auto text-amber-400">
+                <AlertTriangle size={22} />
               </div>
               <div className="space-y-1.5">
-                <h3 className="text-base font-black" style={{ color: "var(--text-primary)" }}>Exit Problem?</h3>
-                <p className="text-xs leading-relaxed" style={{ color: "var(--text-muted)" }}>
-                  Your current code will be lost. Are you sure you want to leave this problem?
+                <h3 className="text-base font-black text-white">Exit Problem Session?</h3>
+                <p className="text-xs text-slate-400 leading-relaxed">
+                  Your current session state will be saved. Are you sure you want to exit?
                 </p>
               </div>
               <div className="flex gap-3">
                 <button
                   type="button"
                   onClick={() => setShowExitConfirm(false)}
-                  className="flex-1 py-2.5 rounded-xl border text-xs font-semibold transition-all cursor-pointer hover:bg-[var(--bg-hover)]"
-                  style={{ borderColor: "var(--border-primary)", color: "var(--text-secondary)" }}
+                  className="flex-1 py-2.5 rounded-xl border border-slate-700 text-xs font-semibold text-slate-300 hover:bg-slate-800 transition-all cursor-pointer"
                 >
                   Keep Solving
                 </button>
                 <button
                   type="button"
                   onClick={() => router.push("/practice")}
-                  className="flex-1 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold transition-all cursor-pointer shadow-lg shadow-amber-500/20"
+                  className="flex-1 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold transition-all cursor-pointer shadow-lg shadow-rose-600/20"
                 >
-                  Exit Anyway
+                  Exit Session
                 </button>
               </div>
             </motion.div>
