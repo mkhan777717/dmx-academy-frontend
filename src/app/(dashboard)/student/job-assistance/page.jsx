@@ -143,6 +143,10 @@ export default function JobAssistancePage() {
       setError("Please select or specify a job role.");
       return;
     }
+    if (!mobile.trim()) {
+      setError("Please enter your mobile number.");
+      return;
+    }
     if (!resumeFile) {
       setError("Please upload your resume (PDF or DOCX).");
       return;
@@ -431,9 +435,15 @@ export default function JobAssistancePage() {
                 <input
                   type="tel"
                   required
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  maxLength={15}
                   value={mobile}
-                  onChange={(e) => setMobile(e.target.value)}
-                  placeholder="98765 43210"
+                  onChange={(e) => {
+                    const digits = e.target.value.replace(/\D/g, "").slice(0, 15);
+                    setMobile(digits);
+                  }}
+                  placeholder="Enter your mobile number"
                   className="flex-1 px-4 py-3 rounded-xl border text-sm transition-all focus:outline-none focus:ring-1 focus:ring-[var(--accent-primary)] min-w-0"
                   style={{ backgroundColor: "var(--bg-input)", borderColor: "var(--border-primary)", color: "var(--text-primary)" }}
                 />
@@ -593,6 +603,29 @@ export default function JobAssistancePage() {
         <p className="text-xs" style={{ color: "var(--text-muted)" }}>
           Track your application progress below.
         </p>
+      </div>
+
+      {/* Dynamic Email Notice Banner */}
+      <div className="flex items-center gap-2.5 p-3.5 rounded-2xl border border-amber-500/20 bg-amber-500/5 text-amber-600 dark:text-amber-400 text-xs font-semibold">
+        <AlertTriangle size={15} className="shrink-0 text-amber-500" />
+        <span>
+          ✉️ <strong>Important Email Notice:</strong>{" "}
+          {status === "PENDING" && (
+            <>Once <strong>our team</strong> reviews your application, an official status notification will be sent to your email. Please check your <strong>Inbox</strong> as well as your <strong>Spam / Junk folder</strong>!</>
+          )}
+          {(status === "APPROVED" || status === "SLOT_REJECTED") && (
+            <>Once you select and submit your interview slot below, <strong>our team</strong> will review and confirm it via email. Please check your <strong>Inbox</strong> as well as your <strong>Spam / Junk folder</strong>!</>
+          )}
+          {status === "SLOT_PENDING" && (
+            <>Once <strong>our team</strong> confirms your requested slot and assigns a mentor, your interview details will be sent to your email. Please check your <strong>Inbox</strong> as well as your <strong>Spam / Junk folder</strong>!</>
+          )}
+          {status === "SLOT_CONFIRMED" && (
+            <>Your interview slot has been confirmed by <strong>our team</strong>! Your mentor details and meeting instructions have been sent to your email. Please check your <strong>Inbox</strong> as well as your <strong>Spam / Junk folder</strong>!</>
+          )}
+          {(status === "COMPLETED" || status === "NEEDS_IMPROVEMENT" || status === "REJECTED") && (
+            <>Your interview evaluation report and mentor feedback notes from <strong>our team</strong> have been sent to your email. Please check your <strong>Inbox</strong> as well as your <strong>Spam / Junk folder</strong>!</>
+          )}
+        </span>
       </div>
 
       {/* Stepper Card */}

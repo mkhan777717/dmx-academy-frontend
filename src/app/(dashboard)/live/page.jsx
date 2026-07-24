@@ -44,6 +44,7 @@ import LivePollPopup from "@/components/LivePollPopup";
 import LiveChat from "@/components/LiveChat";
 import { SessionLeaderboard, PollResultsOverlay, EndSessionLeaderboard } from "@/components/LiveLeaderboard";
 import { ReactionOverlay, ReactionPicker } from "@/components/LiveReactions";
+import { useDuplicateTabGuard } from "@/hooks/useDuplicateTabGuard";
 
 import { getApiBase } from "@/utils/api";
 
@@ -1226,6 +1227,9 @@ export default function LiveViewerPage() {
   const [countdownTime, setCountdownTime] = useState({ hours: "00", minutes: "00", seconds: "00", totalMs: 0 });
   const [isWaitingForMentor, setIsWaitingForMentor] = useState(false);
 
+  // Duplicate Tab Detection & Guard
+  const { isDuplicateTab, claimActiveTab } = useDuplicateTabGuard(session?.id);
+
   // Accidental Leave Popup Modal states
   const [showLeaveModal, setShowLeaveModal] = useState(false);
   const [pendingLeaveTarget, setPendingLeaveTarget] = useState(null);
@@ -1853,6 +1857,36 @@ export default function LiveViewerPage() {
                 Leave
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Duplicate Tab Termination Overlay */}
+      {isDuplicateTab && (
+        <div className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/90 backdrop-blur-xl p-4 animate-in fade-in duration-200">
+          <div
+            className="w-full max-w-md rounded-3xl p-8 border border-[var(--border-primary)] shadow-2xl text-center space-y-6"
+            style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-primary)" }}
+          >
+            <div className="w-16 h-16 rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center mx-auto border border-amber-500/20">
+              <AlertTriangle size={32} />
+            </div>
+            <div className="space-y-2">
+              <h3 className="text-xl font-black tracking-tight" style={{ color: "var(--text-primary)" }}>
+                Session Active in Another Tab
+              </h3>
+              <p className="text-xs leading-relaxed" style={{ color: "var(--text-muted)" }}>
+                This live class was opened in a newer tab of your browser. To prevent video and audio conflicts, playback in this tab has been terminated.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={claimActiveTab}
+              className="w-full py-3.5 rounded-xl text-white text-xs font-extrabold uppercase tracking-wider transition-all shadow-lg hover:scale-[1.02] active:scale-95 cursor-pointer"
+              style={{ background: "var(--accent-gradient)" }}
+            >
+              Re-join Live Class in This Tab
+            </button>
           </div>
         </div>
       )}
